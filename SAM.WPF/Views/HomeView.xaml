@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="SAM.WPF.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.WPF.Views"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
+             xmlns:library="clr-namespace:SAM.WPF.Views.Library"
+             mc:Ignorable="d" 
+             DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
+             d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
+        <dxmvvm:FormatStringConverter x:Key="AppCountFormatConverter" FormatString="{}{0} Total Items"/>
+        <dxmvvm:FormatStringConverter x:Key="GamesCountFormatConverter" FormatString="{}{0} Games"/>
+        <dxmvvm:FormatStringConverter x:Key="ModCountFormatConverter" FormatString="{}{0} Mods"/>
+        <dxmvvm:FormatStringConverter x:Key="ToolCountFormatConverter" FormatString="{}{0} Tools"/>
+        <dxmvvm:FormatStringConverter x:Key="DemoCountFormatConverter" FormatString="{}{0} Demos"/>
+        <dxmvvm:FormatStringConverter x:Key="JunkCountFormatConverter" FormatString="{}{0} Junk"/>
+    </UserControl.Resources>
+
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Command="{Binding LoadedCommand}" EventName="Loaded" />
+    </dxmvvm:Interaction.Behaviors>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <library:LibraryDataGridView />
+        <StatusBar Grid.Row="1">
+            <StatusBarItem Content="{Binding Library.TotalCount, Converter={StaticResource AppCountFormatConverter}, Mode=OneWay}"
+                           Visibility="{Binding Library.TotalCount, Converter={StaticResource NumericToVisConverter}}" />
+
+            <Separator Visibility="{Binding Library.GamesCount, Converter={StaticResource NumericToVisConverter}}" />
+            <StatusBarItem Content="{Binding Library.GamesCount, Converter={StaticResource GamesCountFormatConverter}, Mode=OneWay}"
+                           Visibility="{Binding Library.GamesCount, Converter={StaticResource NumericToVisConverter}}" />
+
+            <Separator Visibility="{Binding Library.ModCount, Converter={StaticResource NumericToVisConverter}}" />
+            <StatusBarItem Content="{Binding Library.ModCount, Converter={StaticResource ModCountFormatConverter}, Mode=OneWay}"
+                           Visibility="{Binding Library.ModCount, Converter={StaticResource NumericToVisConverter}}" />
+
+            <Separator Visibility="{Binding Library.ToolCount, Converter={StaticResource NumericToVisConverter}}" />
+            <StatusBarItem Content="{Binding Library.ToolCount, Converter={StaticResource ToolCountFormatConverter}, Mode=OneWay}"
+                           Visibility="{Binding Library.ToolCount, Converter={StaticResource NumericToVisConverter}}" />
+
+            <Separator Visibility="{Binding Library.DemoCount, Converter={StaticResource NumericToVisConverter}}" />
+            <StatusBarItem Content="{Binding Library.DemoCount, Converter={StaticResource DemoCountFormatConverter}, Mode=OneWay}"
+                           Visibility="{Binding Library.DemoCount, Converter={StaticResource NumericToVisConverter}}" />
+
+            <Separator Visibility="{Binding Library.JunkCount, Converter={StaticResource NumericToVisConverter}}" />
+            <StatusBarItem Content="{Binding Library.JunkCount, Converter={StaticResource JunkCountFormatConverter}, Mode=OneWay}"
+                           Visibility="{Binding Library.JunkCount, Converter={StaticResource NumericToVisConverter}}" />
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <StatusBarItem Content="Loading..." Visibility="{Binding Library.IsLoading, Converter={StaticResource BoolToVisConverter}}" />
+                    <StatusBarItem Content="{Binding Library.PercentComplete, Converter={StaticResource PercentFormatConverter}, Mode=OneWay}"
+                                   Visibility="{Binding Library.IsLoading, Converter={StaticResource BoolToVisConverter}}" />
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</UserControl>

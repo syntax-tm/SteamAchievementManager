@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SAM.WPF.Core.Styles"
+                    xmlns:system="clr-namespace:System;assembly=System.Runtime">
+    
+    <FontFamily x:Key="BaseFontFamily">Segoe UI</FontFamily>
+    <system:Double x:Key="LargestFontSize">20</system:Double>
+    <system:Double x:Key="LargerFontSize">18</system:Double>
+    <system:Double x:Key="LargeFontSize">16</system:Double>
+    <system:Double x:Key="DefaultFontSize">14</system:Double>
+    <system:Double x:Key="SmallFontSize">12</system:Double>
+    <system:Double x:Key="SmallerFontSize">10</system:Double>
+    <system:Double x:Key="SmallestFontSize">8</system:Double>
+
+</ResourceDictionary>

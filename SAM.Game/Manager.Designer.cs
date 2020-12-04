@@ -35,6 +35,8 @@
             this._StoreButton = new System.Windows.Forms.ToolStripButton();
             this._ReloadButton = new System.Windows.Forms.ToolStripButton();
             this._ResetButton = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this._AchievementImageList = new System.Windows.Forms.ImageList(this.components);
             this._MainStatusStrip = new System.Windows.Forms.StatusStrip();
             this._CountryStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -53,6 +55,7 @@
             this._StatisticsTabPage = new System.Windows.Forms.TabPage();
             this._EnableStatsEditingCheckBox = new System.Windows.Forms.CheckBox();
             this._StatisticsDataGridView = new System.Windows.Forms.DataGridView();
+            this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             _ToolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this._MainToolStrip.SuspendLayout();
             this._MainStatusStrip.SuspendLayout();
@@ -74,7 +77,10 @@
             this._StoreButton,
             this._ReloadButton,
             _ToolStripSeparator1,
-            this._ResetButton});
+            this._ResetButton,
+            this.toolStripSeparator1,
+            this.toolStripLabel1,
+            this.toolStripComboBox1});
             this._MainToolStrip.Location = new System.Drawing.Point(0, 0);
             this._MainToolStrip.Name = "_MainToolStrip";
             this._MainToolStrip.Size = new System.Drawing.Size(632, 25);
@@ -112,6 +118,17 @@
             this._ResetButton.Text = "Reset";
             this._ResetButton.ToolTipText = "Reset achievements and/or statistics for active game.";
             this._ResetButton.Click += new System.EventHandler(this.OnResetAllStats);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripLabel1
+            // 
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(36, 22);
+            this.toolStripLabel1.Text = "Filter:";
             // 
             // _AchievementImageList
             // 
@@ -301,6 +318,16 @@
             this._StatisticsDataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnStatCellEndEdit);
             this._StatisticsDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.OnStatDataError);
             // 
+            // toolStripComboBox1
+            // 
+            this.toolStripComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.toolStripComboBox1.Items.AddRange(new object[] {
+            "All",
+            "Locked",
+            "Unlocked"});
+            this.toolStripComboBox1.Name = "toolStripComboBox1";
+            this.toolStripComboBox1.Size = new System.Drawing.Size(121, 25);
+            // 
             // Manager
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -354,6 +381,9 @@
         public System.Windows.Forms.CheckBox _EnableStatsEditingCheckBox;
         private System.Windows.Forms.ToolStripButton _ResetButton;
         private System.Windows.Forms.ToolStripStatusLabel _DownloadStatusLabel;
-	}
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
+    }
 }
 
