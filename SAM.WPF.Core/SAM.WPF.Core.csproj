@@ -58,10 +58,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Mvvm\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Common\SplashScreen\SplashScreenView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

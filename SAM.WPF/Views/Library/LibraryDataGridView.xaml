@@ -9,6 +9,7 @@
              xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -23,25 +24,29 @@
             </dxmvvm:Interaction.Behaviors>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
+                    <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}" Padding="2">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="Database" Margin="0" />
+                            <fa:ImageAwesome Icon="Database" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
+                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}">
+                    <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}" Padding="2">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="SteamSquare" Margin="0" />
+                            <fa:ImageAwesome Icon="SteamSquare" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
+                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}">
+                    <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}" Padding="2">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="Server" Margin="0" />
+                            <fa:ImageAwesome Icon="Server" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
+                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <Separator />
-                    <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
+                    <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}" Padding="2">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="Clipboard" Margin="0" />
+                            <fa:ImageAwesome Icon="Clipboard" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
+                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -68,18 +73,32 @@
                 <DataGridTemplateColumn Header="" Width="SizeToCells" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid Width="32" Height="32">
-                                <Image Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}"
-                                       Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisConverter}}" />
-                                <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="10" 
-                                                 Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}" />
-                            </Grid>
+                            <Border BorderThickness="0,0,1,0" BorderBrush="White" Margin="-1">
+                                <Grid Width="32" Height="32">
+                                    <Image Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}"
+                                           Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisConverter}}" />
+                                    <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="10" 
+                                                     Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}" />
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
+                            <Setter Property="BorderThickness" Value="0,0,1,1" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
+                            <Setter Property="BorderThickness" Value="1" />
+                            <Setter Property="BorderBrush" Value="White" />
+                        </Style>
+                    </DataGridTemplateColumn.CellStyle>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" SortDirection="Ascending" CanUserSort="True"
                                     Width="60"
-                                    CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
+                                    CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" CanUserSort="True" Width="*"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <DataGridTextColumn Header="Type" Binding="{Binding GameInfoType, Converter={StaticResource EnumToStringConverter}}"
@@ -94,7 +113,67 @@
                 <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" CanUserSort="True" Width="150"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <DataGridTextColumn Header="Achievements" Binding="{Binding StoreInfo.Achievements.Total}" CanUserSort="True" Width="100"
-                                    CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
+                                    CellStyle="{StaticResource CenterAlignedCellStyle}">
+                    
+                    <DataGridTextColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="BackgroundBorder"
+                                                    Grid.ColumnSpan="2"
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}" />
+
+                                            <mah:ContentControlEx x:Name="HeaderContent"
+                                                                  Grid.Column="0"
+                                                                  Margin="{TemplateBinding BorderThickness}"
+                                                                  Padding="{TemplateBinding Padding}"
+                                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                  Content="{TemplateBinding Content}"
+                                                                  ContentCharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:ControlsHelper.ContentCharacterCasing)}"
+                                                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                                                  RecognizesAccessKey="{TemplateBinding mah:ControlsHelper.RecognizesAccessKey}"
+                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+                                            <Path x:Name="SortArrow"
+                                                  Grid.Column="1"
+                                                  Width="8"
+                                                  Height="10"
+                                                  Margin="0 0 8 2"
+                                                  VerticalAlignment="Center"
+                                                  Fill="{DynamicResource MahApps.Brushes.Gray2}"
+                                                  RenderTransformOrigin="0.5,0.5"
+                                                  Stretch="Fill"
+                                                  Visibility="Collapsed" />
+
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="SortDirection" Value="Ascending">
+                                                <Setter TargetName="SortArrow" Property="Data" Value="F1 M 34,57L 42,57L 42,32.25L 52,42.25L 52,31.75L 38,17.75L 24,31.75L 24,42.25L 34,32.25L 34,57 Z " />
+                                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                            </Trigger>
+                                            <Trigger Property="SortDirection" Value="Descending">
+                                                <Setter TargetName="SortArrow" Property="Data" Value="F1 M 42,19.0002L 34,19.0002L 34,43.7502L 24,33.7502L 24,44.2502L 38,58.2502L 52,44.2502L 52,33.7502L 42,43.7502L 42,19.0002 Z " />
+                                                <Setter TargetName="SortArrow" Property="Margin" Value="0 0 8 0" />
+                                                <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridTextColumn.HeaderStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
