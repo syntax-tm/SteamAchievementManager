@@ -68,6 +68,8 @@ namespace SAM.WPF.Core
             {
                 IsLoading = true;
 
+                IsolatedStorageManager.CreateDirectory($@"apps\{Id}");
+
                 using var client = new Client();
                 client.Initialize(0);
 

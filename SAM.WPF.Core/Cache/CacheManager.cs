@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.IO.IsolatedStorage;
 using Newtonsoft.Json;
 
 namespace SAM.WPF.Core.Cache
@@ -80,7 +81,7 @@ namespace SAM.WPF.Core.Cache
                 return false;
             }
             
-            using var file = isoStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read);
+            using var file =  new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoStorage);
             using var reader = new StreamReader(file);
 
             var fileText = reader.ReadToEnd();

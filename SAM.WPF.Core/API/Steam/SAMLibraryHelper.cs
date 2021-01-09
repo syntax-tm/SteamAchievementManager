@@ -25,6 +25,8 @@ namespace SAM.WPF.Core.API.Steam
             {
                 bytes = wc.DownloadData(new Uri(SAM_GAME_LIST_URL));
             }
+            
+            var ignoredApps = GetIgnoredApps();
 
             using (var stream = new MemoryStream(bytes, false))
             {
@@ -33,6 +35,10 @@ namespace SAM.WPF.Core.API.Steam
                 var nodes = navigator.Select("/games/game");
                 while (nodes.MoveNext())
                 {
+                    var gameId = (uint) nodes.Current.ValueAsLong;
+
+                    if (ignoredApps.Contains(gameId)) continue;
+                    
                     var type = nodes.Current.GetAttribute("type", string.Empty);
                     if (string.IsNullOrEmpty(type))
                     {
@@ -40,6 +46,11 @@ namespace SAM.WPF.Core.API.Steam
                     }
                     pairs.Add(new SupportedApp((uint)nodes.Current.ValueAsLong, type));
                 }
+            }
+
+            foreach (var ignoredApp in ignoredApps)
+            {
+                pairs.RemoveAll(p => p.Id == ignoredApp);
             }
 
             _gameList = pairs;
@@ -65,5 +76,15 @@ namespace SAM.WPF.Core.API.Steam
 
             return app;
         }
+        
+        public static List<uint> GetIgnoredApps()
+        {
+            return new List<uint>
+            {
+                13260 // unreal development kit
+            };
+        }
+
+
     }
 }

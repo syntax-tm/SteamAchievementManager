@@ -30,4 +30,10 @@
     <ProjectReference Include="..\SAM.WPF.Manager\SAM.WPF.Manager.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -20,8 +21,10 @@ namespace SAM.WPF
         {
             try
             {
-                //log4net.Config.BasicConfigurator.Configure();
+                log4net.Config.XmlConfigurator.Configure(new FileInfo("log4net.config"));
 
+                log.Info($"Application startup.");
+                
                 var accentColors = ThemeManager.Current.Themes
                     .GroupBy(x => x.ColorScheme)
                     .OrderBy(a => a.Key)
@@ -43,10 +46,12 @@ namespace SAM.WPF
                 SplashScreenHelper.Init();
                 SplashScreenHelper.Show();
                 
-                //Thread.Sleep(5000);
-
                 // create the default Client instance
                 SteamClientManager.Init(0);
+
+                SteamLibraryManager.Init();
+
+                //Thread.Sleep(5000);
 
                 var iconColor = (Color) ColorConverter.ConvertFromString("#E6E6E6");
                 var iconBrush = new SolidColorBrush(iconColor);
