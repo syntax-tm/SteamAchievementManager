@@ -1,4 +1,4 @@
-﻿namespace SAM.WPF.Core.Extensions
+﻿namespace SAM.WPF.Core
 {
     public enum SteamImageType
     {

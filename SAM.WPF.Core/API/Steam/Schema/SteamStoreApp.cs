@@ -202,8 +202,8 @@ namespace SAM.WPF.Core.API.Steam
         [JsonProperty("total")]
         public int Total { get; set; }
 
-        [JsonProperty("highlighted")]
-        public IList<Highlighted> Highlighted { get; set; } = new List<Highlighted>();
+        //[JsonProperty("highlighted")]
+        //public IList<Highlighted> Highlighted { get; set; } = new List<Highlighted>();
     }
 
     public class ReleaseDate
@@ -244,102 +244,102 @@ namespace SAM.WPF.Core.API.Steam
 
         [JsonProperty("name")]
         public string Name { get; set; }
-
+        
         [JsonProperty("steam_appid")]
         public int SteamAppid { get; set; }
-
+        
         [JsonProperty("required_age")]
         public string RequiredAge { get; set; }
-
+        
         [JsonProperty("is_free")]
         public bool IsFree { get; set; }
-
+        
         [JsonProperty("controller_support")]
         public string ControllerSupport { get; set; }
-
+        
         [JsonProperty("dlc")]
         public IList<uint> Dlc { get; set; } = new List<uint>();
-
+        
         public IList<SteamStoreApp> DlcInfo { get; set; } = new List<SteamStoreApp>();
-
+        
         [JsonProperty("detailed_description")]
         public string DetailedDescription { get; set; }
-
+        
         [JsonProperty("about_the_game")]
         public string AboutTheGame { get; set; }
-
+        
         [JsonProperty("short_description")]
         public string ShortDescription { get; set; }
-
+        
         [JsonProperty("supported_languages")]
         public string SupportedLanguages { get; set; }
-
+        
         [JsonProperty("reviews")]
         public string Reviews { get; set; }
-
+        
         [JsonProperty("header_image")]
         public string HeaderImage { get; set; }
-
+        
         [JsonProperty("website")]
         public object Website { get; set; }
-
+        
         [JsonProperty("pc_requirements")]
         public object PcRequirements { get; set; }
-
+        
         [JsonProperty("mac_requirements")]
         public object MacRequirements { get; set; }
-
+        
         [JsonProperty("linux_requirements")]
         public object LinuxRequirements { get; set; }
-
+        
         [JsonProperty("legal_notice")]
         public string LegalNotice { get; set; }
-
+        
         [JsonProperty("developers")]
         public IList<string> Developers { get; set; }
-
+        
         [JsonProperty("publishers")]
         public IList<string> Publishers { get; set; }
-
+        
         [JsonProperty("price_overview")]
         public PriceOverview PriceOverview { get; set; }
-
+        
         [JsonProperty("packages")]
         public IList<int> Packages { get; set; }
-
+        
         [JsonProperty("package_groups")]
         public IList<PackageGroup> PackageGroups { get; set; }
-
+        
         [JsonProperty("platforms")]
         public Platforms Platforms { get; set; }
-
+        
         [JsonProperty("categories")]
         public IList<Category> Categories { get; set; }
-
+        
         [JsonProperty("genres")]
         public IList<Genre> Genres { get; set; }
-
+        
         [JsonProperty("screenshots")]
         public IList<Screenshot> Screenshots { get; set; }
-
+        
         [JsonProperty("movies")]
         public IList<Movy> Movies { get; set; }
-
+        
         [JsonProperty("recommendations")]
         public Recommendations Recommendations { get; set; }
-
+        
         [JsonProperty("achievements")]
         public Achievements Achievements { get; set; }
-
+        
         [JsonProperty("release_date")]
         public ReleaseDate ReleaseDate { get; set; }
-
+        
         [JsonProperty("support_info")]
         public SupportInfo SupportInfo { get; set; }
-
+        
         [JsonProperty("background")]
         public string Background { get; set; }
-
+        
         [JsonProperty("content_descriptors")]
         public ContentDescriptors ContentDescriptors { get; set; }
     }

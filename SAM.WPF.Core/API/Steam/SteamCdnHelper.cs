@@ -64,13 +64,16 @@ namespace SAM.WPF.Core.API.Steam
 
                 var img = DownloadImage(url);
 
-                CacheManager.CacheImage(cacheKey, img);
+                if (img != null)
+                {
+                    CacheManager.CacheImage(cacheKey, img);
+                }
 
                 return img;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                log.Error($"An error occurred attempting to download the {type} image for app {id}.", e);
 
                 throw;
             }
@@ -81,14 +84,18 @@ namespace SAM.WPF.Core.API.Steam
             try
             {
                 using var wc = new WebClient();
-                var data = wc.DownloadData(new Uri(imageUrl));
-                using var stream = new MemoryStream(data, false);
+                var data = wc.OpenRead(imageUrl);
+                //using var stream = new MemoryStream(data, false);
 
-                return Image.FromStream(stream);
+                return Image.FromStream(data);
             }
             catch (WebException we)
             {
                 if (we.Response is HttpWebResponse {StatusCode: HttpStatusCode.NotFound})
+                {
+                    return null;
+                }
+                if (we.Response is HttpWebResponse {StatusCode: HttpStatusCode.TooManyRequests})
                 {
                     return null;
                 }

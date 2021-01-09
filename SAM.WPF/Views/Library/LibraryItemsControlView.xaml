@@ -12,30 +12,53 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
-        <ItemsControl ItemsSource="{Binding Games, Mode=OneWay}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" Margin="5" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:SteamApp}">
-                    <Border BorderThickness="2" BorderBrush="#111111" Margin="5">
-                        <Grid>
-                            <Image Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="460" Height="215" />
-                            <StackPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" HorizontalAlignment="Right" />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock FontWeight="Light" HorizontalAlignment="Right">
-                                        <Run Text="{Binding Id, Mode=OneWay}" />
-                                        <Run Text="{Binding GameInfoType, Mode=OneWay, StringFormat='{} ({0})', Converter={StaticResource EnumToStringConverter}}"  />
-                                    </TextBlock>
-                                </StackPanel>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Library.Items, Mode=OneWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:SteamApp}">
+                        <Border BorderThickness="2" BorderBrush="#282828" Margin="2">
+                            <Grid>
+                                <Image Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="368" Height="172" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </Grid>
+
+    <!--<Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Library.Items, Mode=OneWay}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" Margin="5" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:SteamApp}">
+                        <Border BorderThickness="2" BorderBrush="#111111" Margin="5">
+                            <Grid>
+                                <Image Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="368" Height="172" />
+                                --><!--<StackPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" HorizontalAlignment="Right" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock FontWeight="Light" HorizontalAlignment="Right">
+                                            <Run Text="{Binding Id, Mode=OneWay}" />
+                                            <Run Text="{Binding GameInfoType, Mode=OneWay, StringFormat='{} ({0})', Converter={StaticResource EnumToStringConverter}}"  />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>--><!--
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>-->
 </UserControl>

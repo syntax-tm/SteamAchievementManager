@@ -6,6 +6,7 @@ using System.Windows.Media;
 using ControlzEx.Theming;
 using FontAwesome.WPF;
 using log4net;
+using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.SplashScreen;
 using SAM.WPF.Core.Themes;
 
@@ -19,6 +20,8 @@ namespace SAM.WPF
         {
             try
             {
+                //log4net.Config.BasicConfigurator.Configure();
+
                 var accentColors = ThemeManager.Current.Themes
                     .GroupBy(x => x.ColorScheme)
                     .OrderBy(a => a.Key)
@@ -42,8 +45,14 @@ namespace SAM.WPF
                 
                 //Thread.Sleep(5000);
 
+                // create the default Client instance
+                SteamClientManager.Init(0);
+
+                var iconColor = (Color) ColorConverter.ConvertFromString("#E6E6E6");
+                var iconBrush = new SolidColorBrush(iconColor);
+
                 MainWindow = new MainWindow();
-                MainWindow.Icon = ImageAwesome.CreateImageSource(FontAwesomeIcon.Steam, Brushes.White);
+                MainWindow.Icon = ImageAwesome.CreateImageSource(FontAwesomeIcon.Steam, iconBrush);
                 MainWindow.Show();
 
                 SplashScreenHelper.Close();

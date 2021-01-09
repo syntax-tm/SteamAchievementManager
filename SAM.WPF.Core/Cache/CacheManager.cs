@@ -14,7 +14,7 @@ namespace SAM.WPF.Core.Cache
             
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
-            var targetObjectJson = JsonConvert.SerializeObject(target);
+            var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
 
             IsolatedStorageManager.SaveText(filePath, targetObjectJson, overwrite);
         }
@@ -72,13 +72,18 @@ namespace SAM.WPF.Core.Cache
 
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
+            using var isoStorage = IsolatedStorageManager.GetStore();
+
             if (!IsolatedStorageManager.FileExists(filePath))
             {
                 cachedObject = default;
                 return false;
             }
+            
+            using var file = isoStorage.OpenFile(filePath, FileMode.Open, FileAccess.Read);
+            using var reader = new StreamReader(file);
 
-            var fileText = IsolatedStorageManager.GetTextFile(filePath);
+            var fileText = reader.ReadToEnd();
 
             cachedObject = JsonConvert.DeserializeObject<T>(fileText);
 
@@ -91,15 +96,22 @@ namespace SAM.WPF.Core.Cache
             var filePath = key?.GetFullPath();
 
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-            
-            if (!IsolatedStorageManager.FileExists(filePath))
+
+            using var store = IsolatedStorageManager.GetStore();
+
+            if (!store.FileExists(filePath))
             {
                 fileText = null;
                 return false;
             }
 
-            fileText = IsolatedStorageManager.GetTextFile(filePath);
+            //fileText = IsolatedStorageManager.GetTextFile(filePath);
 
+            using var file = store.OpenFile(filePath, FileMode.Open, FileAccess.Read);
+            using var reader = new StreamReader(file);
+
+            fileText = reader.ReadToEnd();
+            
             return true;
         }
 
