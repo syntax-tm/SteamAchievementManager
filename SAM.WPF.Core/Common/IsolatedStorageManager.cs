@@ -124,13 +124,11 @@ namespace SAM.WPF.Core
         public static void CreateDirectory(string path)
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
-            
-            using (var isoStorage = GetStore())
-            {
-                if (isoStorage.DirectoryExists(path)) return;
 
-                isoStorage.CreateDirectory(path);
-            }
+            using var isoStorage = GetStore();
+            if (isoStorage.DirectoryExists(path)) return;
+
+            isoStorage.CreateDirectory(path);
         }
         
         public static bool FileExists(string fileName)
@@ -142,30 +140,35 @@ namespace SAM.WPF.Core
             return isoStorage.FileExists(fileName);
         }
 
-        public static IsolatedStorageFile GetStore()
+        private static readonly object _initLock = new object();
+
+        private static bool _initialized;
+
+        public static void Init()
         {
-            var store = IsolatedStorageFile.GetMachineStoreForAssembly();
+            if (_initialized) return;
 
-            //var path = isoStorage.GetType().GetField("m_RootDir", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(isoStorage).ToString();
-
-            if (!_shownPathMessage)
+            lock (_initLock)
             {
+                using var store = IsolatedStorageFile.GetMachineStoreForAssembly();
+
                 var fi = store.GetType().GetField("_rootDirectory", BindingFlags.NonPublic | BindingFlags.Instance);
                 var path = (string) fi.GetValue(store);
 
                 log.Debug($"IsolatedStorageFile Path: '{path}'");
-
-                _shownPathMessage = true;
-            }
-
-            if (!_createdAppsDirectory)
-            {
+                    
                 if (!store.DirectoryExists("apps")) store.CreateDirectory("apps");
 
-                _createdAppsDirectory = true;
+                _initialized = true;
             }
+        }
 
-            return store;
+        public static IsolatedStorageFile GetStore()
+        {
+            //var store = IsolatedStorageFile.GetMachineStoreForAssembly();
+            //var path = isoStorage.GetType().GetField("m_RootDir", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(isoStorage).ToString();
+            
+            return IsolatedStorageFile.GetMachineStoreForAssembly();
         }
 
     }

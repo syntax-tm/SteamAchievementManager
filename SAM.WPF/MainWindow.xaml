@@ -8,6 +8,7 @@
         xmlns:views="clr-namespace:SAM.WPF.Views"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:services="clr-namespace:SAM.WPF.Core.Services;assembly=SAM.WPF.Core"
         mc:Ignorable="d"
         DataContext="{dxmvvm:ViewModelSource Type=vm:MainWindowViewModel}"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
@@ -15,8 +16,8 @@
         WindowState="{Binding WindowState}" Title="{Binding Title}"
         Style="{StaticResource ChromeMetroWindowStyle}"
         WindowTitleBrush="#181818" NonActiveWindowTitleBrush="#181818"
-        
-        TitleBarHeight="38">
+        TitleBarHeight="38"
+        services:WindowSettings.Save="True">
 
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands Margin="10,0,0,0">

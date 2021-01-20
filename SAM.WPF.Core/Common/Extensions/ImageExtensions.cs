@@ -22,22 +22,6 @@ namespace SAM.WPF.Core.Extensions
 
         public static ImageSource ToImageSource([NotNull] this Image value)
         {
-            //var image = value;
-            //var bitmap = new BitmapImage();
-
-            //using var ms = new MemoryStream();
-
-            //image.Save(ms, value.RawFormat);
-            //ms.Seek(0, SeekOrigin.Begin);
-
-            //bitmap.BeginInit();
-            //bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            //bitmap.UriSource = null;
-            //bitmap.StreamSource = ms;
-            //bitmap.EndInit();
-
-            //return bitmap;
-
             var bitmap = new Bitmap(value);
             var bmpPtr = bitmap.GetHbitmap();
             var bmpSource = Imaging.CreateBitmapSourceFromHBitmap(bmpPtr, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());

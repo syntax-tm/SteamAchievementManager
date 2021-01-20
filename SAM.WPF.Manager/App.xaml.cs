@@ -38,19 +38,20 @@ namespace SAM.WPF.Manager
                     var message = $"Failed to parse the {nameof(appId)} from command line argument {commandLineArgs[1]}.";
                     throw new ArgumentException(message, nameof(StartupEventArgs));
                 }
+                
+                IsolatedStorageManager.Init();
 
-                ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
-                ThemeManager.Current.SyncTheme();
-                //ThemeManager.Current.ChangeThemeColorScheme(this, "Red");
-
-                SplashScreenHelper.Init();
+                ThemeHelper.SetTheme();
+                
                 SplashScreenHelper.Show("Loading game info...");
 
                 SteamClientManager.Init(appId);
 
                 var supportedApp = SAMLibraryHelper.GetApp(appId);
-                var appInfo = SteamApp.Create(supportedApp);
+                var appInfo = new SteamApp(supportedApp);
                 
+                appInfo.LoadClientInfo();
+
                 SplashScreenHelper.SetStatus(appInfo.Name);
 
                 var gameVm = SteamGameViewModel.Create(appInfo);

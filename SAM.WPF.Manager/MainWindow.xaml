@@ -3,10 +3,17 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:fa="http://schemas.fontawesome.io/icons/"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:local="clr-namespace:SAM.WPF.Manager"
+                 xmlns:services="clr-namespace:SAM.WPF.Core.Services;assembly=SAM.WPF.Core"
                  mc:Ignorable="d"
-                 Title="Steam Achievement Manager" Height="700" Width="900">
+                 Width="{Binding Width}" Height="{Binding Height}"
+                 WindowState="{Binding WindowState}" Title="{Binding Title}"
+                 Style="{StaticResource ChromeMetroWindowStyle}"
+                 WindowTitleBrush="#181818" NonActiveWindowTitleBrush="#181818"
+                 TitleBarHeight="38"
+                 services:WindowSettings.Save="True">
     <Grid>
 
     </Grid>

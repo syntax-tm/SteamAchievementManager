@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using log4net;
 using SAM.API;
 
@@ -31,23 +30,25 @@ namespace SAM.WPF.Core.API.Steam
 
         public static void Init(uint appId)
         {
+            if (IsInitialized)
+            {
+                throw new InvalidOperationException($"Client is already initialized with app id '{AppId}'.");
+            }
+
             try
             {
-                if (IsInitialized)
-                {
-                    throw new InvalidOperationException($"Client is already initialized with app id '{AppId}'.");
-                }
-
                 Default.Initialize(appId);
 
                 AppId = appId;
+
+                IsInitialized = true;
             }
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to initialize the Steam client with app ID '{appId}'. {e.Message}";
                 log.Error(message, e);
 
-                throw new ConfigurationErrorsException(message, e);
+                throw new SAMInitializationException(message, e);
             }
         }
 

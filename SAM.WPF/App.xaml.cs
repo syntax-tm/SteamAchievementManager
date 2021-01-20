@@ -1,15 +1,13 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using ControlzEx.Theming;
+using System.Windows.Threading;
 using FontAwesome.WPF;
 using log4net;
+using SAM.WPF.Core;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.SplashScreen;
-using SAM.WPF.Core.Themes;
 
 namespace SAM.WPF
 {
@@ -21,30 +19,23 @@ namespace SAM.WPF
         {
             try
             {
-                log4net.Config.XmlConfigurator.Configure(new FileInfo("log4net.config"));
-
-                log.Info($"Application startup.");
+                log.Info("Application startup.");
                 
-                var accentColors = ThemeManager.Current.Themes
-                    .GroupBy(x => x.ColorScheme)
-                    .OrderBy(a => a.Key)
-                    .Select(a => new AccentColorMenuData { Name = a.Key, ColorBrush = a.First().ShowcaseBrush })
-                    .ToList();
-
-                var appThemes = ThemeManager.Current.Themes
-                    .GroupBy(x => x.BaseColorScheme)
-                    .Select(x => x.First())
-                    .Select(a => new AppThemeMenuData { Name = a.BaseColorScheme, BorderColorBrush = a.Resources["MahApps.Brushes.ThemeForeground"] as Brush, ColorBrush = a.Resources["MahApps.Brushes.ThemeBackground"] as Brush })
-                    .ToList();
-
-                ThemeManager.Current.AddTheme(RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", Colors.White));
-
-                ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
-                ThemeManager.Current.SyncTheme();
-                //ThemeManager.Current.ChangeThemeColorScheme(this, "Slate");
-                
-                SplashScreenHelper.Init();
                 SplashScreenHelper.Show();
+                
+                //  handle any WPF dispatcher exceptions
+                Current.DispatcherUnhandledException += OnDispatcherException;
+
+                //  handle any AppDomain exceptions
+                var current = AppDomain.CurrentDomain;
+                current.UnhandledException += OnAppDomainException;
+                
+                //  handle any TaskScheduler exceptions
+                TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+
+                IsolatedStorageManager.Init();
+
+                ThemeHelper.SetTheme();
                 
                 // create the default Client instance
                 SteamClientManager.Init(0);
@@ -64,9 +55,92 @@ namespace SAM.WPF
             }
             catch (Exception e)
             {
-                log.Error($"An error occurred on application startup. {e.Message}", e);
+                var message = $"An error occurred on application startup. {e.Message}";
 
-                throw;
+                log.Error(message, e);
+
+                MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void App_OnExit(object sender, ExitEventArgs args)
+        {
+            try
+            {
+                log.Info(@"Application exiting. Ending any running manager processes...");
+
+                SAMHelper.CloseAllManagers();
+            }
+            catch (Exception e)
+            {
+                log.Error($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
+            }
+        }
+
+        private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
+        {
+            try
+            {
+                var exception = args.Exception;
+                if (exception == null)
+                {
+                    throw new ArgumentNullException();
+                }
+
+                var message = $"An unobserved task exception occurred. {exception.Message}";
+
+                log.Error(message, args.Exception);
+
+                MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
+                    
+                args.SetObserved();
+            }
+            catch (Exception e)
+            {
+                log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
+
+                Environment.Exit(-1);
+            }
+        }
+
+        private void OnAppDomainException(object sender, UnhandledExceptionEventArgs args)
+        {
+            try
+            {
+                var exception = (Exception) args.ExceptionObject;
+                var message = $"Dispatcher unhandled exception occurred. {exception.Message}";
+
+                log.Fatal(message, exception);
+
+                MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception e)
+            {
+                log.Fatal($"An error occurred in {nameof(OnAppDomainException)}. {e.Message}", e);
+            }
+            finally
+            {
+                Environment.Exit(-1);
+            }
+        }
+
+        private void OnDispatcherException(object sender, DispatcherUnhandledExceptionEventArgs args)
+        {
+            try
+            {
+                var message = $"Dispatcher unhandled exception occurred. {args.Exception.Message}";
+
+                log.Error(message, args.Exception);
+
+                MessageBox.Show(message, $"Unhandled ${args.Exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                args.Handled = true;
+            }
+            catch (Exception e)
+            {
+                log.Fatal($"An error occurred in {nameof(OnDispatcherException)}. {e.Message}", e);
+
+                Environment.Exit(-1);
             }
         }
     }

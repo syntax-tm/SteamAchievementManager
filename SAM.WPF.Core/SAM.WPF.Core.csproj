@@ -66,4 +66,8 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Behaviors\" />
+  </ItemGroup>
+
 </Project>

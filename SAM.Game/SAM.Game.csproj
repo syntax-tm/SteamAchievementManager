@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net40</TargetFramework>
     <AssemblyTitle>Steam Achievement Manager</AssemblyTitle>
     <Company>Gibbed</Company>
     <Authors>Gibbed</Authors>
@@ -14,20 +14,13 @@
     <RepositoryType>Git</RepositoryType>
     <ApplicationIcon>Blank.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x86;AnyCPU</Platforms>
+    <Platforms>x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>..\bin\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\bin\</OutputPath>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>..\upload\</OutputPath>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\upload\</OutputPath>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>

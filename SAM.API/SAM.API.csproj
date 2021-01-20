@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net40</TargetFramework>
     <Company>Gibbed</Company>
     <Authors>Gibbed</Authors>
     <Description></Description>
@@ -11,18 +11,12 @@
     <RepositoryUrl>https://github.com/gibbed/SteamAchievementManager/</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <ApplicationIcon>Pink.ico</ApplicationIcon>
-    <Platforms>x86;AnyCPU</Platforms>
+    <Platforms>x86</Platforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 </Project>
