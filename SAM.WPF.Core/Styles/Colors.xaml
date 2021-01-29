@@ -6,7 +6,11 @@
     
     <SolidColorBrush x:Key="LightBlueBrush"  Color="LightBlue" />
 
+    <SolidColorBrush x:Key="GroupHeaderBrush" po:Freeze="True" Color="#E9281B" />
     <SolidColorBrush x:Key="FocusedControlBorderBrush" po:Freeze="True" Color="#0E84FF" />
+    <SolidColorBrush x:Key="FocusedControlBrush" po:Freeze="True" Color="#0E84FF" />
+    <SolidColorBrush x:Key="MouseOverControlBrush" po:Freeze="True" Color="#5098E4" />
+    <SolidColorBrush x:Key="EditedBrush" po:Freeze="True" Color="#B1E4D863" />
     <SolidColorBrush x:Key="WarningBrush" po:Freeze="True" Color="#FFF277" />
     
     <SolidColorBrush x:Key="ControlBorderBrush" po:Freeze="True" Color="#333333" />

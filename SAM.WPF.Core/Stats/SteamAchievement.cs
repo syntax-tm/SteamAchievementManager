@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
+using System.Windows.Input;
 using DevExpress.Mvvm;
 using SAM.Game.Stats;
 using SAM.WPF.Core.API.Steam;
-using SAM.WPF.Core.Extensions;
 
 namespace SAM.WPF.Core.Stats
 {
@@ -40,15 +40,24 @@ namespace SAM.WPF.Core.Stats
             get => GetProperty(() => IsModified);
             set => SetProperty(() => IsModified, value);
         }
+        public bool IsSelected
+        {
+            get => GetProperty(() => IsSelected);
+            set => SetProperty(() => IsSelected, value);
+        }
         public bool IsAchieved
         {
             get => GetProperty(() => IsAchieved);
             set => SetProperty(() => IsAchieved, value, OnIsAchievedChanged);
         }
-
-
+        
         public AchievementInfo AchievementInfo { get;}
         public AchievementDefinition AchievementDefinition { get; }
+
+        public ICommand UnlockCommand => new DelegateCommand(Unlock);
+        public ICommand LockCommand => new DelegateCommand(Lock);
+        public ICommand ResetCommand => new DelegateCommand(Reset);
+        public ICommand InvertCommand => new DelegateCommand(Invert);
 
         public SteamAchievement()
         {

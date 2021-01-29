@@ -7,9 +7,35 @@
              xmlns:views="clr-namespace:SAM.WPF.Manager.Views"
              xmlns:vm="clr-namespace:SAM.WPF.Manager.ViewModels"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:core="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignData Type={x:Type vm:SteamGameViewModel}}">
+             d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MahApps.Styles.Button.ToolBar}">
+            <Setter Property="mah:ControlsHelper.ContentCharacterCasing" Value="Normal" />
+            <Setter Property="mah:ControlsHelper.CornerRadius" Value="1" />
+            <Setter Property="Padding" Value="1" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Margin" Value="5,2" />
+        </Style>
+
+        <Style TargetType="{x:Type fa:ImageAwesome}">
+            <Setter Property="Height" Value="14" />
+            <Setter Property="Width" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Margin" Value="1,1,3,1" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+    </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:CurrentWindowService />
@@ -17,15 +43,45 @@
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <StatusBar DockPanel.Dock="Bottom">
-
+            <StatusBar DockPanel.Dock="Bottom" BorderBrush="#878787" Background="#202020"
+                       BorderThickness="0,1,0,0" Margin="-1,0,-1,-1"
+                       Padding="5,2">
+                <StatusBarItem>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Filter:" />
+                        <ComboBox SelectedItem="{Binding SelectedAchievementFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Width="200" HorizontalAlignment="Left" Margin="4">
+                            <dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type core:AchievementFilter}"
+                                                                SplitNames="True" SortMode="Default" UseNumericEnumValue="True">
+                                </dxmvvm:EnumItemsSourceBehavior>
+                            </dxmvvm:Interaction.Behaviors>
+                        </ComboBox>
+                    </StackPanel>
+                </StatusBarItem>
+                <StatusBarItem HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Command="{Binding ResetCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="Recycle" />
+                                <TextBlock Text="Reset" />
+                            </StackPanel>
+                        </Button>
+                        <Button Command="{Binding SaveCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="Save" />
+                                <TextBlock Text="Save" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StatusBarItem>
             </StatusBar>
             <mah:MetroTabControl Style="{StaticResource MahApps.Styles.TabControl.AnimatedSingleRow}">
                 <TabItem Header="Achievements">
                     <views:AchievementsView />
                 </TabItem>
                 <TabItem Header="Stats">
-
+                    <views:StatsView />
                 </TabItem>
             </mah:MetroTabControl>
         </DockPanel>

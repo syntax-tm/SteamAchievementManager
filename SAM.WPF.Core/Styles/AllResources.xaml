@@ -2,6 +2,7 @@
     
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/CheckBoxStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Converters.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/ContainerStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/DataGridStyles.xaml" />

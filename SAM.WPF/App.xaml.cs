@@ -8,6 +8,7 @@ using log4net;
 using SAM.WPF.Core;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.SplashScreen;
+using SAM.WPF.Core.Themes;
 
 namespace SAM.WPF
 {
@@ -99,7 +100,7 @@ namespace SAM.WPF
             {
                 log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
 
-                Environment.Exit(-1);
+                Environment.Exit((int) SAMExitCode.TaskException);
             }
         }
 
@@ -120,7 +121,7 @@ namespace SAM.WPF
             }
             finally
             {
-                Environment.Exit(-1);
+                Environment.Exit((int) SAMExitCode.AppDomainException);
             }
         }
 
@@ -140,7 +141,7 @@ namespace SAM.WPF
             {
                 log.Fatal($"An error occurred in {nameof(OnDispatcherException)}. {e.Message}", e);
 
-                Environment.Exit(-1);
+                Environment.Exit((int) SAMExitCode.DispatcherException);
             }
         }
     }

@@ -5,7 +5,13 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/TextStyles.xaml" />
+
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.tabcontrol.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MahApps.Styles.TabItem}">
+
+    </Style>
 
     <Style TargetType="{x:Type mah:MetroTabControl}">
         <Setter Property="Margin" Value="5" />
