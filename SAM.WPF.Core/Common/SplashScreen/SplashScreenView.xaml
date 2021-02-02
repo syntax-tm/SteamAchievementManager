@@ -81,8 +81,10 @@
                     <StackPanel Orientation="Vertical" Margin="0,0,8,0" VerticalAlignment="Bottom">
                         <TextBlock Text="Steam Achievement Manager" FontSize="22" Margin="2" HorizontalAlignment="Right"
                                    VerticalAlignment="Bottom" Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
-                        <TextBlock Text="{Binding Status, Mode=OneWay}" FontSize="20" Margin="2" HorizontalAlignment="Right"
-                                   TextWrapping="Wrap"
+                        <TextBlock Text="{Binding Status, Mode=OneWay}"
+                                   Visibility="{Binding ShowStatus, Mode=OneWay, Converter={dxmvvm:BooleanToVisibilityConverter}}"
+                                   FontSize="20" Margin="2" HorizontalAlignment="Right"
+                                   TextWrapping="Wrap" Opacity="0.8"
                                    Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
                     </StackPanel>
                     <mah:MetroProgressBar IsIndeterminate="True" Margin="10" HorizontalAlignment="Stretch" Foreground="White" />

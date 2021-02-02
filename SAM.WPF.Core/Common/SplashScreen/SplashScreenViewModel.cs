@@ -6,9 +6,9 @@ namespace SAM.WPF.Core.SplashScreen
 {
     public class SplashScreenViewModel
     {
-
         public virtual ICurrentWindowService CurrentWindow { get; }
 
+        public virtual bool ShowStatus { get; set; }
         public virtual string Status { get; set; }
         public virtual bool ShowProgress { get; set; }
         public virtual decimal PercentComplete { get; set; }
@@ -36,6 +36,11 @@ namespace SAM.WPF.Core.SplashScreen
         public void Exit()
         {
             Environment.Exit(0);
+        }
+
+        protected void OnStatusChanged()
+        {
+            ShowStatus = !string.IsNullOrWhiteSpace(Status);
         }
     }
 }
