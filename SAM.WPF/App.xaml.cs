@@ -24,6 +24,11 @@ namespace SAM.WPF
                 
                 SplashScreenHelper.Show();
                 
+                if (!SAMHelper.IsSteamRunning())
+                {
+                    throw new SAMException($"Steam process is not currently running.");
+                }
+
                 //  handle any WPF dispatcher exceptions
                 Current.DispatcherUnhandledException += OnDispatcherException;
 
@@ -45,7 +50,7 @@ namespace SAM.WPF
 
                 //Thread.Sleep(5000);
 
-                var iconColor = (Color) ColorConverter.ConvertFromString("#E6E6E6");
+                var iconColor = (Color) ColorConverter.ConvertFromString("#9EE6E6E6");
                 var iconBrush = new SolidColorBrush(iconColor);
 
                 MainWindow = new MainWindow();

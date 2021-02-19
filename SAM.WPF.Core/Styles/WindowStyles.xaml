@@ -341,7 +341,7 @@
         <Setter Property="UseNoneWindowStyle" Value="False" />
         <Setter Property="AllowsTransparency" Value="True" />
         <Setter Property="ShowTitleBar" Value="True" />
-        <Setter Property="ShowSystemMenu" Value="False" />
+        <Setter Property="ShowSystemMenu" Value="True" />
         <Setter Property="ShowSystemMenuOnRightClick" Value="True" />
         <Setter Property="WindowStyle" Value="None" />
         <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
@@ -349,7 +349,6 @@
         <Setter Property="TitleCharacterCasing" Value="Normal" />
         <Setter Property="GlowBrush" Value="#66FFFFFF" />
         <Setter Property="NonActiveGlowBrush" Value="#3BFFFFFF" />
-
         <Setter Property="Template" Value="{StaticResource ChromeMetroWindowTemplate}" />
     </Style>
 

@@ -1,6 +1,6 @@
 ﻿using System;
 using SAM.API;
-using SAM.Game.Stats;
+using SAM.API.Game.Stats;
 
 namespace SAM.WPF.Core.Stats
 {

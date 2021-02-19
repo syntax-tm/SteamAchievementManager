@@ -7,16 +7,62 @@
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:local="clr-namespace:SAM.WPF.Views.Library"
+             xmlns:local="clr-namespace:SAM.WPF.Views.Library" xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="GameCollection" Source="{Binding Library.Items, Mode=OneWay}"
+                              IsLiveSortingRequested="True" IsLiveGroupingRequested="True">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="Group" />
+            </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Name" Direction="Ascending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+
+
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" PanningRatio="2.5" PanningMode="VerticalOnly"
-                      CanContentScroll="False" SnapsToDevicePixels="True">
-            <ItemsControl ItemsSource="{Binding Library.Items, Mode=OneWay}" Margin="3">
+                      CanContentScroll="False" SnapsToDevicePixels="True" IsTabStop="False"
+                      ScrollChanged="ScrollViewer_ScrollChanged">
+            <ItemsControl ItemsSource="{Binding Source={StaticResource GameCollection}}" Margin="3"                          >
+                <ItemsControl.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander mah:HeaderedControlHelper.HeaderFontSize="25"
+                                                      HeaderStringFormat="{} {0}"
+                                                      IsExpanded="True"
+                                                      Padding="5"
+                                                      mah:HeaderedControlHelper.HeaderBackground="{DynamicResource MahApps.Brushes.Highlight}"
+                                                      mah:HeaderedControlHelper.HeaderMargin="5"
+                                                      FontSize="30" FontStretch="Normal" BorderThickness="6">
+                                                <Expander.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   Margin="3,0,0,0" />
+                                                        <TextBlock Text="{Binding ItemCount, StringFormat='{}({0})'}"
+                                                                   Margin="8,0"
+                                                                   Opacity="0.5" FontWeight="Normal" />
+                                                    </StackPanel>
+                                                </Expander.Header>
+                                                <ItemsPresenter />
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ItemsControl.GroupStyle>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />

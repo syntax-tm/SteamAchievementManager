@@ -26,8 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SAM.API\SAM.API.csproj" />
-    <ProjectReference Include="..\SAM.Game\SAM.Game.csproj" />
-    <ProjectReference Include="..\SAM.Picker\SAM.Picker.csproj" />
     <ProjectReference Include="..\SAM.WPF.Core\SAM.WPF.Core.csproj" />
     <ProjectReference Include="..\SAM.WPF.Manager\SAM.WPF.Manager.csproj" />
   </ItemGroup>
