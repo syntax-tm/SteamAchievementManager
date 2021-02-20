@@ -2,7 +2,7 @@
 using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.WPF.Core;
-using SAM.WPF.Core.API.Steam;
+using SAM.WPF.Core.API;
 
 namespace SAM.WPF.ViewModels
 {

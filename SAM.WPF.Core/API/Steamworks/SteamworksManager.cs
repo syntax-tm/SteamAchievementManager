@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SAM.WPF.Core.Cache;
 
-namespace SAM.WPF.Core.API.Steam
+namespace SAM.WPF.Core.API
 {
     public static class SteamworksManager
     {

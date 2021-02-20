@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Input;
 using DevExpress.Mvvm;
 using SAM.API.Game.Stats;
-using SAM.WPF.Core.API.Steam;
+using SAM.WPF.Core.API;
 
 namespace SAM.WPF.Core.Stats
 {

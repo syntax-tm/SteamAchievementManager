@@ -4,9 +4,8 @@ using System.IO;
 using System.Net;
 using log4net;
 using SAM.WPF.Core.Cache;
-using SAM.WPF.Core.Extensions;
 
-namespace SAM.WPF.Core.API.Steam
+namespace SAM.WPF.Core.API
 {
     public static class SteamCdnHelper
     {

@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Text;
 using log4net;
 
-namespace SAM.WPF.Core.API.Steam
+namespace SAM.WPF.Core.API
 {
     public class SteamLibraryManager
     {
 
-        
-        private static readonly ILog log = LogManager.GetLogger(nameof(SteamClientManager));
+        private static readonly ILog log = LogManager.GetLogger(nameof(SteamLibraryManager));
 
         private static readonly object syncLock = new object();
         private static SteamLibraryManager _instance;

@@ -9,6 +9,7 @@ using System.Windows.Input;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.API;
+using SAM.WPF.Core.API;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Extensions;
 
@@ -111,9 +112,6 @@ namespace SAM.WPF.Core
                 IsLoading = true;
 
                 IsolatedStorageManager.CreateDirectory($@"apps\{Id}");
-
-                //using var client = new Client();
-                //client.Initialize(0);
 
                 LoadClientInfo();
                 LoadStoreInfo();
