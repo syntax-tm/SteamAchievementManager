@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.API", "SAM.WPF.API\SAM.API.csproj", "{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.API", "SAM.API\SAM.API.csproj", "{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
