@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.API", "SAM.API\SAM.API.csproj", "{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.WPF", "SAM.WPF\SAM.WPF.csproj", "{98FC3FDC-21E8-4084-ABD8-CE4BEE77BC14}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.WPF.Core", "SAM.WPF.Core\SAM.WPF.Core.csproj", "{6950DB4F-A42D-4500-AAE3-5E5827BED0B4}"
@@ -20,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.API", "SAM.WPF.API\SAM.API.csproj", "{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,17 +30,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Debug|Any CPU.Build.0 = Debug|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Debug|UnitTests.ActiveCfg = Debug|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Debug|UnitTests.Build.0 = Debug|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Debug|x86.ActiveCfg = Debug|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Debug|x86.Build.0 = Debug|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Release|Any CPU.ActiveCfg = Release|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Release|Any CPU.Build.0 = Release|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Release|UnitTests.ActiveCfg = Release|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Release|x86.ActiveCfg = Release|x86
-		{DF9102D5-048A-4D21-8CE3-3544CBDF0ED1}.Release|x86.Build.0 = Release|x86
 		{98FC3FDC-21E8-4084-ABD8-CE4BEE77BC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{98FC3FDC-21E8-4084-ABD8-CE4BEE77BC14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98FC3FDC-21E8-4084-ABD8-CE4BEE77BC14}.Debug|UnitTests.ActiveCfg = Debug|x86
@@ -81,6 +70,18 @@ Global
 		{E9021D4E-7FF7-4975-A4DF-1AB2CC55A706}.Release|UnitTests.Build.0 = Release|Any CPU
 		{E9021D4E-7FF7-4975-A4DF-1AB2CC55A706}.Release|x86.ActiveCfg = Release|x86
 		{E9021D4E-7FF7-4975-A4DF-1AB2CC55A706}.Release|x86.Build.0 = Release|x86
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Debug|UnitTests.ActiveCfg = Debug|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Debug|UnitTests.Build.0 = Debug|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Debug|x86.ActiveCfg = Debug|x86
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Debug|x86.Build.0 = Debug|x86
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|UnitTests.ActiveCfg = Release|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|UnitTests.Build.0 = Release|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|x86.ActiveCfg = Release|Any CPU
+		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

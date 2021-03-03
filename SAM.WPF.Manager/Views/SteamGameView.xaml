@@ -53,7 +53,7 @@
                                   Width="200" HorizontalAlignment="Left" Margin="4">
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EnumItemsSourceBehavior EnumType="{x:Type core:AchievementFilter}"
-                                                                SplitNames="True" SortMode="Default" UseNumericEnumValue="True">
+                                                                SplitNames="True" SortMode="Default">
                                 </dxmvvm:EnumItemsSourceBehavior>
                             </dxmvvm:Interaction.Behaviors>
                         </ComboBox>
@@ -61,6 +61,13 @@
                 </StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
+                        <mah:ToggleSwitch IsOn="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          ToolTip="Show hidden achievements.">
+                            <StackPanel Orientation="Horizontal">
+                                <fa:ImageAwesome Icon="UserSecret" />
+                            </StackPanel>
+                        </mah:ToggleSwitch>
+                        <Separator />
                         <Button Command="{Binding ResetCommand}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:ImageAwesome Icon="Recycle" />

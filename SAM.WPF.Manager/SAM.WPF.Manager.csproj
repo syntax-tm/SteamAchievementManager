@@ -26,12 +26,11 @@
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="MahApps.Metro" Version="2.4.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
     <PackageReference Include="TextCopy" Version="4.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SAM.API\SAM.API.csproj" />
     <ProjectReference Include="..\SAM.WPF.Core\SAM.WPF.Core.csproj" />
   </ItemGroup>
 

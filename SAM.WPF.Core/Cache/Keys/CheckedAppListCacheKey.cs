@@ -1,8 +1,11 @@
-﻿namespace SAM.WPF.Core.Cache
+﻿namespace SAM.WPF.Core
 {
     public class CheckedAppListCacheKey : CacheKeyBase
     {
-        public override string Key { get; } = "checked_apps.json";
-        public override string Path { get; } = string.Empty;
+        public CheckedAppListCacheKey()
+            : base("checked_apps.json")
+        {
+
+        }
     }
 }

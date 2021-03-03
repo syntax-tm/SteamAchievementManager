@@ -8,7 +8,6 @@ using DevExpress.Mvvm;
 using log4net;
 using SAM.WPF.Core.API;
 using SAM.WPF.Core.API.Steam;
-using SAM.WPF.Core.Cache;
 using SAM.WPF.Core.Extensions;
 
 namespace SAM.WPF.Core
@@ -76,12 +75,12 @@ namespace SAM.WPF.Core
             get => GetProperty(() => PercentComplete);
             set => SetProperty(() => PercentComplete, value);
         }
-
         public bool IsLoading
         {
             get => GetProperty(() => IsLoading);
             set => SetProperty(() => IsLoading, value);
         }
+        
         public ObservableCollection<SteamApp> Items { get; private set; }
 
         public SteamLibrary()
@@ -92,7 +91,7 @@ namespace SAM.WPF.Core
             
             Items = new ObservableCollection<SteamApp>();
             BindingOperations.EnableCollectionSynchronization(Items, _lock);
-
+            
             _libraryWorker = new BackgroundWorker();
             _libraryWorker.WorkerSupportsCancellation = true;
             _libraryWorker.WorkerReportsProgress = true;
@@ -134,7 +133,7 @@ namespace SAM.WPF.Core
                 System.Threading.Thread.Sleep(250);
             }
         }
-
+        
         private void ProgressUpdate()
         {
             QueueCount = _refreshQueue.Count;

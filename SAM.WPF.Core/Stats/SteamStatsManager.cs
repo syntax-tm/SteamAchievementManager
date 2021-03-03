@@ -7,9 +7,8 @@ using System.Windows;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.API;
+using SAM.API.Stats;
 using SAM.API.Types;
-using SAM.API.Game;
-using SAM.API.Game.Stats;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Extensions;
 

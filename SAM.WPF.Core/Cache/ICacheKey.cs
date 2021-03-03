@@ -1,4 +1,4 @@
-﻿namespace SAM.WPF.Core.Cache
+﻿namespace SAM.WPF.Core
 {
     public interface ICacheKey
     {

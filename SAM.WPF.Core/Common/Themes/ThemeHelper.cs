@@ -1,16 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using ControlzEx.Theming;
+using log4net;
+using SAM.WPF.Core.Extensions;
+using SAM.WPF.Core.Settings;
 
 namespace SAM.WPF.Core.Themes
 {
     public static class ThemeHelper
     {
 
+        private const string APP_THEME_REGISTRY_PATH = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+        private const string APP_THEME_KEY = @"AppsUseLightTheme";
+
+        private static readonly ILog log = LogManager.GetLogger(nameof(ThemeHelper));
+
         private static List<AccentColorMenuData> _accentColors;
         private static List<AppThemeMenuData> _appThemeMenuData;
+        private static SystemAppTheme? _systemAppTheme;
+
+        public static SystemAppTheme SystemAppTheme
+        {
+            get
+            {
+                if (_systemAppTheme != null) return _systemAppTheme.Value;
+                _systemAppTheme = GetSystemTheme();
+                return _systemAppTheme ?? default;
+            }
+        }
+        public static Theme CurrentTheme { get; set; }
 
         public static List<AccentColorMenuData> AccentColors
         {
@@ -27,7 +49,6 @@ namespace SAM.WPF.Core.Themes
                 return _accentColors;
             }
         }
-
         public static List<AppThemeMenuData> AppThemeMenuData
         {
             get
@@ -51,7 +72,8 @@ namespace SAM.WPF.Core.Themes
         
         public static void SetTheme()
         {
-            var generatedTheme = RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", (Color) ColorConverter.ConvertFromString("#F73541"));
+            var baseTheme = SystemAppTheme.GetDescription();
+            var generatedTheme = RuntimeThemeGenerator.Current.GenerateRuntimeTheme(baseTheme, ThemeSettings.Default.Accent);
 
             Debug.Assert(generatedTheme != null);
             
@@ -60,6 +82,26 @@ namespace SAM.WPF.Core.Themes
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();
         }
+        
+        private static SystemAppTheme GetSystemTheme()
+        {
+            try
+            {
+                var themeValue = (string) Microsoft.Win32.Registry.GetValue(APP_THEME_REGISTRY_PATH, APP_THEME_KEY, null);
+
+                if (Enum.TryParse<SystemAppTheme>(themeValue, out var result))
+                {
+                    return result;
+                }
+            }
+            catch (Exception e)
+            {
+                log.Error($"An error occurred checking the system app theme setting. {e.Message}", e);
+            }
+
+            return default;
+        }
+
 
     }
 }

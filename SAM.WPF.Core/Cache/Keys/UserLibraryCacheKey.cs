@@ -1,8 +1,11 @@
-﻿namespace SAM.WPF.Core.Cache
+﻿namespace SAM.WPF.Core
 {
     public class UserLibraryCacheKey : CacheKeyBase
     {
-        public override string Key { get; } = "userLibrary.json";
-        public override string Path { get; } = string.Empty;
+        public UserLibraryCacheKey()
+            : base("userLibrary.json")
+        {
+
+        }
     }
 }

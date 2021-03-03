@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using log4net;
-using SAM.WPF.Core.Cache;
 
 namespace SAM.WPF.Core.API
 {
@@ -16,6 +15,8 @@ namespace SAM.WPF.Core.API
         private const string GAME_HEADER_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/header.jpg";
         private const string GAME_LIBRARY_HERO_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/library_hero.jpg";
         private const string GAME_SMALL_CAPSULE_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/capsule_231x87.jpg";
+        private const string GAME_MEDIUM_CAPSULE_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/capsule_467x181.jpg";
+        private const string GAME_LARGE_CAPSULE_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/capsule_616x353.jpg";
         private const string GAME_ACHIEVEMENT_URI = "http://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/{0}/{1}";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamCdnHelper));
@@ -45,6 +46,12 @@ namespace SAM.WPF.Core.API
                         break;
                     case SteamImageType.SmallCapsule:
                         url = string.Format(GAME_SMALL_CAPSULE_URI, id);
+                        break;
+                    case SteamImageType.MediumCapsule:
+                        url = string.Format(GAME_MEDIUM_CAPSULE_URI, id);
+                        break;
+                    case SteamImageType.LargeCapsule:
+                        url = string.Format(GAME_LARGE_CAPSULE_URI, id);
                         break;
                     case SteamImageType.AchievementIcon:
                         url = string.Format(GAME_ACHIEVEMENT_URI, id, file);

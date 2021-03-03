@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Input;
 using DevExpress.Mvvm;
-using SAM.API.Game.Stats;
+using SAM.API.Stats;
 using SAM.WPF.Core.API;
 
 namespace SAM.WPF.Core.Stats
@@ -16,7 +16,17 @@ namespace SAM.WPF.Core.Stats
         public string IconLockedName => AchievementInfo.IconLocked;
         public string IconNormalName => AchievementInfo.IconNormal;
         public string Name => AchievementInfo.Name;
-        public string Description => AchievementInfo.Description;
+        public string Description
+        {
+            get
+            {
+                if (AchievementDefinition.IsHidden && !IsAchieved)
+                {
+                    return @"Hidden";
+                }
+                return AchievementInfo.Description;
+            }
+        }
         public int Permission => AchievementInfo.Permission;
         public bool OriginalLockState
         {

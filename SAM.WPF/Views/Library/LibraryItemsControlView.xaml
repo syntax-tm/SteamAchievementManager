@@ -7,119 +7,128 @@
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:local="clr-namespace:SAM.WPF.Views.Library" xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:resources="clr-namespace:SAM.WPF.Core.Resources;assembly=SAM.WPF.Core"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <CollectionViewSource x:Key="GameCollection" Source="{Binding Library.Items, Mode=OneWay}"
-                              IsLiveSortingRequested="True" IsLiveGroupingRequested="True">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Group" />
-            </CollectionViewSource.GroupDescriptions>
-            <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="Name" Direction="Ascending" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+        <resources:GroupStyleSelector x:Key="CustomGroupStyleSelector" 
+                                  NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
+                                  DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />
     </UserControl.Resources>
-
 
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" PanningRatio="2.5" PanningMode="VerticalOnly"
                       CanContentScroll="False" SnapsToDevicePixels="True" IsTabStop="False"
+                      BorderThickness="2"
                       ScrollChanged="ScrollViewer_ScrollChanged">
-            <ItemsControl ItemsSource="{Binding Source={StaticResource GameCollection}}" Margin="3"                          >
+            <ItemsControl ItemsSource="{Binding ItemsView}">
                 <ItemsControl.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <Expander mah:HeaderedControlHelper.HeaderFontSize="25"
-                                                      HeaderStringFormat="{} {0}"
-                                                      IsExpanded="True"
-                                                      Padding="5"
-                                                      mah:HeaderedControlHelper.HeaderBackground="{DynamicResource MahApps.Brushes.Highlight}"
-                                                      mah:HeaderedControlHelper.HeaderMargin="5"
-                                                      FontSize="30" FontStretch="Normal" BorderThickness="6">
-                                                <Expander.Header>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Name}"
-                                                                   Margin="3,0,0,0" />
-                                                        <TextBlock Text="{Binding ItemCount, StringFormat='{}({0})'}"
-                                                                   Margin="8,0"
-                                                                   Opacity="0.5" FontWeight="Normal" />
-                                                    </StackPanel>
-                                                </Expander.Header>
-                                                <ItemsPresenter />
-                                            </Expander>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
+                    <GroupStyle ContainerStyleSelector="{StaticResource CustomGroupStyleSelector}">
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate DataType="{x:Type CollectionViewGroup}">
+                                <!-- Display the name of CollectionViewGroup -->
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
                     </GroupStyle>
                 </ItemsControl.GroupStyle>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
+                        <UniformGrid Columns="6" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:SteamApp}">
-                        <mah:Tile mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
-                                  ToolTip="{Binding Name}" Width="{Binding ElementName=HeaderImage, Path=Width}"
-                                  Height="{Binding ElementName=HeaderImage, Path=Height}">
-                            <dxmvvm:Interaction.Behaviors>
-                                <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
-                            </dxmvvm:Interaction.Behaviors>
-                            <Grid>
-                                <Image x:Name="HeaderImage" Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="368" Height="172" />
-                            </Grid>
-                        </mah:Tile>
-
-                        <!--<Border BorderThickness="2" BorderBrush="#282828" Margin="2"
-                                ToolTip="{Binding Name}">
-                            <Grid>
-                                <Image Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="368" Height="172" />
-                            </Grid>
-                        </Border>-->
+                        <Grid>
+                            <Button Padding="0">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Margin" Value="3" />
+                                        <Setter Property="ToolTip" Value="{Binding Name}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" Value="DodgerBlue" />
+                                                <Setter Property="Foreground" Value="#1B1B1B" />
+                                                <Setter Property="BorderThickness" Value="3" />
+                                                <Setter Property="Margin" Value="-1,0" />
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="BorderBrush" Value="DodgerBlue" />
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
+                                                <Setter Property="Background" Value="DodgerBlue" />
+                                                <Setter Property="ToolTip" Value="{x:Null}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <Button.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{Binding Name}" FontWeight="SemiBold"
+                                                  ToolTip="Open in Manager" Command="{Binding ManageAppCommand}">
+                                            <MenuItem.Icon>
+                                                <fa:ImageAwesome Icon="Edit" Style="{StaticResource ContextMenuIconStyle}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <Separator Style="{StaticResource ContextMenuSeparator}" />
+                                        <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
+                                            <MenuItem.Icon>
+                                                <fa:ImageAwesome Icon="Database" Style="{StaticResource ContextMenuIconStyle}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
+                                                  Style="{StaticResource MahApps.Styles.MenuItem}">
+                                            <MenuItem.Icon>
+                                                <fa:ImageAwesome Icon="SteamSquare" Style="{StaticResource ContextMenuIconStyle}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}">
+                                            <MenuItem.Icon>
+                                                <fa:ImageAwesome Icon="Server" Style="{StaticResource ContextMenuIconStyle}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <Separator Style="{StaticResource ContextMenuSeparator}" />
+                                        <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
+                                            <MenuItem.Icon>
+                                                <fa:ImageAwesome Icon="Clipboard" Style="{StaticResource ContextMenuIconStyle}" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </Button.ContextMenu>
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
+                                </dxmvvm:Interaction.Behaviors>
+                                <Grid>
+                                    <Viewbox Stretch="Fill" StretchDirection="Both">
+                                        <Image x:Name="HeaderImage" Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" />
+                                    </Viewbox>
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontSize="30" TextAlignment="Center" Margin="10" TextWrapping="Wrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    
+                                </Grid>
+                            </Button>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
     </Grid>
-
-    <!--<Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Library.Items, Mode=OneWay}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" Margin="5" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type models:SteamApp}">
-                        <Border BorderThickness="2" BorderBrush="#111111" Margin="5">
-                            <Grid>
-                                <Image Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="368" Height="172" />
-                                --><!--<StackPanel Margin="10" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" HorizontalAlignment="Right" />
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock FontWeight="Light" HorizontalAlignment="Right">
-                                            <Run Text="{Binding Id, Mode=OneWay}" />
-                                            <Run Text="{Binding GameInfoType, Mode=OneWay, StringFormat='{} ({0})', Converter={StaticResource EnumToStringConverter}}"  />
-                                        </TextBlock>
-                                    </StackPanel>
-                                </StackPanel>--><!--
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-    </Grid>-->
 </UserControl>

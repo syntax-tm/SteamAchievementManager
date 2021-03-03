@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SAM.API\SAM.API.csproj" />
     <ProjectReference Include="..\SAM.WPF.Core\SAM.WPF.Core.csproj" />
   </ItemGroup>
 

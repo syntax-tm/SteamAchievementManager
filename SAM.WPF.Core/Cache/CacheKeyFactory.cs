@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SAM.WPF.Core.Cache
+﻿namespace SAM.WPF.Core
 {
     public static class CacheKeyFactory
     {
