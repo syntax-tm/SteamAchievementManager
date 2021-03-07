@@ -34,6 +34,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        <local:MenuView />
         <library:LibraryItemsControlView Grid.Row="1" />
         <StatusBar Grid.Row="2" BorderBrush="#878787" Background="{DynamicResource MahApps.Brushes.WindowTitle}"
                    BorderThickness="0,1,0,0" Margin="-1,0,-1,-1"

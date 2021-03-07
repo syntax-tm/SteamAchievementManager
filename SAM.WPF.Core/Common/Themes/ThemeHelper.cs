@@ -87,11 +87,11 @@ namespace SAM.WPF.Core.Themes
         {
             try
             {
-                var themeValue = (string) Microsoft.Win32.Registry.GetValue(APP_THEME_REGISTRY_PATH, APP_THEME_KEY, null);
+                var themeValue = (int) Microsoft.Win32.Registry.GetValue(APP_THEME_REGISTRY_PATH, APP_THEME_KEY, null);
 
-                if (Enum.TryParse<SystemAppTheme>(themeValue, out var result))
+                if (Enum.IsDefined(typeof(SystemAppTheme), themeValue))
                 {
-                    return result;
+                    return (SystemAppTheme) themeValue;
                 }
             }
             catch (Exception e)
