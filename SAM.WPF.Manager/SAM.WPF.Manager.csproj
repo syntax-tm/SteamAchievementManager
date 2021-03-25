@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpressMvvm" Version="20.2.3" />
+    <PackageReference Include="Fluent.Ribbon" Version="8.0.3" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9">
       <NoWarn>NU1701</NoWarn>
     </PackageReference>

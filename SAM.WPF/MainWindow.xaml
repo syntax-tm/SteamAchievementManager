@@ -6,31 +6,24 @@
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
         xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
         xmlns:views="clr-namespace:SAM.WPF.Views"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:services="clr-namespace:SAM.WPF.Core.Services;assembly=SAM.WPF.Core"
+        xmlns:fluent="urn:fluent-ribbon"
         mc:Ignorable="d"
         DataContext="{dxmvvm:ViewModelSource Type=vm:MainWindowViewModel}"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
         Width="{Binding Width}" Height="{Binding Height}"
         WindowState="{Binding WindowState}" Title="{Binding Title}"
-        Style="{StaticResource ChromeMetroWindowStyle}"
         WindowTitleBrush="#181818" NonActiveWindowTitleBrush="#181818"
+        Style="{StaticResource ChromeMetroWindowStyle}"
         TitleBarHeight="38"
         services:WindowSettings.Save="True">
 
-    <mah:MetroWindow.RightWindowCommands>
-        <mah:WindowCommands Margin="10,0,0,0">
-            <Button ToolTip="View on GitHub">
-                <fa:ImageAwesome Height="22" Width="22" Icon="Github" Foreground="White"  />
-            </Button>
-        </mah:WindowCommands>
-    </mah:MetroWindow.RightWindowCommands>
-
-    <DockPanel LastChildFill="True" Margin="0,0,0,0">
-        <Grid>
+    <Grid>
+        <DockPanel LastChildFill="True" Margin="0,0,0,0">
+            <views:MenuView DockPanel.Dock="Top" />
             <views:HomeView />
-        </Grid>
-    </DockPanel>
+        </DockPanel>
+    </Grid>
 
 </mah:MetroWindow>

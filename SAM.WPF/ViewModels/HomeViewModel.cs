@@ -13,10 +13,10 @@ namespace SAM.WPF.ViewModels
     {
         protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
         
-        public virtual int Columns { get; set; }
+        private readonly CollectionViewSource _itemsViewSource;
+        
         public virtual bool EnableGrouping { get; set; }
         public virtual string FilterText { get; set; }
-        public CollectionViewSource ItemsViewSource { get; set; }
         public ICollectionView ItemsView { get; set; }
 
         public SteamApp SelectedItem
@@ -28,28 +28,20 @@ namespace SAM.WPF.ViewModels
 
         protected HomeViewModel()
         {
-            //Library = SteamLibrary.Create();
-            //Library.Refresh(true);
-
             Library = SteamLibraryManager.DefaultLibrary;
             
-            ItemsViewSource = new CollectionViewSource();
-            ItemsViewSource.Source = Library.Items;
-            ItemsView = ItemsViewSource.View;
+            _itemsViewSource = new CollectionViewSource();
+            _itemsViewSource.Source = Library.Items;
+            ItemsView = _itemsViewSource.View;
 
-            ItemsViewSource.IsLiveSortingRequested = true;
-
-            //ItemsView.SortDescriptions.Clear();
-            //ItemsView.SortDescriptions.Add(new SortDescription(nameof(SteamApp.Name), ListSortDirection.Ascending));
-
-            using (ItemsViewSource.DeferRefresh())
+            _itemsViewSource.IsLiveSortingRequested = true;
+            
+            using (_itemsViewSource.DeferRefresh())
             {
-                ItemsViewSource.SortDescriptions.Clear();
-                ItemsViewSource.SortDescriptions.Add(new SortDescription(nameof(SteamApp.Name), ListSortDirection.Ascending));
+                _itemsViewSource.SortDescriptions.Clear();
+                _itemsViewSource.SortDescriptions.Add(new SortDescription(nameof(SteamApp.Name), ListSortDirection.Ascending));
             }
-
-            //ItemsViewSource.LiveSortingProperties.Add(nameof(SteamApp.Name));
-
+            
             EnableGrouping = true;
         }
 
@@ -61,12 +53,12 @@ namespace SAM.WPF.ViewModels
         public void Loaded()
         {
         }
-
+        
         protected void OnEnableGroupingChanged()
         {
             ItemsView.GroupDescriptions.Clear();
 
-            ItemsViewSource.IsLiveGroupingRequested = EnableGrouping;
+            _itemsViewSource.IsLiveGroupingRequested = EnableGrouping;
 
             if (EnableGrouping)
             {

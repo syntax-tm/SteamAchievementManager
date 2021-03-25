@@ -9,6 +9,7 @@
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:resources="clr-namespace:SAM.WPF.Core.Resources;assembly=SAM.WPF.Core"
+             xmlns:behaviors="clr-namespace:SAM.WPF.Core.Behaviors;assembly=SAM.WPF.Core"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
@@ -25,12 +26,11 @@
                       CanContentScroll="False" SnapsToDevicePixels="True" IsTabStop="False"
                       BorderThickness="2"
                       ScrollChanged="ScrollViewer_ScrollChanged">
-            <ItemsControl ItemsSource="{Binding ItemsView}">
+            <ItemsControl x:Name="libraryItemsView" ItemsSource="{Binding ItemsView}">
                 <ItemsControl.GroupStyle>
                     <GroupStyle ContainerStyleSelector="{StaticResource CustomGroupStyleSelector}">
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate DataType="{x:Type CollectionViewGroup}">
-                                <!-- Display the name of CollectionViewGroup -->
                                 <TextBlock Text="{Binding Name}" />
                             </DataTemplate>
                         </GroupStyle.HeaderTemplate>
@@ -38,7 +38,11 @@
                 </ItemsControl.GroupStyle>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="6" />
+                        <UniformGrid>
+                            <dxmvvm:Interaction.Behaviors>
+                                <behaviors:AutoResizeBehavior MaxItemWidth="300" />
+                            </dxmvvm:Interaction.Behaviors>
+                        </UniformGrid>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -122,7 +126,6 @@
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
-                                    
                                 </Grid>
                             </Button>
                         </Grid>
