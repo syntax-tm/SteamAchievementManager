@@ -4,7 +4,16 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="po">
     
-    <SolidColorBrush x:Key="LightBlueBrush"  Color="LightBlue" />
+    <Color x:Key="ControlBorderColor">#333333</Color>
+    <Color x:Key="BlackColor">Black</Color>
+    <Color x:Key="WhiteColor">White</Color>
+
+    <Color x:Key="ProgressIndeterminateColor1">#33878787</Color>
+    <Color x:Key="ProgressIndeterminateColor2">#33959595</Color>
+    <Color x:Key="ProgressIndeterminateColor3">#4C000000</Color>
+    <Color x:Key="ProgressIndeterminateColor4">#4C000000</Color>
+
+    <SolidColorBrush x:Key="LightBlueBrush" po:Freeze="True" Color="LightBlue" />
 
     <SolidColorBrush x:Key="GroupHeaderBrush" po:Freeze="True" Color="#E9281B" />
     <SolidColorBrush x:Key="FocusedControlBorderBrush" po:Freeze="True" Color="#0E84FF" />
@@ -13,7 +22,7 @@
     <SolidColorBrush x:Key="EditedBrush" po:Freeze="True" Color="#B1E4D863" />
     <SolidColorBrush x:Key="WarningBrush" po:Freeze="True" Color="#FFF277" />
     
-    <SolidColorBrush x:Key="ControlBorderBrush" po:Freeze="True" Color="#333333" />
+    <SolidColorBrush x:Key="ControlBorderBrush" po:Freeze="True" Color="{StaticResource ControlBorderColor}" />
     <SolidColorBrush x:Key="DarkControlBorderBrush" po:Freeze="True" Color="#FF1B1B1B" />
 
     <SolidColorBrush x:Key="BackgroundBrush" po:Freeze="True" Color="#1c1c1c" />
@@ -44,16 +53,8 @@
     <SolidColorBrush x:Key="ValidationBrush4" Color="#352A2E31" po:Freeze="True" />
     <SolidColorBrush x:Key="ValidationBrush5" Color="#FFDC000C" po:Freeze="True" />
 
-    <Color x:Key="BlackColor">Black</Color>
-    <Color x:Key="WhiteColor">White</Color>
-
-    <Color x:Key="ProgressIndeterminateColor1">#33878787</Color>
-    <Color x:Key="ProgressIndeterminateColor2">#33959595</Color>
-    <Color x:Key="ProgressIndeterminateColor3">#4C000000</Color>
-    <Color x:Key="ProgressIndeterminateColor4">#4C000000</Color>
-
     <LinearGradientBrush x:Key="ProgressBrush" StartPoint="1.002,0.5" EndPoint="0.001,0.5" po:Freeze="True">
-        <GradientStop Offset="0" Color="{StaticResource ControlBorderBrush}" />
+        <GradientStop Offset="0" Color="{StaticResource ControlBorderColor}" />
         <GradientStop Offset="1" Color="{StaticResource WhiteColor}" />
     </LinearGradientBrush>
 

@@ -13,13 +13,18 @@
 
     <UserControl.Resources>
         <Style TargetType="{x:Type fa:ImageAwesome}">
-            <Setter Property="Width" Value="32" />
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="Width" Value="22" />
             <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Self}, Path=Width}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
         </Style>
         <Style TargetType="{x:Type fluent:Button}">
             <Setter Property="Margin" Value="2" />
-            <Setter Property="Padding" Value="2" />
+            <Setter Property="Padding" Value="1" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Size" Value="Large" />
@@ -65,7 +70,7 @@
                     <Separator Margin="4,0" />
                     <fluent:DropDownButton Header="Hidden Apps" Size="Middle">
                         <fluent:DropDownButton.Icon>
-                            <fa:ImageAwesome Icon="Lock" Width="10" />
+                            <fa:ImageAwesome Icon="Lock" Width="12" />
                         </fluent:DropDownButton.Icon>
                         <fluent:MenuItem Header="Edit Hidden Apps">
                             <fluent:MenuItem.Icon>
@@ -127,27 +132,43 @@
                         <fluent:Button.LargeIcon>
                             <fa:ImageAwesome Icon="Bug" />
                         </fluent:Button.LargeIcon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="View Issues"
+                                              Text="View Steam Achievement Manager's issues on GitHub." />
+                        </fluent:Button.ToolTip>
                     </fluent:Button>
                     <fluent:Button Header="GitHub">
                         <fluent:Button.LargeIcon>
                             <fa:ImageAwesome Icon="Github" />
                         </fluent:Button.LargeIcon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="SAM on GitHub"
+                                              Text="View Steam Achievement Manager on GitHub." />
+                        </fluent:Button.ToolTip>
                     </fluent:Button>
                     <Separator Margin="5,0" />
                     <fluent:Button Size="Middle" Header="About">
                         <fluent:Button.Icon>
                             <fa:ImageAwesome Icon="InfoCircle" Width="13" />
                         </fluent:Button.Icon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="About Steam Achievement Manager"
+                                              Text="Learn more about Steam Achievement Manger." />
+                        </fluent:Button.ToolTip>
                     </fluent:Button>
                     <fluent:Button Size="Middle" Header="Check for Updates">
                         <fluent:Button.Icon>
                             <fa:ImageAwesome Icon="Download" Width="13" />
                         </fluent:Button.Icon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Check for Updates"
+                                              Text="Check to see if there are any available updates." />
+                        </fluent:Button.ToolTip>
                     </fluent:Button>
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
-            <fluent:RibbonTabItem Header="Help" IsSeparatorVisible="False">
-                
+            <fluent:RibbonTabItem Header="Theme">
+
             </fluent:RibbonTabItem>
         </fluent:Ribbon>
     </Grid>
