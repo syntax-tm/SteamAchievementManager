@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using log4net;
 
 namespace SAM.WPF.Core.API
@@ -9,7 +8,7 @@ namespace SAM.WPF.Core.API
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamLibraryManager));
 
-        private static readonly object syncLock = new object();
+        private static readonly object syncLock = new ();
         private static SteamLibraryManager _instance;
 
         public static bool IsInitialized { get; private set; }

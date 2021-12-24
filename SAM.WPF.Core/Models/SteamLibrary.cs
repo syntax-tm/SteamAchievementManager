@@ -12,14 +12,14 @@ using SAM.WPF.Core.Extensions;
 
 namespace SAM.WPF.Core
 {
-    public class SteamLibrary : ViewModelBase
+    public class SteamLibrary : BindableBase
     {
 
         private readonly ILog log = LogManager.GetLogger(nameof(SteamLibrary));
 
         private readonly BackgroundWorker _libraryWorker;
 
-        private static readonly object _lock = new object();
+        private static readonly object _lock = new ();
         private readonly List<SupportedApp> _supportedGames;
         private Queue<SupportedApp> _refreshQueue;
         private List<SupportedApp> _addedGames;
@@ -111,11 +111,11 @@ namespace SAM.WPF.Core
 
             Items.Clear();
 
-            //if (loadCache)
-            //{
-            //    LoadLibraryCache();
-            //    LoadRefreshProgress();
-            //}
+            if (loadCache)
+            {
+                LoadLibraryCache();
+                LoadRefreshProgress();
+            }
 
             CancelRefresh();
 
@@ -141,22 +141,36 @@ namespace SAM.WPF.Core
             PercentComplete = (decimal) CompletedCount / SupportedGamesCount;
         }
         
-        private void LibraryWorkerOnDoWork(object sender, DoWorkEventArgs e)
+        private void LibraryWorkerOnDoWork(object sender, DoWorkEventArgs args)
         {
-            IsLoading = true;
-            
-            while (_refreshQueue.TryDequeue(out var game))
+            try
             {
-                if (_libraryWorker.CancellationPending)
+                IsLoading = true;
+
+                while (_refreshQueue.TryDequeue(out var game))
                 {
-                    e.Cancel = true;
-                    break;
+                    if (_libraryWorker.CancellationPending)
+                    {
+                        args.Cancel = true;
+                        break;
+                    }
+
+                    AddGame(game);
+
+                    if (_refreshQueue.Count % 15 == 0) ProgressUpdate();
+                    if (_refreshQueue.Count % 30 == 0) CacheRefreshProgress();
                 }
-
-                AddGame(game);
-
-                if (_refreshQueue.Count % 5 == 0) ProgressUpdate();
-                //if (_refreshQueue.Count % 10 == 0) CacheRefreshProgress();
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred refreshing the Steam library. {e.Message}";
+                log.Error(message, e);
+            }
+            finally
+            {
+                ProgressUpdate();
+                CacheRefreshProgress();
+                RefreshCounts();
             }
         }
         
@@ -169,27 +183,30 @@ namespace SAM.WPF.Core
 
         private void AddGame(SupportedApp app)
         {
-            var type = Enum.Parse<GameInfoType>(app.Type, true);
+            try
+            {
+                var type = Enum.Parse<GameInfoType>(app.Type, true);
 
-            if (type != GameInfoType.Normal && type != GameInfoType.Mod) return;
-            if (_addedGames.Contains(app)) return;
-            
-            if (!SteamClientManager.Default.OwnsGame(app.Id)) return;
+                if (type != GameInfoType.Normal && type != GameInfoType.Mod) return;
+                if (_addedGames.Contains(app)) return;
 
-            var steamGame = new SteamApp(app.Id, type);
+                if (!SteamClientManager.Default.OwnsGame(app.Id)) return;
 
-            Items.Add(steamGame);
-                
-            _addedGames.Add(app);
+                var steamGame = new SteamApp(app.Id, type);
 
-            TotalCount = Items.Count;
-            GamesCount = Items.Count(g => g.GameInfoType == GameInfoType.Normal);
-            ModCount = Items.Count(g => g.GameInfoType == GameInfoType.Mod);
-            ToolCount = Items.Count(g => g.GameInfoType == GameInfoType.Tool);
-            JunkCount = Items.Count(g => g.GameInfoType == GameInfoType.Junk);
-            DemoCount = Items.Count(g => g.GameInfoType == GameInfoType.Demo);
+                Items.Add(steamGame);
 
-            //CacheLibrary();
+                _addedGames.Add(app);
+
+                TotalCount = Items.Count;
+
+                CacheLibrary();
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to add app '{app?.Id}'. {e.Message}";
+                log.Error(message, e);
+            }
         }
 
         private void LoadRefreshProgress()
@@ -223,6 +240,18 @@ namespace SAM.WPF.Core
                 
                 _supportedGames.Remove(appInfo);
             }
+
+            RefreshCounts();
+        }
+
+        private void RefreshCounts()
+        {
+            TotalCount = Items.Count;
+            GamesCount = Items.Count(g => g.GameInfoType == GameInfoType.Normal);
+            ModCount = Items.Count(g => g.GameInfoType == GameInfoType.Mod);
+            ToolCount = Items.Count(g => g.GameInfoType == GameInfoType.Tool);
+            JunkCount = Items.Count(g => g.GameInfoType == GameInfoType.Junk);
+            DemoCount = Items.Count(g => g.GameInfoType == GameInfoType.Demo);
         }
 
         private void CacheLibrary()

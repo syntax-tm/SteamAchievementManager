@@ -4,17 +4,16 @@ namespace SAM.API.Stats
 {
     public class AchievementDefinition
     {
-        public string Id;
-        public string Name;
         public string Description;
-        public string IconNormal;
         public string IconLocked;
+        public string IconNormal;
+        public string Id;
         public bool IsHidden;
+        public string Name;
         public int Permission;
 
         public AchievementDefinition()
         {
-
         }
 
         public AchievementDefinition(KeyValue bit, string currentLanguage)
@@ -33,19 +32,13 @@ namespace SAM.API.Stats
         protected static string GetLocalizedString(KeyValue kv, string language, string defaultValue)
         {
             var name = kv[language].AsString();
-            if (!string.IsNullOrEmpty(name))
-            {
-                return name;
-            }
+            if (!string.IsNullOrEmpty(name)) return name;
 
             if (language != @"english")
             {
                 name = kv[@"english"].AsString();
 
-                if (!string.IsNullOrEmpty(name))
-                {
-                    return name;
-                }
+                if (!string.IsNullOrEmpty(name)) return name;
             }
 
             name = kv.AsString();

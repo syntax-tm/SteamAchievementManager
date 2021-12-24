@@ -7,16 +7,16 @@ namespace SAM.API.Types
         private string _Name;
 
         public uint Id;
-        public string Type;
         public int ImageIndex;
+
+        public string Logo;
+        public string Type;
 
         public string Name
         {
-            get { return _Name; }
-            set { _Name = value ?? "App " + Id.ToString(CultureInfo.InvariantCulture); }
+            get => _Name;
+            set => _Name = value ?? "App " + Id.ToString(CultureInfo.InvariantCulture);
         }
-
-        public string Logo;
 
         public GameInfo(uint id, string type)
         {

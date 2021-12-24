@@ -56,18 +56,12 @@ namespace SAM.API.Types
 
             while (true)
             {
-                if (i + characterSize > data.Length)
-                {
-                    Array.Resize(ref data, data.Length + (128 * characterSize));
-                }
+                if (i + characterSize > data.Length) Array.Resize(ref data, data.Length + (128 * characterSize));
 
                 var read = stream.Read(data, i, characterSize);
                 Debug.Assert(read == characterSize);
 
-                if (encoding.GetString(data, i, characterSize) == characterEnd)
-                {
-                    break;
-                }
+                if (encoding.GetString(data, i, characterSize) == characterEnd) break;
 
                 i += characterSize;
             }

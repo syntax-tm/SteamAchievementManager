@@ -14,27 +14,63 @@ This project is a fork of the [Steam Achievement Manager](https://github.com/gib
 
 The reason there's two seperate apps (the picker and the manager) is because the manager needs to be in its own process to be able to actually manage the achievements and stats. When the manager is started, it's passed an ID a Steam app. The manager then initializes the Steam API client with that app's ID just like any game on Steam would. Steam will show you as in-game, record your play time, and you could even earn trading cards (if you have drops left).
 
-| Legacy Project | New Project | Info |
-|:---------------|:------------|:-----|
-| SAM.Picker     | SAM.WPF     | This is the main executable used to select a game (or app) from your library. |
-| SAM.Game       | SAM.WPF.Manager | Handles the viewing and updating of an app's achievements and stats. |
-| SAM.API        | SAM.WPF.Core | Contains the core functionality of SAM that both apps reference. |
+<table>
+    <tr>
+        <th>Legacy Project</th>
+        <th>New Project</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <th>SAM.Picker</th>
+        <th>SAM.WPF</th>
+        <td>This is the main executable used to select a game (or app) from your library.</td>
+    </tr>
+    <tr>
+        <th>SAM.Game</th>
+        <th>SAM.WPF.Manager</th>
+        <td>Handles the viewing and updating of an app's achievements and stats.</td>
+    </tr>
+    <tr>
+        <th>SAM.API</th>
+        <th>SAM.API</th>
+        <td>Managed Steam API wrappers.</td>
+    </tr>
+    <tr>
+        <th> </th>
+        <th>SAM.WPF.Core</th>
+        <td> shared resources used by both <code>SAM.WPF</code> and <code>SAM.WPF.Manager</code> projects.</td>
+    </tr>
+</table>
 
 _Note: The new 'SAM.WPF' project names are just temporary and will be updated later on._
 
-## Building SAM.WPF
+### Diagram
 
-When building and running the app be sure to use the `x86` solution configuraiton to target 32-bit. The legacy projects do not support 64-bit and since they are being removed anyways it's better to just wait and implement the 64-bit Steam API then. `SAM.API\Steam` only calls `LoadLibrary` on the 32-bit `steamclient.dll`.  
-
-```
-path = Path.Combine(path, "steamclient.dll");
-IntPtr module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
+```mermaid
+flowchart TB
+    subgraph Picker
+        A(SAM.WPF)
+    end
+    subgraph Manager
+        B(SAM.WPF.Manager)
+    end
+    subgraph Core
+        SAM.WPF.Core[SAM.WPF.Core]
+    end
+    subgraph API
+        SAM.API{{SAM.API}}
+    end
+    Picker  --> Core
+    Manager --> Core
+    Core    --> API
 ```
 
 ## TODO
 
 ### General
 
+- Steam
+  - Prompt to start Steam when process is not currently running
 - Logging
   - Add appender for events with warning or higher severity
 - Settings

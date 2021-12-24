@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows.Data;
 using DevExpress.Mvvm.POCO;
 using log4net;
@@ -16,8 +17,9 @@ namespace SAM.WPF.ViewModels
         private readonly CollectionViewSource _itemsViewSource;
         
         public virtual bool EnableGrouping { get; set; }
+        public virtual bool FilterJunk { get; set; }
         public virtual string FilterText { get; set; }
-        public ICollectionView ItemsView { get; set; }
+        public virtual ICollectionView ItemsView { get; set; }
 
         public SteamApp SelectedItem
         {
@@ -33,7 +35,9 @@ namespace SAM.WPF.ViewModels
             _itemsViewSource = new CollectionViewSource();
             _itemsViewSource.Source = Library.Items;
             ItemsView = _itemsViewSource.View;
+            ItemsView.Filter += Filter;
 
+            _itemsViewSource.IsLiveFilteringRequested = true;
             _itemsViewSource.IsLiveSortingRequested = true;
             
             using (_itemsViewSource.DeferRefresh())
@@ -65,25 +69,16 @@ namespace SAM.WPF.ViewModels
                 ItemsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
             }
         }
-
-        protected void OnFilterTextChanged()
+        
+        private bool Filter(object obj)
         {
-            if (string.IsNullOrWhiteSpace(FilterText))
-            {
-                ItemsView.Filter += o => true;
-                return;
-            }
+            if (obj is not SteamApp app) throw new ArgumentException(nameof(obj));
 
-            ItemsView.Filter += o =>
-            {
-                if (!(o is SteamApp app))
-                {
-                    return false;
-                }
+            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
+            var nameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText);
+            var isJunkFiltered = !FilterJunk || app.IsJunk;
 
-                return app.Name.ContainsIgnoreCase(FilterText);
-            };
+            return nameMatch && isJunkFiltered;
         }
-
     }
 }

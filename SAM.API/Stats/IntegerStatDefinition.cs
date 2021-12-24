@@ -4,15 +4,14 @@ namespace SAM.API.Stats
 {
     public class IntegerStatDefinition : StatDefinition
     {
-        public int MinValue;
-        public int MaxValue;
-        public int MaxChange;
-        public bool IncrementOnly;
         public int DefaultValue;
+        public bool IncrementOnly;
+        public int MaxChange;
+        public int MaxValue;
+        public int MinValue;
 
         public IntegerStatDefinition()
         {
-
         }
 
         public IntegerStatDefinition(KeyValue stat, string currentLanguage)
