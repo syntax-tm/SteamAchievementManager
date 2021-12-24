@@ -7,8 +7,8 @@
              xmlns:views="clr-namespace:SAM.WPF.Manager.Views"
              xmlns:vm="clr-namespace:SAM.WPF.Manager.ViewModels"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:core="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
@@ -20,15 +20,6 @@
             <Setter Property="Padding" Value="1" />
             <Setter Property="Foreground" Value="White" />
             <Setter Property="Margin" Value="5,2" />
-        </Style>
-
-        <Style TargetType="{x:Type fa:ImageAwesome}">
-            <Setter Property="Height" Value="14" />
-            <Setter Property="Width" Value="14" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalAlignment" Value="Center" />
-            <Setter Property="Margin" Value="1,1,3,1" />
-            <Setter Property="Foreground" Value="White" />
         </Style>
 
         <Style TargetType="{x:Type TextBlock}">
@@ -64,19 +55,42 @@
                         <mah:ToggleSwitch IsOn="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           ToolTip="Show hidden achievements.">
                             <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="UserSecret" />
+                                <iconPacks:PackIconMaterial>
+                                    <iconPacks:PackIconMaterial.Style>
+                                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+                                            <Setter Property="Kind" Value="Eye" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:ToggleSwitch}}, Path=IsOn}" Value="True">
+                                                    <Setter Property="Kind" Value="EyeOff" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </iconPacks:PackIconMaterial.Style>
+                                </iconPacks:PackIconMaterial>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Text" Value="Show Hidden Achievements" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:ToggleSwitch}}, Path=IsOn}" Value="True">
+                                                    <Setter Property="Text" Value="Hide Hidden Achievements" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </StackPanel>
                         </mah:ToggleSwitch>
                         <Separator />
                         <Button Command="{Binding ResetCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="Recycle" />
+                                <iconPacks:PackIconMaterial Kind="Recycle" />
                                 <TextBlock Text="Reset" />
                             </StackPanel>
                         </Button>
                         <Button Command="{Binding SaveCommand}" IsEnabled="{Binding IsModified, Mode=OneWay}">
                             <StackPanel Orientation="Horizontal">
-                                <fa:ImageAwesome Icon="Save" />
+                                <iconPacks:PackIconMaterial Kind="ContentSave" />
                                 <TextBlock Text="Save" />
                             </StackPanel>
                         </Button>

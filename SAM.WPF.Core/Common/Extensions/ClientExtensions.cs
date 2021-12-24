@@ -20,5 +20,9 @@ namespace SAM.WPF.Core.Extensions
             return client.SteamApps001.GetAppIcon(id);
         }
 
+        public static string GetAppLogo(this Client client, uint id)
+        {
+            return client.SteamApps001.GetAppData(id, @"logo");
+        }
     }
 }

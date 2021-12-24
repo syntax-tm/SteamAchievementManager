@@ -3,15 +3,15 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using log4net;
+using SAM.WPF.Core.API.Steam;
 
 namespace SAM.WPF.Core.API
 {
     public static class SteamCdnHelper
     {
-
         private const string GAME_CLIENT_ICON_URI = "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{0}/{1}.ico";
         private const string GAME_ICON_URI = "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{0}/{1}.jpg";
-        private const string GAME_LOGO_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/logo.png";
+        private const string GAME_LOGO_URI = "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{0}/{1}.jpg";
         private const string GAME_HEADER_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/header.jpg";
         private const string GAME_LIBRARY_HERO_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/library_hero.jpg";
         private const string GAME_SMALL_CAPSULE_URI = "https://cdn.cloudflare.steamstatic.com/steam/apps/{0}/capsule_231x87.jpg";
@@ -36,7 +36,7 @@ namespace SAM.WPF.Core.API
                         url = string.Format(GAME_ICON_URI, id, file);
                         break;
                     case SteamImageType.Logo:
-                        url = string.Format(GAME_LOGO_URI, id);
+                        url = string.Format(GAME_LOGO_URI, id, file);
                         break;
                     case SteamImageType.Header:
                         url = string.Format(GAME_HEADER_URI, id);

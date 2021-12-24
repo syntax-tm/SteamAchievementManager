@@ -98,12 +98,7 @@ namespace SAM.WPF.Core
             _libraryWorker.DoWork += LibraryWorkerOnDoWork;
             _libraryWorker.RunWorkerCompleted += LibraryWorkerOnRunWorkerCompleted;
         }
-
-        //public static SteamLibrary Create()
-        //{
-        //    return ViewModelSource.Create(() => new SteamLibrary());
-        //}
-
+        
         public void Refresh(bool loadCache = false)
         {
             _refreshQueue = new Queue<SupportedApp>(_supportedGames);
@@ -113,7 +108,7 @@ namespace SAM.WPF.Core
 
             if (loadCache)
             {
-                LoadLibraryCache();
+                LoadLibrary();
                 LoadRefreshProgress();
             }
 
@@ -134,18 +129,12 @@ namespace SAM.WPF.Core
             }
         }
         
-        private void ProgressUpdate()
-        {
-            QueueCount = _refreshQueue.Count;
-            CompletedCount = SupportedGamesCount - QueueCount;
-            PercentComplete = (decimal) CompletedCount / SupportedGamesCount;
-        }
-        
         private void LibraryWorkerOnDoWork(object sender, DoWorkEventArgs args)
         {
             try
             {
                 IsLoading = true;
+                var checkedCount = 0;
 
                 while (_refreshQueue.TryDequeue(out var game))
                 {
@@ -155,10 +144,22 @@ namespace SAM.WPF.Core
                         break;
                     }
 
-                    AddGame(game);
+                    
+                    var added = AddGame(game);
+                    
+                    var isCacheInterval = checkedCount % 25 == 0;
+                    if (added || isCacheInterval)
+                    {
+                        CacheRefreshProgress();
+                    }
 
-                    if (_refreshQueue.Count % 15 == 0) ProgressUpdate();
-                    if (_refreshQueue.Count % 30 == 0) CacheRefreshProgress();
+                    var isRefreshCountInterval = checkedCount % 10 == 0;
+                    if (added || isRefreshCountInterval)
+                    {
+                        RefreshCounts();
+                    }
+                    
+                    checkedCount++;
                 }
             }
             catch (Exception e)
@@ -168,7 +169,7 @@ namespace SAM.WPF.Core
             }
             finally
             {
-                ProgressUpdate();
+                CacheLibrary();
                 CacheRefreshProgress();
                 RefreshCounts();
             }
@@ -176,21 +177,21 @@ namespace SAM.WPF.Core
         
         private void LibraryWorkerOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            ProgressUpdate();
+            RefreshCounts();
 
             IsLoading = false;
         }
 
-        private void AddGame(SupportedApp app)
+        private bool AddGame(SupportedApp app)
         {
             try
             {
                 var type = Enum.Parse<GameInfoType>(app.Type, true);
 
-                if (type != GameInfoType.Normal && type != GameInfoType.Mod) return;
-                if (_addedGames.Contains(app)) return;
+                if (type != GameInfoType.Normal && type != GameInfoType.Mod) return false;
+                if (_addedGames.Contains(app)) return false;
 
-                if (!SteamClientManager.Default.OwnsGame(app.Id)) return;
+                if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;
 
                 var steamGame = new SteamApp(app.Id, type);
 
@@ -198,68 +199,106 @@ namespace SAM.WPF.Core
 
                 _addedGames.Add(app);
 
-                TotalCount = Items.Count;
-
                 CacheLibrary();
+                
+                return true;
             }
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to add app '{app?.Id}'. {e.Message}";
                 log.Error(message, e);
+
+                return false;
             }
         }
 
         private void LoadRefreshProgress()
         {
-            var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
-            if (!CacheManager.TryGetObject<Queue<SupportedApp>>(cacheKey, out var refreshQueue)) return;
+            try
+            {
+                var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
+                if (!CacheManager.TryGetObject<Queue<SupportedApp>>(cacheKey, out var refreshQueue)) return;
 
-            _refreshQueue = refreshQueue;
+                _refreshQueue = refreshQueue;
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to load refresh progress. {e.Message}";
+                log.Error(message, e);
+            }
         }
 
         private void CacheRefreshProgress()
         {
-            var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
+            try
+            {
+                var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
 
-            CacheManager.CacheObject(cacheKey, _refreshQueue);
+                CacheManager.CacheObject(cacheKey, _refreshQueue);
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to cache refresh progress. {e.Message}";
+                log.Error(message, e);
+            }
         }
 
-        private void LoadLibraryCache()
+        private void LoadLibrary()
         {
-            var cacheKey = CacheKeyFactory.CreateUserLibraryCacheKey();
-            if (!CacheManager.TryGetObject<List<SupportedApp>>(cacheKey, out var ownedApps)) return;
-
-            foreach (var app in ownedApps)
+            try
             {
-                if (!SAMLibraryHelper.TryGetApp(app.Id, out var appInfo))
+                var cacheKey = CacheKeyFactory.CreateUserLibraryCacheKey();
+                if (!CacheManager.TryGetObject<List<SupportedApp>>(cacheKey, out var ownedApps)) return;
+
+                foreach (var app in ownedApps)
                 {
-                    log.Warn($"App with ID '{app.Id}' was in the local cache but was not found in supported app list.");
+                    if (!SAMLibraryHelper.TryGetApp(app.Id, out var appInfo))
+                    {
+                        log.Warn($"App with ID '{app.Id}' was in the local cache but was not found in supported app list.");
+                    }
+
+                    AddGame(appInfo);
+
+                    _supportedGames.Remove(appInfo);
                 }
 
-                AddGame(appInfo);
-                
-                _supportedGames.Remove(appInfo);
+                RefreshCounts();
             }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to load library cache. {e.Message}";
+                log.Error(message, e);
+            }
+        }
 
-            RefreshCounts();
+        private void CacheLibrary()
+        {
+            try
+            {
+                var ownedApps = _addedGames.ToList();
+                var cacheKey = CacheKeyFactory.CreateUserLibraryCacheKey();
+            
+                CacheManager.CacheObject(cacheKey, ownedApps);
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to cache user library. {e.Message}";
+                log.Error(message, e);
+            }
         }
 
         private void RefreshCounts()
         {
+            QueueCount = _refreshQueue.Count;
+            CompletedCount = SupportedGamesCount - QueueCount;
+            PercentComplete = (decimal) CompletedCount / SupportedGamesCount;
+
             TotalCount = Items.Count;
             GamesCount = Items.Count(g => g.GameInfoType == GameInfoType.Normal);
             ModCount = Items.Count(g => g.GameInfoType == GameInfoType.Mod);
             ToolCount = Items.Count(g => g.GameInfoType == GameInfoType.Tool);
             JunkCount = Items.Count(g => g.GameInfoType == GameInfoType.Junk);
             DemoCount = Items.Count(g => g.GameInfoType == GameInfoType.Demo);
-        }
-
-        private void CacheLibrary()
-        {
-            var ownedApps = _addedGames.ToList();
-            var cacheKey = CacheKeyFactory.CreateUserLibraryCacheKey();
-            
-            CacheManager.CacheObject(cacheKey, ownedApps);
         }
     }
 }

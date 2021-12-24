@@ -77,17 +77,21 @@ namespace SAM.WPF.Core
             get => GetProperty(() => Header);
             set => SetProperty(() => Header, value);
         }
-        public Image CapsuleMedium
+        public Image Capsule
         {
-            get => GetProperty(() => CapsuleMedium);
-            set => SetProperty(() => CapsuleMedium, value);
+            get => GetProperty(() => Capsule);
+            set => SetProperty(() => Capsule, value);
         }
         public string Group
         {
             get => GetProperty(() => Group);
             set => SetProperty(() => Group, value);
         }
-
+        
+        public ICommand LaunchAppCommand => new DelegateCommand(LaunchApp);
+        public ICommand InstallAppCommand => new DelegateCommand(InstallApp);
+        public ICommand ViewAchievementsCommand => new DelegateCommand(ViewAchievements);
+        public ICommand ViewSteamWorkshopCommand => new DelegateCommand(ViewSteamWorkshop);
         public ICommand ManageAppCommand => new DelegateCommand(ManageApp);
         public ICommand ViewOnSteamDBCommand => new DelegateCommand(ViewOnSteamDB);
         public ICommand ViewOnSteamCommand => new DelegateCommand(ViewOnSteam);
@@ -117,7 +121,27 @@ namespace SAM.WPF.Core
                 _managerProcess = SAMHelper.OpenManager(Id);
             }
         }
+
+        public void LaunchApp()
+        {
+            BrowserHelper.StartApp(Id);
+        }
         
+        public void InstallApp()
+        {
+            BrowserHelper.InstallApp(Id);
+        }
+        
+        public void ViewAchievements()
+        {
+            BrowserHelper.ViewAchievements(Id);
+        }
+        
+        public void ViewSteamWorkshop()
+        {
+            BrowserHelper.ViewSteamWorkshop(Id);
+        }
+
         public void ViewOnSteamDB()
         {
             BrowserHelper.ViewOnSteamDB(Id);
@@ -183,7 +207,7 @@ namespace SAM.WPF.Core
 
         private void LoadStoreInfo()
         {
-            var retryTime = new TimeSpan(0, 1, 0);
+            var retryTime = TimeSpan.FromSeconds(30);
 
             while (StoreInfo == null)
             {
@@ -196,12 +220,12 @@ namespace SAM.WPF.Core
                     Publisher = StoreInfo.Publishers.FirstOrDefault();
                     Developer = StoreInfo.Developers.FirstOrDefault();
                 }
-                catch (WebException wex) when (((HttpWebResponse) wex.Response).StatusCode == HttpStatusCode.TooManyRequests)
+                catch (WebException wex) when (((HttpWebResponse) wex.Response)?.StatusCode == HttpStatusCode.TooManyRequests)
                 {
                     var retrySb = new StringBuilder();
 
                     retrySb.Append($"Request for store info on app '{Id}' returned {nameof(HttpStatusCode)} {HttpStatusCode.TooManyRequests} for {nameof(HttpStatusCode.TooManyRequests)}. ");
-                    retrySb.Append($"Waiting {retryTime.TotalMinutes:0.#} minute(s) and then retrying...");
+                    retrySb.Append($"Waiting {retryTime.TotalSeconds} second(s) and then retrying...");
 
                     log.Warn(retrySb);
 
@@ -220,14 +244,16 @@ namespace SAM.WPF.Core
             client ??= SteamClientManager.Default;
 
             var iconName = client.GetAppIcon(Id);
-            if (!string.IsNullOrEmpty(iconName))
+            //if (!string.IsNullOrEmpty(iconName))
+            //{
+            //    Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
+            //}
+
+            var appLogo = client.SteamApps001.GetAppData(Id, @"logo");
+            if (!string.IsNullOrEmpty(appLogo))
             {
-                Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
+                Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);
             }
-
-            Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Header);
-            CapsuleMedium = SteamCdnHelper.DownloadImage(Id, SteamImageType.MediumCapsule);
         }
-
     }
 }

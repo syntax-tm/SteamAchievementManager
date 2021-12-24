@@ -12,15 +12,4 @@
         <Setter Property="Opacity" Value="0.5" />
     </Style>
 
-    <Style x:Key="ContextMenuIconStyle" TargetType="{x:Type fa:ImageAwesome}">
-        <Setter Property="Width" Value="18" />
-        <Setter Property="Height" Value="18" />
-        <Setter Property="Stretch" Value="Uniform" />
-        <Setter Property="StretchDirection" Value="Both" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
-        <Setter Property="Opacity" Value="0.8" /> 
-    </Style>
-
 </ResourceDictionary>

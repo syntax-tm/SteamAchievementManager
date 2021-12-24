@@ -10,6 +10,8 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:resources="clr-namespace:SAM.WPF.Core.Resources;assembly=SAM.WPF.Core"
              xmlns:behaviors="clr-namespace:SAM.WPF.Core.Behaviors;assembly=SAM.WPF.Core"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:library="clr-namespace:SAM.WPF.Views.Library"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
@@ -19,6 +21,10 @@
         <resources:GroupStyleSelector x:Key="CustomGroupStyleSelector" 
                                   NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
                                   DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />
+
+        <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MahApps.Styles.MenuItem}">
+
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -38,10 +44,10 @@
                 </ItemsControl.GroupStyle>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid>
-                            <dxmvvm:Interaction.Behaviors>
+                        <UniformGrid Columns="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type library:LibraryItemsControlView}}, Path=DataContext.DisplayColumns}">
+                            <!--<dxmvvm:Interaction.Behaviors>
                                 <behaviors:AutoResizeBehavior MaxItemWidth="300" />
-                            </dxmvvm:Interaction.Behaviors>
+                            </dxmvvm:Interaction.Behaviors>-->
                         </UniformGrid>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
@@ -78,30 +84,35 @@
                                         <MenuItem Header="{Binding Name}" FontWeight="SemiBold"
                                                   ToolTip="Open in Manager" Command="{Binding ManageAppCommand}">
                                             <MenuItem.Icon>
-                                                <fa:ImageAwesome Icon="Edit" Style="{StaticResource ContextMenuIconStyle}" />
+                                                <iconPacks:PackIconMaterial Kind="OpenInApp" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator Style="{StaticResource ContextMenuSeparator}" />
                                         <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
                                             <MenuItem.Icon>
-                                                <fa:ImageAwesome Icon="Database" Style="{StaticResource ContextMenuIconStyle}" />
+                                                <iconPacks:PackIconMaterial Kind="Database" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
                                                   Style="{StaticResource MahApps.Styles.MenuItem}">
                                             <MenuItem.Icon>
-                                                <fa:ImageAwesome Icon="SteamSquare" Style="{StaticResource ContextMenuIconStyle}" />
+                                                <iconPacks:PackIconMaterial Kind="Steam" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}">
                                             <MenuItem.Icon>
-                                                <fa:ImageAwesome Icon="Server" Style="{StaticResource ContextMenuIconStyle}" />
+                                                <iconPacks:PackIconMaterial Kind="Server" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconMaterial Kind="Card" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator Style="{StaticResource ContextMenuSeparator}" />
                                         <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
                                             <MenuItem.Icon>
-                                                <fa:ImageAwesome Icon="Clipboard" Style="{StaticResource ContextMenuIconStyle}" />
+                                                <iconPacks:PackIconMaterial Kind="ContentCopy" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                     </ContextMenu>

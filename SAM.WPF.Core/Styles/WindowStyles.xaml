@@ -337,14 +337,13 @@
 
     <Style x:Key="ChromeMetroWindowStyle" TargetType="{x:Type mah:MetroWindow}">
         <Setter Property="FontFamily" Value="{DynamicResource BaseFontFamily}" />
-        <Setter Property="BorderBrush" Value="White" />
+        <Setter Property="BorderBrush" Value="#CCCCCC" />
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="UseNoneWindowStyle" Value="False" />
         <Setter Property="AllowsTransparency" Value="True" />
         <Setter Property="ShowTitleBar" Value="True" />
         <Setter Property="ShowSystemMenu" Value="True" />
         <Setter Property="ShowSystemMenuOnRightClick" Value="True" />
-        <Setter Property="WindowStyle" Value="None" />
         <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
         <Setter Property="TitleAlignment" Value="Center" />
         <Setter Property="TitleCharacterCasing" Value="Normal" />

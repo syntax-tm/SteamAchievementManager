@@ -27,7 +27,7 @@ namespace SAM.WPF.Core.Converters
             {
                 return Imaging.CreateBitmapSourceFromHBitmap(handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             }
-            finally { DeleteObject(handle); }      
+            finally { DeleteObject(handle); }
         }
  
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

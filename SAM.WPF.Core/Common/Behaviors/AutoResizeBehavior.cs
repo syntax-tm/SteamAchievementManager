@@ -9,20 +9,39 @@ namespace SAM.WPF.Core.Behaviors
     {
         public static readonly DependencyProperty MaxItemWidthProperty =
             DependencyProperty.Register(nameof(MaxItemWidth), typeof(double), typeof(AutoResizeBehavior),
-            new PropertyMetadata());
+            new FrameworkPropertyMetadata((double) 300, OnMaxItemWidthChanged));
 
-        public double MaxItemWidth {
+        
+        public static readonly DependencyProperty ColumnCountProperty =
+            DependencyProperty.Register(nameof(ColumnCount), typeof(int), typeof(AutoResizeBehavior),
+                new FrameworkPropertyMetadata(4));
+
+        private static void OnMaxItemWidthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+        
+        public int ColumnCount
+        {
+            get { return (int) GetValue(ColumnCountProperty); }
+            set { SetValue(ColumnCountProperty, value); }
+        }
+
+        public double MaxItemWidth
+        {
             get { return (double) GetValue(MaxItemWidthProperty); }
             set { SetValue(MaxItemWidthProperty, value); }
         }
         
-        protected override void OnAttached() {
+        protected override void OnAttached()
+        {
             base.OnAttached();
             AssociatedObject.SizeChanged += OnSizeChanged;
             Update();
         }
         
-        protected override void OnDetaching() {
+        protected override void OnDetaching()
+        {
             AssociatedObject.SizeChanged -= OnSizeChanged;
             base.OnDetaching();
         }
@@ -34,7 +53,7 @@ namespace SAM.WPF.Core.Behaviors
             Update();
         }
         
-        void Update()
+        private void Update()
         {
             var width = AssociatedObject.ActualWidth;
             
