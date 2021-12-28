@@ -16,17 +16,7 @@ namespace SAM.WPF.Core.Stats
         public string IconLockedName => AchievementInfo.IconLocked;
         public string IconNormalName => AchievementInfo.IconNormal;
         public string Name => AchievementInfo.Name;
-        public string Description
-        {
-            get
-            {
-                if (AchievementDefinition.IsHidden && !IsAchieved)
-                {
-                    return @"Hidden";
-                }
-                return AchievementInfo.Description;
-            }
-        }
+        public string Description => AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : AchievementInfo.Description;
         public int Permission => AchievementInfo.Permission;
         public bool OriginalLockState
         {

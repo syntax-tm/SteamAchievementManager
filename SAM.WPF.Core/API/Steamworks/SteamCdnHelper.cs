@@ -3,7 +3,6 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using log4net;
-using SAM.WPF.Core.API.Steam;
 
 namespace SAM.WPF.Core.API
 {

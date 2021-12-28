@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                     xmlns:controlzex="urn:controlzex"
-                    xmlns:fluent="urn:fluent-ribbon">
+                    xmlns:fluent="urn:fluent-ribbon"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
     
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Colors.xaml" />
@@ -343,13 +344,42 @@
         <Setter Property="AllowsTransparency" Value="True" />
         <Setter Property="ShowTitleBar" Value="True" />
         <Setter Property="ShowSystemMenu" Value="True" />
-        <Setter Property="ShowSystemMenuOnRightClick" Value="True" />
+        <Setter Property="ShowSystemMenuOnRightClick" Value="False" />
         <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
         <Setter Property="TitleAlignment" Value="Center" />
         <Setter Property="TitleCharacterCasing" Value="Normal" />
         <Setter Property="GlowBrush" Value="#66FFFFFF" />
         <Setter Property="NonActiveGlowBrush" Value="#3BFFFFFF" />
         <Setter Property="Template" Value="{StaticResource ChromeMetroWindowTemplate}" />
+        <Setter Property="TitleTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <fluent:RibbonTitleBar x:Name="RibbonTitleBar"                                   
+                                           Header="{Binding Path=Title, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="IconTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid>
+                        <iconPacks:PackIconFontAwesome Kind="SteamSymbolBrands" Width="38"
+                                                       Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}">
+                            <iconPacks:PackIconFontAwesome.Style>
+                                <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
+                                    <Setter Property="Foreground" Value="#B6CECECE" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=mah:MetroWindow}, Path=IsActive}" Value="True">
+                                            <Setter Property="Foreground" Value="#D4FFFFFF" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </iconPacks:PackIconFontAwesome.Style>
+                        </iconPacks:PackIconFontAwesome>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
         <!--<Setter Property="TitleTemplate">
             <Setter.Value>
                 <DataTemplate>

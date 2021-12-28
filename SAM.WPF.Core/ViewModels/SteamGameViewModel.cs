@@ -6,11 +6,10 @@ using System.Windows;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
-using SAM.WPF.Core;
 using SAM.WPF.Core.API;
 using SAM.WPF.Core.Stats;
 
-namespace SAM.WPF.Manager.ViewModels
+namespace SAM.WPF.Core.ViewModels
 {
     public class SteamGameViewModel
     {

@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>AnyCPU;x86</Platforms>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +14,8 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpressMvvm" Version="21.1.5" />
-    <PackageReference Include="Fluent.Ribbon" Version="9.0.0" />
+    <PackageReference Include="Fluent.Ribbon" Version="9.0.1" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.0.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     <PackageReference Include="log4net" Version="2.0.13" />
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />

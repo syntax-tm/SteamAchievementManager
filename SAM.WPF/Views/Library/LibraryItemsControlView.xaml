@@ -6,8 +6,6 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:resources="clr-namespace:SAM.WPF.Core.Resources;assembly=SAM.WPF.Core"
              xmlns:behaviors="clr-namespace:SAM.WPF.Core.Behaviors;assembly=SAM.WPF.Core"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
@@ -44,10 +42,10 @@
                 </ItemsControl.GroupStyle>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type library:LibraryItemsControlView}}, Path=DataContext.DisplayColumns}">
-                            <!--<dxmvvm:Interaction.Behaviors>
+                        <UniformGrid Columns="6">
+                            <dxmvvm:Interaction.Behaviors>
                                 <behaviors:AutoResizeBehavior MaxItemWidth="300" />
-                            </dxmvvm:Interaction.Behaviors>-->
+                            </dxmvvm:Interaction.Behaviors>
                         </UniformGrid>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>

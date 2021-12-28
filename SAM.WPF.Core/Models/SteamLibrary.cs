@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows.Data;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.WPF.Core.API;
-using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Extensions;
 
 namespace SAM.WPF.Core
@@ -18,6 +18,7 @@ namespace SAM.WPF.Core
         private readonly ILog log = LogManager.GetLogger(nameof(SteamLibrary));
 
         private readonly BackgroundWorker _libraryWorker;
+        private AutoResetEvent _resetEvent;
 
         private static readonly object _lock = new ();
         private readonly List<SupportedApp> _supportedGames;
@@ -101,6 +102,8 @@ namespace SAM.WPF.Core
         
         public void Refresh(bool loadCache = false)
         {
+            _resetEvent ??= new(false);
+
             _refreshQueue = new Queue<SupportedApp>(_supportedGames);
             _addedGames = new List<SupportedApp>();
 
@@ -122,11 +125,8 @@ namespace SAM.WPF.Core
             if (!_libraryWorker.IsBusy) return;
 
             _libraryWorker.CancelAsync();
-
-            while (_libraryWorker.IsBusy)
-            {
-                System.Threading.Thread.Sleep(250);
-            }
+            
+            _resetEvent?.WaitOne();
         }
         
         private void LibraryWorkerOnDoWork(object sender, DoWorkEventArgs args)
@@ -172,6 +172,8 @@ namespace SAM.WPF.Core
                 CacheLibrary();
                 CacheRefreshProgress();
                 RefreshCounts();
+
+                _resetEvent.Set();
             }
         }
         
@@ -193,7 +195,7 @@ namespace SAM.WPF.Core
 
                 if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;
 
-                var steamGame = new SteamApp(app.Id, type);
+                var steamGame = new SteamApp(app.Id, type, this);
 
                 Items.Add(steamGame);
 
@@ -205,10 +207,10 @@ namespace SAM.WPF.Core
             }
             catch (Exception e)
             {
-                var message = $"An error occurred attempting to add app '{app?.Id}'. {e.Message}";
+                var message = $"Error attempting to add app '{app?.Id}'. {e.Message}";
                 log.Error(message, e);
 
-                return false;
+                throw new SAMException(message, e);
             }
         }
 

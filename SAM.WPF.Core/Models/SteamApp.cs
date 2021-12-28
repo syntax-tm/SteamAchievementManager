@@ -5,25 +5,28 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.API;
 using SAM.WPF.Core.API;
-using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Extensions;
+using SAM.WPF.Core.ViewModels;
+using SAM.WPF.Core.Views;
 
 namespace SAM.WPF.Core
 {
     [DebuggerDisplay("{Name} ({Id})")]
     public class SteamApp : ViewModelBase
     {
+        private readonly SteamLibrary _library;
 
         protected readonly ILog log = LogManager.GetLogger(nameof(SteamApp));
 
         //private bool _statsLoaded;
 
-        private Process _managerProcess;
+        //private Process _managerProcess;
 
         public uint Id { get; }
 
@@ -99,10 +102,12 @@ namespace SAM.WPF.Core
         public ICommand ViewOnPCGWCommand => new DelegateCommand(ViewOnPCGW);
         public ICommand CopySteamIDCommand => new DelegateCommand(CopySteamID);
 
-        public SteamApp(uint id, GameInfoType type)
+        public SteamApp(uint id, GameInfoType type, SteamLibrary library = null)
         {
             Id = id;
             GameInfoType = type;
+            
+            _library = library;
 
             Load();
         }
@@ -116,10 +121,46 @@ namespace SAM.WPF.Core
         {
             if (!Loaded) return;
 
-            if (_managerProcess == null || !_managerProcess.SetActive())
+            try
             {
-                _managerProcess = SAMHelper.OpenManager(Id);
+                // cancel any currently running refresh operation since the SteamWorksAPI is NOT
+                // thread safe
+                _library?.CancelRefresh();
+
+                SteamClientManager.Init(Id);
+                
+                var gameVm = SteamGameViewModel.Create(this);
+                gameVm.RefreshStats();
+
+                var gameView = new SteamGameView
+                {
+                    DataContext = gameVm
+                };
+
+                var managerWindow = new SAMWindow();
+                managerWindow.Content = gameView;
+                managerWindow.Title = $"Steam Achievement Manager | {Name}";
+                managerWindow.Icon = Icon?.ToImageSource();
+
+                managerWindow.ShowDialog();
+
+
             }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to manage app {Name} ({Id}). {e.Message}";
+                log.Error(message, e);
+                MessageBox.Show(message, "Steam App Management Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                SteamClientManager.Init(0);
+            }
+            
+            //if (_managerProcess == null || !_managerProcess.SetActive())
+            //{
+            //    _managerProcess = SAMHelper.OpenManager(Id);
+            //}
         }
 
         public void LaunchApp()
@@ -244,10 +285,10 @@ namespace SAM.WPF.Core
             client ??= SteamClientManager.Default;
 
             var iconName = client.GetAppIcon(Id);
-            //if (!string.IsNullOrEmpty(iconName))
-            //{
-            //    Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
-            //}
+            if (!string.IsNullOrEmpty(iconName))
+            {
+                Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
+            }
 
             var appLogo = client.SteamApps001.GetAppData(Id, @"logo");
             if (!string.IsNullOrEmpty(appLogo))

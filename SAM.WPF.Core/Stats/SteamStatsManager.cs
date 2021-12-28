@@ -9,7 +9,7 @@ using log4net;
 using SAM.API;
 using SAM.API.Stats;
 using SAM.API.Types;
-using SAM.WPF.Core.API.Steam;
+using SAM.WPF.Core.API;
 using SAM.WPF.Core.Extensions;
 
 namespace SAM.WPF.Core.Stats

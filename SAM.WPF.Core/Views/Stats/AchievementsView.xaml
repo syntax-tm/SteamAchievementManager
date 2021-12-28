@@ -1,33 +1,43 @@
-﻿<UserControl x:Class="SAM.WPF.Manager.Views.AchievementsView"
+﻿<UserControl x:Class="SAM.WPF.Core.Views.Stats.AchievementsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:vm="clr-namespace:SAM.WPF.Manager.ViewModels"
-             xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:stats="clr-namespace:SAM.WPF.Core.Stats;assembly=SAM.WPF.Core"
+             xmlns:vm="clr-namespace:SAM.WPF.Core.ViewModels"
+             xmlns:stats="clr-namespace:SAM.WPF.Core.Stats"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:converters="clr-namespace:SAM.WPF.Core.Converters"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
-        <dxmvvm:BooleanToObjectConverter x:Key="UnlockedConverter" TrueValue="Unlocked" FalseValue="Locked" />
-        <Style x:Key="GroupHeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="15" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Expander}}, Path=(mah:HeaderedControlHelper.HeaderForeground)}" />
-        </Style>
-        <CollectionViewSource x:Key="AchievementCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="IsAchieved" />
-            </CollectionViewSource.GroupDescriptions>
-            <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="IsAchieved" Direction="Ascending" />
-                <scm:SortDescription PropertyName="IsModified" Direction="Descending" />
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.datagrid.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.expander.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/AllResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <dxmvvm:BooleanToObjectConverter x:Key="UnlockedConverter" TrueValue="Unlocked" FalseValue="Locked" />
+            <Style x:Key="GroupHeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Expander}}, Path=(mah:HeaderedControlHelper.HeaderForeground)}" />
+            </Style>
+            <CollectionViewSource x:Key="AchievementCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True">
+                <CollectionViewSource.GroupDescriptions>
+                    <PropertyGroupDescription PropertyName="IsAchieved" />
+                </CollectionViewSource.GroupDescriptions>
+                <CollectionViewSource.SortDescriptions>
+                    <scm:SortDescription PropertyName="IsAchieved" Direction="Ascending" />
+                    <scm:SortDescription PropertyName="IsModified" Direction="Descending" />
+                </CollectionViewSource.SortDescriptions>
+            </CollectionViewSource>
+        </ResourceDictionary>
+
     </UserControl.Resources>
 
     <Grid>
@@ -165,26 +175,12 @@
                             </Style>
                         </DataGridCheckBoxColumn.CellStyle>
                     </DataGridCheckBoxColumn>
-                    <!--<DataGridTemplateColumn Header="Unlocked" HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
-                                            CanUserReorder="False" Width="SizeToCells">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Viewbox Margin="2">
-                                    <CheckBox IsChecked="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                              Margin="0,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                </Viewbox>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>-->
-                    <!--<DataGridCheckBoxColumn Header="Unlocked" HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
-                                            CanUserReorder="False" Width="35" Binding="{Binding IsAchieved, UpdateSourceTrigger=PropertyChanged}">
-                    </DataGridCheckBoxColumn>-->
                     <DataGridTemplateColumn Header="" IsReadOnly="True" CanUserSort="False" Width="SizeToCells">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate DataType="{x:Type stats:SteamAchievement}">
                                 <Border BorderThickness="2" BorderBrush="Black" Padding="0" Margin="0">
                                     <Grid Width="40" Height="40">
-                                        <Image Source="{Binding Image, Mode=OneWay, Converter={StaticResource BitmapToImageSourceConverter}}" Margin="-1" />
+                                        <Image Source="{Binding Image, Mode=OneWay, Converter={converters:BitmapToImageSourceConverter}}" Margin="-1" />
                                     </Grid>
                                 </Border>
                             </DataTemplate>
@@ -194,9 +190,6 @@
                                         HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         CellStyle="{StaticResource CenterAlignedCellStyle}"
                                         Width="100" Visibility="Collapsed" />
-                    <!--<DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}"
-                                        HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
-                                        CellStyle="{StaticResource CenteredTextCellStyle}" />-->
                     <DataGridTemplateColumn Header="Description" Width="*"
                                         HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
@@ -220,18 +213,6 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <!--<DataGridTemplateColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
-                                            CellStyle="{StaticResource CenterAlignedCellStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type stats:SteamAchievement}">
-                                <Button Content="Reset" IsEnabled="{Binding IsModified, Mode=OneWay}" Command="{Binding ResetCommand}"
-                                        Style="{StaticResource MahApps.Styles.Button.Flat}"
-                                        Margin="0" Width="50"
-                                        mah:ControlsHelper.ContentCharacterCasing="Normal"
-                                        mah:ControlsHelper.CornerRadius="0" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>-->
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

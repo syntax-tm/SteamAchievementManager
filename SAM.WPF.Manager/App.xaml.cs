@@ -5,7 +5,6 @@ using System.Windows.Threading;
 using log4net;
 using SAM.WPF.Core;
 using SAM.WPF.Core.API;
-using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Extensions;
 using SAM.WPF.Core.SplashScreen;
 using SAM.WPF.Core.Themes;
@@ -42,7 +41,7 @@ namespace SAM.WPF.Manager
                 if (!uint.TryParse(commandLineArgs[1], out var appId))
                 {
                     var message = $"Failed to parse the {nameof(appId)} from command line argument {commandLineArgs[1]}.";
-                    throw new ArgumentException(message, nameof(StartupEventArgs));
+                    throw new ArgumentException(message, nameof(startupArgs));
                 }
 
                 _appID = appId;
@@ -80,10 +79,12 @@ namespace SAM.WPF.Manager
                     DataContext = gameVm
                 };
 
-                MainWindow = new MainWindow();
-                MainWindow.Content = gameView;
-                MainWindow.Title = $"Steam Achievement Manager | {appInfo.Name}";
-                MainWindow.Icon = appInfo.Icon.ToImageSource();
+                MainWindow = new MainWindow
+                {
+                    Content = gameView,
+                    Title = $"Steam Achievement Manager | {appInfo.Name}",
+                    Icon = appInfo.Icon?.ToImageSource()
+                };
 
                 MainWindow.Show();
 

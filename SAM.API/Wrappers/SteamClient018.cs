@@ -75,6 +75,19 @@ namespace SAM.API.Wrappers
         }
 
 #endregion
+        
+#region ReleaseSteamPipe
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private delegate bool NativeShutdownIfAllPipesClosed(IntPtr self);
+
+        public bool ShutdownIfAllPipesClosed()
+        {
+            return Call<bool, NativeShutdownIfAllPipesClosed>(Functions.ShutdownIfAllPipesClosed, ObjectAddress);
+        }
+
+#endregion
 
 #region CreateLocalUser
 
