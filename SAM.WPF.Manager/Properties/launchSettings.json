@@ -1,8 +1,13 @@
 {
   "profiles": {
-    "SAM.WPF.Manager": {
+    "SAM.WPF.Manager (No App)": {
       "commandName": "Project",
-      "commandLineArgs": "952060"
+      "nativeDebugging": true
+    },
+    "SAM.WPF.Manager (RE5)": {
+      "commandName": "Project",
+      "commandLineArgs": "21690",
+      "nativeDebugging": true
     }
   }
 }

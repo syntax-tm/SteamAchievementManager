@@ -1,27 +1,20 @@
 ﻿using DevExpress.Mvvm.POCO;
-using System.Windows;
+using SAM.WPF.Core.ViewModels;
 
 namespace SAM.WPF.Manager.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : MainWindowViewModelBase
     {
+        public virtual SteamGameViewModel GameVm { get; set; }
 
-        public virtual string Title { get; set; } = "Steam Achievement Manager";
-        public virtual int Width { get; set; } = 1024;
-        public virtual int Height { get; set; } = 768;
-        public virtual int X { get; set; }
-        public virtual int Y { get; set; }
-        public virtual WindowState WindowState { get; set; }
-
-        protected MainWindowViewModel()
+        protected MainWindowViewModel(SteamGameViewModel gameVm)
         {
-
-        }
-        
-        public static MainWindowViewModel Create()
-        {
-            return ViewModelSource.Create(() => new MainWindowViewModel());
+            GameVm = gameVm;
         }
 
+        public static MainWindowViewModel Create(SteamGameViewModel gameVm)
+        {
+            return ViewModelSource.Create(() => new MainWindowViewModel(gameVm));
+        }
     }
 }

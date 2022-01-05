@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-                    xmlns:converters="clr-namespace:SAM.WPF.Core.Converters">
+                    xmlns:converters="clr-namespace:SAM.WPF.Core.Converters"
+                    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks">
     
     <converters:BitmapToImageSourceConverter x:Key="BitmapToImageSourceConverter" />
 
@@ -17,5 +18,7 @@
     <dxmvvm:BooleanToVisibilityConverter x:Key="InverseBoolToVisConverter" Inverse="True" />
 
     <dxmvvm:BooleanNegationConverter x:Key="BooleanNegationConverter" />
+
+    <iconPacks:PackIconKindToImageConverter x:Key="PackIconToImageConverter" Brush="{StaticResource MahApps.Brushes.IdealForeground}" />
 
 </ResourceDictionary>

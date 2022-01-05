@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using log4net;
 
 namespace SAM.WPF.Core.API
@@ -88,8 +89,8 @@ namespace SAM.WPF.Core.API
         {
             try
             {
-                using var wc = new WebClient();
-                var data = wc.OpenRead(imageUrl);
+                using var wc = new HttpClient();
+                var data = wc.GetStreamAsync(imageUrl).Result;
                 //using var stream = new MemoryStream(data, false);
 
                 return Image.FromStream(data);

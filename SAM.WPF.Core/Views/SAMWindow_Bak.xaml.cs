@@ -1,8 +1,8 @@
 ﻿namespace SAM.WPF.Core.Views
 {
-    public partial class SAMWindow
+    public partial class SAMWindow_Bak
     {
-        public SAMWindow()
+        public SAMWindow_Bak()
         {
             InitializeComponent();
         }

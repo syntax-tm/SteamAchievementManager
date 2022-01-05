@@ -22,6 +22,14 @@ namespace SAM.WPF.Core
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMHelper));
 
+        public static void VerifySteamProcess()
+        {
+            if (IsSteamRunning()) return;
+
+            //  TODO: change the error message to indicate that Steam needs to be started
+            throw new SAMInitializationException(@"Steam process is not currently running.");
+        }
+
         public static bool IsSteamRunning()
         {
             var processes = Process.GetProcessesByName(STEAM_PROCESS_NAME);

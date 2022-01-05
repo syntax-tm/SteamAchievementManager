@@ -7,9 +7,8 @@
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
              xmlns:resources="clr-namespace:SAM.WPF.Core.Resources;assembly=SAM.WPF.Core"
-             xmlns:behaviors="clr-namespace:SAM.WPF.Core.Behaviors;assembly=SAM.WPF.Core"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-             xmlns:library="clr-namespace:SAM.WPF.Views.Library"
+             xmlns:converters="clr-namespace:SAM.WPF.Core.Converters;assembly=SAM.WPF.Core"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
@@ -20,9 +19,23 @@
                                   NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
                                   DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />
 
-        <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MahApps.Styles.MenuItem}">
-
-        </Style>
+        <ItemsPanelTemplate x:Key="ItemsPanelTemplate">
+            <!--<UniformGrid>
+                <dxmvvm:Interaction.Behaviors>
+                    <behaviors:AutoResizeBehavior MaxItemWidth="300" />
+                </dxmvvm:Interaction.Behaviors>
+            </UniformGrid>-->
+            <UniformGrid>
+                <UniformGrid.Rows>
+                    <MultiBinding Converter="{converters:MathDivideConverter}">
+                        <MultiBinding.Bindings>
+                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ItemsControl}" Path="Items.Count" />
+                            <Binding Path="DisplayColumns" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </UniformGrid.Rows>
+            </UniformGrid>
+        </ItemsPanelTemplate>
     </UserControl.Resources>
 
     <Grid>
@@ -30,25 +43,20 @@
                       CanContentScroll="False" SnapsToDevicePixels="True" IsTabStop="False"
                       BorderThickness="2"
                       ScrollChanged="ScrollViewer_ScrollChanged">
-            <ItemsControl x:Name="libraryItemsView" ItemsSource="{Binding ItemsView}">
-                <ItemsControl.GroupStyle>
-                    <GroupStyle ContainerStyleSelector="{StaticResource CustomGroupStyleSelector}">
+            <ItemsControl x:Name="libraryItemsView" ItemsSource="{Binding ItemsView}"
+                          ItemsPanel="{StaticResource ItemsPanelTemplate}"
+                          HorizontalContentAlignment="Center"
+                          Padding="4">
+                <!--<ItemsControl.GroupStyle>
+                    <GroupStyle ContainerStyleSelector="{StaticResource CustomGroupStyleSelector}"
+                                Panel="{StaticResource ItemsPanelTemplate}">
                         <GroupStyle.HeaderTemplate>
                             <DataTemplate DataType="{x:Type CollectionViewGroup}">
                                 <TextBlock Text="{Binding Name}" />
                             </DataTemplate>
                         </GroupStyle.HeaderTemplate>
                     </GroupStyle>
-                </ItemsControl.GroupStyle>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="6">
-                            <dxmvvm:Interaction.Behaviors>
-                                <behaviors:AutoResizeBehavior MaxItemWidth="300" />
-                            </dxmvvm:Interaction.Behaviors>
-                        </UniformGrid>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+                </ItemsControl.GroupStyle>-->
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:SteamApp}">
                         <Grid>
@@ -85,7 +93,7 @@
                                                 <iconPacks:PackIconMaterial Kind="OpenInApp" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <Separator Style="{StaticResource ContextMenuSeparator}" />
+                                        <Separator Style="{StaticResource SAM.Styles.ContextMenu.Separator}" />
                                         <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
                                             <MenuItem.Icon>
                                                 <iconPacks:PackIconMaterial Kind="Database" />
@@ -107,7 +115,7 @@
                                                 <iconPacks:PackIconMaterial Kind="Card" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <Separator Style="{StaticResource ContextMenuSeparator}" />
+                                        <Separator Style="{StaticResource SAM.Styles.ContextMenu.Separator}" />
                                         <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
                                             <MenuItem.Icon>
                                                 <iconPacks:PackIconMaterial Kind="ContentCopy" />
