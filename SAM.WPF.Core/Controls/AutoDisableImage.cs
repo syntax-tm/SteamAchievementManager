@@ -11,17 +11,15 @@ namespace SAM.WPF.Core.Controls
         
         static AutoDisableImage()
         {
-            // Override the metadata of the IsEnabled and Source properties to be notified of changes
             IsEnabledProperty.OverrideMetadata(typeof(AutoDisableImage), new FrameworkPropertyMetadata(true, OnAutoDisableImagePropertyChanged));
             SourceProperty.OverrideMetadata(typeof(AutoDisableImage), new FrameworkPropertyMetadata(null, OnAutoDisableImagePropertyChanged));
         }
         
         private static void OnAutoDisableImagePropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
         {
-            if (source is AutoDisableImage img && img.IsEnabled == img.IsGrayscaled)
-            {
-                img.UpdateImage();
-            }
+            if (source is not AutoDisableImage img || img.IsEnabled != img.IsGrayscaled) return;
+
+            img.UpdateImage();
         }
 
         protected void UpdateImage()

@@ -5,110 +5,51 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Windows;
-using System.Windows.Input;
 using DevExpress.Mvvm;
+using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.API;
 using SAM.WPF.Core.API;
 using SAM.WPF.Core.Extensions;
-using SAM.WPF.Core.ViewModels;
-using SAM.WPF.Core.Views;
 
 namespace SAM.WPF.Core
 {
     [DebuggerDisplay("{Name} ({Id})")]
     public class SteamApp : ViewModelBase
     {
-        private readonly SteamLibrary _library;
-
         protected readonly ILog log = LogManager.GetLogger(nameof(SteamApp));
-
-        //private bool _statsLoaded;
-
-        //private Process _managerProcess;
+        
+        private bool _statsLoaded;
+        private Process _managerProcess;
 
         public uint Id { get; }
 
-        public string Name
+        public virtual string Name
         {
             get => GetProperty(() => Name);
             set => SetProperty(() => Name, value);
         }
-        public GameInfoType GameInfoType
-        {
-            get => GetProperty(() => GameInfoType);
-            set => SetProperty(() => GameInfoType, value);
-        }
+        public virtual GameInfoType GameInfoType { get; set; }
         public bool IsJunk => GameInfoType == GameInfoType.Junk;
         public bool IsDemo => GameInfoType == GameInfoType.Demo;
         public bool IsNormal => GameInfoType == GameInfoType.Normal;
         public bool IsTool => GameInfoType == GameInfoType.Tool;
         public bool IsMod => GameInfoType == GameInfoType.Mod;
-        public virtual bool IsLoading
-        {
-            get => GetProperty(() => IsLoading);
-            set => SetProperty(() => IsLoading, value);
-        }
-        public bool Loaded
-        {
-            get => GetProperty(() => Loaded);
-            set => SetProperty(() => Loaded, value);
-        }
-        public string Publisher
-        {
-            get => GetProperty(() => Publisher);
-            set => SetProperty(() => Publisher, value);
-        }
-        public string Developer 
-        {
-            get => GetProperty(() => Developer);
-            set => SetProperty(() => Developer, value);
-        }
-        public SteamStoreApp StoreInfo
-        {
-            get => GetProperty(() => StoreInfo);
-            set => SetProperty(() => StoreInfo, value);
-        }
-        public Image Icon
-        {
-            get => GetProperty(() => Icon);
-            set => SetProperty(() => Icon, value);
-        }
-        public Image Header
-        {
-            get => GetProperty(() => Header);
-            set => SetProperty(() => Header, value);
-        }
-        public Image Capsule
-        {
-            get => GetProperty(() => Capsule);
-            set => SetProperty(() => Capsule, value);
-        }
-        public string Group
-        {
-            get => GetProperty(() => Group);
-            set => SetProperty(() => Group, value);
-        }
-        
-        public ICommand LaunchAppCommand => new DelegateCommand(LaunchApp);
-        public ICommand InstallAppCommand => new DelegateCommand(InstallApp);
-        public ICommand ViewAchievementsCommand => new DelegateCommand(ViewAchievements);
-        public ICommand ViewSteamWorkshopCommand => new DelegateCommand(ViewSteamWorkshop);
-        public ICommand ManageAppCommand => new DelegateCommand(ManageApp);
-        public ICommand ViewOnSteamDBCommand => new DelegateCommand(ViewOnSteamDB);
-        public ICommand ViewOnSteamCommand => new DelegateCommand(ViewOnSteam);
-        public ICommand ViewOnSteamCardExchangeCommand => new DelegateCommand(ViewOnSteamCardExchange);
-        public ICommand ViewOnPCGWCommand => new DelegateCommand(ViewOnPCGW);
-        public ICommand CopySteamIDCommand => new DelegateCommand(CopySteamID);
+        public virtual bool IsLoading { get; set; }
+        public virtual bool Loaded { get; set; }
+        public virtual string Publisher { get; set; }
+        public virtual string Developer { get; set; }
+        public virtual SteamStoreApp StoreInfo { get; set; }
+        public virtual Image Icon { get; set; }
+        public virtual Image Header { get; set; }
+        public virtual Image Capsule { get; set; }
+        public virtual string Group { get; set; }
 
-        public SteamApp(uint id, GameInfoType type, SteamLibrary library = null)
+        public SteamApp(uint id, GameInfoType type)
         {
             Id = id;
             GameInfoType = type;
             
-            _library = library;
-
             Load();
         }
         
@@ -117,50 +58,21 @@ namespace SAM.WPF.Core
         {
         }
 
+        public static SteamApp Create(uint id, GameInfoType type)
+        {
+            return ViewModelSource.Create(() => new SteamApp(id, type));
+        }
+        
+        public static SteamApp Create(SupportedApp supportedApp)
+        {
+            return ViewModelSource.Create(() => new SteamApp(supportedApp));
+        }
+
         public void ManageApp()
         {
-            if (!Loaded) return;
+            if (_managerProcess != null && _managerProcess.SetActive()) return;
 
-            try
-            {
-                // cancel any currently running refresh operation since the SteamWorksAPI is NOT
-                // thread safe
-                _library?.CancelRefresh();
-
-                SteamClientManager.Init(Id);
-                
-                var gameVm = SteamGameViewModel.Create(this);
-                gameVm.RefreshStats();
-
-                var gameView = new SteamGameView
-                {
-                    DataContext = gameVm
-                };
-
-                var managerWindow = new SAMWindow();
-                managerWindow.Content = gameView;
-                managerWindow.Title = $"Steam Achievement Manager | {Name}";
-                managerWindow.Icon = Icon?.ToImageSource();
-
-                managerWindow.ShowDialog();
-
-
-            }
-            catch (Exception e)
-            {
-                var message = $"An error occurred attempting to manage app {Name} ({Id}). {e.Message}";
-                log.Error(message, e);
-                MessageBox.Show(message, "Steam App Management Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                SteamClientManager.Init(0);
-            }
-            
-            //if (_managerProcess == null || !_managerProcess.SetActive())
-            //{
-            //    _managerProcess = SAMHelper.OpenManager(Id);
-            //}
+            _managerProcess = SAMHelper.OpenManager(Id);
         }
 
         public void LaunchApp()
@@ -224,7 +136,7 @@ namespace SAM.WPF.Core
             }
             catch (Exception e)
             {
-                log.Error($"An error occurred attempting to load app info for app id {Id}. {e.Message}", e);
+                log.Error($"An error occurred attempting to load app info for '{Name}' ({Id}). {e.Message}", e);
             }
             finally
             {
@@ -290,7 +202,7 @@ namespace SAM.WPF.Core
                 Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
             }
 
-            var appLogo = client.SteamApps001.GetAppData(Id, @"logo");
+            var appLogo = client.SteamApps001.GetAppLogo(Id);
             if (!string.IsNullOrEmpty(appLogo))
             {
                 Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);

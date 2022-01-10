@@ -37,7 +37,7 @@ namespace SAM.WPF.Core.Behaviors
 
         private void WindowOnLoaded(object sender, RoutedEventArgs e)
         {
-            TitleBar = this.FindChild<RibbonTitleBar>(@"PART_RibbonTitleBar");
+            TitleBar = AssociatedObject.FindChild<RibbonTitleBar>(@"PART_RibbonTitleBar");
 
             if (TitleBar is null)
             {

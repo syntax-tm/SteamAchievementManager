@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:local="clr-namespace:SAM.WPF.Core.SplashScreen"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
@@ -13,42 +12,40 @@
              d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
-        <Style x:Key="CaptionButtonStyle" TargetType="Button">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="30">
-                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
-                                       Foreground="#999999" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#53303030"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="White"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-
-        <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE949;"/>
-        </Style>
-
-        <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE739;"/>
-        </Style>
-
-        <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE923;"/>
-        </Style>
-
-        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
-            <Setter Property="Content" Value="&#xE106;"/>
-        </Style>
+        <ResourceDictionary>
+            <Style x:Key="CaptionButtonStyle" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="30">
+                                <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
+                                           Foreground="#999999" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="LayoutRoot" Property="Background" Value="#53303030"/>
+                                    <Setter TargetName="txt" Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE949;"/>
+            </Style>
+            <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE739;"/>
+            </Style>
+            <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE923;"/>
+            </Style>
+            <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+                <Setter Property="Content" Value="&#xE106;"/>
+            </Style>
+        </ResourceDictionary>
+        
     </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
@@ -57,22 +54,6 @@
 
     <Grid Width="500" Height="300">
         <Grid Background="#1a1a1a">
-            <!--<StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
-                <Button BorderBrush="Transparent" BorderThickness="0" Margin="3" Background="Transparent"
-                        Command="{Binding HideCommand}" Padding="0">
-                    <fa:ImageAwesome Icon="Minus" Foreground="#11eeeeee" Width="16" Height="16" />
-                </Button>
-                <Button BorderBrush="Transparent" BorderThickness="0" Margin="3" Background="Transparent"
-                        Command="{Binding ExitCommand}" Padding="0">
-                    <fa:ImageAwesome Icon="Times" Foreground="#11eeeeee" Width="16" Height="16" />
-                </Button>
-            </StackPanel>-->
-            <!--<Grid>
-                <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
-                    <Button Style="{StaticResource MinimizeButtonStyle}" Command="{Binding HideCommand}" />
-                    <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding ExitCommand}" />
-                </StackPanel>
-            </Grid>-->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="300" />
@@ -83,7 +64,7 @@
                     <iconPacks:PackIconFontAwesome.Style>
                         <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
                             <Setter Property="Opacity" Value="0.1" />
-                            <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.IdealForeground}" />
+                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Opacity" Value="0.12" />

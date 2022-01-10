@@ -2,7 +2,7 @@
   "profiles": {
     "SAM.WPF.Core": {
       "commandName": "Project",
-      "nativeDebugging": true
+      "nativeDebugging": false
     }
   }
 }

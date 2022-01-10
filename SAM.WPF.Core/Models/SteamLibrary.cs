@@ -90,10 +90,10 @@ namespace SAM.WPF.Core
 
             SupportedGamesCount = _supportedGames.Count;
             
-            Items = new ObservableCollection<SteamApp>();
+            Items = new();
             BindingOperations.EnableCollectionSynchronization(Items, _lock);
             
-            _libraryWorker = new BackgroundWorker();
+            _libraryWorker = new();
             _libraryWorker.WorkerSupportsCancellation = true;
             _libraryWorker.WorkerReportsProgress = true;
             _libraryWorker.DoWork += LibraryWorkerOnDoWork;
@@ -104,8 +104,8 @@ namespace SAM.WPF.Core
         {
             _resetEvent ??= new(false);
 
-            _refreshQueue = new Queue<SupportedApp>(_supportedGames);
-            _addedGames = new List<SupportedApp>();
+            _refreshQueue = new(_supportedGames);
+            _addedGames = new();
 
             Items.Clear();
 
@@ -195,7 +195,7 @@ namespace SAM.WPF.Core
 
                 if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;
 
-                var steamGame = new SteamApp(app.Id, type, this);
+                var steamGame = new SteamApp(app.Id, type);
 
                 Items.Add(steamGame);
 
