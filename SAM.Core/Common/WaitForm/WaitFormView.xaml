@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="SAM.Core.WaitFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Border Background="#1A1A1A" BorderBrush="#1F1F1F" BorderThickness="2"
+                Width="350" Height="130"
+                Visibility="{Binding IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Vertical">
+                <iconPacks:PackIconMaterial Kind="Refresh" Spin="True" SpinDuration="10" Width="50" Height="50"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                <TextBlock Text="Loading..." Foreground="White" HorizontalAlignment="Center" Margin="5" />
+            </StackPanel>
+        </Border>  
+    </Grid>
+</UserControl>
