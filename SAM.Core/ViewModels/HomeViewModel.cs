@@ -13,7 +13,7 @@ namespace SAM.Core.ViewModels
         protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
         
         private readonly CollectionViewSource _itemsViewSource;
-        private bool _loading = true;
+        private readonly bool _loading = true;
 
         public virtual bool EnableGrouping { get; set; } = true;
         public virtual int DisplayColumns { get; set; }

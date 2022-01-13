@@ -1,4 +1,4 @@
-using SAM.WPF.Core.API;
+using SAM.Core;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -17,7 +17,7 @@ namespace SAM.UnitTests
         [InlineData(287290)]
         [InlineData(254700)]
         [InlineData(952060)]
-        public void TestApp(uint appId)
+        public void SteamworksManager_GetAppInfo_Succeeds(uint appId)
         {
             var appData = SteamworksManager.GetAppInfo(appId);
 
@@ -30,7 +30,7 @@ namespace SAM.UnitTests
         [Theory(DisplayName = "Steamworks App (w/ DLC)")]
         [InlineData(287290)]
         [InlineData(952060)]
-        public void TestAppWithDlc(uint appId)
+        public void SteamworksManager_GetAppInfo_WithDLC_Succeeds(uint appId)
         {
             var appData = SteamworksManager.GetAppInfo(appId, true);
 
@@ -41,7 +41,7 @@ namespace SAM.UnitTests
 
         [Theory(DisplayName = "Steamworks App (w/o DLC)")]
         [InlineData(254700)]
-        public void TestAppWithNoDlc(uint appId)
+        public void SteamworksManager_GetAppInfo_NoDLC_Succeeds(uint appId)
         {
             var appData = SteamworksManager.GetAppInfo(appId, true);
 
@@ -51,7 +51,7 @@ namespace SAM.UnitTests
         }
 
         [Fact(DisplayName = "Steamworks App List")]
-        public void TestAppList()
+        public void SteamworksManager_GetAppList_NotEmpty()
         {
             var apps = SteamworksManager.GetAppList();
 
