@@ -10,15 +10,13 @@ namespace SAM.Core
 {
     public static class SAMHelper
     {
-
-        private const string CLASSIC_MANAGER_EXE = @"SAM.Manager.exe";
-        private const string WPF_MANAGER_EXE = @"SAM.WPF.Manager.exe";
-        private const string CLASSIC_PICKER_EXE = @"SAM.Picker.exe";
-        private const string WPF_PICKER_EXE = @"SAM.WPF.exe";
+        
+        private const string SAM_MANAGER_EXE = @"SAM.Manager.exe";
+        private const string SAM_PICKER_EXE = @"SAM.exe";
         private const string STEAM_PROCESS_NAME = @"Steam";
 
-        private const string PICKER_PROCESS_REGEX = @"^SAM(?:\.WPF)?(?:\.Picker)?(?:\.exe)?$";
-        private const string MANAGER_PROCESS_REGEX = @"^SAM(?:\.WPF)?\.Manager(?:\.exe)?$";
+        private const string PICKER_PROCESS_REGEX = @"^SAM(?:\.exe)?$";
+        private const string MANAGER_PROCESS_REGEX = @"^SAM\.Manager(?:\.exe)?$";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMHelper));
 
@@ -42,54 +40,30 @@ namespace SAM.Core
             return processes.Any(p => Regex.IsMatch(p.ProcessName, PICKER_PROCESS_REGEX));
         }
 
-        public static Process OpenPicker(bool useClassicPicker = false)
+        public static Process OpenPicker()
         {
-            var pickerExe = GetPickerExe(useClassicPicker);
-
-            if (!File.Exists(pickerExe))
+            if (!File.Exists(SAM_PICKER_EXE))
             {
-                log.Warn($"The SAM Picker '{pickerExe}' does not exist.");
-                
-                // try to fall back to the other manager
-                var otherPicker = GetManagerExe(!useClassicPicker);
-                
-                if (!File.Exists(otherPicker))
-                {
-                    throw new FileNotFoundException($"Unable to start '{pickerExe}' because it does not exist.", pickerExe);
-                }
-
-                pickerExe = otherPicker;
+                throw new FileNotFoundException($"Unable to start '{SAM_PICKER_EXE}' because it does not exist.", SAM_PICKER_EXE);
             }
 
-            var proc = Process.Start(pickerExe);
+            var proc = Process.Start(SAM_PICKER_EXE);
 
             proc.SetActive();
 
             return proc;
         }
 
-        public static Process OpenManager(uint appId, bool useClassicManager = false)
+        public static Process OpenManager(uint appId)
         {
             if (appId == default) throw new ArgumentException($"{appId} is not a valid app ID.", nameof(appId));
-
-            var managerExe = GetManagerExe(useClassicManager);
-
-            if (!File.Exists(managerExe))
+            
+            if (!File.Exists(SAM_MANAGER_EXE))
             {
-                log.Warn($"The SAM Manager '{managerExe}' does not exist.");
-
-                // try to fall back to the other manager
-                var otherManager = GetManagerExe(!useClassicManager);
-
-                if (!File.Exists(otherManager))
-                {
-                    throw new FileNotFoundException($"Unable to start '{managerExe}' because it does not exist.", managerExe);
-                }
-
-                managerExe = otherManager;
+                throw new FileNotFoundException($"Unable to start '{SAM_MANAGER_EXE}' because it does not exist.", SAM_MANAGER_EXE);
             }
 
-            var proc = Process.Start(managerExe, appId.ToString());
+            var proc = Process.Start(SAM_MANAGER_EXE, appId.ToString());
 
             proc.SetActive();
 
@@ -115,21 +89,5 @@ namespace SAM.Core
                 log.Error(message, e);
             }
         }
-
-        private static string GetPickerExe(bool useClassicPicker = false)
-        {
-            return useClassicPicker
-                ? CLASSIC_PICKER_EXE
-                : WPF_PICKER_EXE;
-        }
-
-        private static string GetManagerExe(bool useClassicManager = false)
-        {
-            return useClassicManager
-                ? CLASSIC_MANAGER_EXE
-                : WPF_MANAGER_EXE;
-        }
-
-
     }
 }

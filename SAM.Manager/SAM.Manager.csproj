@@ -5,10 +5,16 @@
     <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <Platforms>x86</Platforms>
+    <LangVersion>preview</LangVersion>
+    <ApplicationIcon>sam_manager.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="SAM.Manager.csproj.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="sam_manager.ico" />
   </ItemGroup>
 
   <ItemGroup>

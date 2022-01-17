@@ -73,11 +73,24 @@ namespace SAM.Core
 
         public static bool TryGetApp(uint id, out SupportedApp app)
         {
-            var apps = GetSupportedGames();
+            app = null;
 
-            app = apps.FirstOrDefault(a => a.Id == id);
+            try
+            {
+                var apps = GetSupportedGames();
 
-            return app != null;
+                app = apps.FirstOrDefault(a => a.Id == id);
+
+                return app != null;
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to get app {id}. {e.Message}";
+
+                log.Warn(message, e);
+                
+                return false;
+            }
         }
 
         public static SupportedApp GetApp(uint id)
@@ -90,7 +103,7 @@ namespace SAM.Core
         
         public static List<uint> GetIgnoredApps()
         {
-            return new List<uint>
+            return new()
             {
                 13260 // unreal development kit
             };

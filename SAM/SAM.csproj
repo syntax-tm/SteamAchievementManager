@@ -6,10 +6,15 @@
     <UseWPF>true</UseWPF>
     <Platforms>x86</Platforms>
     <LangVersion>preview</LangVersion>
+    <ApplicationIcon>sam.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="SAM.csproj.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="sam.ico" />
   </ItemGroup>
 
   <ItemGroup>

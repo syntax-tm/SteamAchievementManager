@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SAM.WPF": {
+    "SAM": {
       "commandName": "Project",
       "nativeDebugging": false
     }
