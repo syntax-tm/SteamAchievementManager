@@ -4,20 +4,20 @@ namespace SAM.API
 {
     public class ClientInitializeException : Exception
     {
-        public readonly ClientInitializeFailure Failure;
+        public readonly ClientInitFailure Failure;
 
-        public ClientInitializeException(ClientInitializeFailure failure)
+        public ClientInitializeException(ClientInitFailure failure)
         {
             Failure = failure;
         }
 
-        public ClientInitializeException(ClientInitializeFailure failure, string message)
+        public ClientInitializeException(ClientInitFailure failure, string message)
             : base(message)
         {
             Failure = failure;
         }
 
-        public ClientInitializeException(ClientInitializeFailure failure, string message, Exception innerException)
+        public ClientInitializeException(ClientInitFailure failure, string message, Exception innerException)
             : base(message, innerException)
         {
             Failure = failure;

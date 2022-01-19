@@ -29,7 +29,7 @@ namespace SAM.Core
 
                 lock (syncLock)
                 {
-                    _client = new Client();
+                    _client = new ();
                     _client.Initialize(appId);
 
                     AppId = appId;

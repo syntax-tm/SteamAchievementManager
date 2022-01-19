@@ -1,10 +1,13 @@
-﻿namespace SAM.API
+﻿using System.ComponentModel;
+
+namespace SAM.API
 {
-    public enum ClientInitializeFailure : byte
+    public enum ClientInitFailure : byte
     {
         Unknown = 0,
         GetInstallPath,
         Load,
+        [Description("Failed to create ISteamClient018.")]
         CreateSteamClient,
         CreateSteamPipe,
         ConnectToGlobalUser,

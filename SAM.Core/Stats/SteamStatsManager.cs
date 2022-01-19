@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Timers;
 using System.Windows;
 using DevExpress.Mvvm;
@@ -10,6 +11,7 @@ using SAM.API;
 using SAM.API.Stats;
 using SAM.API.Types;
 using SAM.Core.Extensions;
+using Timer = System.Timers.Timer;
 
 namespace SAM.Core.Stats
 {
@@ -21,6 +23,7 @@ namespace SAM.Core.Stats
         private Client _client => SteamClientManager.Default;
         private readonly SAM.API.Callbacks.UserStatsReceived _UserStatsReceivedCallback;
         private readonly Timer _callbackTimer;
+        private AutoResetEvent _resetEvent;
 
         private List<ObservableHandler<SteamAchievement>> _achievementHandlers;
         private List<ObservableHandler<SteamStatistic>> _statHandlers;
@@ -99,6 +102,8 @@ namespace SAM.Core.Stats
 
         public void RefreshStats()
         {
+            _resetEvent ??= new(false);
+
             Statistics.Clear();
             Achievements.Clear();
             
@@ -107,6 +112,8 @@ namespace SAM.Core.Stats
 
             if (_client.SteamUserStats.RequestCurrentStats())
             {
+                _resetEvent?.WaitOne();
+
                 return;
             }
 
@@ -145,6 +152,8 @@ namespace SAM.Core.Stats
             {
                 Loaded = true;
                 IsLoading = false;
+
+                _resetEvent.Set();
             }
         }
 

@@ -16,6 +16,7 @@ namespace SAM.Manager
 
         private static uint? _appID;
 
+        [STAThread]
         protected override void OnStartup(StartupEventArgs args)
         {
             base.OnStartup(args);

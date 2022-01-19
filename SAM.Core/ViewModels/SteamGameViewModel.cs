@@ -87,7 +87,7 @@ namespace SAM.Core.ViewModels
             }
             catch (Exception e)
             {
-                var message = $"An error occured attempting to save achivements. {e.Message}";
+                var message = $"An error occurred attempting to save achievements. {e.Message}";
 
                 log.Error(message, e);
 
@@ -110,7 +110,7 @@ namespace SAM.Core.ViewModels
         {
             _statsManager.RefreshStats();
 
-            SpinWait.SpinUntil(() => _statsManager.Loaded, new TimeSpan(0, 0, 30));
+            //SpinWait.SpinUntil(() => _statsManager.Loaded, new TimeSpan(0, 0, 30));
         }
 
         public void ResetAchievements()

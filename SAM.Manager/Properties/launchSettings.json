@@ -2,12 +2,37 @@
   "profiles": {
     "SAM.Manager (No App)": {
       "commandName": "Project",
-      "nativeDebugging": true
+      "nativeDebugging": false
     },
     "SAM.Manager (RE5)": {
       "commandName": "Project",
       "commandLineArgs": "21690",
-      "nativeDebugging": true
+      "nativeDebugging": false
+    },
+    "SAM.Manager (CS:S)": {
+      "commandName": "Project",
+      "commandLineArgs": "240",
+      "nativeDebugging": false
+    },
+    "SAM.Manager (HL2)": {
+      "commandName": "Project",
+      "commandLineArgs": "220",
+      "nativeDebugging": false
+    },
+    "SAM.Manager (TF2)": {
+      "commandName": "Project",
+      "commandLineArgs": "440",
+      "nativeDebugging": false
+    },
+    "SAM.Manager (L4D)": {
+      "commandName": "Project",
+      "commandLineArgs": "500",
+      "nativeDebugging": false
+    },
+    "SAM.Manager (CS:GO)": {
+      "commandName": "Project",
+      "commandLineArgs": "730",
+      "nativeDebugging": false
     }
   }
 }
