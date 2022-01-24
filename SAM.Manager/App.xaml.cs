@@ -7,6 +7,7 @@ using SAM.Core;
 using SAM.Core.Extensions;
 using SAM.Core.ViewModels;
 using SAM.Core.Views;
+using SAM.Manager.ViewModels;
 
 namespace SAM.Manager
 {
@@ -65,7 +66,8 @@ namespace SAM.Manager
                 SplashScreenHelper.Show("Loading game info...");
 
                 SteamClientManager.Init(appId);
-
+                
+                // TODO: move this to the MainWindowViewModel via passing the app id
                 var supportedApp = SAMLibraryHelper.GetApp(appId);
                 var appInfo = SteamApp.Create(supportedApp);
                 
@@ -76,14 +78,11 @@ namespace SAM.Manager
                 var gameVm = SteamGameViewModel.Create(appInfo);
                 gameVm.RefreshStats();
 
-                var gameView = new SteamGameView
-                {
-                    DataContext = gameVm
-                };
-
+                var mainWindowVm = MainWindowViewModel.Create(gameVm);
+                
                 MainWindow = new MainWindow
                 {
-                    Content = gameView,
+                    DataContext = mainWindowVm,
                     Title = $"Steam Achievement Manager | {appInfo.Name}",
                     Icon = appInfo.Icon?.ToImageSource()
                 };

@@ -52,11 +52,11 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Styles\DataGridStyles.xaml">
+    <Page Update="Styles\Controls\DataGridStyles.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Styles\WindowStyles.xaml">
+    <Page Update="Styles\Controls\WindowStyles.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
@@ -99,10 +99,6 @@
     <Compile Update="Views\SteamGameView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Styles\Controls\" />
   </ItemGroup>
 
   <ItemGroup>

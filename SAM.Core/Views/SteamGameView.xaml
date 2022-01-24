@@ -16,6 +16,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.buttons.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.tabcontrol.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.toolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -57,34 +58,23 @@
                 </StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
-                        <mah:ToggleSwitch IsOn="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                          ToolTip="Show hidden achievements.">
-                            <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconMaterial>
-                                    <iconPacks:PackIconMaterial.Style>
-                                        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
-                                            <Setter Property="Kind" Value="Eye" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:ToggleSwitch}}, Path=IsOn}" Value="True">
-                                                    <Setter Property="Kind" Value="EyeOff" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </iconPacks:PackIconMaterial.Style>
-                                </iconPacks:PackIconMaterial>
-                                <TextBlock>
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Text" Value="Show Hidden Achievements" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type mah:ToggleSwitch}}, Path=IsOn}" Value="True">
-                                                    <Setter Property="Text" Value="Hide Hidden Achievements" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
-                            </StackPanel>
+                        <mah:ToggleSwitch IsOn="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <mah:ToggleSwitch.Style>
+                                <Style TargetType="{x:Type mah:ToggleSwitch}">
+                                    <Setter Property="ToolTip" Value="Hide Hidden Achievements" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=mah:ToggleSwitch}, Path=IsOn}" Value="True">
+                                            <Setter Property="ToolTip" Value="Show Hidden Achievements" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </mah:ToggleSwitch.Style>
+                            <mah:ToggleSwitch.OffContent>
+                                <iconPacks:PackIconMaterial Kind="EyeOff" />
+                            </mah:ToggleSwitch.OffContent>
+                            <mah:ToggleSwitch.OnContent>
+                                <iconPacks:PackIconMaterial Kind="Eye" />
+                            </mah:ToggleSwitch.OnContent>
                         </mah:ToggleSwitch>
                         <Separator />
                         <Button Command="{Binding ResetCommand}">
@@ -93,10 +83,11 @@
                                 <TextBlock Text="Reset" />
                             </StackPanel>
                         </Button>
-                        <Button Command="{Binding SaveCommand}" IsEnabled="{Binding IsModified, Mode=OneWay}">
+                        <Button Command="{Binding SaveCommand}" IsEnabled="{Binding IsModified, Mode=OneWay}"
+                                VerticalContentAlignment="Center" Style="{StaticResource SAM.Styles.Button}">
                             <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconMaterial Kind="ContentSave" />
-                                <TextBlock Text="Save" />
+                                <iconPacks:PackIconMaterial Kind="ContentSave" Margin="0,0,5,0" Height="15" VerticalAlignment="Center" />
+                                <TextBlock Text="Save" VerticalAlignment="Center" />
                             </StackPanel>
                         </Button>
                     </StackPanel>
