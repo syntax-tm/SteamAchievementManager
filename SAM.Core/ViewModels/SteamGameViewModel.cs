@@ -22,7 +22,7 @@ namespace SAM.Core.ViewModels
 
         public virtual bool AllowEdit { get; set; }
         public virtual bool IsModified { get; set; }
-        public virtual bool ShowHidden { get; set;  }
+        public virtual bool ShowHidden { get; set; }
         public virtual AchievementFilter SelectedAchievementFilter { get; set; }
 
         public virtual SteamApp SteamApp { get; set; }
@@ -39,7 +39,7 @@ namespace SAM.Core.ViewModels
         {
             SteamApp = steamApp;
             
-            _statsManager = new SteamStatsManager();
+            _statsManager = new ();
 
             _statsHandler = new ObservableHandler<SteamStatsManager>(_statsManager)
                 .AddAndInvoke(m => m.Achievements, ManagerAchievementsChanged)
@@ -145,12 +145,12 @@ namespace SAM.Core.ViewModels
 
         private void ManagerAchievementsChanged(SteamStatsManager obj)
         {
-            Achievements = new List<SteamAchievement>(obj.Achievements);
+            Achievements = new (obj.Achievements);
         }
         
         private void ManagerStatisticsChanged(SteamStatsManager obj)
         {
-            Statistics = new List<SteamStatistic>(obj.Statistics);
+            Statistics = new (obj.Statistics);
         }
     }
 }

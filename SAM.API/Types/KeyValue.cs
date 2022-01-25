@@ -19,10 +19,7 @@ namespace SAM.API.Types
         {
             get
             {
-                if (Children == null) return _Invalid;
-
-                var child = Children.SingleOrDefault(
-                    c => string.Compare(c.Name, key, StringComparison.InvariantCultureIgnoreCase) == 0);
+                var child = Children?.SingleOrDefault(c => string.Compare(c.Name, key, StringComparison.InvariantCultureIgnoreCase) == 0);
 
                 if (child == null) return _Invalid;
 
@@ -32,111 +29,63 @@ namespace SAM.API.Types
 
         public string AsString(string defaultValue = "")
         {
-            if (Valid == false) return defaultValue;
+            if (!Valid) return defaultValue;
 
-            if (Value == null) return defaultValue;
-
-            return Value.ToString();
+            return Value == null ? defaultValue : Value.ToString();
         }
 
         public int AsInteger(int defaultValue = default)
         {
-            if (Valid == false) return defaultValue;
+            if (!Valid) return defaultValue;
 
-            switch (Type)
+            return Type switch
             {
-                case KeyValueType.String:
-                case KeyValueType.WideString:
-                {
-                    int value;
-                    if (int.TryParse((string)Value, out value) == false) return defaultValue;
-
-                    return value;
-                }
-
-                case KeyValueType.Int32:
-                {
-                    return (int)Value;
-                }
-
-                case KeyValueType.Float32:
-                {
-                    return (int)(float)Value;
-                }
-
-                case KeyValueType.UInt64:
-                {
-                    return (int)((ulong)Value & 0xFFFFFFFF);
-                }
-            }
-
-            return defaultValue;
+                KeyValueType.String     => int.TryParse((string) Value, out var value) == false ? defaultValue : value,
+                KeyValueType.WideString => int.TryParse((string) Value, out var value) == false ? defaultValue : value,
+                KeyValueType.Int32      => (int) Value,
+                KeyValueType.Float32    => (int) (float) Value,
+                KeyValueType.UInt64     => (int) ((ulong) Value & 0xFFFFFFFF),
+                _                       => defaultValue
+            };
         }
 
         public float AsFloat(float defaultValue = default)
         {
             if (!Valid) return defaultValue;
 
-            switch (Type)
+            return Type switch
             {
-                case KeyValueType.String:
-                case KeyValueType.WideString:
-                {
-                    return float.TryParse((string)Value, out var value) == false ? defaultValue : value;
-                }
-                case KeyValueType.Int32:
-                {
-                    return (int)Value;
-                }
-                case KeyValueType.Float32:
-                {
-                    return (float)Value;
-                }
-
-                case KeyValueType.UInt64:
-                {
-                    return (ulong)Value & 0xFFFFFFFF;
-                }
-            }
-
-            return defaultValue;
+                KeyValueType.String     => float.TryParse((string) Value, out var value) == false ? defaultValue : value,
+                KeyValueType.WideString => float.TryParse((string) Value, out var value) == false ? defaultValue : value,
+                KeyValueType.Int32      => (int) Value,
+                KeyValueType.Float32    => (float) Value,
+                KeyValueType.UInt64     => (ulong) Value & 0xFFFFFFFF,
+                _                       => defaultValue
+            };
         }
 
         public bool AsBoolean(bool defaultValue = default)
         {
-            if (Valid == false) return defaultValue;
+            if (!Valid) return defaultValue;
 
-            switch (Type)
+            return Type switch
             {
-                case KeyValueType.String:
-                case KeyValueType.WideString:
-                {
-                    return int.TryParse((string)Value, out var value) == false ? defaultValue : value != 0;
-                }
-                case KeyValueType.Int32:
-                {
-                    return (int)Value != 0;
-                }
-                case KeyValueType.Float32:
-                {
-                    return (int)(float)Value != 0;
-                }
-                case KeyValueType.UInt64:
-                {
-                    return (ulong)Value != 0;
-                }
-            }
-
-            return defaultValue;
+                KeyValueType.String     => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
+                KeyValueType.WideString => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
+                KeyValueType.Int32      => (int) Value != 0,
+                KeyValueType.Float32    => (int) (float) Value != 0,
+                KeyValueType.UInt64     => (ulong) Value != 0,
+                _                       => defaultValue
+            };
         }
 
         public override string ToString()
         {
-            if (Valid == false) return @"<invalid>";
+            if (!Valid) return @"<invalid>";
 
-            if (Type == KeyValueType.None) return Name;
-
-            return $"{Name} = {Value}";
+            return Type == KeyValueType.None
+                ? Name
+                : $"{Name} = {Value}";
         }
 
         public static KeyValue LoadAsBinary(string path)
@@ -145,11 +94,9 @@ namespace SAM.API.Types
 
             try
             {
-                using (var input = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    var kv = new KeyValue();
-                    return kv.ReadAsBinary(input) == false ? null : kv;
-                }
+                using var input = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                var kv = new KeyValue();
+                return kv.ReadAsBinary(input) == false ? null : kv;
             }
             catch
             {

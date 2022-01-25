@@ -186,13 +186,13 @@ namespace SAM.Core.Stats
 
             var stats = kv[AppId.ToString()][@"stats"];
 
-            if (stats.Valid == false || stats.Children == null) return false;
+            if (!stats.Valid || stats.Children == null) return false;
 
             foreach (var stat in stats.Children.Where(s => s.Valid))
             {
                 var rawType = stat[@"type_int"].Valid
-                                  ? stat[@"type_int"].AsInteger()
-                                  : stat[@"type"].AsInteger();
+                            ? stat[@"type_int"].AsInteger()
+                            : stat[@"type"].AsInteger();
                 var type = (UserStatType) rawType;
                 switch (type)
                 {
@@ -256,7 +256,7 @@ namespace SAM.Core.Stats
                 achievements.Add(achievement);
             }
 
-            Achievements = new List<SteamAchievement>(achievements);
+            Achievements = new (achievements);
             
             //foreach (var achievement in Achievements)
             //{
@@ -268,7 +268,7 @@ namespace SAM.Core.Stats
 
             var handlers = Achievements.Select(achievement => new ObservableHandler<SteamAchievement>(achievement).Add(a => a.IsModified, OnAchievementChanged));
 
-            _achievementHandlers = new List<ObservableHandler<SteamAchievement>>();
+            _achievementHandlers = new ();
             _achievementHandlers.AddRange(handlers);
         }
 
@@ -283,7 +283,7 @@ namespace SAM.Core.Stats
                 stats.Add(stat);
             }
 
-            Statistics = new List<SteamStatistic>(stats);
+            Statistics = new (stats);
             
             //foreach (var statHandler in Statistics.Select(stat => new ObservableHandler<SteamStatistic>(stat)
             //    .Add(s => s.IsModified, OnStatChanged)))
@@ -293,7 +293,7 @@ namespace SAM.Core.Stats
 
             var handlers = Statistics.Select(stat => new ObservableHandler<SteamStatistic>(stat).Add(s => s.IsModified, OnStatChanged));
 
-            _statHandlers = new List<ObservableHandler<SteamStatistic>>();
+            _statHandlers = new ();
             _statHandlers.AddRange(handlers);
         }
         

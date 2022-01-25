@@ -22,12 +22,12 @@ The reason there's two seperate apps (the picker and the manager) is because the
     </tr>
     <tr>
         <th>SAM.Picker</th>
-        <th>SAM.WPF</th>
+        <th>SAM</th>
         <td>This is the main executable used to select a game (or app) from your library.</td>
     </tr>
     <tr>
         <th>SAM.Game</th>
-        <th>SAM.WPF.Manager</th>
+        <th>SAM.Manager</th>
         <td>Handles the viewing and updating of an app's achievements and stats.</td>
     </tr>
     <tr>
@@ -37,20 +37,10 @@ The reason there's two seperate apps (the picker and the manager) is because the
     </tr>
     <tr>
         <th> </th>
-        <th>SAM.WPF.Core</th>
-        <td> shared resources used by both <code>SAM.WPF</code> and <code>SAM.WPF.Manager</code> projects.</td>
+        <th>SAM.Core</th>
+        <td> shared resources used by both the <code>SAM</code> and <code>SAM.Manager</code> projects.</td>
     </tr>
 </table>
-
-_Note: The new 'SAM.WPF' project names are just temporary and will be updated later on._
-
-### Diagram
-
-<p align="center">
-  <a href="https://mermaid-js.github.io/mermaid-live-editor/edit/#eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG4gICAgc3ViZ3JhcGggUGlja2VyXG4gICAgICAgIEEoU0FNLldQRilcbiAgICBlbmRcbiAgICBzdWJncmFwaCBNYW5hZ2VyXG4gICAgICAgIEIoU0FNLldQRi5NYW5hZ2VyKVxuICAgIGVuZFxuICAgIHN1YmdyYXBoIENvcmVcbiAgICAgICAgQ1tTQU0uV1BGLkNvcmVdXG4gICAgZW5kXG4gICAgc3ViZ3JhcGggQVBJXG4gICAgICAgIER7e1NBTS5BUEl9fVxuICAgIGVuZFxuICAgIFBpY2tlciAgLS0tIENvcmVcbiAgICBNYW5hZ2VyIC0tLSBDb3JlXG4gICAgQ29yZSAgICAtLS0gQVBJIiwibWVybWFpZCI6IntcbiAgXCJ0aGVtZVwiOiBcImRhcmtcIlxufSIsInVwZGF0ZUVkaXRvciI6ZmFsc2UsImF1dG9TeW5jIjp0cnVlLCJ1cGRhdGVEaWFncmFtIjpmYWxzZSwibG9hZGVyIjp7InR5cGUiOiJnaXN0IiwiY29uZmlnIjp7InVybCI6Imh0dHBzOi8vZ2lzdC5naXRodWIuY29tL3N5bnRheC10bS9hNjFiMTIyMWU1NWUxNjY1MGZkYTUzOTVjNTEyNjEyYyJ9fX0" title="Edit">
-    <img src="https://mermaid.ink/img/eyJjb2RlIjoiZmxvd2NoYXJ0IFRCXG4gICAgc3ViZ3JhcGggUGlja2VyXG4gICAgICAgIEEoU0FNLldQRilcbiAgICBlbmRcbiAgICBzdWJncmFwaCBNYW5hZ2VyXG4gICAgICAgIEIoU0FNLldQRi5NYW5hZ2VyKVxuICAgIGVuZFxuICAgIHN1YmdyYXBoIENvcmVcbiAgICAgICAgQ1tTQU0uV1BGLkNvcmVdXG4gICAgZW5kXG4gICAgc3ViZ3JhcGggQVBJXG4gICAgICAgIER7e1NBTS5BUEl9fVxuICAgIGVuZFxuICAgIFBpY2tlciAgLS0tIENvcmVcbiAgICBNYW5hZ2VyIC0tLSBDb3JlXG4gICAgQ29yZSAgICAtLS0gQVBJIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRhcmsifSwidXBkYXRlRWRpdG9yIjpmYWxzZSwiYXV0b1N5bmMiOnRydWUsInVwZGF0ZURpYWdyYW0iOmZhbHNlLCJsb2FkZXIiOnsidHlwZSI6Imdpc3QiLCJjb25maWciOnsidXJsIjoiaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vc3ludGF4LXRtL2E2MWIxMjIxZTU1ZTE2NjUwZmRhNTM5NWM1MTI2MTJjIn19fQ" />
-  </a>
-</p>
 
 ## TODO
 
