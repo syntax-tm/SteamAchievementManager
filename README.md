@@ -101,6 +101,5 @@ The reason there's two seperate apps (the picker and the manager) is because the
 
 ## Links
 
-
 - [SAM (Old)](https://github.com/gibbed/SteamAchievementManager)
 - [SAM (Old) Latest Release](https://github.com/gibbed/SteamAchievementManager/releases/latest)
