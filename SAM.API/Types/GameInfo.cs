@@ -6,7 +6,7 @@ namespace SAM.API.Types
     {
         private string _Name;
 
-        public uint Id;
+        public readonly uint Id;
         public int ImageIndex;
 
         public string Logo;
