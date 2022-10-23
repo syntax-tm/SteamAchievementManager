@@ -21,7 +21,7 @@ namespace SAM.Core
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            m_source = new WeakReference(source);
+            m_source = new (source);
         }
 
         bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
