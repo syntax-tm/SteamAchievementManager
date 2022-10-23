@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using log4net.Core;
 
 namespace SAM.Core.Logging
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public class FormattedDebugAppender : log4net.Appender.DebugAppender
     {
         protected override void Append(LoggingEvent loggingEvent)

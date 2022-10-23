@@ -120,7 +120,7 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathAddConverter))]
     public sealed class MathAddConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new MathConverter { Operation = MathOperation.Add };
+        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Add };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
@@ -150,7 +150,7 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathSubtractConverter))]
     public sealed class MathSubtractConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new MathConverter { Operation = MathOperation.Subtract };
+        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Subtract };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
@@ -180,7 +180,7 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathMultiplyConverter))]
     public sealed class MathMultiplyConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new MathConverter { Operation = MathOperation.Multiply };
+        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Multiply };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
@@ -210,7 +210,7 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathDivideConverter))]
     public sealed class MathDivideConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new MathConverter { Operation = MathOperation.Divide };
+        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Divide };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {

@@ -5,7 +5,6 @@ namespace SAM.Core.Extensions
 {
     public static class EnumExtensions
     {
-
         public static string GetDescription(this Enum value)
         {
             var fi = value.GetType().GetField(value.ToString());
@@ -19,6 +18,5 @@ namespace SAM.Core.Extensions
                        ? attributes[0].Description
                        : value.ToString();
         }
-
     }
 }
