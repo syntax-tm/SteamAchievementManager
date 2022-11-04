@@ -1,7 +1,11 @@
-﻿namespace SAM.Core
+﻿using System.ComponentModel;
+
+namespace SAM.Core
 {
+    [DefaultValue(None)]
     public enum EditorType
     {
+        None = 0,
         TextBox,
         TextArea,
         CheckBox,
@@ -14,7 +18,8 @@
         PropertyGrid,
         DataGrid
     }
-
+    
+    [DefaultValue(Default)]
     public enum TextEditorType
     {
         Default = 0,

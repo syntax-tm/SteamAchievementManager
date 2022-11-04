@@ -13,11 +13,7 @@ namespace SAM.Core.Behaviors
  
         public override object ProvideValue(IServiceProvider _)
         {
-            if (EnumType != null)
-            {
-                return CreateEnumValueList(EnumType);
-            }
-            return default;
+            return EnumType is null ?  default(object) : CreateEnumValueList(EnumType);
         }
  
         private List<object> CreateEnumValueList(Type enumType)
