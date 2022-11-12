@@ -15,7 +15,7 @@ namespace SAM
         {
             base.OnStartup(args);
 
-            WalkDictionary(Resources);
+            //WalkDictionary(Resources);
 
             try
             {
