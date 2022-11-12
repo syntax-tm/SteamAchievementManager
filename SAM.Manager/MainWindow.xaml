@@ -3,23 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:sam="urn:sam"
              xmlns:viewModels="clr-namespace:SAM.Manager.ViewModels"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}"
-             Title="{Binding Title, Mode=OneWay}"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica">
 
     <dxmvvm:Interaction.Behaviors>
-        <sam:RibbonWindowBehavior />
         <sam:WindowAutoSaveBehavior Config="{Binding Config}" />
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <sam:SteamGameView DataContext="{Binding GameVm}" />
+        <DockPanel LastChildFill="True">
+            <ui:TitleBar Title="{Binding Title, Mode=OneWay}" DockPanel.Dock="Top" UseSnapLayout="True" />
+            <sam:SteamGameView DataContext="{Binding GameVm}" />
+        </DockPanel>
     </Grid>
 </ui:UiWindow>

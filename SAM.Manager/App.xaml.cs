@@ -6,7 +6,6 @@ using log4net;
 using SAM.Core;
 using SAM.Core.Extensions;
 using SAM.Core.ViewModels;
-using SAM.Core.Views;
 using SAM.Manager.ViewModels;
 
 namespace SAM.Manager
@@ -22,7 +21,7 @@ namespace SAM.Manager
         {
             base.OnStartup(args);
             
-            WalkDictionary(Resources);
+            //WalkDictionary(Resources);
 
             try
             {
@@ -61,7 +60,7 @@ namespace SAM.Manager
 
                 IsolatedStorageManager.Init();
 
-                ThemeHelper.SetTheme(this);
+                ThemeHelper.SetTheme();
                 
                 SplashScreenHelper.Show("Loading game info...");
 
@@ -88,6 +87,8 @@ namespace SAM.Manager
                 };
 
                 MainWindow.Show();
+
+                ShutdownMode = ShutdownMode.OnMainWindowClose;
 
                 SplashScreenHelper.Close();
             }

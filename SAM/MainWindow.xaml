@@ -22,24 +22,8 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <DockPanel LastChildFill="True" Margin="0">
-            <ui:TitleBar Title="{Binding Title, Mode=OneWay}" DockPanel.Dock="Top">
-                <ui:TitleBar.Tray>
-                    <ui:NotifyIcon
-                        FocusOnLeftClick="True"
-                        MenuOnRightClick="True"
-                        TooltipText="WPF UI">
-                        <ui:NotifyIcon.Menu>
-                            <ContextMenu>
-                                <ui:MenuItem
-                                    Header="Home"
-                                    SymbolIcon="Library28"
-                                    Tag="home" />
-                            </ContextMenu>
-                        </ui:NotifyIcon.Menu>
-                    </ui:NotifyIcon>
-                </ui:TitleBar.Tray>
-            </ui:TitleBar>
+        <DockPanel LastChildFill="True">
+            <ui:TitleBar Title="{Binding Title, Mode=OneWay}" DockPanel.Dock="Top" UseSnapLayout="True" />
             <views:StatusBarView DockPanel.Dock="Bottom" DataContext="{Binding HomeVm}" />
             <views:HomeView DataContext="{Binding HomeVm}" />
         </DockPanel>

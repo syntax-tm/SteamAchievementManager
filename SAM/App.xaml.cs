@@ -37,7 +37,7 @@ namespace SAM
 
                 IsolatedStorageManager.Init();
 
-                ThemeHelper.SetTheme(this);
+                ThemeHelper.SetTheme();
 
                 // create the default Client instance
                 SteamClientManager.Init(0);
@@ -46,6 +46,8 @@ namespace SAM
                 
                 MainWindow = new MainWindow();
                 MainWindow.Show();
+
+                ShutdownMode = ShutdownMode.OnMainWindowClose;
 
                 SplashScreenHelper.Close();
             }

@@ -58,6 +58,7 @@
                 </StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
+                        
                         <mah:ToggleSwitch IsOn="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <mah:ToggleSwitch.Style>
                                 <Style TargetType="{x:Type mah:ToggleSwitch}">
