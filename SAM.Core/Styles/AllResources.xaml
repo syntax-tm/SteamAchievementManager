@@ -3,17 +3,14 @@
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     
     <ResourceDictionary.MergedDictionaries>
-        <!-- WPF UI resources -->
-        <ui:ThemesDictionary Theme="Dark" />
-        <ui:ControlsDictionary />
         <!-- Fluent ribbon resources -->
         <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/dark.red.xaml" />
         <!-- MahApps.Metro resources -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/fonts.xaml" />
+        <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/fonts.xaml" />-->
         <!-- Theme setting -->
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.red.xaml" />
+        <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.red.xaml" />-->
         <!-- SAM controls -->
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ButtonStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/CheckBoxStyles.xaml" />
@@ -25,6 +22,9 @@
         <!-- SAM resources -->
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Converters.xaml" />
+        <!-- WPF UI resources -->
+        <ui:ThemesDictionary Theme="Dark" />
+        <ui:ControlsDictionary />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

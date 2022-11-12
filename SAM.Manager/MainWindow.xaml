@@ -9,6 +9,7 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}"
+             Title="{Binding Title, Mode=OneWay}"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica">
 
@@ -17,9 +18,9 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
+        <sam:SteamGameView DataContext="{Binding GameVm}" />
         <DockPanel LastChildFill="True">
-            <ui:TitleBar Title="{Binding Title, Mode=OneWay}" DockPanel.Dock="Top" UseSnapLayout="True" />
-            <sam:SteamGameView DataContext="{Binding GameVm}" />
+            <ui:TitleBar DockPanel.Dock="Top" UseSnapLayout="True" />
         </DockPanel>
     </Grid>
 </ui:UiWindow>
