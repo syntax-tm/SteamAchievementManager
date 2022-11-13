@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:vm="clr-namespace:SAM.Core.ViewModels"
              xmlns:core="clr-namespace:SAM.Core"
              xmlns:views="clr-namespace:SAM.Core.Views"
@@ -17,7 +15,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Controls/Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Controls/button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Controls/togglebutton.xaml" />
                 <ResourceDictionary>
                     <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
                         <Setter Property="Margin" Value="10,0" />
@@ -45,12 +44,12 @@
                 <StatusBarItem>
                     <ui:ToggleSwitch IsChecked="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <ui:ToggleSwitch.Style>
-                            <Style BasedOn="{StaticResource {x:Type ui:ToggleSwitch}}" TargetType="{x:Type ui:ToggleSwitch}">
+                            <Style BasedOn="{StaticResource DefaultUiToggleSwitchStyle}" TargetType="{x:Type ui:ToggleSwitch}">
                                 <Setter Property="ToolTip" Value="Hide Hidden Achievements" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=ui:ToggleSwitch}, Path=IsChecked}" Value="True">
+                                    <Trigger Property="IsChecked" Value="True">
                                         <Setter Property="ToolTip" Value="Show Hidden Achievements" />
-                                    </DataTrigger>
+                                    </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </ui:ToggleSwitch.Style>

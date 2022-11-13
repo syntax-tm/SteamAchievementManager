@@ -6,36 +6,4 @@
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style x:Key="NoGroupHeaderStyle" TargetType="{x:Type GroupItem}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type GroupItem}">
-                    <ItemsPresenter />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="DefaultGroupHeaderStyle" TargetType="{x:Type GroupItem}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type GroupItem}">
-                    <Expander IsExpanded="True" FontSize="20"
-                              FlowDirection="RightToLeft">
-                        <Expander.Header>
-                            <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
-                                <TextBlock Text="{Binding Name}"
-                                           Margin="15,0,0,0" />
-                                <TextBlock Text="{Binding ItemCount, StringFormat='{}({0})'}"
-                                           Margin="8,0"
-                                           Opacity="0.5" FontWeight="Normal" />
-                            </StackPanel>
-                        </Expander.Header>
-                        <ItemsPresenter FlowDirection="LeftToRight" />
-                    </Expander>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
 </ResourceDictionary>

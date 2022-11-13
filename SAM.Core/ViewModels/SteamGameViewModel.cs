@@ -26,6 +26,8 @@ namespace SAM.Core.ViewModels
 
         public virtual SteamApp SteamApp { get; set; }
         
+        public virtual SteamAchievement SelectedAchievement { get; set; }
+
         public virtual List<SteamStatistic> Statistics { get; set; }
         public virtual List<SteamAchievement> Achievements { get; set; }
 

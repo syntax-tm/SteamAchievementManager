@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Data;
+using System.Windows.Input;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.Core.Extensions;
@@ -13,6 +14,8 @@ namespace SAM.Core
 {
     public class SteamLibrary : BindableBase
     {
+        private const int CACHE_INTERVAL = 25;
+        private const int PROGRESS_INTERVAL = 10;
 
         private readonly ILog log = LogManager.GetLogger(nameof(SteamLibrary));
 
@@ -79,7 +82,7 @@ namespace SAM.Core
             get => GetProperty(() => IsLoading);
             set => SetProperty(() => IsLoading, value);
         }
-        
+
         public ObservableCollection<SteamApp> Items { get; }
 
         public SteamLibrary()
@@ -117,7 +120,7 @@ namespace SAM.Core
 
             _libraryWorker.RunWorkerAsync();
         }
-
+        
         public void CancelRefresh()
         {
             if (!_libraryWorker.IsBusy) return;
@@ -141,17 +144,16 @@ namespace SAM.Core
                         args.Cancel = true;
                         break;
                     }
-
                     
                     var added = AddGame(game);
                     
-                    var isCacheInterval = checkedCount % 25 == 0;
+                    var isCacheInterval = checkedCount % CACHE_INTERVAL == 0;
                     if (added || isCacheInterval)
                     {
                         CacheRefreshProgress();
                     }
 
-                    var isRefreshCountInterval = checkedCount % 10 == 0;
+                    var isRefreshCountInterval = checkedCount % PROGRESS_INTERVAL == 0;
                     if (added || isRefreshCountInterval)
                     {
                         RefreshCounts();
@@ -217,9 +219,9 @@ namespace SAM.Core
             try
             {
                 var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
-                if (!CacheManager.TryGetObject<Queue<SupportedApp>>(cacheKey, out var refreshQueue)) return;
+                if (!CacheManager.TryGetObject<List<SupportedApp>>(cacheKey, out var refreshQueue)) return;
 
-                _refreshQueue = refreshQueue;
+                _refreshQueue = new (refreshQueue);
             }
             catch (Exception e)
             {
@@ -233,8 +235,9 @@ namespace SAM.Core
             try
             {
                 var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
+                var refreshItems = _refreshQueue.ToList();
 
-                CacheManager.CacheObject(cacheKey, _refreshQueue);
+                CacheManager.CacheObject(cacheKey, refreshItems);
             }
             catch (Exception e)
             {
