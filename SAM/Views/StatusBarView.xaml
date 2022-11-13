@@ -6,6 +6,7 @@
              xmlns:fluent="urn:fluent-ribbon"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:sam="urn:sam"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}">
@@ -17,6 +18,7 @@
             <Setter Property="FontSize" Value="14" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Opacity" Value="0.7" />
+            <Setter Property="Margin" Value="10,0" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Opacity" Value="1" />
@@ -26,7 +28,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <StatusBar Height="40" Padding="10,0">
+        <StatusBar>
             <StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"
                                   Visibility="{Binding Library.TotalCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
@@ -55,10 +57,16 @@
             <Separator Visibility="{Binding Library.JunkCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
             <StatusBarItem Content="{Binding Library.JunkCount, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
                            Visibility="{Binding Library.JunkCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
-            <StatusBarItem HorizontalAlignment="Right"
-                                  Content="{Binding Library.PercentComplete, Mode=OneWay, Converter={StaticResource PercentFormatConverter}}"
-                                  ContentStringFormat="{}Loading... {0}"
-                                  Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <StatusBarItem Content="{Binding Library.PercentComplete, Mode=OneWay, Converter={StaticResource PercentFormatConverter}}"
+                                   ContentStringFormat="{}Loading... {0}"
+                                   Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+                    <StatusBarItem Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}">
+                        <ui:Button Content="Refresh" Icon="ArrowReset20" Appearance="Primary" />
+                    </StatusBarItem>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
     </Grid>
 </UserControl>
