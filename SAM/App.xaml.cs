@@ -15,12 +15,10 @@ namespace SAM
         {
             base.OnStartup(args);
 
-            //WalkDictionary(Resources);
-
             try
             {
                 log.Info("Application startup.");
-                
+
                 SplashScreenHelper.Show("Starting up...");
 
                 SAMHelper.VerifySteamProcess();
@@ -36,18 +34,16 @@ namespace SAM
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
                 IsolatedStorageManager.Init();
-                
+
                 // create the default Client instance
                 SteamClientManager.Init(0);
 
                 SteamLibraryManager.Init();
-                
+
                 MainWindow = new MainWindow();
                 MainWindow.Show();
 
                 ShutdownMode = ShutdownMode.OnMainWindowClose;
-
-                SplashScreenHelper.Close();
             }
             catch (Exception e)
             {
@@ -58,6 +54,10 @@ namespace SAM
                 MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
                 Environment.Exit(SAMExitCode.UnhandledException);
+            }
+            finally
+            {
+                SplashScreenHelper.Close();
             }
         }
 
@@ -76,16 +76,7 @@ namespace SAM
                 log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
             }
         }
-
-        private static void WalkDictionary(ResourceDictionary resources)
-        {
-            foreach (var _ in resources) { }
-            foreach (var rd in resources.MergedDictionaries)
-            {
-                WalkDictionary(rd);
-            }
-        }
-
+        
         private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
         {
             try

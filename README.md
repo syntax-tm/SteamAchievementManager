@@ -31,20 +31,16 @@ The reason there's two seperate apps (the picker and the manager) is because the
         <td>Handles the viewing and updating of an app's achievements and stats.</td>
     </tr>
     <tr>
-        <th>SAM.API</th>
-        <th>SAM.API</th>
+        <th colspan="2">SAM.API</th>
         <td>Managed Steam API wrappers.</td>
     </tr>
     <tr>
-        <th> </th>
-        <th>SAM.Core</th>
+        <th colspan="2">SAM.Core</th>
         <td> shared resources used by both the <code>SAM</code> and <code>SAM.Manager</code> projects.</td>
     </tr>
 </table>
 
 ## TODO
-
-### General
 
 - Steam
   - Prompt to start Steam when process is not currently running
@@ -58,32 +54,20 @@ The reason there's two seperate apps (the picker and the manager) is because the
   - Add default light and dark themes
   - Add ability to set the theme's accent color
   - Add support for custom themes
-
-### Picker
-
-- Views
-  - Add grid view for library
-  - Add tile view for library
-  - Add ability to filter apps in the library view
-
-### Manager
-
-- Views
-  - Add ability to search and filter achievements grid
-  - Add stats view
-  - Add confirmation screen of changes before save
-
-### Core
-
-- General
-  - Remove dependency on SAM.Picker, SAM.Game, and SAM.API
-    - Research alternative client for the Steam API
-- Stats
-  - Add ability to manage stats
-- Steamworks Manager
-  - Add ability to include any DLC info when getting app info
-- Isolated Storage Manager
-  - Add expiration for cached resources to update
+- Add support for stats in SAM.Manager
+- Consolidate shared functionality
+- Add ability to force a library refresh
+  - Including removing files from IsolatedStorage
+- Add ability to manually add a game
+- Move custom control styles into Core
+- Add grouping to achievement view
+- Add grouping to library view
+- Add search functionality to achievement view
+- Add search functionality to library view
+- Replace System.Windows.MessageBox with ui:MessageBox
+- Add ui:Snackbar notifications
+- Add ability to hide completed games from library
+- Show completion percentage in library
 
 ---
 
@@ -91,8 +75,7 @@ The reason there's two seperate apps (the picker and the manager) is because the
 
 - [Devexpress MVVM](https://github.com/DevExpress/DevExpress.Mvvm.Free)
   - [Documentation](https://docs.devexpress.com/WPF/15112/mvvm-framework)
-- [MahApps.Metro](https://github.com/MahApps/MahApps.Metro)
-  - [Documentation](https://mahapps.com/docs/)
+- [WPF UI](https://github.com/lepoco/wpfui)
 - [Font-Awesome-WPF](https://github.com/charri/Font-Awesome-WPF)
   - [Documentation](https://github.com/charri/Font-Awesome-WPF/blob/master/README-WPF.md)
 - [Steamworks API Overview](https://partner.steamgames.com/doc/sdk/api)

@@ -15,7 +15,8 @@
              Title="{Binding Title, Mode=OneWay}"
              Icon="{iconPacks:FontAwesomeImage SteamSymbolBrands, Brush=White}"
              ExtendsContentIntoTitleBar="True"
-             WindowBackdropType="Mica">
+             WindowBackdropType="Mica"
+             ShowActivated="True" ShowInTaskbar="True">
 
     <dxmvvm:Interaction.Behaviors>
         <sam:WindowAutoSaveBehavior Config="{Binding Config}" />
