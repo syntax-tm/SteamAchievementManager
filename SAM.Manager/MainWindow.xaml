@@ -18,9 +18,10 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <sam:SteamGameView DataContext="{Binding GameVm}" />
         <DockPanel LastChildFill="True">
-            <ui:TitleBar DockPanel.Dock="Top" UseSnapLayout="True" />
+            <ui:TitleBar Title="{Binding Title, Mode=OneWay}"
+                         DockPanel.Dock="Top" UseSnapLayout="True" />
+            <sam:SteamGameView DataContext="{Binding GameVm}" />
         </DockPanel>
     </Grid>
 </ui:UiWindow>

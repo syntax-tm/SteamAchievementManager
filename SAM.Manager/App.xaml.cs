@@ -74,6 +74,7 @@ namespace SAM.Manager
                 gameVm.RefreshStats();
 
                 var mainWindowVm = MainWindowViewModel.Create(gameVm);
+                mainWindowVm.SubTitle = appInfo.Name;
                 
                 MainWindow = new MainWindow
                 {

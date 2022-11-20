@@ -30,7 +30,8 @@
                                       HorizontalContentAlignment="Center">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="True" />
+                    <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="True" VirtualizationMode="Recycling"
+                                              IsVirtualizing="True" />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
             <ui:VirtualizingItemsControl.ItemTemplate>
