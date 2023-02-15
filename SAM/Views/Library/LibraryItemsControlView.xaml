@@ -78,6 +78,35 @@
                                     <ui:MenuItem Header="Open in Manager" Command="{Binding ManageAppCommand}"
                                                  SymbolIcon="AppGeneric24" SymbolIconFilled="False" />
                                     <Separator />
+                                    <ui:MenuItem Command="{Binding ToggleFavoriteCommand}" SymbolIconFilled="False">
+                                        <ui:MenuItem.Style>
+                                            <Style TargetType="{x:Type ui:MenuItem}">
+                                                <Setter Property="Header" Value="Remove from Favorites" />
+                                                <Setter Property="SymbolIcon" Value="HeartBroken24" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsFavorite}" Value="False">
+                                                        <Setter Property="Header" Value="Add to Favorites" />
+                                                        <Setter Property="SymbolIcon" Value="Heart24" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ui:MenuItem.Style>
+                                    </ui:MenuItem>
+                                    <ui:MenuItem Command="{Binding ToggleVisibilityCommand}" SymbolIconFilled="False">
+                                        <ui:MenuItem.Style>
+                                            <Style TargetType="{x:Type ui:MenuItem}">
+                                                <Setter Property="Header" Value="Hide" />
+                                                <Setter Property="SymbolIcon" Value="EyeOff24" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                        <Setter Property="Header" Value="Show" />
+                                                        <Setter Property="SymbolIcon" Value="Eye24" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ui:MenuItem.Style>
+                                    </ui:MenuItem>
+                                    <Separator />
                                     <ui:MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}"
                                                  SymbolIcon="Database20" />
                                     <ui:MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
