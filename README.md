@@ -37,12 +37,12 @@ The reason there's two seperate apps (the picker and the manager) is because the
         <td>Allows for viewing and editing an app's achievements and stats</td>
     </tr>
     <tr>
-        <th><code>-</code></th>
+        <th>-</th>
         <th>SAM.API</th>
         <td>Managed Steam API wrappers</td>
     </tr>
     <tr>
-        <th><code>-</code></th>
+        <th>-</th>
         <th>SAM.Core</th>
         <td>Common resources used by both <code>SAM</code> and <code>SAM.Manager</code>.</td>
     </tr>
