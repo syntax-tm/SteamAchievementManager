@@ -9,7 +9,7 @@ namespace SAM.API
     {
         public static unsafe StringHandle StringToStringHandle(string value)
         {
-            if (value == null) return new StringHandle(IntPtr.Zero, true);
+            if (value == null) return new StringHandle(nint.Zero, true);
 
             var bytes = Encoding.UTF8.GetBytes(value);
             var length = bytes.Length;
@@ -42,7 +42,7 @@ namespace SAM.API
             return PointerToString((sbyte*)bytes);
         }
 
-        public static unsafe string PointerToString(IntPtr nativeData)
+        public static unsafe string PointerToString(nint nativeData)
         {
             return PointerToString((sbyte*)nativeData.ToPointer());
         }
@@ -70,16 +70,16 @@ namespace SAM.API
             return PointerToString((sbyte*)bytes, length);
         }
 
-        public static unsafe string PointerToString(IntPtr nativeData, int length)
+        public static unsafe string PointerToString(nint nativeData, int length)
         {
             return PointerToString((sbyte*)nativeData.ToPointer(), length);
         }
 
         public sealed class StringHandle : SafeHandleZeroOrMinusOneIsInvalid
         {
-            public IntPtr Handle => handle;
+            public nint Handle => handle;
 
-            internal StringHandle(IntPtr preexistingHandle, bool ownsHandle)
+            internal StringHandle(nint preexistingHandle, bool ownsHandle)
                 : base(ownsHandle)
             {
                 SetHandle(preexistingHandle);
@@ -87,10 +87,10 @@ namespace SAM.API
 
             protected override bool ReleaseHandle()
             {
-                if (handle == IntPtr.Zero) return false;
+                if (handle == nint.Zero) return false;
 
                 Marshal.FreeHGlobal(handle);
-                handle = IntPtr.Zero;
+                handle = nint.Zero;
                 return true;
             }
         }

@@ -7,6 +7,6 @@ namespace SAM.API
         int Id { get; }
         bool IsServer { get; }
 
-        void Run(IntPtr param);
+        void Run(nint param);
     }
 }

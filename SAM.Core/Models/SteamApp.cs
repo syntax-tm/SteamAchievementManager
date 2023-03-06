@@ -39,6 +39,7 @@ namespace SAM.Core
         public virtual string Group { get; set; }
         public virtual bool IsHidden { get; set; }
         public virtual bool IsFavorite { get; set; }
+        public virtual bool IsMenuOpen { get; set; }
 
         protected SteamApp(uint id, GameInfoType type)
         {

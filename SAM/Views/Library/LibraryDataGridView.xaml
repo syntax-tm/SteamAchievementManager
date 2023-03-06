@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:sam="urn:sam"
              mc:Ignorable="d"
@@ -137,7 +136,7 @@
                                                     BorderBrush="{TemplateBinding BorderBrush}"
                                                     BorderThickness="{TemplateBinding BorderThickness}" />
 
-                                            <mah:ContentControlEx x:Name="HeaderContent"
+                                            <!--<mah:ContentControlEx x:Name="HeaderContent"
                                                                   Grid.Column="0"
                                                                   Margin="{TemplateBinding BorderThickness}"
                                                                   Padding="{TemplateBinding Padding}"
@@ -149,7 +148,7 @@
                                                                   ContentTemplate="{TemplateBinding ContentTemplate}"
                                                                   ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                                                   RecognizesAccessKey="{TemplateBinding mah:ControlsHelper.RecognizesAccessKey}"
-                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />-->
 
                                             <Path x:Name="SortArrow"
                                                   Grid.Column="1"

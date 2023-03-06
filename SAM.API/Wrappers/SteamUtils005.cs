@@ -8,7 +8,7 @@ namespace SAM.API.Wrappers
 #region GetConnectedUniverse
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeGetConnectedUniverse(IntPtr self);
+        private delegate int NativeGetConnectedUniverse(nint self);
 
         public int GetConnectedUniverse()
         {
@@ -20,11 +20,11 @@ namespace SAM.API.Wrappers
 #region GetIPCountry
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetIPCountry(IntPtr self);
+        private delegate nint NativeGetIPCountry(nint self);
 
         public string GetIPCountry()
         {
-            var result = Call<IntPtr, NativeGetIPCountry>(Functions.GetIPCountry, ObjectAddress);
+            var result = Call<nint, NativeGetIPCountry>(Functions.GetIPCountry, ObjectAddress);
             return NativeStrings.PointerToString(result);
         }
 
@@ -34,7 +34,7 @@ namespace SAM.API.Wrappers
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetImageSize(IntPtr self, int index, out int width, out int height);
+        private delegate bool NativeGetImageSize(nint self, int index, out int width, out int height);
 
         public bool GetImageSize(int index, out int width, out int height)
         {
@@ -48,7 +48,7 @@ namespace SAM.API.Wrappers
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetImageRGBA(IntPtr self, int index, byte[] buffer, int length);
+        private delegate bool NativeGetImageRGBA(nint self, int index, byte[] buffer, int length);
 
         public bool GetImageRGBA(int index, byte[] data)
         {
@@ -63,7 +63,7 @@ namespace SAM.API.Wrappers
 #region GetAppID
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate uint NativeGetAppId(IntPtr self);
+        private delegate uint NativeGetAppId(nint self);
 
         public uint GetAppId()
         {

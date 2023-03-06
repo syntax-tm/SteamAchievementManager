@@ -1,45 +1,62 @@
 ﻿using DevExpress.Mvvm;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace SAM.Core.Settings
 {
+    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
     public class UserSettings : BindableBase
     {
-        [JsonProperty(nameof(ManagerSettings))]
+        private static UserSettings _instance;
+        private static readonly object syncLock = new ();
+
+        private static readonly UserSettingsKey _settingsKey = new ();
+        
         public ManagerSettings ManagerSettings
         {
             get => GetProperty(() => ManagerSettings);
             set => SetProperty(() => ManagerSettings, value);
         }
-
-        protected UserSettings()
+        
+        public LibrarySettings LibrarySettings
         {
-            ManagerSettings = new ManagerSettings();
+            get => GetProperty(() => LibrarySettings);
+            set => SetProperty(() => LibrarySettings, value);
         }
 
-        public static UserSettings Default => new UserSettings();
-
-        public static UserSettings Load()
+        public static UserSettings Default
         {
-            var key = new UserSettingsKey();
-
-            if (CacheManager.TryGetObject<UserSettings>(key, out var settings))
+            get
             {
-                return settings;
+                if (_instance != null) return _instance;
+                lock (syncLock)
+                {
+                    _instance = new ();
+                }
+                return _instance;
+            }
+        }
+        
+        protected UserSettings()
+        {
+            ManagerSettings = new ();
+
+            Load();
+        }
+        
+        private void Load()
+        {
+            if (CacheManager.TryPopulateObject(_settingsKey, this))
+            {
+                return;
             }
 
-            // no settings were found in cache, create default
-            var defaultSettings = new UserSettings();
-
-            CacheManager.CacheObject(key, defaultSettings);
-
-            return defaultSettings;
+            CacheManager.CacheObject(_settingsKey, this);
         }
 
         public void Save()
         {
-            // TODO: save user settings to isolated storage
+            CacheManager.CacheObject(_settingsKey, this);
         }
-
     }
 }

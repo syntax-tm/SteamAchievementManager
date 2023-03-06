@@ -2,7 +2,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
-using SAM.API.Types;
 
 namespace SAM.API
 {
@@ -10,18 +9,28 @@ namespace SAM.API
     {
         private static string _installPath;
 
-        private static IntPtr _Handle = IntPtr.Zero;
+#if BUILD_X86
+        private const string STEAM_CLIENT_DLL = @"steamclient.dll";
+#elif BUILD_X64
+        private const string STEAM_CLIENT_DLL = @"steamclient64.dll";
+#elif BUILD_ANYCPU
+        private const string STEAM_CLIENT_DLL = @"steamclient.dll";
+#else
+#error Unsupported platform. Target either x86 for 32-bit or x64 for 64-bit.
+#endif
+
+        private static nint _Handle = nint.Zero;
         private static NativeCreateInterface _CallCreateInterface;
         private static NativeSteamGetCallback _CallSteamBGetCallback;
         private static NativeSteamFreeLastCallback _CallSteamFreeLastCallback;
 
-        private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
+        private static Delegate GetExportDelegate<TDelegate>(nint module, string name)
         {
             var address = Native.GetProcAddress(module, name);
-            return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
+            return address == nint.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
         }
 
-        private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
+        private static TDelegate GetExportFunction<TDelegate>(nint module, string name)
             where TDelegate : class
         {
             return GetExportDelegate<TDelegate>(module, name) as TDelegate;
@@ -36,7 +45,7 @@ namespace SAM.API
             using var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
             using var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false);
 
-            _installPath = (string) clsid32.GetValue(@"InstallPath");
+            _installPath = (string) clsid32?.GetValue(@"InstallPath");
             return _installPath;
 
             //return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
@@ -45,9 +54,9 @@ namespace SAM.API
         public static TClass CreateInterface<TClass>(string version)
             where TClass : INativeWrapper, new()
         {
-            var address = _CallCreateInterface(version, IntPtr.Zero);
+            var address = _CallCreateInterface(version, nint.Zero);
 
-            if (address == IntPtr.Zero) return default;
+            if (address == nint.Zero) return default;
 
             var rez = new TClass();
             rez.SetupFunctions(address);
@@ -66,36 +75,20 @@ namespace SAM.API
 
         public static bool Load()
         {
-            if (_Handle != IntPtr.Zero)
+            if (_Handle != nint.Zero)
             {
                 Native.FreeLibrary(_Handle);
-                _Handle = IntPtr.Zero;
+                _Handle = nint.Zero;
             }
 
             var path = GetInstallPath();
             if (path == null) return false;
 
             Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
+            path = Path.Combine(path, STEAM_CLIENT_DLL);
 
-#if BUILD_X86
-            path = Path.Combine(path, "steamclient.dll");
-#elif BUILD_X64
-            path = Path.Combine(path, "steamclient64.dll");
-#elif BUILD_ANYCPU
-            // for AnyCPU we need to check and see if we're running as a 32-bit
-            // or 64-bit process since it depends on the processor architecture
-            var is64Bit = Environment.Is64BitOperatingSystem && Environment.Is64BitProcess;
-            var clientDll = is64Bit
-                ? "steamclient64.dll"
-                : "steamclient.dll";
-
-            path = Path.Combine(path, clientDll);
-#else
-#error Unknown project platform. Target either x86 for 32-bit or x64 for 64-bit.
-#endif
-
-            var module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
-            if (module == IntPtr.Zero) return false;
+            var module = Native.LoadLibraryEx(path, nint.Zero, Native.LoadWithAlteredSearchPath);
+            if (module == nint.Zero) return false;
 
             _CallCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
             if (_CallCreateInterface == null) return false;
@@ -113,23 +106,23 @@ namespace SAM.API
         private struct Native
         {
             [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-            internal static extern IntPtr GetProcAddress(IntPtr module, string name);
+            internal static extern nint GetProcAddress(nint module, string name);
 
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
+            internal static extern nint LoadLibraryEx(string path, nint file, uint flags);
 
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool SetDllDirectory(string path);
             
             [DllImport("kernel32.dll", SetLastError = true)]
-            public static extern bool FreeLibrary(IntPtr hModule);
+            public static extern bool FreeLibrary(nint hModule);
 
             internal const uint LoadWithAlteredSearchPath = 8;
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private delegate IntPtr NativeCreateInterface(string version, IntPtr returnCode);
+        private delegate nint NativeCreateInterface(string version, nint returnCode);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -15,13 +16,15 @@ using Timer = System.Timers.Timer;
 
 namespace SAM.Core.Stats
 {
+    [SuppressMessage("ReSharper", "CollectionNeverQueried.Local", Justification = "INotifyPropertyChanged handler collection")]
+    [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable", Justification = "Callback")]
     public class SteamStatsManager : BindableBase
     {
 
         private readonly ILog log = LogManager.GetLogger(nameof(SteamStatsManager));
 
         private Client _client => SteamClientManager.Default;
-        private readonly SAM.API.Callbacks.UserStatsReceived _UserStatsReceivedCallback;
+        private readonly UserStatsReceived _userStatsReceivedCallback;
         private readonly Timer _callbackTimer;
         private AutoResetEvent _resetEvent;
 
@@ -79,15 +82,15 @@ namespace SAM.Core.Stats
         {
             AppId = SteamClientManager.AppId;
 
-            Statistics = new List<SteamStatistic>();
-            Achievements = new List<SteamAchievement>();
-            StatDefinitions = new List<StatDefinition>();
-            AchievementDefinitions = new List<AchievementDefinition>();
+            Statistics = new ();
+            Achievements = new ();
+            StatDefinitions = new ();
+            AchievementDefinitions = new ();
 
-            _UserStatsReceivedCallback = _client.CreateAndRegisterCallback<SAM.API.Callbacks.UserStatsReceived>();
-            _UserStatsReceivedCallback.OnRun += OnUserStatsReceived;
+            _userStatsReceivedCallback = _client.CreateAndRegisterCallback<UserStatsReceived>();
+            _userStatsReceivedCallback.OnRun += OnUserStatsReceived;
 
-            _callbackTimer = new Timer();
+            _callbackTimer = new ();
             _callbackTimer.Elapsed += CallbackTimerOnElapsed;
             _callbackTimer.Interval = 100;
             _callbackTimer.Enabled = true;
@@ -120,7 +123,7 @@ namespace SAM.Core.Stats
             MessageBox.Show("Failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        private void OnUserStatsReceived(UserStatsReceived param)
+        private void OnUserStatsReceived(UserStatsResponse param)
         {
             try
             {
@@ -225,7 +228,7 @@ namespace SAM.Core.Stats
 
                                 foreach (var bit in bits.Children)
                                 {
-                                    AchievementDefinitions.Add(new AchievementDefinition(bit, currentLanguage));
+                                    AchievementDefinitions.Add(new (bit, currentLanguage));
                                 }
                             }
                         }

@@ -1,4 +1,4 @@
-﻿namespace SAM.API.Types
+﻿namespace SAM.API.Stats
 {
     public enum UserStatType
     {

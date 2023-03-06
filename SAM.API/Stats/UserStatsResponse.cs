@@ -1,12 +1,13 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SAM.API.Types
+namespace SAM.API.Stats
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct UserItemsReceived
+    public struct UserStatsResponse
     {
         public ulong GameId;
-        public int Unknown;
-        public int ItemCount;
+        public int Result;
+
+        public bool IsSuccess => Result == 1;
     }
 }

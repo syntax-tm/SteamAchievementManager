@@ -7,11 +7,11 @@ namespace SAM.API
 {
     public abstract class NativeWrapper<TNativeFunctions> : INativeWrapper
     {
-        private readonly Dictionary<IntPtr, Delegate> _FunctionCache = new();
+        private readonly Dictionary<nint, Delegate> _FunctionCache = new();
         protected TNativeFunctions Functions;
-        protected IntPtr ObjectAddress;
+        protected nint ObjectAddress;
 
-        public void SetupFunctions(IntPtr objectAddress)
+        public void SetupFunctions(nint objectAddress)
         {
             ObjectAddress = objectAddress;
 
@@ -33,7 +33,7 @@ namespace SAM.API
                 ObjectAddress.ToInt32());
         }
 
-        protected Delegate GetDelegate<TDelegate>(IntPtr pointer)
+        protected Delegate GetDelegate<TDelegate>(nint pointer)
         {
             Delegate function;
 
@@ -50,18 +50,18 @@ namespace SAM.API
             return function;
         }
 
-        protected TDelegate GetFunction<TDelegate>(IntPtr pointer)
+        protected TDelegate GetFunction<TDelegate>(nint pointer)
             where TDelegate : class
         {
             return (TDelegate)(object)GetDelegate<TDelegate>(pointer);
         }
 
-        protected void Call<TDelegate>(IntPtr pointer, params object[] args)
+        protected void Call<TDelegate>(nint pointer, params object[] args)
         {
             GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
         }
 
-        protected TReturn Call<TReturn, TDelegate>(IntPtr pointer, params object[] args)
+        protected TReturn Call<TReturn, TDelegate>(nint pointer, params object[] args)
         {
             return (TReturn)GetDelegate<TDelegate>(pointer).DynamicInvoke(args);
         }

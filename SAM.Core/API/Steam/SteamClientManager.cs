@@ -6,7 +6,6 @@ namespace SAM.Core
 {
     public static class SteamClientManager
     {
-
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamClientManager));
 
         private static readonly object syncLock = new ();

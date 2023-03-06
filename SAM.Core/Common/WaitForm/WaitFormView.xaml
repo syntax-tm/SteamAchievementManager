@@ -13,8 +13,8 @@
                 Width="350" Height="130"
                 Visibility="{Binding IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}">
             <StackPanel Orientation="Vertical">
-                <iconPacks:PackIconMaterial Kind="Refresh" Spin="True" SpinDuration="10" Width="50" Height="50"
-                                            HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                <iconPacks:PackIconMaterialLight Kind="Refresh" Spin="True" SpinDuration="10" Width="50" Height="50"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                 <TextBlock Text="Loading..." Foreground="White" HorizontalAlignment="Center" Margin="5" />
             </StackPanel>
         </Border>  

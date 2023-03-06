@@ -5,12 +5,12 @@ namespace SAM.API
 {
     public abstract class Callback : ICallback
     {
-        public delegate void CallbackFunction(IntPtr param);
+        public delegate void CallbackFunction(nint param);
 
         public abstract int Id { get; }
         public abstract bool IsServer { get; }
 
-        public void Run(IntPtr param)
+        public void Run(nint param)
         {
             OnRun!(param);
         }
@@ -26,9 +26,9 @@ namespace SAM.API
         public abstract int Id { get; }
         public abstract bool IsServer { get; }
 
-        public void Run(IntPtr pvParam)
+        public void Run(nint pvParam)
         {
-            var data = (TParameter)Marshal.PtrToStructure(pvParam, typeof(TParameter))!;
+            var data = Marshal.PtrToStructure<TParameter>(pvParam)!;
             OnRun!(data);
         }
 
