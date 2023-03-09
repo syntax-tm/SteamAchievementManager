@@ -165,15 +165,15 @@ namespace SAM.Manager
 
                 log.Error(message, args.Exception);
 
-                MessageBox.Show(message, $"Unhandled ${args.Exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
-
-                args.Handled = true;
+                Environment.Exit(SAMExitCode.DispatcherException);
             }
             catch (Exception e)
             {
-                log.Fatal($"An error occurred in {nameof(OnDispatcherException)}. {e.Message}", e);
+                var message = $"An error occurred in {nameof(OnDispatcherException)}. {e.Message}";
 
-                Environment.Exit(SAMExitCode.DispatcherException);
+                log.Fatal(message, e);
+                
+                Environment.FailFast(message);
             }
         }
     }
