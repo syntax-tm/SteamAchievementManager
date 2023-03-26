@@ -10,7 +10,6 @@ namespace SAM.Core
 {
     public static class SAMHelper
     {
-        
         private const string SAM_MANAGER_EXE = @"SAM.Manager.exe";
         private const string SAM_PICKER_EXE = @"SAM.exe";
         private const string STEAM_PROCESS_NAME = @"Steam";
@@ -24,7 +23,7 @@ namespace SAM.Core
         {
             if (IsSteamRunning()) return;
 
-            //  TODO: change the error message to indicate that Steam needs to be started
+            //  TODO: Change the error message to indicate that Steam needs to be started
             throw new SAMInitializationException(@"Steam process is not currently running.");
         }
 
@@ -56,7 +55,7 @@ namespace SAM.Core
 
         public static Process OpenManager(uint appId)
         {
-            if (appId == default) throw new ArgumentException($"{appId} is not a valid app ID.", nameof(appId));
+            if (appId == default) throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
             
             if (!File.Exists(SAM_MANAGER_EXE))
             {
@@ -85,7 +84,7 @@ namespace SAM.Core
             }
             catch (Exception e)
             {
-                var message = $"An error occurred attempting to close the SAM Managers. {e.Message}";
+                var message = $"An error occurred attempting to stop the running SAM Manager processes. {e.Message}";
                 log.Error(message, e);
             }
         }

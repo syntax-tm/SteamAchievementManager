@@ -8,7 +8,6 @@ namespace SAM.Core
 {
     public static class CacheManager
     {
-
         public static void CacheObject(ICacheKey key, object target, bool overwrite = true)
         {
             var filePath = key?.GetFullPath();
@@ -127,9 +126,7 @@ namespace SAM.Core
                 fileText = null;
                 return false;
             }
-
-            //fileText = IsolatedStorageManager.GetTextFile(filePath);
-
+            
             using var file = store.OpenFile(filePath, FileMode.Open, FileAccess.Read);
             using var reader = new StreamReader(file);
 

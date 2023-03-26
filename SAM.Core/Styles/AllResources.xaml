@@ -6,11 +6,6 @@
         <!-- Fluent ribbon resources -->
         <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/dark.red.xaml" />
-        <!-- MahApps.Metro resources -->
-        <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/fonts.xaml" />-->
-        <!-- Theme setting -->
-        <!--<ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.red.xaml" />-->
         <!-- SAM controls -->
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ButtonStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/CheckBoxStyles.xaml" />

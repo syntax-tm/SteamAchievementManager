@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using log4net;
 
 namespace SAM.Core
 {
     public static class SteamCdnHelper
     {
+        // TODO: Move this to a separate factory or builder class (or rename this)
         private const string GAME_CLIENT_ICON_URI = "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{0}/{1}.ico";
         private const string GAME_ICON_URI = "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{0}/{1}.jpg";
         private const string GAME_LOGO_URI = "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{0}/{1}.jpg";
@@ -20,100 +19,38 @@ namespace SAM.Core
         private const string GAME_ACHIEVEMENT_URI = "http://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/{0}/{1}";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamCdnHelper));
-
+        
         public static Image DownloadImage(uint id, SteamImageType type, string file = null)
         {
             try
             {
-                string url;
-
-                switch (type)
+                var url = type switch
                 {
-                    case SteamImageType.ClientIcon:
-                        url = string.Format(GAME_CLIENT_ICON_URI, id, file);
-                        break;
-                    case SteamImageType.Icon:
-                        url = string.Format(GAME_ICON_URI, id, file);
-                        break;
-                    case SteamImageType.Logo:
-                        url = string.Format(GAME_LOGO_URI, id, file);
-                        break;
-                    case SteamImageType.Header:
-                        url = string.Format(GAME_HEADER_URI, id);
-                        break;
-                    case SteamImageType.LibraryHero:
-                        url = string.Format(GAME_LIBRARY_HERO_URI, id);
-                        break;
-                    case SteamImageType.SmallCapsule:
-                        url = string.Format(GAME_SMALL_CAPSULE_URI, id);
-                        break;
-                    case SteamImageType.MediumCapsule:
-                        url = string.Format(GAME_MEDIUM_CAPSULE_URI, id);
-                        break;
-                    case SteamImageType.LargeCapsule:
-                        url = string.Format(GAME_LARGE_CAPSULE_URI, id);
-                        break;
-                    case SteamImageType.AchievementIcon:
-                        url = string.Format(GAME_ACHIEVEMENT_URI, id, file);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(type), type, null);
-                }
+                    SteamImageType.ClientIcon      => string.Format(GAME_CLIENT_ICON_URI, id, file),
+                    SteamImageType.Icon            => string.Format(GAME_ICON_URI, id, file),
+                    SteamImageType.Logo            => string.Format(GAME_LOGO_URI, id, file),
+                    SteamImageType.Header          => string.Format(GAME_HEADER_URI, id),
+                    SteamImageType.LibraryHero     => string.Format(GAME_LIBRARY_HERO_URI, id),
+                    SteamImageType.SmallCapsule    => string.Format(GAME_SMALL_CAPSULE_URI, id),
+                    SteamImageType.MediumCapsule   => string.Format(GAME_MEDIUM_CAPSULE_URI, id),
+                    SteamImageType.LargeCapsule    => string.Format(GAME_LARGE_CAPSULE_URI, id),
+                    SteamImageType.AchievementIcon => string.Format(GAME_ACHIEVEMENT_URI, id, file),
+                    _                              => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+                };
 
                 var fileName = Path.GetFileName(url);
                 var cacheKey = CacheKeyFactory.CreateAppImageCacheKey(id, fileName);
-
-                if (CacheManager.TryGetImageFile(cacheKey, out var cachedImg))
-                {
-                    return cachedImg;
-                }
-
-                var img = DownloadImage(url);
-
-                if (img != null)
-                {
-                    CacheManager.CacheImage(cacheKey, img);
-                }
-
+                
+                var img = WebManager.DownloadImage(url, cacheKey);
+                
                 return img;
             }
             catch (Exception e)
             {
-                log.Error($"An error occurred attempting to download the {type} image for app {id}.", e);
+                log.Error($"An error occurred downloading the {type} image for app id '{id}'.", e);
 
                 throw;
             }
         }
-
-        private static Image DownloadImage(string imageUrl)
-        {
-            try
-            {
-                using var wc = new HttpClient();
-                var data = wc.GetStreamAsync(imageUrl).Result;
-                //using var stream = new MemoryStream(data, false);
-
-                return Image.FromStream(data);
-            }
-            catch (WebException we)
-            {
-                if (we.Response is HttpWebResponse {StatusCode: HttpStatusCode.NotFound})
-                {
-                    return null;
-                }
-                if (we.Response is HttpWebResponse {StatusCode: HttpStatusCode.TooManyRequests})
-                {
-                    return null;
-                }
-
-                throw;
-            }
-            catch (Exception e)
-            {
-                var message = $"An error occurred attempting to download '{imageUrl}'. {e.Message}";
-                throw new Exception(message, e);
-            }
-        }
-
     }
 }

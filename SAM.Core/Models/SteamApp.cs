@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -66,8 +67,8 @@ namespace SAM.Core
 
         public void ManageApp()
         {
+            // TODO: Add a visual indication that the manager is running (handle Exited event)
             if (_managerProcess != null && _managerProcess.SetActive()) return;
-
             _managerProcess = SAMHelper.OpenManager(Id);
         }
 
@@ -134,6 +135,7 @@ namespace SAM.Core
             {
                 IsLoading = true;
 
+                // TODO: SteamApp shouldn't need to configure IsolatedStorage
                 IsolatedStorageManager.CreateDirectory($@"apps\{Id}");
 
                 LoadClientInfo();
@@ -200,21 +202,42 @@ namespace SAM.Core
         {
             try
             {
+                // TODO: Verify that the preferred HeaderImage method is consistent
+                // TODO: For each type, loop through sources until one is successful
+                if (!string.IsNullOrEmpty(StoreInfo?.HeaderImage))
+                {
+                    // TODO: The Uri file name parsing should be moved to the WebManager
+                    // TODO: Move image cache key creation to WebManager
+                    var uri = new Uri(StoreInfo.HeaderImage);
+                    var fileName = Path.GetFileName(uri.LocalPath);
+                    var key = CacheKeyFactory.CreateAppImageCacheKey(Id, fileName);
+
+                    var storeHeader = WebManager.DownloadImage(StoreInfo.HeaderImage, key);
+
+                    // this assumes that we'll get a header back that we can use
+                    Header = storeHeader;
+                }
+                else
+                {
+                    // this should run when Header is null regardless of whether or not
+                    // the StoreInfo.HeaderImage is null
+                    var appLogo = SteamClientManager.Default.GetAppLogo(Id);
+                    if (!string.IsNullOrEmpty(appLogo))
+                    {
+                        Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);
+                    }
+                }
+
+                // TODO: Change to be lazy loaded when needed
                 var iconName = SteamClientManager.Default.GetAppIcon(Id);
                 if (!string.IsNullOrEmpty(iconName))
                 {
                     Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
                 }
-
-                var appLogo = SteamClientManager.Default.GetAppLogo(Id);
-                if (!string.IsNullOrEmpty(appLogo))
-                {
-                    Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);
-                }
             }
             catch (Exception e)
             {
-                var message = $"An error occurred loading the images for {Name} ({Id}). {e.Message}";
+                var message = $"An error occurred loading images for {Name} ({Id}). {e.Message}";
                 log.Error(message, e);
             }
         }

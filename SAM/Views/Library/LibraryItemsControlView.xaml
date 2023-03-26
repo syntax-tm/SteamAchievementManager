@@ -23,9 +23,6 @@
                 <Setter Property="Opacity" Value="0.4" />
                 <Setter Property="Margin" Value="0,-2,0,-2" />
             </Style>-->
-            <SolidColorBrush x:Key="AccentSemiTransparentBrush" Color="#559CE4" Opacity="0.75" />
-            <SolidColorBrush x:Key="AccentTransparentBrush" Color="#559CE4" Opacity="0.5" />
-            <SolidColorBrush x:Key="AccentPrimaryBrush" Color="#559CE4" />
         </ResourceDictionary>
     </UserControl.Resources>
 

@@ -3,11 +3,19 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows10.0.17763.0</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <Platforms>x86</Platforms>
     <LangVersion>preview</LangVersion>
+    <Platforms>x86</Platforms>
+    <UseWPF>true</UseWPF>
     <ApplicationIcon>sam_manager.ico</ApplicationIcon>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <DefineConstants>TRACE;BUILD_X86;DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <DefineConstants>TRACE;BUILD_X86</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,9 +47,8 @@
     <PackageReference Include="gong-wpf-dragdrop" Version="3.2.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
     <PackageReference Include="log4net" Version="2.0.15" />
-    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
-    <PackageReference Include="MahApps.Metro.IconPacks.MaterialLight" Version="4.11.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
     <PackageReference Include="WPF-UI" Version="2.0.3" />

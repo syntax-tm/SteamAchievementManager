@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:sam="urn:sam"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}"
@@ -18,44 +17,6 @@
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
             </dxmvvm:Interaction.Behaviors>
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="{Binding Name}" FontWeight="SemiBold"
-                              ToolTip="Open in Manager" Command="{Binding ManageAppCommand}">
-                        <MenuItem.Icon>
-                            <iconPacks:PackIconMaterial Kind="OpenInApp" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator Style="{StaticResource ContextMenuSeparator}" />
-                    <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
-                        <MenuItem.Icon>
-                            <iconPacks:PackIconMaterial Kind="Database" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
-                              Style="{StaticResource MahApps.Styles.MenuItem}">
-                        <MenuItem.Icon>
-                            <iconPacks:PackIconMaterial Kind="Steam" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}">
-                        <MenuItem.Icon>
-                            <iconPacks:PackIconMaterial Kind="Server" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}">
-                        <MenuItem.Icon>
-                            <iconPacks:PackIconMaterial Kind="Card" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator Style="{StaticResource ContextMenuSeparator}" />
-                    <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
-                        <MenuItem.Icon>
-                            <iconPacks:PackIconMaterial Kind="ContentCopy" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
             <!--<DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <Style.Triggers>
@@ -82,8 +43,6 @@
                                 <Grid Width="32" Height="32">
                                     <Image Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}"
                                            Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisConverter}}" />
-                                    <iconPacks:PackIconMaterial Kind="Loading" Spin="True" SpinDuration="10" 
-                                                     Visibility="{Binding IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -94,7 +53,7 @@
                         </Style>
                     </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MahApps.Styles.DataGridCell}">
+                        <Style TargetType="{x:Type DataGridCell}">
                             <Setter Property="BorderThickness" Value="1" />
                             <Setter Property="BorderBrush" Value="White" />
                         </Style>
@@ -135,32 +94,15 @@
                                                     Background="{TemplateBinding Background}"
                                                     BorderBrush="{TemplateBinding BorderBrush}"
                                                     BorderThickness="{TemplateBinding BorderThickness}" />
-
-                                            <!--<mah:ContentControlEx x:Name="HeaderContent"
-                                                                  Grid.Column="0"
-                                                                  Margin="{TemplateBinding BorderThickness}"
-                                                                  Padding="{TemplateBinding Padding}"
-                                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                                  Content="{TemplateBinding Content}"
-                                                                  ContentCharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(mah:ControlsHelper.ContentCharacterCasing)}"
-                                                                  ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                                                  RecognizesAccessKey="{TemplateBinding mah:ControlsHelper.RecognizesAccessKey}"
-                                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />-->
-
                                             <Path x:Name="SortArrow"
                                                   Grid.Column="1"
                                                   Width="8"
                                                   Height="10"
                                                   Margin="0 0 8 2"
                                                   VerticalAlignment="Center"
-                                                  Fill="{DynamicResource MahApps.Brushes.Gray2}"
                                                   RenderTransformOrigin="0.5,0.5"
                                                   Stretch="Fill"
                                                   Visibility="Collapsed" />
-
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="SortDirection" Value="Ascending">

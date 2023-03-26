@@ -163,7 +163,7 @@ namespace SAM.Manager
             {
                 var message = $"Dispatcher unhandled exception occurred. {args.Exception.Message}";
 
-                log.Error(message, args.Exception);
+                log.Fatal(message, args.Exception);
 
                 Environment.Exit(SAMExitCode.DispatcherException);
             }
@@ -171,8 +171,6 @@ namespace SAM.Manager
             {
                 var message = $"An error occurred in {nameof(OnDispatcherException)}. {e.Message}";
 
-                log.Fatal(message, e);
-                
                 Environment.FailFast(message);
             }
         }

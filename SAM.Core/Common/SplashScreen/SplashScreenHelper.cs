@@ -1,6 +1,4 @@
-﻿using MahApps.Metro.IconPacks;
-using Wpf.Ui.Controls;
-using Brushes = System.Windows.Media.Brushes;
+﻿using Wpf.Ui.Controls;
 
 namespace SAM.Core
 {
@@ -18,9 +16,6 @@ namespace SAM.Core
 
             _splashWindow = new SplashScreenView();
             _splashWindow.DataContext = _splashScreenVm;
-            
-            var icon = PackIconHelper.GetImageSource(PackIconMaterialKind.Steam, Brushes.White);
-            _splashWindow.Icon = icon;
             
             _isInitialized = true;
         }

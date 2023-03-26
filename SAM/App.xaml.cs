@@ -23,14 +23,14 @@ namespace SAM
 
                 SAMHelper.VerifySteamProcess();
 
-                //  handle any WPF dispatcher exceptions
+                // handle any WPF dispatcher exceptions
                 Current.DispatcherUnhandledException += OnDispatcherException;
 
-                //  handle any AppDomain exceptions
+                // handle any AppDomain exceptions
                 var current = AppDomain.CurrentDomain;
                 current.UnhandledException += OnAppDomainException;
 
-                //  handle any TaskScheduler exceptions
+                // handle any TaskScheduler exceptions
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
                 IsolatedStorageManager.Init();
@@ -130,7 +130,7 @@ namespace SAM
             {
                 var message = $"Dispatcher unhandled exception occurred. {args.Exception.Message}";
 
-                log.Error(message, args.Exception);
+                log.Fatal(message, args.Exception);
 
                 Environment.Exit(SAMExitCode.DispatcherException);
             }
@@ -138,8 +138,6 @@ namespace SAM
             {
                 var message = $"An error occurred in {nameof(OnDispatcherException)}. {e.Message}";
 
-                log.Fatal(message, e);
-                
                 Environment.FailFast(message);
             }
         }
