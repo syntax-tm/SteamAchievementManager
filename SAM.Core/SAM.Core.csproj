@@ -13,11 +13,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Styles\Images\square-steam.svg" />
     <None Remove="Styles\Images\steam-symbol.svg" />
     <None Remove="SAM.Core.csproj.DotSettings" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Styles\Images\square-steam.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Styles\Images\steam-symbol.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
