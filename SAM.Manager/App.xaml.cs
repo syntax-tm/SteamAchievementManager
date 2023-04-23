@@ -55,8 +55,6 @@ namespace SAM.Manager
                 
                 //  handle any TaskScheduler exceptions
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-
-                IsolatedStorageManager.Init();
                 
                 SplashScreenHelper.Show("Loading game info...");
 

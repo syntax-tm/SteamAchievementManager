@@ -24,6 +24,7 @@ namespace SAM.Core.ViewModels
         public virtual bool ShowHidden { get; set; }
         public virtual bool FilterFavorites { get; set; }
         public virtual string FilterTool { get; set; }
+        public virtual int TileWidth { get; set; } = 100;
         public virtual ICollectionView ItemsView { get; set; }
 
         public SteamApp SelectedItem

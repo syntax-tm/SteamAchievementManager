@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.IO.IsolatedStorage;
 using Newtonsoft.Json;
 
 namespace SAM.Core
 {
     public static class CacheManager
     {
+        public static IStorageManager StorageManager { get; } = LocalStorageManager.Default;
+
         public static void CacheObject(ICacheKey key, object target, bool overwrite = true)
         {
             var filePath = key?.GetFullPath();
@@ -16,7 +17,7 @@ namespace SAM.Core
 
             var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
 
-            IsolatedStorageManager.SaveText(filePath, targetObjectJson, overwrite);
+            StorageManager.SaveText(filePath, targetObjectJson, overwrite);
         }
 
         public static void CacheText(ICacheKey key, string text, bool overwrite = true)
@@ -25,7 +26,7 @@ namespace SAM.Core
             
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
-            IsolatedStorageManager.SaveText(filePath, text, overwrite);
+            StorageManager.SaveText(filePath, text, overwrite);
         }
 
         public static void CacheImage(ICacheKey key, Image img, bool overwrite = true)
@@ -34,7 +35,7 @@ namespace SAM.Core
             
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
-            IsolatedStorageManager.SaveImage(filePath, img, overwrite);
+            StorageManager.SaveImage(filePath, img, overwrite);
         }
 
         public static bool TryGetImageFile(ICacheKey key, out Image img)
@@ -43,13 +44,13 @@ namespace SAM.Core
 
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
-            if (!IsolatedStorageManager.FileExists(filePath))
+            if (!StorageManager.FileExists(filePath))
             {
                 img = null;
                 return false;
             }
 
-            img = IsolatedStorageManager.GetImageFile(filePath);
+            img = StorageManager.GetImageFile(filePath);
 
             return true;
         }
@@ -58,12 +59,12 @@ namespace SAM.Core
         {
             var filePath = key.GetFullPath();
 
-            if (!IsolatedStorageManager.FileExists(filePath))
+            if (!StorageManager.FileExists(filePath))
             {
                 throw new FileNotFoundException(filePath);
             }
 
-            return IsolatedStorageManager.GetImageFile(filePath);
+            return StorageManager.GetImageFile(filePath);
         }
         
         public static bool TryPopulateObject<T>(ICacheKey key, T target)
@@ -72,18 +73,13 @@ namespace SAM.Core
 
             ArgumentException.ThrowIfNullOrEmpty(filePath);
             
-            using var isoStorage = IsolatedStorageManager.GetStore();
-
-            if (!IsolatedStorageManager.FileExists(filePath))
+            if (!StorageManager.FileExists(filePath))
             {
                 return false;
             }
             
-            using var file =  new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoStorage);
-            using var reader = new StreamReader(file);
-
-            var fileText = reader.ReadToEnd();
-
+            var fileText = StorageManager.GetTextFile(filePath);
+            
             JsonConvert.PopulateObject(fileText, target);
 
             return true;
@@ -95,18 +91,13 @@ namespace SAM.Core
 
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
-            using var isoStorage = IsolatedStorageManager.GetStore();
-
-            if (!IsolatedStorageManager.FileExists(filePath))
+            if (!StorageManager.FileExists(filePath))
             {
                 cachedObject = default;
                 return false;
             }
             
-            using var file =  new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoStorage);
-            using var reader = new StreamReader(file);
-
-            var fileText = reader.ReadToEnd();
+            var fileText = StorageManager.GetTextFile(filePath);
 
             cachedObject = JsonConvert.DeserializeObject<T>(fileText);
 
@@ -118,19 +109,14 @@ namespace SAM.Core
             var filePath = key?.GetFullPath();
 
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
-            using var store = IsolatedStorageManager.GetStore();
-
-            if (!store.FileExists(filePath))
+            
+            if (!StorageManager.FileExists(filePath))
             {
                 fileText = null;
                 return false;
             }
             
-            using var file = store.OpenFile(filePath, FileMode.Open, FileAccess.Read);
-            using var reader = new StreamReader(file);
-
-            fileText = reader.ReadToEnd();
+            fileText = StorageManager.GetTextFile(filePath);
             
             return true;
         }
@@ -139,13 +125,12 @@ namespace SAM.Core
         {
             var filePath = key.GetFullPath();
 
-            if (!IsolatedStorageManager.FileExists(filePath))
+            if (!StorageManager.FileExists(filePath))
             {
                 throw new FileNotFoundException(filePath);
             }
 
-            return IsolatedStorageManager.GetTextFile(filePath);
+            return StorageManager.GetTextFile(filePath);
         }
-
     }
 }

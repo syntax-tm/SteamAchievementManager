@@ -6,8 +6,8 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:sam="urn:sam"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:views="clr-namespace:SAM.Views"
              mc:Ignorable="d" 
-             DataContext="{dxmvvm:ViewModelSource Type=sam:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -31,39 +31,38 @@
                                       HorizontalContentAlignment="Center">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="False" VirtualizationMode="Recycling"
-                                              IsVirtualizing="True" />
+                    <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="True"  />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
-            <ui:VirtualizingItemsControl.ItemContainerStyle>
+            <!--<ui:VirtualizingItemsControl.ItemContainerStyle>
                 <Style>
-                    <Setter Property="Control.MaxHeight" Value="100" />
+                    <Setter Property="Control.Width" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:LibraryItemsControlView}}, Path=DataContext.TileWidth}" />
                 </Style>
-            </ui:VirtualizingItemsControl.ItemContainerStyle>
+            </ui:VirtualizingItemsControl.ItemContainerStyle>-->
             <ui:VirtualizingItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type sam:SteamApp}">
                     <Grid>
                         <ui:Button Padding="0">
-                            <ui:Button.Resources>
+                            <!--<ui:Button.Resources>
                                 <sam:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
-                            </ui:Button.Resources>
+                            </ui:Button.Resources>-->
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}">
                                     <Setter Property="Background" Value="Transparent" />
                                     <Setter Property="ToolTip" Value="{Binding Name}" />
                                     <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                                    <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+                                    <Setter Property="BorderBrush" Value="{StaticResource ControlElevationBorderBrush}" />
                                     <Setter Property="BorderThickness" Value="3" />
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource AccentSemiTransparentBrush}" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource Accent2PrimaryBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsPressed" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource AccentTransparentBrush}" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource Accent3PrimaryBrush}" />
                                         </Trigger>
-                                        <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource AccentTransparentBrush}" />
-                                        </DataTrigger>
+                                        <!--<DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource AccentPrimaryBrush}" />
+                                        </DataTrigger>-->
                                         <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
                                             <Setter Property="Background" Value="{StaticResource AccentPrimaryBrush}" />
                                         </DataTrigger>
@@ -71,7 +70,7 @@
                                 </Style>
                             </ui:Button.Style>
                             <ui:Button.ContextMenu>
-                                <ContextMenu IsOpen="{Binding Data, Source={StaticResource BindingProxy}, Mode=OneWayToSource}">
+                                <ContextMenu>
                                     <!-- ReSharper disable Xaml.RedundantResource -->
                                     <ui:MenuItem Header="{Binding Name}" IsEnabled="False" Margin="0,5,0,0">
                                         <ui:MenuItem.HeaderTemplate>
@@ -133,14 +132,14 @@
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
                             </dxmvvm:Interaction.Behaviors>
-                            <Grid>
+                            <Grid Width="200">
                                 <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
+                                                <!--<DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
                                                     <Setter Property="Opacity" Value="0.25" />
-                                                </DataTrigger>
+                                                </DataTrigger>-->
                                                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
                                                     <Setter Property="Opacity" Value="0.75" />
                                                 </DataTrigger>

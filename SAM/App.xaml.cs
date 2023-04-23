@@ -32,9 +32,7 @@ namespace SAM
 
                 // handle any TaskScheduler exceptions
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-
-                IsolatedStorageManager.Init();
-
+                
                 // create the default Client instance
                 SteamClientManager.Init(0);
 
