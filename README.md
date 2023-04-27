@@ -89,6 +89,13 @@ The reason there's two seperate apps (the picker and the manager) is because the
 
 ---
 
+## Acknowledgements
+
+- [SteamCountries](https://github.com/RudeySH/SteamCountries)
+  - Steam location data available in json
+
+---
+
 ## Resources
 
 - [Devexpress MVVM](https://github.com/DevExpress/DevExpress.Mvvm.Free)
