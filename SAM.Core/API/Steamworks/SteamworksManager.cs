@@ -7,6 +7,7 @@ using System.Text.Json;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SAM.Core.Storage;
 
 namespace SAM.Core
 {

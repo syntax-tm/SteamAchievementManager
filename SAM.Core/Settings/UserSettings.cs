@@ -1,6 +1,7 @@
 ﻿using DevExpress.Mvvm;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SAM.Core.Storage;
 
 namespace SAM.Core.Settings
 {

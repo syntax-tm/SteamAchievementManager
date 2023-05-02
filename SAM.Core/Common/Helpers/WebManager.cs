@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Net;
 using System.Net.Http;
 using log4net;
+using SAM.Core.Storage;
 
 namespace SAM.Core
 {
@@ -11,6 +12,48 @@ namespace SAM.Core
     {
         private static readonly ILog log = LogManager.GetLogger(nameof(WebManager));
         private static readonly HttpClient _wc = new ();
+
+        public static byte[] DownloadBytes(string url, ICacheKey cacheKey = null)
+        {
+            try
+            {
+                // if we were passed a key, try and load the text from cache
+                if (cacheKey != null)
+                {
+                    var loadedFromCache = CacheManager.TryGetBytes(cacheKey, out var cachedBytes);
+                    if (loadedFromCache) return cachedBytes;
+                }
+
+                var bytes = _wc.GetByteArrayAsync(url).Result;
+                
+                // if we were passed a key, cache the text so we can load it from cache next time
+                if (cacheKey != null)
+                {
+                    CacheManager.CacheBytes(cacheKey, bytes);
+                }
+
+                return bytes;
+            }
+            catch (WebException we)
+            {
+                switch (we.Response)
+                {
+                    case HttpWebResponse {StatusCode: HttpStatusCode.NotFound}:
+                        log.Error($"Failed to download '{url}' ({HttpStatusCode.NotFound}).", we);
+                        return null;
+                    case HttpWebResponse {StatusCode: HttpStatusCode.TooManyRequests}:
+                        log.Error($"Failed to download '{url}' ({HttpStatusCode.TooManyRequests}).", we);
+                        return null;
+                    default:
+                        throw;
+                }
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to download '{url}'. {e.Message}";
+                throw new (message, e);
+            }
+        }
 
         public static string DownloadString(string url, ICacheKey cacheKey = null)
         {

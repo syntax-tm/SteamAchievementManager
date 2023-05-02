@@ -3,7 +3,7 @@ using System.Drawing;
 using System.IO;
 using log4net;
 
-namespace SAM.Core
+namespace SAM.Core.Storage
 {
     public class LocalStorageManager : IStorageManager
     {
@@ -67,6 +67,23 @@ namespace SAM.Core
 
             File.WriteAllText(path, text);
         }
+        
+        public void SaveBytes(string fileName, byte[] bytes, bool overwrite = true)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+
+            var path = Path.Combine(ApplicationStoragePath, fileName);
+
+            if (!overwrite)
+            {
+                if (File.Exists(path))
+                {
+                    throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
+                }
+            }
+
+            File.WriteAllBytes(path, bytes);
+        }
 
         public Image GetImageFile(string fileName)
         {
@@ -92,6 +109,19 @@ namespace SAM.Core
             var fileText = File.ReadAllText(path);
 
             return fileText;
+        }
+        
+        public byte[] GetBytes(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            var path = Path.Combine(ApplicationStoragePath, fileName);
+            
+            if (!File.Exists(path)) throw new FileNotFoundException(nameof(fileName));
+            
+            var bytes = File.ReadAllBytes(path);
+            
+            return bytes;
         }
 
         public void CreateDirectory(string directory)

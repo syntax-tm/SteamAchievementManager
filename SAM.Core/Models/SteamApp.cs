@@ -10,6 +10,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.Core.Extensions;
+using SAM.Core.Storage;
 
 namespace SAM.Core
 {

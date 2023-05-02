@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using log4net;
 
-namespace SAM.Core
+namespace SAM.Core.Storage
 {
     // TODO: Add configurable cache expiration
     [DebuggerDisplay("{GetFullPath()}")]

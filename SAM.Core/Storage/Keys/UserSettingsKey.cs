@@ -1,6 +1,6 @@
 ﻿using SAM.Core.Settings;
 
-namespace SAM.Core
+namespace SAM.Core.Storage
 {
     public class UserSettingsKey : CacheKeyBase
     {

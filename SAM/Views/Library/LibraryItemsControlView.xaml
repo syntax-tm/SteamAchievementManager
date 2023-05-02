@@ -132,7 +132,7 @@
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
                             </dxmvvm:Interaction.Behaviors>
-                            <Grid Width="200">
+                            <Grid Width="282">
                                 <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">

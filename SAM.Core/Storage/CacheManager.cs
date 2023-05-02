@@ -3,11 +3,20 @@ using System.Drawing;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace SAM.Core
+namespace SAM.Core.Storage
 {
     public static class CacheManager
     {
         public static IStorageManager StorageManager { get; } = LocalStorageManager.Default;
+        
+        public static void CacheBytes(ICacheKey key, byte[] bytes, bool overwrite = true)
+        {
+            var filePath = key?.GetFullPath();
+            
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+            StorageManager.SaveBytes(filePath, bytes, overwrite);
+        }
 
         public static void CacheObject(ICacheKey key, object target, bool overwrite = true)
         {
@@ -36,6 +45,23 @@ namespace SAM.Core
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
             StorageManager.SaveImage(filePath, img, overwrite);
+        }
+        
+        public static bool TryGetBytes(ICacheKey key, out byte[] bytes)
+        {
+            var filePath = key?.GetFullPath();
+
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            
+            if (!StorageManager.FileExists(filePath))
+            {
+                bytes = null;
+                return false;
+            }
+
+            bytes = StorageManager.GetBytes(filePath);
+
+            return true;
         }
 
         public static bool TryGetImageFile(ICacheKey key, out Image img)

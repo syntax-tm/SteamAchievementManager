@@ -21,7 +21,7 @@ namespace SAM.Core
         {
             13260 // Unreal Development Kit
         };
-        // TODO: This will probably be better off as a ConcurrentDictionary (for thread safety during Library init) or other keyed collection
+        // TODO: This will probably be better off as a ConcurrentBag (for thread safety during Library init) or other keyed collection
         private static List<SupportedApp> _gameList;
 
         public static List<SupportedApp> GetSupportedGames()
@@ -46,7 +46,7 @@ namespace SAM.Core
 
                 while (nodes.MoveNext())
                 {
-                    var gameId = (uint) nodes.Current.ValueAsLong;
+                    var gameId = (uint) nodes.Current!.ValueAsLong;
 
                     if (_ignoredApps.Contains(gameId))
                     {

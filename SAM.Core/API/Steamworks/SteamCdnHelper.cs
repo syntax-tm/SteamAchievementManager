@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.IO;
 using log4net;
+using SAM.Core.Storage;
 
 namespace SAM.Core
 {
