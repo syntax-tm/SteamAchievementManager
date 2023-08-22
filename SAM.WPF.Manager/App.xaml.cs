@@ -31,8 +31,6 @@ namespace SAM.WPF.Manager
                     //}
 
                     throw new ArgumentException(nameof(commandLineArgs));
-
-                    Environment.Exit(-1);
                 }
 
                 if (!uint.TryParse(commandLineArgs[1], out var appId))

@@ -65,11 +65,11 @@ namespace SAM.WPF.Core
             Items = new ObservableCollection<SteamApp>();
             BindingOperations.EnableCollectionSynchronization(Items, _lock);
 
-            if (loadCache)
-            {
-                LoadLibraryCache();
-                LoadRefreshProgress();
-            }
+            //if (loadCache)
+            //{
+            //    LoadLibraryCache();
+            //    LoadRefreshProgress();
+            //}
 
             CancelRefresh();
 

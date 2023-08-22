@@ -6,10 +6,7 @@
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:local="clr-namespace:SAM.WPF.Manager"
                  mc:Ignorable="d"
-                 Title="Steam Achievement Manager" Height="700" Width="900"
-                 GlowBrush="{DynamicResource MahApps.Brushes.Accent}"
-                 TitleCharacterCasing="Normal" WindowTitleBrush="#1a1a1a" ShowSystemMenu="True"
-                 >
+                 Title="Steam Achievement Manager" Height="700" Width="900">
     <Grid>
 
     </Grid>

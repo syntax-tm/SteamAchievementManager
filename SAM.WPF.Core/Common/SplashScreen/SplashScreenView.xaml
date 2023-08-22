@@ -11,18 +11,52 @@
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}">
 
-    <!--<UserControl.Resources>
-        <ResourceDictionary Source="pack://application:,,,/Styles/AllResources.xaml" />
-    </UserControl.Resources>-->
+    <UserControl.Resources>
+        <Style x:Key="CaptionButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="30">
+                            <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
+                                       Foreground="#999999" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  TextOptions.TextFormattingMode="Display"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
+                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <Style x:Key="MinimizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE949;"/>
+        </Style>
+
+        <Style x:Key="MaximizeButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE739;"/>
+        </Style>
+
+        <Style x:Key="RestoreButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE923;"/>
+        </Style>
+
+        <Style x:Key="CloseButtonStyle" TargetType="Button" BasedOn="{StaticResource CaptionButtonStyle}">
+            <Setter Property="Content" Value="&#xE106;"/>
+        </Style>
+    </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:CurrentWindowService />
     </dxmvvm:Interaction.Behaviors>
 
     <Grid Width="500" Height="300">
-        <Border BorderBrush="{StaticResource BlackBrush}" BorderThickness="1">
-            <Grid Background="#212121">
-                <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
+        <Grid Background="#1a1a1a">
+                <!--<StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
                     <Button BorderBrush="Transparent" BorderThickness="0" Margin="3" Background="Transparent"
                             Command="{Binding HideCommand}" Padding="0">
                         <fa:ImageAwesome Icon="Minus" Foreground="#11eeeeee" Width="16" Height="16" />
@@ -31,22 +65,26 @@
                             Command="{Binding ExitCommand}" Padding="0">
                         <fa:ImageAwesome Icon="Times" Foreground="#11eeeeee" Width="16" Height="16" />
                     </Button>
+                </StackPanel>-->
+                <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
+                    <Button Style="{StaticResource MinimizeButtonStyle}" Command="{Binding HideCommand}" />
+                    <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding ExitCommand}" />
                 </StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <fa:ImageAwesome Icon="Steam" Foreground="#22eeeeee" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                    <fa:ImageAwesome Icon="Steam" Foreground="#ABFFFFFF" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
                 </Grid>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
                     <TextBlock Text="Steam Achievement Manager" FontSize="22" Margin="2" HorizontalAlignment="Right"
                                VerticalAlignment="Bottom" Foreground="#ddffffff" FontFamily="Segoe UI Light" />
                     <TextBlock Text="{Binding Status, Mode=OneWay}" FontSize="20" Margin="2" HorizontalAlignment="Right"
-                               VerticalAlignment="Bottom" Foreground="#ddffffff" FontFamily="Segoe UI Light" />
+                               TextWrapping="Wrap"
+                               Foreground="#ddffffff" FontFamily="Segoe UI Light" />
                     <mah:MetroProgressBar IsIndeterminate="True" Margin="20" Width="400" Foreground="White" />
                 </StackPanel>
             </Grid>
-        </Border>
     </Grid>
 </UserControl>
