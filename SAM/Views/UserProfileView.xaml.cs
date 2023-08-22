@@ -1,8 +1,8 @@
 ﻿namespace SAM.Views
 {
-    public partial class LibraryItemsControlView
+    public partial class UserProfileView
     {
-        public LibraryItemsControlView()
+        public UserProfileView()
         {
             InitializeComponent();
         }

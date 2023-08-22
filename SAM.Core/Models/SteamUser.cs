@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Windows.Media;
+using System.Xml;
 using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.Core.Extensions;
@@ -20,6 +21,7 @@ namespace SAM.Core
         public virtual decimal RecentHoursPlayed { get; set; }
         public virtual string Headline { get; set; }
         public virtual string Location { get; set; }
+        public virtual string DisplayLocation { get; set; }
         public virtual string MemberSince { get; set; }
         public virtual string RealName { get; set; }
         public virtual string ProfileUrl { get; set; }
@@ -28,6 +30,8 @@ namespace SAM.Core
         public virtual string AvatarFull { get; set; }
         public virtual bool VACBanned { get; set; }
         public virtual bool IsLimitedAccount { get; set; }
+
+        public virtual ImageSource Avatar { get; set; }
 
         protected SteamUser()
         {
@@ -56,14 +60,20 @@ namespace SAM.Core
             var doc = new XmlDocument();
             doc.Load(reader);
             
+            SteamId = doc.GetValue(@"//steamID");
+
             AvatarIcon = doc.GetValue(@"//avatarIcon");
             AvatarMedium = doc.GetValue(@"//avatarMedium");
             AvatarFull = doc.GetValue(@"//avatarFull");
-            
+
+            Avatar = ImageHelper.CreateSource(AvatarFull);
+
             CustomUrl = doc.GetValue(@"//customUrl");
             MemberSince = doc.GetValue(@"//memberSince");
             Headline = doc.GetValue(@"//Headline");
             Location = doc.GetValue(@"//location");
+            DisplayLocation = LocationHelper.GetShortLocation(Location);
+
             RealName = doc.GetValue(@"//realname");
             
             // TODO: no idea what this is for since min and everyone i checked was empty

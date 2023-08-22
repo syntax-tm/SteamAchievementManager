@@ -27,7 +27,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <StatusBar>
+        <StatusBar Style="{StaticResource StatusBarStyleBase}">
             <StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"
                                   Visibility="{Binding Library.TotalCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 

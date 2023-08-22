@@ -4,17 +4,32 @@
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="po">
     
-    <Color x:Key="ControlBorderColor">#333333</Color>
+    <!-- Colors -->
     <Color x:Key="BlackColor">Black</Color>
     <Color x:Key="WhiteColor">White</Color>
+    <Color x:Key="AccentPrimaryColor">#559CE4</Color>
 
+    <!-- Colors | Controls -->
+    <Color x:Key="ControlBorderColor">#6F6F6F</Color>
+    <Color x:Key="ControlBackgroundColor">#333333</Color>
+    <Color x:Key="ControlForegroundColor">#fff</Color>
+    <Color x:Key="ControlForegroundDisabledColor">#959595</Color>
+    <Color x:Key="ControlBackgroundDisabledColor">#4E4E4E</Color>
+
+    <Color x:Key="StatusBarBorderColor">#70747474</Color>
+    <Color x:Key="ContainerBackgroundColor">#00FFFFFF</Color>
+
+    <!-- Colors | Controls | Button -->
+    <Color x:Key="ButtonBackgroundHoverColor">#4A76A3</Color>
+    <Color x:Key="ButtonPressedHoverColor">#294664</Color>
+
+    <!-- Colors | Controls | Other -->
     <Color x:Key="ProgressIndeterminateColor1">#33878787</Color>
     <Color x:Key="ProgressIndeterminateColor2">#33959595</Color>
     <Color x:Key="ProgressIndeterminateColor3">#4C000000</Color>
     <Color x:Key="ProgressIndeterminateColor4">#4C000000</Color>
 
-    <Color x:Key="AccentPrimaryColor">#559CE4</Color>
-
+    <!-- Brushes | Accent -->
     <SolidColorBrush x:Key="AccentPrimaryBrush" Color="{StaticResource AccentPrimaryColor}" po:Freeze="true" />
     <SolidColorBrush x:Key="Accent2PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.9" po:Freeze="true" />
     <SolidColorBrush x:Key="Accent3PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.8" po:Freeze="true" />
@@ -22,6 +37,22 @@
     <SolidColorBrush x:Key="Accent5PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.5" po:Freeze="true" />
     <SolidColorBrush x:Key="Accent6PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.25" po:Freeze="true" />
 
+    <!-- Brushes | Controls -->
+    <SolidColorBrush x:Key="ControlBorderBrush" Color="{StaticResource ControlBorderColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="ControlBackgroundBrush" Color="{StaticResource ControlBackgroundColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="ControlForegroundBrush" Color="{StaticResource ControlForegroundColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="ControlForegroundDisabledBrush" Color="{StaticResource ControlForegroundColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="ControlBackgroundDisabledBrush" Color="{StaticResource ControlBackgroundDisabledColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="ControlBorderActiveBrush" Color="{StaticResource AccentPrimaryColor}" po:Freeze="true" />
     <SolidColorBrush x:Key="ControlElevationBorderBrush" Color="{StaticResource ControlBorderColor}" po:Freeze="true" />
+
+    <SolidColorBrush x:Key="ContainerBackgroundBrush" Color="{StaticResource ContainerBackgroundColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="StatusBarBorderBrush" Color="{StaticResource StatusBarBorderColor}" po:Freeze="true" />
+
+    <!-- Brushes | Controls | Button -->
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{StaticResource AccentPrimaryColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="ButtonHoverBackgroundBrush" Color="{StaticResource ButtonBackgroundHoverColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="ButtonPressedBackgroundBrush" Color="{StaticResource ButtonPressedHoverColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="DisabledButtonBackgroundBrush" Color="{StaticResource ControlBackgroundDisabledColor}" po:Freeze="true" />
 
 </ResourceDictionary>

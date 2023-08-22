@@ -1,6 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:fa="http://schemas.fontawesome.io/icons/">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <Style x:Key="SAM.Styles.ContextMenu" TargetType="{x:Type ContextMenu}">
         <Setter Property="HasDropShadow" Value="True" />
