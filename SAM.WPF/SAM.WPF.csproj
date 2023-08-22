@@ -13,7 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpressMvvm" Version="20.2.3" />
-    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="MahApps.Metro" Version="2.4.1" />
