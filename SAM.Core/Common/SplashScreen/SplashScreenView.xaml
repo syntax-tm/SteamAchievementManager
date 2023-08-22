@@ -13,14 +13,21 @@
              d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}"
              ExtendsContentIntoTitleBar="True" SizeToContent="WidthAndHeight"
              WindowBackdropType="Mica" ShowActivated="True" ShowInTaskbar="True"
-             WindowStartupLocation="CenterScreen"
-             AllowsTransparency="True">
+             WindowStartupLocation="CenterScreen">
 
     <ui:UiWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Opacity" Value="0.8" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:UiWindow}}, Path=IsMouseOver}" Value="True">
+                        <Setter Property="Opacity" Value="0.9" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </ui:UiWindow.Resources>
 
@@ -28,7 +35,7 @@
         <dxmvvm:CurrentWindowService />
     </dxmvvm:Interaction.Behaviors>
 
-    <Grid>
+    <Grid Width="500" Height="325">
         <ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" Opacity="0.5" />
         <Grid>
             <Grid>
@@ -57,7 +64,7 @@
                     <TextBlock Text="{Binding Status, Mode=OneWay}"
                                Visibility="{Binding ShowStatus, Mode=OneWay, Converter={dxmvvm:BooleanToVisibilityConverter}}"
                                FontSize="20" Margin="2" HorizontalAlignment="Right"
-                               TextWrapping="Wrap" Opacity="0.8"
+                               TextWrapping="Wrap"
                                Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
                 </StackPanel>
             </StackPanel>

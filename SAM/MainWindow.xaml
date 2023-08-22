@@ -12,8 +12,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
              DataContext="{dxmvvm:ViewModelSource Type={x:Type vm:MainWindowViewModel}}"
-             Title="{Binding Title, Mode=OneWay}"
-             Icon="{iconPacks:FontAwesomeImage SteamSymbolBrands, Brush=White}"
+             Icon="{iconPacks:FontAwesomeImage SteamSymbolBrands, Brush={StaticResource TextFillColorLightPrimaryBrush}}"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica"
              ShowActivated="True" ShowInTaskbar="True">
