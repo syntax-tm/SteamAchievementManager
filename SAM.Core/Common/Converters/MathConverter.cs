@@ -35,14 +35,14 @@ namespace SAM.Core.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return DoConvert(value, parameter, this.Operation, targetType);
+            return DoConvert(value, parameter, Operation, targetType);
         }
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             return values is null
                 ? Binding.DoNothing
-                : DoConvert(values.ElementAtOrDefault(0), values.ElementAtOrDefault(1), this.Operation, targetType);
+                : DoConvert(values.ElementAtOrDefault(0), values.ElementAtOrDefault(1), Operation, targetType);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -99,7 +99,7 @@ namespace SAM.Core.Converters
                     default: return Binding.DoNothing;
                 }
 
-                var returnVal = operationFunc.Invoke();
+                var returnVal = operationFunc();
 
                 return targetType != null
                     ? System.Convert.ChangeType(returnVal, targetType)

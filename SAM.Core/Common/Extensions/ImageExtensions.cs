@@ -55,9 +55,7 @@ namespace SAM.Core.Extensions
             canvas.DrawImage(img, 0, 0, newSize.Width, newSize.Height);
 
             return result;
-
         }
-
 
     }
 }

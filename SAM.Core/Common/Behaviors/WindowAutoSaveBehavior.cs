@@ -10,7 +10,7 @@ namespace SAM.Core.Behaviors
 {
     public class WindowAutoSaveBehavior : Behavior<Window>
     {
-        public static readonly DependencyProperty ConfigProperty = DependencyProperty.Register(nameof(Config), typeof(WindowSettings), typeof(WindowAutoSaveBehavior), new PropertyMetadata(OnConfigPropertyChanged));
+        public static readonly DependencyProperty ConfigProperty = DependencyProperty.Register(nameof(Config), typeof(WindowSettings), typeof(WindowAutoSaveBehavior), new (OnConfigPropertyChanged));
 
         public WindowSettings Config
         {
