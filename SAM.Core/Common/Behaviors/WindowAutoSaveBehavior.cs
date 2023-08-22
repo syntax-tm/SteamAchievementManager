@@ -5,6 +5,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.UI.Interactivity;
 using log4net;
 using Newtonsoft.Json;
+using SAM.Core.Storage;
 using Wpf.Ui.Controls;
 
 namespace SAM.Core.Behaviors

@@ -5,6 +5,7 @@ using System.Linq;
 using log4net;
 using Newtonsoft.Json.Linq;
 using SAM.Core.Extensions;
+using SAM.Core.Storage;
 
 namespace SAM.Core
 {

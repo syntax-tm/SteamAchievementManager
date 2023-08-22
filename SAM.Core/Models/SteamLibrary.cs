@@ -9,6 +9,7 @@ using System.Windows.Input;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.Core.Extensions;
+using SAM.Core.Storage;
 
 namespace SAM.Core
 {

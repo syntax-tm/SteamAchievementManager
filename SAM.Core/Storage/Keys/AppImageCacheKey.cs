@@ -1,4 +1,4 @@
-﻿namespace SAM.Core
+﻿namespace SAM.Core.Storage
 {
     public class AppImageCacheKey : CacheKeyBase
     {

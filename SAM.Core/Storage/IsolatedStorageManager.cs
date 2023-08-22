@@ -5,7 +5,7 @@ using System.IO.IsolatedStorage;
 using System.Reflection;
 using log4net;
 
-namespace SAM.Core
+namespace SAM.Core.Storage
 {
     public class IsolatedStorageManager : IStorageManager
     {
@@ -41,6 +41,22 @@ namespace SAM.Core
                 return _instance;
             }
         }
+        
+        public void SaveBytes(string fileName, byte[] bytes, bool overwrite = true)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            using var isoStorage = GetStore();
+
+            if (isoStorage.FileExists(fileName))
+            {
+                isoStorage.DeleteFile(fileName);
+            }
+
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+
+            file.Write(bytes, 0, bytes.Length);
+        }
 
         public void SaveImage(string fileName, Image img, bool overwrite = true)
         {
@@ -61,6 +77,22 @@ namespace SAM.Core
             using var writer = new StreamWriter(file);
 
             writer.WriteLine(text);
+        }
+        
+        public byte[] GetBytes(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            if (!FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
+
+            using var isoStorage = GetStore();
+
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+
+            var buffer = new byte[file.Length];
+            _ = file.Read(buffer, 0, buffer.Length);
+            
+            return buffer;
         }
 
         public Image GetImageFile(string fileName)
