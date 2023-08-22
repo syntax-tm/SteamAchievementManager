@@ -18,7 +18,11 @@ namespace SAM.WPF.Core.Stats
         public string Name => AchievementInfo.Name;
         public string Description => AchievementInfo.Description;
         public int Permission => AchievementInfo.Permission;
-        public bool OriginalLockState => AchievementInfo.IsAchieved;
+        public bool OriginalLockState
+        {
+            get => AchievementInfo.IsAchieved;
+            private set => AchievementInfo.IsAchieved = value;
+        }
         
         public Image Image
         {
@@ -51,7 +55,7 @@ namespace SAM.WPF.Core.Stats
             set => SetProperty(() => IsAchieved, value, OnIsAchievedChanged);
         }
         
-        public AchievementInfo AchievementInfo { get;}
+        public AchievementInfo AchievementInfo { get; }
         public AchievementDefinition AchievementDefinition { get; }
 
         public ICommand UnlockCommand => new DelegateCommand(Unlock);
@@ -100,6 +104,12 @@ namespace SAM.WPF.Core.Stats
         public void Invert()
         {
             IsAchieved = !IsAchieved;
+        }
+
+        public void CommitChanges()
+        {
+            OriginalLockState = IsAchieved;
+            IsModified = false;
         }
 
         private void RefreshImage()

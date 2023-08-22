@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Windows;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
+using log4net;
 using SAM.WPF.Core;
+using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Stats;
 
 namespace SAM.WPF.Manager.ViewModels
 {
     public class SteamGameViewModel
     {
+        protected readonly ILog log = LogManager.GetLogger(nameof(SteamGameViewModel));
+
         public virtual ICurrentWindowService CurrentWindow { get { return null; } }
 
         private ObservableHandler<SteamStatsManager> _statsHandler;
@@ -54,7 +60,40 @@ namespace SAM.WPF.Manager.ViewModels
 
         public void SaveAchievements()
         {
+            try
+            {
+                var modified = Achievements.Where(a => a.IsModified).ToList();
 
+                if (!modified.Any())
+                {
+                    return;
+                }
+
+                var stats = SteamClientManager.Default.SteamUserStats;
+
+                foreach (var achievement in modified)
+                {
+                    var result = stats.SetAchievement(achievement.Id, achievement.IsAchieved);
+                    if (!result)
+                    {
+                        var message = $"Failed to update achievement {achievement.Id}.";
+
+                        throw new SAMException(message);
+                    }
+
+                    log.Info($"Successfully saved achievement {achievement.Id}.");
+
+                    achievement.CommitChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occured attempting to save achivements. {e.Message}";
+
+                log.Error(message, e);
+
+                MessageBox.Show(message, "Steam Client Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public void SaveStats()

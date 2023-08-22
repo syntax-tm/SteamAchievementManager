@@ -67,7 +67,7 @@
                                 <TextBlock Text="Reset" />
                             </StackPanel>
                         </Button>
-                        <Button Command="{Binding SaveCommand}">
+                        <Button Command="{Binding SaveCommand}" IsEnabled="{Binding IsModified, Mode=OneWay}">
                             <StackPanel Orientation="Horizontal">
                                 <fa:ImageAwesome Icon="Save" />
                                 <TextBlock Text="Save" />
