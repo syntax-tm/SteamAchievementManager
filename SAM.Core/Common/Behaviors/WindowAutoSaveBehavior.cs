@@ -35,11 +35,11 @@ namespace SAM.Core.Behaviors
         {
             base.OnAttached();
             
+            LoadSettings();
+
             AssociatedObject.SizeChanged += WindowSizedChanged;
             AssociatedObject.StateChanged += WindowStateChanged;
             AssociatedObject.Closing += WindowClosing;
-            
-            LoadSettings();
         }
 
         protected override void OnDetaching()
@@ -47,11 +47,11 @@ namespace SAM.Core.Behaviors
             base.OnDetaching();
             
             if (AssociatedObject == null) return;
-
+            
             AssociatedObject.SizeChanged -= WindowSizedChanged;
             AssociatedObject.StateChanged -= WindowStateChanged;
             AssociatedObject.Closing -= WindowClosing;
-            
+
             SaveSettings();
         }
 
@@ -60,14 +60,12 @@ namespace SAM.Core.Behaviors
             if (Config == null) return;
             if (AssociatedObject == null) return;
             
-            _initialized = true;
-
-            return;
-
             AssociatedObject.WindowState = Config.WindowState;
             AssociatedObject.WindowStartupLocation = Config.StartupLocation;
             AssociatedObject.Width = Config.Width;
             AssociatedObject.Height = Config.Height;
+            AssociatedObject.Left = Config.X;
+            AssociatedObject.Top = Config.Y;
 
             _initialized = true;
         }
@@ -85,6 +83,8 @@ namespace SAM.Core.Behaviors
             {
                 Config.Width = AssociatedObject.Width;
                 Config.Height = AssociatedObject.Height;
+                Config.X = AssociatedObject.Left;
+                Config.Y = AssociatedObject.Top;
             }
 
             Config.Save();
@@ -124,14 +124,14 @@ namespace SAM.Core.Behaviors
         }
         
         [JsonProperty]
-        public uint X
+        public double X
         {
             get => GetProperty(() => X);
             set => SetProperty(() => X, value);
         }
         
         [JsonProperty]
-        public uint Y
+        public double Y
         {
             get => GetProperty(() => Y);
             set => SetProperty(() => Y, value);
@@ -211,7 +211,9 @@ namespace SAM.Core.Behaviors
                 //JsonConvert.PopulateObject(configText, this);
 
                 var config = JsonConvert.DeserializeObject<WindowSettings>(configText);
-
+                
+                WindowState = config.WindowState;
+                StartupLocation = config.StartupLocation;
                 Width = config.Width;
                 Height = config.Height;
                 X = config.X;

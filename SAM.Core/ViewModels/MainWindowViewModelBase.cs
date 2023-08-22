@@ -13,14 +13,19 @@ namespace SAM.Core.ViewModels
 
         protected MainWindowViewModelBase()
         {
-            var assemblyName = Assembly.GetEntryAssembly().FullName;
+            LoadConfig();
+        }
+
+        protected void LoadConfig()
+        {
+            var assemblyName = Assembly.GetEntryAssembly().GetName().Name;
             var fullName = nameof(WindowSettings);
 
             var settingsKey = $"{assemblyName}_{fullName}";
 
             Config = new (settingsKey);
         }
-        
+
         protected void OnSubTitleChanged()
         {
             if (string.IsNullOrWhiteSpace(SubTitle))
