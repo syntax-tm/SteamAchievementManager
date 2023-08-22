@@ -1,3 +1,10 @@
+<div align="center">
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/syntax-tm/SteamAchievementManager">
+  <a href="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/sam.yml">
+    <img src="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/sam.yml/badge.svg">
+  </a>
+</div>
+
 <p align="center">
   <img src="./resources/SAM_logo_light_blue.svg">
 </p>
