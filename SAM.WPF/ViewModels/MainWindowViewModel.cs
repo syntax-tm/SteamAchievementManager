@@ -1,20 +1,16 @@
-﻿using System.Windows;
+﻿using System.Reflection;
 using DevExpress.Mvvm.POCO;
+using SAM.WPF.Core.ViewModels;
 
 namespace SAM.WPF.ViewModels
 {
-    public class MainWindowViewModel
+    public class MainWindowViewModel : MainWindowViewModelBase
     {
-        public virtual string Title { get; set; } = "Steam Achievement Manager";
-        public virtual int Width { get; set; } = 1024;
-        public virtual int Height { get; set; } = 768;
-        public virtual int X { get; set; }
-        public virtual int Y { get; set; }
-        public virtual WindowState WindowState { get; set; }
         public virtual HomeViewModel HomeVm { get; set; }
 
         protected MainWindowViewModel()
         {
+            HomeVm = HomeViewModel.Create();
         }
 
         public static MainWindowViewModel Create()

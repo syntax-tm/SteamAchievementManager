@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Xml.XPath;
 using log4net;
 
@@ -26,8 +26,8 @@ namespace SAM.WPF.Core.API
             {
                 var pairs = new List<SupportedApp>();
                 
-                using var wc = new WebClient();
-                var bytes = wc.DownloadData(new Uri(SAM_GAME_LIST_URL));
+                using var wc = new HttpClient();
+                var bytes = wc.GetByteArrayAsync(new Uri(SAM_GAME_LIST_URL)).Result;
 
                 var ignoredApps = GetIgnoredApps();
 
@@ -36,7 +36,7 @@ namespace SAM.WPF.Core.API
                 var document = new XPathDocument(stream);
                 var navigator = document.CreateNavigator();
 
-                Debug.Assert(navigator != null, $"The {nameof(XPathDocument)}'s {nameof(navigator)} cannot be null.");
+                Debug.Assert(navigator is not null, $"The {nameof(XPathDocument)}'s {nameof(navigator)} cannot be null.");
 
                 var nodes = navigator.Select("/games/game");
 
@@ -56,7 +56,7 @@ namespace SAM.WPF.Core.API
                         type = "normal";
                     }
 
-                    pairs.Add(new SupportedApp((uint) nodes.Current.ValueAsLong, type));
+                    pairs.Add(new ((uint) nodes.Current.ValueAsLong, type));
                 }
                 
                 _gameList = pairs;

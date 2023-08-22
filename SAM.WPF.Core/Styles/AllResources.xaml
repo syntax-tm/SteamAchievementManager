@@ -1,12 +1,21 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Fluent;Component/Themes/Generic.xaml" />
+        <!-- Fluent ribbon resources -->
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/dark.red.xaml" />
+        <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/fonts.xaml" />
+        <!-- Theme setting -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.red.xaml" />
 
-        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Controls/SAMWindow.xaml" />
+
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/CheckBoxStyles.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/ContainerStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Converters.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/DataGridStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/MenuStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/TextStyles.xaml" />

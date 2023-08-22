@@ -7,60 +7,15 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:library="clr-namespace:SAM.WPF.Views.Library"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             mc:Ignorable="d" 
-             DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
+             mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
-
-    <UserControl.Resources>
-        <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
-        <Style TargetType="{x:Type StatusBarItem}">
-            <Setter Property="Margin" Value="4" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
-    </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand Command="{Binding LoadedCommand}" EventName="Loaded" />
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <library:LibraryItemsControlView Grid.Row="1" />
-        <StatusBar Grid.Row="2" BorderBrush="#878787" Background="{DynamicResource MahApps.Brushes.WindowTitle}"
-                   BorderThickness="0,1,0,0" Margin="-1,0,-1,-1"
-                   Padding="2">
-            <StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"
-                           Visibility="{Binding Library.TotalCount, Converter={StaticResource NumericToVisConverter}}" />
-
-            <Separator Visibility="{Binding Library.GamesCount, Converter={StaticResource NumericToVisConverter}}" />
-            <StatusBarItem Content="{Binding Library.GamesCount, Mode=OneWay}" ContentStringFormat="{}{0} Games"
-                           Visibility="{Binding Library.GamesCount, Converter={StaticResource NumericToVisConverter}}" />
-
-            <Separator Visibility="{Binding Library.ModCount, Converter={StaticResource NumericToVisConverter}}" />
-            <StatusBarItem Content="{Binding Library.ModCount, Mode=OneWay}" ContentStringFormat="{}{0} Mods"
-                           Visibility="{Binding Library.ModCount, Converter={StaticResource NumericToVisConverter}}" />
-
-            <Separator Visibility="{Binding Library.ToolCount, Converter={StaticResource NumericToVisConverter}}" />
-            <StatusBarItem Content="{Binding Library.ToolCount, Mode=OneWay}" ContentStringFormat="{}{0} Tools"
-                           Visibility="{Binding Library.ToolCount, Converter={StaticResource NumericToVisConverter}}" />
-
-            <Separator Visibility="{Binding Library.DemoCount, Converter={StaticResource NumericToVisConverter}}" />
-            <StatusBarItem Content="{Binding Library.DemoCount, Mode=OneWay}" ContentStringFormat="{}{0} Demos"
-                           Visibility="{Binding Library.DemoCount, Converter={StaticResource NumericToVisConverter}}" />
-
-            <Separator Visibility="{Binding Library.JunkCount, Converter={StaticResource NumericToVisConverter}}" />
-            <StatusBarItem Content="{Binding Library.JunkCount, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
-                           Visibility="{Binding Library.JunkCount, Converter={StaticResource NumericToVisConverter}}" />
-            <StatusBarItem HorizontalAlignment="Right"
-                Content="{Binding Library.PercentComplete, Converter={StaticResource PercentFormatConverter}, Mode=OneWay}"
-                           ContentStringFormat="{}Loading... {0}"
-                           Visibility="{Binding Library.IsLoading, Converter={StaticResource BoolToVisConverter}}" />
-        </StatusBar>
+        <library:LibraryTilesView />
     </Grid>
 </UserControl>

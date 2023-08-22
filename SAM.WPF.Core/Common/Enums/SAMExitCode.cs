@@ -1,16 +1,14 @@
-﻿using System.ComponentModel;
-
-namespace SAM.WPF.Core
+﻿namespace SAM.WPF.Core
 {
-    [DefaultValue(Normal)]
-    public enum SAMExitCode : int
+    public struct SAMExitCode
     {
-        DispatcherException = -6,
-        AppDomainException = -5,
-        TaskException = -4,
-        InvalidAppId = -3,
-        NoAppIdArgument = -2,
-        UnhandledException = -1,
-        Normal = 0
+        public const int SteamNotRunning     = -7;
+        public const int DispatcherException = -6;
+        public const int AppDomainException  = -5;
+        public const int TaskException       = -4;
+        public const int InvalidAppId        = -3;
+        public const int NoAppIdArgument     = -2;
+        public const int UnhandledException  = -1;
+        public const int Normal              = 0;
     }
 }

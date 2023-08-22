@@ -7,8 +7,8 @@ namespace SAM.WPF.Core
     {
         public SimpleCommand(Func<object, bool> canExecute = null, Action<object> execute = null)
         {
-            this.CanExecuteDelegate = canExecute;
-            this.ExecuteDelegate = execute;
+            CanExecuteDelegate = canExecute;
+            ExecuteDelegate = execute;
         }
 
         public Func<object, bool> CanExecuteDelegate { get; set; }

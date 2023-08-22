@@ -1,0 +1,42 @@
+﻿<mah:MetroWindow x:Class="SAM.WPF.Core.Views.SAMWindow_Bak"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+                 xmlns:behaviors="clr-namespace:SAM.WPF.Core.Behaviors"
+                 xmlns:fluent="urn:fluent-ribbon"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                 xmlns:vm="clr-namespace:SAM.WPF.Core.ViewModels"
+                 mc:Ignorable="d"
+                 d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
+                 Title="{Binding Title, Mode=OneWay}"
+                 Icon="{iconPacks:FontAwesomeImage SteamSymbolBrands, Brush=White}"
+                 WindowStartupLocation="CenterScreen"
+                 SnapsToDevicePixels="True" ShowActivated="True"
+                 ShowSystemMenu="False" ShowSystemMenuOnRightClick="False">
+
+    <!-- WindowTitleBrush="#181818" NonActiveWindowTitleBrush="#181818" -->
+
+    <dxmvvm:Interaction.Behaviors>
+        <behaviors:WindowAutoSaveBehavior Config="{Binding Config}" />
+        <dxmvvm:CurrentWindowService />
+    </dxmvvm:Interaction.Behaviors>
+
+    <mah:MetroWindow.Resources>
+        <Style x:Key="{x:Type fluent:BackstageTabControl}"
+               BasedOn="{StaticResource {x:Type fluent:BackstageTabControl}}"
+               TargetType="{x:Type fluent:BackstageTabControl}">
+            <Setter Property="SelectedContentMargin" Value="0" />
+        </Style>
+    </mah:MetroWindow.Resources>
+
+    <mah:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <fluent:RibbonTitleBar x:Name="RibbonTitleBar"
+                                   Header="{Binding Path=Title, RelativeSource={RelativeSource AncestorType=Window}}"/>
+        </DataTemplate>
+    </mah:MetroWindow.TitleTemplate>
+
+</mah:MetroWindow>

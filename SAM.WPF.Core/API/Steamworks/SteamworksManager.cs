@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Text.Json;
 using log4net;
 using Newtonsoft.Json;
@@ -10,7 +11,6 @@ namespace SAM.WPF.Core.API
 {
     public static class SteamworksManager
     {
-
         private const string GETAPPLIST_URL = @"https://api.steampowered.com/ISteamApps/GetAppList/v2/";
         private const string APPDETAILS_URL = @"https://store.steampowered.com/api/appdetails/?appids={0}";
 
@@ -29,8 +29,8 @@ namespace SAM.WPF.Core.API
                     return cachedApps;
                 }
 
-                using var wc = new WebClient();
-                var apiResponse = wc.DownloadString(GETAPPLIST_URL);
+                using var wc = new HttpClient();
+                var apiResponse = wc.GetStringAsync(GETAPPLIST_URL).Result;
                 
                 if (string.IsNullOrEmpty(apiResponse))
                 {
@@ -83,9 +83,9 @@ namespace SAM.WPF.Core.API
 
                 var storeUrl = string.Format(APPDETAILS_URL, id);
 
-                using var wc = new WebClient();
+                using var wc = new HttpClient();
 
-                var appInfoText = wc.DownloadData(storeUrl);
+                var appInfoText = wc.GetByteArrayAsync(storeUrl).Result;
                 var convertedString = System.Text.Encoding.Default.GetString(appInfoText);
                 var jo = JObject.Parse(convertedString);
 
@@ -119,7 +119,7 @@ namespace SAM.WPF.Core.API
             catch (WebException) { throw; }
             catch (Exception e)
             {
-                var message = $"An error occurred getting the app info for app id '{id}'. {e.Message}";
+                var message = $"Failed to get app info for app id '{id}'. {e.Message}";
 
                 log.Error(message, e);
 
