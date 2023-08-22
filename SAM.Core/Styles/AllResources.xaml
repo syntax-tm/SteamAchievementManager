@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Fluent ribbon resources -->
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/dark.red.xaml" />
+        <!-- MahApps.Metro resources -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/fonts.xaml" />
+        <!-- Theme setting -->
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.red.xaml" />
+
+        <!-- SAM controls -->
+
+        <!-- SAM resources -->
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/CheckBoxStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/ContainerStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/DataGridStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/MenuStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/WindowStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

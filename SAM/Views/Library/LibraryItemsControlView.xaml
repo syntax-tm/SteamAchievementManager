@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="SAM.Views.LibraryItemsControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:sam="urn:sam"
+             mc:Ignorable="d" 
+             DataContext="{dxmvvm:ViewModelSource Type=sam:HomeViewModel}"
+             d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <sam:GroupStyleSelector x:Key="CustomGroupStyleSelector" 
+                                NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
+                                DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />
+
+        <ItemsPanelTemplate x:Key="ItemsPanelTemplate">
+            <!--<UniformGrid>
+                <dxmvvm:Interaction.Behaviors>
+                    <behaviors:AutoResizeBehavior MaxItemWidth="300" />
+                </dxmvvm:Interaction.Behaviors>
+            </UniformGrid>-->
+            <UniformGrid>
+                <UniformGrid.Rows>
+                    <MultiBinding Converter="{sam:MathDivideConverter}">
+                        <MultiBinding.Bindings>
+                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ItemsControl}" Path="Items.Count" />
+                            <Binding Path="DisplayColumns" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </UniformGrid.Rows>
+            </UniformGrid>
+        </ItemsPanelTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" PanningRatio="2.5" PanningMode="VerticalOnly"
+                      CanContentScroll="False" SnapsToDevicePixels="True" IsTabStop="False"
+                      BorderThickness="2"
+                      ScrollChanged="ScrollViewer_ScrollChanged">
+            <ItemsControl x:Name="libraryItemsView" ItemsSource="{Binding ItemsView}"
+                          ItemsPanel="{StaticResource ItemsPanelTemplate}"
+                          HorizontalContentAlignment="Center"
+                          Padding="4">
+                <!--<ItemsControl.GroupStyle>
+                    <GroupStyle ContainerStyleSelector="{StaticResource CustomGroupStyleSelector}"
+                                Panel="{StaticResource ItemsPanelTemplate}">
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate DataType="{x:Type CollectionViewGroup}">
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ItemsControl.GroupStyle>-->
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type sam:SteamApp}">
+                        <Grid>
+                            <Button Padding="0">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Margin" Value="3" />
+                                        <Setter Property="ToolTip" Value="{Binding Name}" />
+                                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="BorderBrush" Value="DodgerBlue" />
+                                                <Setter Property="Foreground" Value="#1B1B1B" />
+                                                <Setter Property="BorderThickness" Value="3" />
+                                                <Setter Property="Margin" Value="-1,0" />
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="BorderBrush" Value="DodgerBlue" />
+                                                <Setter Property="Opacity" Value="0.5" />
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
+                                                <Setter Property="Background" Value="DodgerBlue" />
+                                                <Setter Property="ToolTip" Value="{x:Null}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <Button.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{Binding Name}" FontWeight="SemiBold"
+                                                  ToolTip="Open in Manager" Command="{Binding ManageAppCommand}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconMaterial Kind="OpenInApp" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <Separator Style="{StaticResource SAM.Styles.ContextMenu.Separator}" />
+                                        <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconMaterial Kind="Database" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
+                                                  Style="{StaticResource MahApps.Styles.MenuItem}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconMaterial Kind="Steam" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconMaterial Kind="Server" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconMaterial Kind="Card" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <Separator Style="{StaticResource SAM.Styles.ContextMenu.Separator}" />
+                                        <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
+                                            <MenuItem.Icon>
+                                                <iconPacks:PackIconMaterial Kind="ContentCopy" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </Button.ContextMenu>
+                                <dxmvvm:Interaction.Behaviors>
+                                    <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
+                                </dxmvvm:Interaction.Behaviors>
+                                <Grid>
+                                    <Viewbox Stretch="Fill" StretchDirection="Both">
+                                        <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}" />
+                                    </Viewbox>
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontSize="30" TextAlignment="Center" Margin="10" TextWrapping="Wrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

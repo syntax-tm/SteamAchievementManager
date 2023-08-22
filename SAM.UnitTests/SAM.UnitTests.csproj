@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SAM.WPF.Core\SAM.WPF.Core.csproj" />
+    <ProjectReference Include="..\SAM.WPF.Core\SAM.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
