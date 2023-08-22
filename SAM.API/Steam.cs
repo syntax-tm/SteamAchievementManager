@@ -60,7 +60,16 @@ namespace SAM.API
 
         public static string GetInstallPath()
         {
-            return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
+            using (var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
+            {
+                using (var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false))
+                {
+                    var path = (string) clsid32.GetValue("InstallPath");
+                    return path;
+                }
+            }
+
+            //return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
@@ -120,7 +129,23 @@ namespace SAM.API
 
             Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
 
+#if BUILD_X86
             path = Path.Combine(path, "steamclient.dll");
+#elif BUILD_X64
+            path = Path.Combine(path, "steamclient64.dll");
+#elif BUILD_ANYCPU
+            // for AnyCPU we need to check and see if we're running as a 32-bit
+            // or 64-bit process since it depends on the processor architecture
+            var is64Bit = Environment.Is64BitProcess;
+            var clientDll = is64Bit
+                ? "steamclient64.dll"
+                : "steamclient.dll";
+
+            path = Path.Combine(path, clientDll);
+#else
+    #error Unknown project platform. Target either x86 for 32-bit or x64 for 64-bit.
+#endif
+            
             IntPtr module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
             if (module == IntPtr.Zero)
             {

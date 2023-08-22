@@ -112,6 +112,11 @@ namespace SAM.WPF.Core.Stats
             IsModified = false;
         }
 
+        public override string ToString()
+        {
+            return $"{Name} ({Id})";
+        }
+
         private void RefreshImage()
         {
             Image = IsAchieved ? NormalImage : LockedImage;
