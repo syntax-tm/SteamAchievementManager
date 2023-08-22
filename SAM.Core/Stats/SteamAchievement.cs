@@ -19,8 +19,8 @@ namespace SAM.Core.Stats
         public int Permission => AchievementInfo.Permission;
         public bool OriginalLockState
         {
-            get => AchievementInfo.IsAchieved;
-            private set => AchievementInfo.IsAchieved = value;
+            get => GetProperty(() => OriginalLockState);
+            set => SetProperty(() => OriginalLockState, value);
         }
         public Image Image
         {
@@ -73,6 +73,7 @@ namespace SAM.Core.Stats
             AchievementDefinition = definition;
 
             IsAchieved = info.IsAchieved;
+            OriginalLockState = info.IsAchieved;
 
             DownloadIcons();
         }
