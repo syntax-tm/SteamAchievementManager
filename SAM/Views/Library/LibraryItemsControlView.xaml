@@ -4,10 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:sam="urn:sam"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:controls="clr-namespace:Wpf.Ui.Styles.Controls;assembly=Wpf.Ui"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=sam:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}"
@@ -25,8 +23,9 @@
                 <Setter Property="Opacity" Value="0.4" />
                 <Setter Property="Margin" Value="0,-2,0,-2" />
             </Style>-->
-            <SolidColorBrush x:Key="AccentSemiTransparentBrush" Color="{StaticResource SystemAccentColorPrimary}" Opacity="0.75" />
-            <SolidColorBrush x:Key="AccentTransparentBrush" Color="{StaticResource SystemAccentColorPrimary}" Opacity="0.5" />
+            <SolidColorBrush x:Key="AccentSemiTransparentBrush" Color="#559CE4" Opacity="0.75" />
+            <SolidColorBrush x:Key="AccentTransparentBrush" Color="#559CE4" Opacity="0.5" />
+            <SolidColorBrush x:Key="AccentPrimaryBrush" Color="#559CE4" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -69,7 +68,7 @@
                                             <Setter Property="BorderBrush" Value="{StaticResource AccentTransparentBrush}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
-                                            <Setter Property="Background" Value="{StaticResource SystemAccentColorPrimary}" />
+                                            <Setter Property="Background" Value="{StaticResource AccentPrimaryBrush}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
