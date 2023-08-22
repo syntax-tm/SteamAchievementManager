@@ -8,12 +8,11 @@ namespace SAM.API
 {
     public static class Steam
     {
+        private static string _installPath;
+
         private static IntPtr _Handle = IntPtr.Zero;
-
         private static NativeCreateInterface _CallCreateInterface;
-
         private static NativeSteamGetCallback _CallSteamBGetCallback;
-
         private static NativeSteamFreeLastCallback _CallSteamFreeLastCallback;
 
         private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
@@ -32,11 +31,13 @@ namespace SAM.API
 
         public static string GetInstallPath()
         {
+            if (!string.IsNullOrEmpty(_installPath)) return _installPath;
+
             using var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
             using var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false);
 
-            var path = (string) clsid32.GetValue(@"InstallPath");
-            return path;
+            _installPath = (string) clsid32.GetValue(@"InstallPath");
+            return _installPath;
 
             //return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
         }
@@ -65,7 +66,11 @@ namespace SAM.API
 
         public static bool Load()
         {
-            if (_Handle != IntPtr.Zero) return true;
+            if (_Handle != IntPtr.Zero)
+            {
+                Native.FreeLibrary(_Handle);
+                _Handle = IntPtr.Zero;
+            }
 
             var path = GetInstallPath();
             if (path == null) return false;
@@ -116,6 +121,9 @@ namespace SAM.API
             [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
             [return: MarshalAs(UnmanagedType.Bool)]
             internal static extern bool SetDllDirectory(string path);
+            
+            [DllImport("kernel32.dll", SetLastError = true)]
+            public static extern bool FreeLibrary(IntPtr hModule);
 
             internal const uint LoadWithAlteredSearchPath = 8;
         }

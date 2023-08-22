@@ -23,11 +23,7 @@ namespace SAM.WPF.Core.Services
         [Browsable(false)]
         public WindowApplicationSettings Settings
         {
-            get
-            {
-                if (mWindowApplicationSettings == null) mWindowApplicationSettings = CreateWindowApplicationSettingsInstance();
-                return mWindowApplicationSettings;
-            }
+            get => mWindowApplicationSettings ??= CreateWindowApplicationSettingsInstance();
         }
 
         public WindowSettings(Window pWindow)
@@ -77,23 +73,21 @@ namespace SAM.WPF.Core.Services
         /// </summary>
         private static void OnSaveInvalidated(DependencyObject pDependencyObject, DependencyPropertyChangedEventArgs pDependencyPropertyChangedEventArgs)
         {
-            var window = pDependencyObject as Window;
-            if (window != null)
-                if ((bool) pDependencyPropertyChangedEventArgs.NewValue)
-                {
-                    var settings = new WindowSettings(window);
-                    settings.Attach();
-                }
+            if (pDependencyObject is not Window window) return;
+
+            if (!(bool)pDependencyPropertyChangedEventArgs.NewValue) return;
+
+            var settings = new WindowSettings(window);
+            settings.Attach();
         }
 
         private void Attach()
         {
-            if (mWindow != null)
-            {
-                mWindow.Closing += WindowClosing;
-                mWindow.Initialized += WindowInitialized;
-                mWindow.Loaded += WindowLoaded;
-            }
+            if (mWindow == null) return;
+
+            mWindow.Closing += WindowClosing;
+            mWindow.Initialized += WindowInitialized;
+            mWindow.Loaded += WindowLoaded;
         }
 
         private void WindowClosing(object pSender, CancelEventArgs pCancelEventArgs)
@@ -118,10 +112,10 @@ namespace SAM.WPF.Core.Services
             {
                 get
                 {
-                    if (this["Location"] != null) return (Rect) this["Location"];
+                    if (this[nameof(Location)] != null) return (Rect) this[nameof(Location)];
                     return Rect.Empty;
                 }
-                set => this["Location"] = value;
+                set => this[nameof(Location)] = value;
             }
 
             [UserScopedSetting]
@@ -129,10 +123,10 @@ namespace SAM.WPF.Core.Services
             {
                 get
                 {
-                    if (this["WindowState"] != null) return (WindowState) this["WindowState"];
+                    if (this[nameof(WindowState)] != null) return (WindowState) this[nameof(WindowState)];
                     return WindowState.Normal;
                 }
-                set => this["WindowState"] = value;
+                set => this[nameof(WindowState)] = value;
             }
 
             public WindowApplicationSettings(WindowSettings pWindowSettings)

@@ -18,7 +18,8 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpressMvvm" Version="21.1.5" />
-    <PackageReference Include="Fluent.Ribbon" Version="9.0.0" />
+    <PackageReference Include="Fluent.Ribbon" Version="9.0.1" />
+    <PackageReference Include="gong-wpf-dragdrop" Version="3.0.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
     <PackageReference Include="log4net" Version="2.0.13" />
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
@@ -58,6 +59,21 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\SAMWindow.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\Stats\AchievementsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Stats\StatsView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\SteamGameView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
@@ -67,11 +83,19 @@
     <Compile Update="Common\WaitForm\WaitFormView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\Stats\AchievementsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Stats\StatsView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\SteamGameView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="API\Native\" />
-    <Folder Include="Views\" />
   </ItemGroup>
 
   <ItemGroup>

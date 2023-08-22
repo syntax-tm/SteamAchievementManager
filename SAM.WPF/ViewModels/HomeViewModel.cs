@@ -18,7 +18,7 @@ namespace SAM.WPF.ViewModels
         private bool _loading = true;
 
         public virtual bool EnableGrouping { get; set; } = true;
-        public virtual int DisplayColumns { get; set; } = 6;
+        public virtual int DisplayColumns { get; set; }
         public virtual string FilterText { get; set; }
         public virtual string FilterNormal { get; set; }
         public virtual string FilterDemos { get; set; }
@@ -51,12 +51,14 @@ namespace SAM.WPF.ViewModels
                 _itemsViewSource.SortDescriptions.Clear();
                 _itemsViewSource.SortDescriptions.Add(new SortDescription(nameof(SteamApp.Name), ListSortDirection.Ascending));
 
-                _itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
+                //_itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
 
                 _itemsViewSource.IsLiveFilteringRequested = true;
                 _itemsViewSource.IsLiveSortingRequested = true;
-                _itemsViewSource.IsLiveGroupingRequested = true;
+                _itemsViewSource.IsLiveGroupingRequested = false;
             }
+
+            DisplayColumns = 6;
             
             _loading = false;
         }

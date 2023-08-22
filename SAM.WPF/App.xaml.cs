@@ -7,7 +7,6 @@ using log4net;
 using MahApps.Metro.IconPacks;
 using SAM.WPF.Core;
 using SAM.WPF.Core.API;
-using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.SplashScreen;
 using SAM.WPF.Core.Themes;
 
@@ -22,9 +21,9 @@ namespace SAM.WPF
             try
             {
                 log.Info("Application startup.");
-                
+
                 SplashScreenHelper.Show();
-                
+
                 if (!SAMHelper.IsSteamRunning())
                 {
                     throw new SAMException($"Steam process is not currently running.");
@@ -36,28 +35,21 @@ namespace SAM.WPF
                 //  handle any AppDomain exceptions
                 var current = AppDomain.CurrentDomain;
                 current.UnhandledException += OnAppDomainException;
-                
+
                 //  handle any TaskScheduler exceptions
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
                 IsolatedStorageManager.Init();
 
                 ThemeHelper.SetTheme(this);
-                
+
                 // create the default Client instance
                 SteamClientManager.Init(0);
 
                 SteamLibraryManager.Init();
 
                 //Thread.Sleep(5000);
-
-                var iconColor = (Color) ColorConverter.ConvertFromString("#9EE6E6E6");
-                var iconBrush = new SolidColorBrush(iconColor);
-
-                var packIcon = new PackIconFontAwesome { Kind = PackIconFontAwesomeKind.SteamSymbolBrands, Foreground = iconBrush };
-
-                var icon = PackIconHelper.GetImageSource(packIcon, iconBrush);
-
+                
                 MainWindow = new MainWindow();
                 MainWindow.Show();
 
@@ -70,6 +62,8 @@ namespace SAM.WPF
                 log.Error(message, e);
 
                 MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                Environment.Exit((int) SAMExitCode.UnhandledException);
             }
         }
 
@@ -94,7 +88,7 @@ namespace SAM.WPF
                 var exception = args.Exception;
                 if (exception == null)
                 {
-                    throw new ArgumentNullException();
+                    throw new ArgumentNullException(nameof(args));
                 }
 
                 var message = $"An unobserved task exception occurred. {exception.Message}";

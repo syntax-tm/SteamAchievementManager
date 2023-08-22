@@ -1,5 +1,4 @@
 using SAM.WPF.Core.API;
-using SAM.WPF.Core.API.Steam;
 using Xunit;
 using Xunit.Abstractions;
 

@@ -7,6 +7,9 @@
              xmlns:fluent="clr-namespace:Fluent;assembly=Fluent"
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:core="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
+             xmlns:behaviors="clr-namespace:SAM.WPF.Core.Behaviors;assembly=SAM.WPF.Core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}">
@@ -67,7 +70,8 @@
                        Background="{StaticResource MahApps.Brushes.Menu.Background}"
                        Foreground="{StaticResource MahApps.Brushes.IdealForeground}">
             <fluent:RibbonTabItem Header="Home" KeyTip="H">
-                <fluent:RibbonGroupBox Header="Apps" IsLauncherEnabled="False">
+                <fluent:RibbonGroupBox Header="Apps" IsLauncherEnabled="False"
+                                       Grid.IsSharedSizeScope="True">
                     <fluent:RibbonGroupBox.Icon>
                         <iconPacks:PackIconMaterial Kind="Apps" />
                     </fluent:RibbonGroupBox.Icon>
@@ -107,7 +111,8 @@
                         </fluent:Button.ToolTip>
                     </fluent:Button>
                 </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox Header="View" IsLauncherEnabled="False">
+                <fluent:RibbonGroupBox Header="View" IsLauncherEnabled="False"
+                                       Grid.IsSharedSizeScope="True">
                     <fluent:Button Header="Sort" Size="Large">
                         <fluent:Button.LargeIcon>
                             <iconPacks:PackIconMaterial Kind="Sort" />
@@ -127,7 +132,8 @@
                         </fluent:Button.ToolTip>
                     </fluent:Button>
                 </fluent:RibbonGroupBox>
-                <fluent:RibbonGroupBox Header="Help">
+                <fluent:RibbonGroupBox Header="Help"
+                                       Grid.IsSharedSizeScope="True">
                     <fluent:Button Header="Profile">
                         <fluent:Button.LargeIcon>
                             <iconPacks:PackIconMaterial Kind="Account" />
@@ -177,7 +183,37 @@
                 </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
             <fluent:RibbonTabItem Header="Theme">
-
+                <fluent:RibbonGroupBox Header="Layout"
+                                       Grid.IsSharedSizeScope="True">
+                    <fluent:ComboBox Header="Library View">
+                        <fluent:MenuItem Header="Tile View">
+                            <fluent:MenuItem.Icon>
+                                <iconPacks:PackIconMaterial Kind="ViewArray" />
+                            </fluent:MenuItem.Icon>
+                        </fluent:MenuItem>
+                        <fluent:MenuItem Header="Grid View">
+                            <fluent:MenuItem.Icon>
+                                <iconPacks:PackIconMaterial Kind="ViewGrid" />
+                            </fluent:MenuItem.Icon>
+                        </fluent:MenuItem>
+                    </fluent:ComboBox>
+                    <fluent:ComboBox Header="Columns"
+                                     SelectedValue="{Binding HomeVm.DisplayColumns, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                     HorizontalContentAlignment="Center"
+                                     InputWidth="100" IsTextSearchEnabled="False" IsEditable="False"
+                                     SelectedValuePath=".">
+                        <fluent:ComboBox.ItemsSource>
+                            <behaviors:RangeCollectionBehavior Min="3" Max="8" />
+                        </fluent:ComboBox.ItemsSource>
+                        <fluent:ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding Path=.}" TextAlignment="Center" VerticalAlignment="Center" />
+                                </Grid>
+                            </DataTemplate>
+                        </fluent:ComboBox.ItemTemplate>
+                    </fluent:ComboBox>
+                </fluent:RibbonGroupBox>
             </fluent:RibbonTabItem>
         </fluent:Ribbon>
     </Grid>

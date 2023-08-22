@@ -64,6 +64,11 @@ namespace SAM.API
         {
             if (_IsDisposed) return;
 
+            if (disposing)
+            {
+                
+            }
+
             if (SteamClient != null && _Pipe > 0)
             {
                 if (_User > 0)
@@ -74,7 +79,16 @@ namespace SAM.API
 
                 SteamClient.ReleaseSteamPipe(_Pipe);
                 _Pipe = 0;
+
+                SteamClient.ShutdownIfAllPipesClosed();
             }
+
+            SteamClient = null;
+            SteamUser = null;
+            SteamApps001 = null;
+            SteamApps008 = null;
+            SteamUserStats = null;
+            SteamUtils = null;
 
             _IsDisposed = true;
         }

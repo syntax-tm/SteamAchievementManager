@@ -19,7 +19,7 @@ namespace SAM.WPF.Core.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is Bitmap bmp))
+            if (value is not Bitmap bmp)
                 return null;
 
             var handle = bmp.GetHbitmap();
@@ -41,7 +41,9 @@ namespace SAM.WPF.Core.Converters
         public IValueConverter ItemConverter { get; set; }
 
         public BitmapToImageSourceConverterExtension() { }
+#pragma warning disable IDE0021 // Use block body for constructors
         public BitmapToImageSourceConverterExtension(IValueConverter itemConverter) => ItemConverter = itemConverter;
+#pragma warning restore IDE0021 // Use block body for constructors
 
         public override object ProvideValue(IServiceProvider serviceProvider) => new BitmapToImageSourceConverter();
     }

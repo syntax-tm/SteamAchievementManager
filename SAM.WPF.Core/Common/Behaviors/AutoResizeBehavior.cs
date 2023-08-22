@@ -8,29 +8,12 @@ namespace SAM.WPF.Core.Behaviors
     public class AutoResizeBehavior : Behavior<UniformGrid>
     {
         public static readonly DependencyProperty MaxItemWidthProperty =
-            DependencyProperty.Register(nameof(MaxItemWidth), typeof(double), typeof(AutoResizeBehavior),
-            new FrameworkPropertyMetadata((double) 300, OnMaxItemWidthChanged));
-
+            DependencyProperty.Register(nameof(MaxItemWidth), typeof(double), typeof(AutoResizeBehavior));
         
-        public static readonly DependencyProperty ColumnCountProperty =
-            DependencyProperty.Register(nameof(ColumnCount), typeof(int), typeof(AutoResizeBehavior),
-                new FrameworkPropertyMetadata(4));
-
-        private static void OnMaxItemWidthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
-        
-        public int ColumnCount
-        {
-            get { return (int) GetValue(ColumnCountProperty); }
-            set { SetValue(ColumnCountProperty, value); }
-        }
-
         public double MaxItemWidth
         {
-            get { return (double) GetValue(MaxItemWidthProperty); }
-            set { SetValue(MaxItemWidthProperty, value); }
+            get => (double) GetValue(MaxItemWidthProperty);
+            set => SetValue(MaxItemWidthProperty, value);
         }
         
         protected override void OnAttached()
@@ -56,7 +39,6 @@ namespace SAM.WPF.Core.Behaviors
         private void Update()
         {
             var width = AssociatedObject.ActualWidth;
-            
             if (width < MaxItemWidth)
             {
                 AssociatedObject.Columns = 1;

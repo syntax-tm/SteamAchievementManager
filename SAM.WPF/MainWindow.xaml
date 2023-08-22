@@ -8,8 +8,6 @@
         xmlns:views="clr-namespace:SAM.WPF.Views"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:services="clr-namespace:SAM.WPF.Core.Services;assembly=SAM.WPF.Core"
-        xmlns:fluent="urn:fluent-ribbon"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         DataContext="{dxmvvm:ViewModelSource Type=vm:MainWindowViewModel}"
         d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
@@ -18,27 +16,8 @@
         WindowTitleBrush="#181818" NonActiveWindowTitleBrush="#181818"
         Style="{StaticResource ChromeMetroWindowStyle}"
         TitleBarHeight="38"
-        services:WindowSettings.Save="True">
-
-    <mah:MetroWindow.IconTemplate>
-        <DataTemplate>
-            <Grid>
-                <iconPacks:PackIconFontAwesome Kind="SteamSymbolBrands" Width="38"
-                                               Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}">
-                    <iconPacks:PackIconFontAwesome.Style>
-                        <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
-                            <Setter Property="Foreground" Value="#CECECE" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Grid}, Path=IsMouseOver}" Value="True">
-                                    <Setter Property="Foreground" Value="White" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </iconPacks:PackIconFontAwesome.Style>
-                </iconPacks:PackIconFontAwesome>
-            </Grid>
-        </DataTemplate>
-    </mah:MetroWindow.IconTemplate>
+        services:WindowSettings.Save="True"
+        Loaded="MainWindow_OnLoaded">
 
     <Grid>
         <DockPanel LastChildFill="True" Margin="0,0,0,0">
