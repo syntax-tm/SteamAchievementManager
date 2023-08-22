@@ -37,6 +37,8 @@ namespace SAM.Core
         public virtual Image Header { get; set; }
         public virtual Image Capsule { get; set; }
         public virtual string Group { get; set; }
+        public virtual bool IsHidden { get; set; }
+        public virtual bool IsFavorite { get; set; }
 
         protected SteamApp(uint id, GameInfoType type)
         {
@@ -111,6 +113,16 @@ namespace SAM.Core
         public void CopySteamID()
         {
             TextCopy.ClipboardService.SetText(Id.ToString());
+        }
+        
+        public void ToggleVisibility()
+        {
+            IsHidden = !IsHidden;
+        }
+        
+        public void ToggleFavorite()
+        {
+            IsFavorite = !IsFavorite;
         }
 
         public void Load()

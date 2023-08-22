@@ -21,6 +21,8 @@ namespace SAM.Core.ViewModels
         public virtual string FilterDemos { get; set; }
         public virtual string FilterMods { get; set; }
         public virtual bool FilterJunk { get; set; }
+        public virtual bool ShowHidden { get; set; }
+        public virtual bool FilterFavorites { get; set; }
         public virtual string FilterTool { get; set; }
         public virtual ICollectionView ItemsView { get; set; }
 
@@ -48,8 +50,10 @@ namespace SAM.Core.ViewModels
             var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
             var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText);
             var isJunkFiltered = !FilterJunk || app.IsJunk;
-
-            e.Accepted = isNameMatch && isJunkFiltered;
+            var isHiddenFiltered = ShowHidden || !app.IsHidden;
+            var isNonFavoriteFiltered = !FilterFavorites || app.IsFavorite;
+            
+            e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
         }
 
         public void Loaded()
@@ -79,6 +83,9 @@ namespace SAM.Core.ViewModels
 
                 _itemsViewSource.SortDescriptions.Clear();
                 _itemsViewSource.SortDescriptions.Add(new (nameof(SteamApp.Name), ListSortDirection.Ascending));
+
+                _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsHidden));
+                _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsFavorite));
 
                 //_itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
 

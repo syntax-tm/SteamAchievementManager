@@ -82,7 +82,7 @@ namespace SAM.Core
             get => GetProperty(() => IsLoading);
             set => SetProperty(() => IsLoading, value);
         }
-
+        
         public ObservableCollection<SteamApp> Items { get; }
 
         public SteamLibrary()
