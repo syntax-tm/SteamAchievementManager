@@ -60,6 +60,10 @@ namespace SAM.Core.Behaviors
             if (Config == null) return;
             if (AssociatedObject == null) return;
             
+            _initialized = true;
+
+            return;
+
             AssociatedObject.WindowState = Config.WindowState;
             AssociatedObject.WindowStartupLocation = Config.StartupLocation;
             AssociatedObject.Width = Config.Width;
@@ -119,6 +123,20 @@ namespace SAM.Core.Behaviors
             set => SetProperty(() => WindowState, value);
         }
         
+        [JsonProperty]
+        public uint X
+        {
+            get => GetProperty(() => X);
+            set => SetProperty(() => X, value);
+        }
+        
+        [JsonProperty]
+        public uint Y
+        {
+            get => GetProperty(() => Y);
+            set => SetProperty(() => Y, value);
+        }
+
         [JsonProperty]
         public double Width
         {
@@ -190,7 +208,14 @@ namespace SAM.Core.Behaviors
                 }
 
                 var configText = CacheManager.StorageManager.GetTextFile(_fileName);
-                JsonConvert.PopulateObject(configText, this);
+                //JsonConvert.PopulateObject(configText, this);
+
+                var config = JsonConvert.DeserializeObject<WindowSettings>(configText);
+
+                Width = config.Width;
+                Height = config.Height;
+                X = config.X;
+                Y = config.Y;
             }
             catch (Exception e)
             {

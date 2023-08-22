@@ -23,6 +23,7 @@ namespace SAM.Core.ViewModels
         private readonly SteamStatsManager _statsManager;
 
         public virtual string SearchText { get; set; }
+        public virtual bool AllowUnlockAll { get; set; }
         public virtual bool AllowEdit { get; set; }
         public virtual bool IsModified { get; set; }
         public virtual bool ShowHidden { get; set; }
@@ -51,7 +52,7 @@ namespace SAM.Core.ViewModels
             _statsHandler = new ObservableHandler<SteamStatsManager>(_statsManager)
                 .AddAndInvoke(m => m.Achievements, ManagerAchievementsChanged)
                 .AddAndInvoke(m => m.Statistics, ManagerStatisticsChanged)
-                .Add(m => m.IsModified, OnManagerIsModifiedChanged);
+                .AddAndInvoke(m => m.IsModified, OnManagerIsModifiedChanged);
         }
 
         public static SteamGameViewModel Create()
@@ -148,6 +149,7 @@ namespace SAM.Core.ViewModels
         protected void OnManagerIsModifiedChanged()
         {
             IsModified = _statsManager.IsModified;
+            AllowUnlockAll = Achievements.Any(a => !a.IsAchieved);
         }
 
         private void ManagerAchievementsChanged(SteamStatsManager obj)

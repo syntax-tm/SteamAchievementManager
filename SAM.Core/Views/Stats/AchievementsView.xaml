@@ -46,14 +46,14 @@
     </UserControl.Resources>
 
     <Grid>
-        <DataGrid ItemsSource="{Binding Source={StaticResource AchievementCollection}}"
+        <ui:DataGrid ItemsSource="{Binding Source={StaticResource AchievementCollection}}"
                   SelectedItem="{Binding SelectedAchievement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False" HeadersVisibility="None"
                   CanUserAddRows="False" SelectionMode="Single"
                   EnableRowVirtualization="False" EnableColumnVirtualization="False"
                   RowStyle="{StaticResource AchievementGridRowStyle}"
                   GridLinesVisibility="None">
-            <DataGrid.Columns>
+            <ui:DataGrid.Columns>
                 <DataGridCheckBoxColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Width="50">
@@ -122,7 +122,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="50">
+                <!--<DataGridTemplateColumn Width="50">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type stats:SteamAchievement}">
                             <Grid>
@@ -134,8 +134,8 @@
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                </DataGridTemplateColumn>-->
+            </ui:DataGrid.Columns>
+        </ui:DataGrid>
     </Grid>
 </UserControl>

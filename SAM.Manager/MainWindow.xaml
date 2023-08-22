@@ -11,7 +11,9 @@
              d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}"
              Title="{Binding Title, Mode=OneWay}"
              ExtendsContentIntoTitleBar="True"
-             WindowBackdropType="Mica">
+             WindowBackdropType="Mica"
+             Left="{Binding Config.X}" Top="{Binding Config.Y}"
+             Width="{Binding Config.Width}" Height="{Binding Config.Height}">
 
     <dxmvvm:Interaction.Behaviors>
         <sam:WindowAutoSaveBehavior Config="{Binding Config}" />

@@ -33,6 +33,16 @@
       "commandName": "Project",
       "commandLineArgs": "730",
       "nativeDebugging": false
+    },
+    "SAM.Manager (RE4R)": {
+      "commandName": "Project",
+      "commandLineArgs": "2050650",
+      "nativeDebugging": false
+    },
+    "SAM.Manager (TLD)": {
+      "commandName": "Project",
+      "commandLineArgs": "305620",
+      "nativeDebugging": false
     }
   }
 }

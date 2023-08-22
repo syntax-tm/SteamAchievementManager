@@ -68,7 +68,8 @@
                 </StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
-                        <ui:Button Command="{Binding UnlockAllAchievementsCommand}" Icon="ArrowUndo20" Content="Unlock All"
+                        <ui:Button Command="{Binding UnlockAllAchievementsCommand}" Icon="LockOpen20" Content="Unlock All"
+                                   IsEnabled="{Binding AllowUnlockAll, Mode=OneWay}"
                                    Appearance="Secondary" />
                         <ui:Button Command="{Binding ResetCommand}" Icon="ArrowUndo20" Content="Reset"
                                    Appearance="Danger" />

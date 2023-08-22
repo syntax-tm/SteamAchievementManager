@@ -9,71 +9,58 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/wpf.ui.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <ui:DataGrid ItemsSource="{Binding Statistics}" AutoGenerateColumns="False" IsTextSearchEnabled="True"
                      CanUserAddRows="False">
-            <ui:DataGrid.RowStyle>
-                <Style TargetType="{x:Type DataGridRow}">
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                            <Setter Property="Background" Value="{StaticResource PaletteBlueBrush}" />
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="Padding" Value="0" />
-                        </Trigger>
-                        <DataTrigger Binding="{Binding IsModified}" Value="False">
-                            <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                        </DataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                <Condition Binding="{Binding IsSelected}" Value="False" />
-                                <Condition Binding="{Binding IsModified}" Value="False" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteBlueColor}" />
-                                </Setter.Value>
-                            </Setter>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                <Condition Binding="{Binding IsModified}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Opacity="0.4" Color="{StaticResource PaletteOrangeColor}" />
-                                </Setter.Value>
-                            </Setter>
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
-                                <Condition Binding="{Binding IsModified}" Value="True" />
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteOrangeColor}" />
-                                </Setter.Value>
-                            </Setter>
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ui:DataGrid.RowStyle>
             <ui:DataGrid.Columns>
-                <DataGridTextColumn Header="Name" CanUserSort="True" IsReadOnly="True" Binding="{Binding DisplayName, Mode=OneWay}" Width="2*" />
+                <DataGridTemplateColumn Header="Name" CanUserSort="True" IsReadOnly="True" Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" Margin="5,0" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 
                 <DataGridTemplateColumn Header="Value" MinWidth="200">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type stats:SteamStatistic}">
-                            <ui:NumberBox Value="{Binding Value, TargetNullValue=0}" />
+                            <!-- TODO: Verify if stat minimum is 0 or can be negative -->
+                            <ui:NumberBox Value="{Binding Value, TargetNullValue=0}" BorderThickness="0" Height="32" Min="0"
+                                          TextAlignment="Center" ClearButtonEnabled="False" Background="Transparent">
+                                <ui:NumberBox.Style>
+                                    <Style TargetType="{x:Type ui:NumberBox}" BasedOn="{StaticResource DefaultUiNumberBoxStyle}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding StatType}" Value="Integer">
+                                                <Setter Property="IntegersOnly" Value="True" />
+                                                <Setter Property="DecimalPlaces" Value="0" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:NumberBox.Style>
+                            </ui:NumberBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="Increment Only" Binding="{Binding IsIncrementOnly, Mode=OneWay}" IsReadOnly="True" />
+                <DataGridTemplateColumn Header="Increment Only" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <CheckBox IsChecked="{Binding IsIncrementOnly, Mode=OneWay}" IsEnabled="False"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--<DataGridCheckBoxColumn Header="Increment Only" Binding="{Binding IsIncrementOnly, Mode=OneWay}" IsReadOnly="True" />-->
             </ui:DataGrid.Columns>
         </ui:DataGrid>
     </Grid>

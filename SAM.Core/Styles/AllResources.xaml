@@ -23,4 +23,7 @@
         <ui:ControlsDictionary />
     </ResourceDictionary.MergedDictionaries>
 
+    <!-- This is needed for Win10 and below -->
+    <!-- see: https://wpfui.lepo.co/documentation/icons -->
+    <FontFamily x:Key="SegoeFluentIcons">pack://application:,,,/;component/Fonts/#Segoe Fluent Icons</FontFamily>
 </ResourceDictionary>

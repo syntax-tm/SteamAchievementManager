@@ -67,6 +67,14 @@ namespace SAM.Core
 
             return this;
         }
+        
+        [NotNull]
+        public ObservableHandler<T> AddAndInvoke([NotNull] Expression<Func<T, object>> expression, [NotNull] Action handler)
+        {
+            Add(expression, handler);
+            handler();
+            return this;
+        }
 
         [NotNull]
         public ObservableHandler<T> AddAndInvoke([NotNull] Expression<Func<T, object>> expression, [NotNull] Action<T> handler)
@@ -75,7 +83,7 @@ namespace SAM.Core
             handler(GetSource());
             return this;
         }
-
+        
         private T GetSource()
         {
             if (m_source.TryGetTarget(out var source)) return source;
