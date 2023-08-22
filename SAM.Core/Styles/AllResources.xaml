@@ -10,18 +10,17 @@
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/fonts.xaml" />
         <!-- Theme setting -->
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/dark.red.xaml" />
-
         <!-- SAM controls -->
-
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ButtonStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/CheckBoxStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ContainerStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/DataGridStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/MenuStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/WindowStyles.xaml" />
         <!-- SAM resources -->
-        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/CheckBoxStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/ContainerStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Converters.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/DataGridStyles.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/MenuStyles.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/TextStyles.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/WindowStyles.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

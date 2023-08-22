@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace SAM.API.Wrappers
 {
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SteamUserStats007 : NativeWrapper<ISteamUserStats007>
     {
 #region RequestCurrentStats
@@ -26,11 +28,10 @@ namespace SAM.API.Wrappers
 
         public bool GetStatValue(string name, out int value)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            {
-                var call = GetFunction<NativeGetStatInt>(Functions.GetStatInteger);
-                return call(ObjectAddress, nativeName.Handle, out value);
-            }
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            var call = GetFunction<NativeGetStatInt>(Functions.GetStatInteger);
+            return call(ObjectAddress, nativeName.Handle, out value);
         }
 
 #endregion
@@ -43,11 +44,10 @@ namespace SAM.API.Wrappers
 
         public bool GetStatValue(string name, out float value)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            {
-                var call = GetFunction<NativeGetStatFloat>(Functions.GetStatFloat);
-                return call(ObjectAddress, nativeName.Handle, out value);
-            }
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            var call = GetFunction<NativeGetStatFloat>(Functions.GetStatFloat);
+            return call(ObjectAddress, nativeName.Handle, out value);
         }
 
 #endregion
@@ -60,14 +60,13 @@ namespace SAM.API.Wrappers
 
         public bool SetStatValue(string name, int value)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            {
-                return Call<bool, NativeSetStatInt>(
-                    Functions.SetStatInteger,
-                    ObjectAddress,
-                    nativeName.Handle,
-                    value);
-            }
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            return Call<bool, NativeSetStatInt>(
+                                                Functions.SetStatInteger,
+                                                ObjectAddress,
+                                                nativeName.Handle,
+                                                value);
         }
 
 #endregion
@@ -80,14 +79,13 @@ namespace SAM.API.Wrappers
 
         public bool SetStatValue(string name, float value)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            {
-                return Call<bool, NativeSetStatFloat>(
-                    Functions.SetStatFloat,
-                    ObjectAddress,
-                    nativeName.Handle,
-                    value);
-            }
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            return Call<bool, NativeSetStatFloat>(
+                                                  Functions.SetStatFloat,
+                                                  ObjectAddress,
+                                                  nativeName.Handle,
+                                                  value);
         }
 
 #endregion
@@ -103,11 +101,10 @@ namespace SAM.API.Wrappers
 
         public bool GetAchievementState(string name, out bool isAchieved)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            {
-                var call = GetFunction<NativeGetAchievement>(Functions.GetAchievement);
-                return call(ObjectAddress, nativeName.Handle, out isAchieved);
-            }
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            var call = GetFunction<NativeGetAchievement>(Functions.GetAchievement);
+            return call(ObjectAddress, nativeName.Handle, out isAchieved);
         }
 
 #endregion
@@ -124,19 +121,15 @@ namespace SAM.API.Wrappers
 
         public bool SetAchievement(string name, bool state)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            {
-                if (state == false)
-                    return Call<bool, NativeClearAchievement>(
-                        Functions.ClearAchievement,
-                        ObjectAddress,
-                        nativeName.Handle);
+            using var nativeName = NativeStrings.StringToStringHandle(name);
 
-                return Call<bool, NativeSetAchievement>(
-                    Functions.SetAchievement,
-                    ObjectAddress,
-                    nativeName.Handle);
-            }
+            return state == false
+                ? Call<bool, NativeClearAchievement>(Functions.ClearAchievement,
+                                                     ObjectAddress,
+                                                     nativeName.Handle)
+                : Call<bool, NativeSetAchievement>(Functions.SetAchievement,
+                                                   ObjectAddress,
+                                                   nativeName.Handle);
         }
 
 #endregion
@@ -161,13 +154,11 @@ namespace SAM.API.Wrappers
 
         public int GetAchievementIcon(string name)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            {
-                return Call<int, NativeGetAchievementIcon>(
-                    Functions.GetAchievementIcon,
-                    ObjectAddress,
-                    nativeName.Handle);
-            }
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            return Call<int, NativeGetAchievementIcon>(Functions.GetAchievementIcon,
+                                                       ObjectAddress,
+                                                       nativeName.Handle);
         }
 
 #endregion
@@ -179,16 +170,14 @@ namespace SAM.API.Wrappers
 
         public string GetAchievementDisplayAttribute(string name, string key)
         {
-            using (var nativeName = NativeStrings.StringToStringHandle(name))
-            using (var nativeKey = NativeStrings.StringToStringHandle(key))
-            {
-                var result = Call<IntPtr, NativeGetAchievementDisplayAttribute>(
-                    Functions.GetAchievementDisplayAttribute,
-                    ObjectAddress,
-                    nativeName.Handle,
-                    nativeKey.Handle);
-                return NativeStrings.PointerToString(result);
-            }
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+            using var nativeKey = NativeStrings.StringToStringHandle(key);
+
+            var result = Call<IntPtr, NativeGetAchievementDisplayAttribute>(Functions.GetAchievementDisplayAttribute, 
+                                                                            ObjectAddress,
+                                                                            nativeName.Handle,
+                                                                            nativeKey.Handle);
+            return NativeStrings.PointerToString(result);
         }
 
 #endregion

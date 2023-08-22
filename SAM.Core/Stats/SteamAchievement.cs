@@ -22,7 +22,6 @@ namespace SAM.Core.Stats
             get => AchievementInfo.IsAchieved;
             private set => AchievementInfo.IsAchieved = value;
         }
-        
         public Image Image
         {
             get => GetProperty(() => Image);
@@ -107,6 +106,8 @@ namespace SAM.Core.Stats
 
         public void CommitChanges()
         {
+            if (!IsModified) return;
+
             OriginalLockState = IsAchieved;
             IsModified = false;
         }

@@ -62,7 +62,6 @@ namespace SAM.Core.ViewModels
             try
             {
                 var modified = Achievements.Where(a => a.IsModified).ToList();
-
                 if (!modified.Any())
                 {
                     return;
@@ -91,7 +90,7 @@ namespace SAM.Core.ViewModels
 
                 log.Error(message, e);
 
-                MessageBox.Show(message, "Steam Client Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(message, "Error Updating Achievements", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

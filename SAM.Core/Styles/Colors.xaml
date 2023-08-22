@@ -13,13 +13,16 @@
     <Color x:Key="ProgressIndeterminateColor3">#4C000000</Color>
     <Color x:Key="ProgressIndeterminateColor4">#4C000000</Color>
 
+
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" po:Freeze="True" Color="#0E84FF" />
+
     <SolidColorBrush x:Key="LightBlueBrush" po:Freeze="True" Color="LightBlue" />
 
     <SolidColorBrush x:Key="GroupHeaderBrush" po:Freeze="True" Color="#E9281B" />
     <SolidColorBrush x:Key="FocusedControlBorderBrush" po:Freeze="True" Color="#0E84FF" />
     <SolidColorBrush x:Key="FocusedControlBrush" po:Freeze="True" Color="#0E84FF" />
     <SolidColorBrush x:Key="MouseOverControlBrush" po:Freeze="True" Color="#5098E4" />
-    <SolidColorBrush x:Key="EditedBrush" po:Freeze="True" Color="#B1E4D863" />
+    <SolidColorBrush x:Key="EditedBrush" po:Freeze="True" Color="#9EE4D863" />
     <SolidColorBrush x:Key="WarningBrush" po:Freeze="True" Color="#FFF277" />
     
     <SolidColorBrush x:Key="ControlBorderBrush" po:Freeze="True" Color="{StaticResource ControlBorderColor}" />
@@ -34,9 +37,9 @@
     <SolidColorBrush x:Key="SeparatorBrush" po:Freeze="True" Color="#444444" />
     <SolidColorBrush x:Key="DataGridLineBrush" po:Freeze="True" Color="#444444" />
 
-    <SolidColorBrush x:Key="ForegroundBrush" po:Freeze="True" Color="#dfdfdf" />
-    <SolidColorBrush x:Key="TextBrush" po:Freeze="True" Color="#dfdfdf" />
-    <SolidColorBrush x:Key="TextLightBrush" po:Freeze="True" Color="#aaaaaa" />
+    <SolidColorBrush x:Key="ForegroundBrush" po:Freeze="True" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="TextBrush" po:Freeze="True" Color="#EEEEEE" />
+    <SolidColorBrush x:Key="TextLightBrush" po:Freeze="True" Color="#CECECE" />
     <SolidColorBrush x:Key="DisabledForegroundBrush" po:Freeze="True" Color="#777777" />
     
 

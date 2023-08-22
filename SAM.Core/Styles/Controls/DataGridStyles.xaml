@@ -6,7 +6,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextStyles.xaml" />
 
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.datagrid.xaml" />
     </ResourceDictionary.MergedDictionaries>

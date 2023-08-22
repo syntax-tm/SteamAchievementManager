@@ -29,11 +29,11 @@
             </Style>
             <CollectionViewSource x:Key="AchievementCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True">
                 <CollectionViewSource.GroupDescriptions>
-                    <PropertyGroupDescription PropertyName="IsAchieved" />
+                    <PropertyGroupDescription PropertyName="OriginalLockState" />
                 </CollectionViewSource.GroupDescriptions>
                 <CollectionViewSource.SortDescriptions>
-                    <scm:SortDescription PropertyName="IsAchieved" Direction="Ascending" />
-                    <scm:SortDescription PropertyName="IsModified" Direction="Descending" />
+                    <scm:SortDescription PropertyName="OriginalLockState" Direction="Ascending" />
+                    <scm:SortDescription PropertyName="Name" Direction="Ascending" />
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
         </ResourceDictionary>
@@ -110,7 +110,7 @@
                                     <StackPanel Margin="2">
                                         <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2" />
                                         <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontStyle="Italic" />
-                                        <Separator Foreground="{DynamicResource MahApps.Brushes.Gray.SemiTransparent}"
+                                        <Separator Foreground="{StaticResource MahApps.Brushes.Gray.SemiTransparent}"
                                                    Margin="0,6,0,4"
                                                    Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}" />
                                         <TextBlock Text="Unsaved change." Foreground="{StaticResource WarningBrush}"
@@ -123,18 +123,24 @@
                             <Trigger Property="IsSelected" Value="True">
                                 <Setter Property="Background" Value="{StaticResource FocusedControlBrush}" />
                                 <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}" />
-                                <Setter Property="BorderThickness" Value="0,1,0,1" />
-                                <Setter Property="Padding" Value="0,-1,0,-1" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource MouseOverControlBrush}" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Padding" Value="0" />
                             </Trigger>
                             <DataTrigger Binding="{Binding IsModified}" Value="False">
                                 <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                             </DataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
                                     <Condition Binding="{Binding IsSelected}" Value="False" />
+                                    <Condition Binding="{Binding IsModified}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                <Setter Property="Background" Value="{StaticResource MouseOverControlBrush}" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
                                     <Condition Binding="{Binding IsModified}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Foreground" Value="{StaticResource BlackBrush}" />
@@ -142,21 +148,19 @@
                             </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
                                     <Condition Binding="{Binding IsModified}" Value="True" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter Property="Foreground" Value="{StaticResource BlackBrush}" />
                                 <Setter Property="Background" Value="{StaticResource WarningBrush}" />
                                 <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}" />
-                                <Setter Property="BorderThickness" Value="0,1,0,1" />
-                                <Setter Property="Padding" Value="0,-1,0,-1" />
                             </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn ElementStyle="{StaticResource MahApps.Styles.CheckBox.DataGrid}"
-                                            EditingElementStyle="{DynamicResource MahApps.Styles.CheckBox.DataGrid}"
+                                            EditingElementStyle="{StaticResource MahApps.Styles.CheckBox.DataGrid}"
                                             HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                             Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Width="50">
@@ -201,12 +205,12 @@
                                     </Grid.RowDefinitions>
                                     <Grid>
                                         <TextBlock Text="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                   FontWeight="SemiBold" FontSize="{DynamicResource LargeFontSize}"
+                                                   FontWeight="SemiBold" FontSize="{StaticResource LargeFontSize}"
                                                    Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
                                     </Grid>
                                     <Grid Grid.Row="1">
                                         <TextBlock Text="{Binding Description, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                   TextWrapping="Wrap" FontSize="{DynamicResource SmallFontSize}"
+                                                   TextWrapping="Wrap" FontSize="{StaticResource SmallFontSize}"
                                                    Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
                                     </Grid>
                                 </Grid>
