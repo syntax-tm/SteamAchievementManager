@@ -96,6 +96,8 @@ namespace SAM.Core.ViewModels
 
                     achievement.CommitChanges();
                 }
+
+                stats.StoreStats();
             }
             catch (Exception e)
             {
@@ -109,7 +111,7 @@ namespace SAM.Core.ViewModels
 
         public void SaveStats()
         {
-
+            // TODO: save any modified stats
         }
 
         public void Save()
