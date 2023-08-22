@@ -15,11 +15,18 @@ namespace SAM.WPF.Core
         private const string WPF_MANAGER_EXE = @"SAM.WPF.Manager.exe";
         private const string CLASSIC_PICKER_EXE = @"SAM.Picker.exe";
         private const string WPF_PICKER_EXE = @"SAM.WPF.exe";
+        private const string STEAM_PROCESS_NAME = @"Steam";
 
         private const string PICKER_PROCESS_REGEX = @"^SAM(?:\.WPF)?(?:\.Picker)?(?:\.exe)?$";
         private const string MANAGER_PROCESS_REGEX = @"^SAM(?:\.WPF)?\.Manager(?:\.exe)?$";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMHelper));
+
+        public static bool IsSteamRunning()
+        {
+            var processes = Process.GetProcessesByName(STEAM_PROCESS_NAME);
+            return processes.Any();
+        }
 
         public static bool IsPickerRunning()
         {

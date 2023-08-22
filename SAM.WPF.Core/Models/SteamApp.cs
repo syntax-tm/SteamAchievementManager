@@ -71,6 +71,11 @@ namespace SAM.WPF.Core
             get => GetProperty(() => Header);
             set => SetProperty(() => Header, value);
         }
+        public string Group
+        {
+            get => GetProperty(() => Group);
+            set => SetProperty(() => Group, value);
+        }
 
         public ICommand ManageAppCommand => new DelegateCommand(ManageApp);
 
@@ -130,6 +135,12 @@ namespace SAM.WPF.Core
             client ??= SteamClientManager.Default;
 
             Name = client.GetAppName(Id);
+
+            if (string.IsNullOrEmpty(Name)) return;
+
+            Group = char.IsDigit(Name[0])
+                ? "#"
+                : (Name?.Substring(0, 1));
         }
 
         private void LoadStoreInfo()

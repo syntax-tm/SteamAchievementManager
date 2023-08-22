@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using DevExpress.Mvvm;
-using SAM.Game.Stats;
+using SAM.API.Game.Stats;
 
 namespace SAM.WPF.Core.Stats
 {

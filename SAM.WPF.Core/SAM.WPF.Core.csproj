@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SAM.API\SAM.API.csproj" />
-    <ProjectReference Include="..\SAM.Game\SAM.Game.csproj" />
   </ItemGroup>
 
   <ItemGroup>

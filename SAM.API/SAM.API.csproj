@@ -15,8 +15,27 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;BUILD_X86</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;BUILD_X86</DefineConstants>
   </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Game\DoubleBufferedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Game\Manager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Picker\DoubleBufferedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Picker\GamePicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
 </Project>

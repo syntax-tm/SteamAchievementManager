@@ -1,4 +1,4 @@
-﻿using SAM.Game.Stats;
+﻿using SAM.API.Game.Stats;
 
 namespace SAM.WPF.Core.Stats
 {
