@@ -61,7 +61,7 @@ namespace SAM.Core.Converters
 
             try
             {
-                return new BitmapImage(new Uri(filePath));
+                return new BitmapImage(new (filePath));
             }
             catch (Exception e)
             {
