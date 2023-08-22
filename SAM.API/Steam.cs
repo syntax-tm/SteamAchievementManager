@@ -42,6 +42,7 @@ namespace SAM.API
         {
             if (!string.IsNullOrEmpty(_installPath)) return _installPath;
 
+            // TODO: consider switching this to HKCU:\SOFTWARE\Valve\Steam\ActiveProcess\SteamClientDll
             using var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
             using var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false);
 

@@ -22,4 +22,6 @@
     <SolidColorBrush x:Key="Accent5PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.5" po:Freeze="true" />
     <SolidColorBrush x:Key="Accent6PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.25" po:Freeze="true" />
 
+    <SolidColorBrush x:Key="ControlElevationBorderBrush" Color="{StaticResource ControlBorderColor}" po:Freeze="true" />
+
 </ResourceDictionary>

@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using log4net;
 using SAM.API.Wrappers;
 
 namespace SAM.API
 {
     public class Client : IDisposable
     {
+        private static readonly ILog log = LogManager.GetLogger(nameof(Client));
+
         private readonly List<ICallback> _callbacks = new();
 
         private bool _isDisposed;
@@ -17,8 +20,8 @@ namespace SAM.API
         private int _user;
         public SteamApps001 SteamApps001;
         public SteamApps008 SteamApps008;
-        public SteamClient018 SteamClient;
-        public SteamUser012 SteamUser;
+        public SteamClient019 SteamClient;
+        public SteamUser017 SteamUser;
         public SteamUserStats007 SteamUserStats;
         public SteamUtils005 SteamUtils;
 
@@ -28,21 +31,21 @@ namespace SAM.API
 
             if (appId != 0) Environment.SetEnvironmentVariable(@"SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
 
-            if (Steam.Load() == false) throw new ClientInitializeException(ClientInitFailure.Load, "failed to load SteamClient");
+            if (Steam.Load() == false) throw new ClientInitializeException(ClientInitFailure.Load);
 
-            SteamClient = Steam.CreateInterface<SteamClient018>(nameof(SteamClient018));
-            if (SteamClient == null) throw new ClientInitializeException(ClientInitFailure.CreateSteamClient, "failed to create ISteamClient018");
-
+            SteamClient = Steam.CreateInterface<SteamClient019>(nameof(SteamClient019));
+            if (SteamClient == null) throw new ClientInitializeException(ClientInitFailure.CreateSteamClient);
+            
             _pipe = SteamClient.CreateSteamPipe();
-            if (_pipe == 0) throw new ClientInitializeException(ClientInitFailure.CreateSteamPipe, "failed to create pipe");
+            if (_pipe == 0) throw new ClientInitializeException(ClientInitFailure.CreateSteamPipe);
 
             _user = SteamClient.ConnectToGlobalUser(_pipe);
-            if (_user == 0) throw new ClientInitializeException(ClientInitFailure.ConnectToGlobalUser, "failed to connect to global user");
+            if (_user == 0) throw new ClientInitializeException(ClientInitFailure.ConnectToGlobalUser);
 
             SteamUtils = SteamClient.GetSteamUtils004(_pipe);
-            if (appId > 0 && SteamUtils.GetAppId() != (uint)appId) throw new ClientInitializeException(ClientInitFailure.AppIdMismatch, "appID mismatch");
+            if (appId > 0 && SteamUtils.GetAppId() != (uint)appId) throw new ClientInitializeException(ClientInitFailure.AppIdMismatch);
 
-            SteamUser = SteamClient.GetSteamUser012(_user, _pipe);
+            SteamUser = SteamClient.GetSteamUser017(_user, _pipe);
             SteamUserStats = SteamClient.GetSteamUserStats006(_user, _pipe);
             SteamApps001 = SteamClient.GetSteamApps001(_user, _pipe);
             SteamApps008 = SteamClient.GetSteamApps008(_user, _pipe);

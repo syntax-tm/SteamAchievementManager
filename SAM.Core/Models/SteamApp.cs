@@ -135,8 +135,8 @@ namespace SAM.Core
             {
                 IsLoading = true;
 
-                // TODO: SteamApp shouldn't need to configure IsolatedStorage
-                IsolatedStorageManager.CreateDirectory($@"apps\{Id}");
+                // TODO: SteamApp shouldn't need to configure its cache directory structure
+                CacheManager.StorageManager.CreateDirectory($@"apps\{Id}");
 
                 LoadClientInfo();
                 LoadStoreInfo();

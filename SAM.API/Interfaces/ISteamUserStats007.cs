@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace SAM.API
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    [SuppressMessage("ReSharper", "UnassignedField.Global", Justification = "Steam API interface")]
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Steam API interface")]
     public class ISteamUserStats007
     {
         public nint RequestCurrentStats;

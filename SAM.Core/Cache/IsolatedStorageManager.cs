@@ -7,12 +7,42 @@ using log4net;
 
 namespace SAM.Core
 {
-    public static class IsolatedStorageManager
+    public class IsolatedStorageManager : IStorageManager
     {
-
         private static readonly ILog log = LogManager.GetLogger(nameof(IsolatedStorageManager));
+        private static readonly object syncLock = new ();
+        private static IsolatedStorageManager _instance;
+        
+        public string Path { get; }
 
-        public static void SaveImage(string fileName, Image img, bool overwrite = true)
+        protected IsolatedStorageManager()
+        {
+            using var store = IsolatedStorageFile.GetMachineStoreForAssembly();
+
+            var fi = store.GetType().GetField(@"_rootDirectory", BindingFlags.NonPublic | BindingFlags.Instance);
+            var path = (string) fi!.GetValue(store);
+
+            log.Debug($"IsolatedStorageFile Path: '{path}'");
+
+            Path = path;
+
+            if (!store.DirectoryExists(@"apps")) store.CreateDirectory(@"apps");
+        }
+
+        public static IsolatedStorageManager Default
+        {
+            get
+            {
+                if (_instance != null) return _instance;
+                lock (syncLock)
+                {
+                    _instance = new ();
+                }
+                return _instance;
+            }
+        }
+
+        public void SaveImage(string fileName, Image img, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
             
@@ -22,7 +52,7 @@ namespace SAM.Core
             img.Save(file, img.RawFormat);
         }
 
-        public static void SaveText(string fileName, string text, bool overwrite = true)
+        public void SaveText(string fileName, string text, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
             
@@ -33,7 +63,7 @@ namespace SAM.Core
             writer.WriteLine(text);
         }
 
-        public static Image GetImageFile(string fileName)
+        public Image GetImageFile(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
@@ -48,7 +78,7 @@ namespace SAM.Core
             return img;
         }
 
-        public static string GetTextFile(string fileName)
+        public string GetTextFile(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
@@ -62,7 +92,7 @@ namespace SAM.Core
             return fileText;
         }
 
-        public static void CreateDirectory(string path)
+        public void CreateDirectory(string path)
         {
             if (path == null) throw new ArgumentNullException(nameof(path));
 
@@ -72,7 +102,7 @@ namespace SAM.Core
             isoStorage.CreateDirectory(path);
         }
         
-        public static bool FileExists(string fileName)
+        public bool FileExists(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
@@ -80,37 +110,10 @@ namespace SAM.Core
 
             return isoStorage.FileExists(fileName);
         }
-
-        private static readonly object _initLock = new ();
-
-        private static bool _initialized;
-
-        public static void Init()
+        
+        public IsolatedStorageFile GetStore()
         {
-            if (_initialized) return;
-
-            lock (_initLock)
-            {
-                using var store = IsolatedStorageFile.GetMachineStoreForAssembly();
-
-                var fi = store.GetType().GetField("_rootDirectory", BindingFlags.NonPublic | BindingFlags.Instance);
-                var path = (string) fi.GetValue(store);
-
-                log.Debug($"IsolatedStorageFile Path: '{path}'");
-                    
-                if (!store.DirectoryExists("apps")) store.CreateDirectory("apps");
-
-                _initialized = true;
-            }
-        }
-
-        public static IsolatedStorageFile GetStore()
-        {
-            //var store = IsolatedStorageFile.GetMachineStoreForAssembly();
-            //var path = isoStorage.GetType().GetField("m_RootDir", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(isoStorage).ToString();
-            
             return IsolatedStorageFile.GetMachineStoreForAssembly();
         }
-
     }
 }

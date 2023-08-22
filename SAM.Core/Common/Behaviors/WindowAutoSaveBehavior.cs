@@ -175,7 +175,7 @@ namespace SAM.Core.Behaviors
         {
             try
             {
-                var exists = IsolatedStorageManager.FileExists(_fileName);
+                var exists = CacheManager.StorageManager.FileExists(_fileName);
                 if (!exists)
                 {
                     var defaults = Default;
@@ -188,7 +188,7 @@ namespace SAM.Core.Behaviors
                     return;
                 }
 
-                var configText = IsolatedStorageManager.GetTextFile(_fileName);
+                var configText = CacheManager.StorageManager.GetTextFile(_fileName);
                 JsonConvert.PopulateObject(configText, this);
             }
             catch (Exception e)
@@ -206,7 +206,7 @@ namespace SAM.Core.Behaviors
                 {
                     var configText = JsonConvert.SerializeObject(this, Formatting.None);
 
-                    IsolatedStorageManager.SaveText(_fileName, configText);
+                    CacheManager.StorageManager.SaveText(_fileName, configText);
                 }
             }
             catch (Exception e)
