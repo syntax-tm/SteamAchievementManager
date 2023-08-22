@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SAM.WPF.Core.Cache;
 
 namespace SAM.WPF.Core.API.Steam
 {
     public static class SteamworksManager
     {
+
+        private static readonly ILog log = LogManager.GetLogger(nameof(SteamworksManager));
 
         public static Dictionary<uint, string> GetAppList()
         {
@@ -19,9 +24,9 @@ namespace SAM.WPF.Core.API.Steam
 
                 // if we have the file in the cache, then deserialize the cached json and
                 // return that
-                if (CacheManager.TryGetTextFile(cacheKey, out var text))
+                if (CacheManager.TryGetObject<Dictionary<uint, string>>(cacheKey, out var cachedApps))
                 {
-                    return JsonConvert.DeserializeObject<Dictionary<uint, string>>(text);
+                    return cachedApps;
                 }
 
                 const string url = @"https://api.steampowered.com/ISteamApps/GetAppList/v2/";
@@ -47,7 +52,7 @@ namespace SAM.WPF.Core.API.Steam
 
                 // cache the app list
                 var appListJson = JsonConvert.SerializeObject(apps);
-                CacheManager.CacheText(cacheKey, appListJson);
+                CacheManager.CacheObject(cacheKey, appListJson);
 
                 return apps;
             }
@@ -68,10 +73,10 @@ namespace SAM.WPF.Core.API.Steam
 
                 // if we have the file in the cache, then deserialize the cached json and
                 // return that
-                if (CacheManager.TryGetTextFile(cacheKey, out var text))
-                {
-                    return JsonConvert.DeserializeObject<SteamStoreApp>(text);
-                }
+                //if (CacheManager.TryGetObject<SteamStoreApp>(cacheKey, out var cachedApp))
+                //{
+                //    return cachedApp;
+                //}
 
                 var storeUrl = $"https://store.steampowered.com/api/appdetails/?appids={id}";
 
@@ -80,40 +85,44 @@ namespace SAM.WPF.Core.API.Steam
 
                 //if (string.IsNullOrEmpty(appInfoText)) throw new ArgumentNullException(nameof(appInfoText));
 
-                var jd = JsonDocument.Parse(appInfoText);
-                var rootProperty = jd.RootElement.GetProperty(id.ToString());
+                var convertedString = System.Text.Encoding.Default.GetString(appInfoText);
+                var jo = JObject.Parse(convertedString);
+                var appInfo = jo[id.ToString()]["data"];
 
-                var isSuccess = rootProperty.GetProperty("success").GetBoolean();
-                if (!isSuccess)
-                {
-                    return null;
-                }
+                //var jd = JsonDocument.Parse(unescapedText);
+                //var rootProperty = jd.RootElement.GetProperty(id.ToString());
 
-                var dataProperty = rootProperty.GetProperty("data");
-                var dataText = dataProperty.GetRawText();
+                //var isSuccess = rootProperty.GetProperty("success").GetBoolean();
+                //if (!isSuccess)
+                //{
+                //    return null;
+                //}
+                
+                //var dataProperty = rootProperty.GetProperty("data");
+                //var dataText = dataProperty.GetRawText();
 
-                var storeApp = JsonConvert.DeserializeObject<SteamStoreApp>(dataText);
+                var storeApp = JsonConvert.DeserializeObject<SteamStoreApp>(appInfo.ToString());
 
-                if (!loadDlc || !storeApp.Dlc.Any()) return storeApp;
-
-                foreach (var dlc in storeApp.Dlc)
-                {
-                    var dlcApp = GetAppInfo(dlc);
-                    storeApp.DlcInfo.Add(dlcApp);
-                }
-
+                //if (loadDlc && storeApp.Dlc.Any())
+                //{
+                //    foreach (var dlc in storeApp.Dlc)
+                //    {
+                //        var dlcApp = GetAppInfo(dlc);
+                //        storeApp.DlcInfo.Add(dlcApp);
+                //    }
+                //}
+                
                 // cache the app list
-                var appJson = JsonConvert.SerializeObject(storeApp);
-                CacheManager.CacheText(cacheKey, appJson);
+                CacheManager.CacheObject(cacheKey, storeApp);
 
                 return storeApp;
             }
             catch (ArgumentNullException) { throw; }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                log.Error(e);
 
-                throw e;
+                throw;
             }
         }
         

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SAM.WPF.Core.Extensions
+namespace SAM.WPF.Core
 {
     public enum GameInfoType
     {

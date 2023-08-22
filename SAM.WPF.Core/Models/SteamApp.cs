@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.API;
@@ -12,13 +13,13 @@ using SAM.WPF.Core.Extensions;
 namespace SAM.WPF.Core
 {
     [DebuggerDisplay("{Name} ({Id})")]
-    public class SteamApp
+    public class SteamApp : ViewModelBase
     {
 
         protected readonly ILog log = LogManager.GetLogger(nameof(SteamApp));
 
         //private bool _statsLoaded;
-
+        
         public uint Id { get; }
         public virtual string Name { get; set; }
         public GameInfoType GameInfoType { get; set; }
@@ -35,14 +36,18 @@ namespace SAM.WPF.Core
         {
             Id = supportedApp.Id;
             GameInfoType = supportedApp.GameInfoType;
+
+            Task.Run(Load).ConfigureAwait(false);
         }
 
-        protected SteamApp(uint id, GameInfoType type)
+        public SteamApp(uint id, GameInfoType type)
         {
             Id = id;
             GameInfoType = type;
 
-            Task.Run(Load).ConfigureAwait(false);
+            //Task.Run(Load).ConfigureAwait(false);
+            
+            Load();
         }
 
         public static SteamApp Create(SupportedApp supportedApp)
@@ -50,10 +55,10 @@ namespace SAM.WPF.Core
             return ViewModelSource.Create(() => new SteamApp(supportedApp));
         }
 
-        public static SteamApp Create(uint id, GameInfoType type)
-        {
-            return ViewModelSource.Create(() => new SteamApp(id, type));
-        }
+        //public static SteamApp Create(uint id, GameInfoType type)
+        //{
+        //    return ViewModelSource.Create(() => new SteamApp(id, type));
+        //}
 
         public void Load()
         {

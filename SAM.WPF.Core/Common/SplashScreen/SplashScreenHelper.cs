@@ -74,7 +74,7 @@ namespace SAM.WPF.Core.SplashScreen
 
             _splashWindow.Show();
 
-            System.Windows.Threading.Dispatcher.Run();
+            //System.Windows.Threading.Dispatcher.Run();
         }
 
     }

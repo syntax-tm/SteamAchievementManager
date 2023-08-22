@@ -2,12 +2,16 @@
 using System.Drawing;
 using System.IO;
 using System.IO.IsolatedStorage;
+using System.Reflection;
+using log4net;
 using Image = System.Drawing.Image;
 
 namespace SAM.WPF.Core
 {
     public class IsolatedStorageManager
     {
+
+        private static readonly ILog log = LogManager.GetLogger(nameof(IsolatedStorageManager));
         
         public static void SaveImage(string fileName, Image img, bool overwrite = true)
         {
@@ -15,14 +19,19 @@ namespace SAM.WPF.Core
 
             using var isoStorage = GetStore();
 
-            if (isoStorage.FileExists(fileName))
-            {
-                if (!overwrite) throw new ArgumentException(nameof(fileName));
-                isoStorage.DeleteFile(fileName);
-            }
+            //if (isoStorage.FileExists(fileName))
+            //{
+            //    if (!overwrite) throw new ArgumentException(nameof(fileName));
+            //    isoStorage.DeleteFile(fileName);
+            //}
 
             //using var file = isoStorage.CreateFile(fileName);
+
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, isoStorage);
+            img.Save(file, img.RawFormat);
             
+            //using var file = isoStorage.CreateFile(fileName);
+
             //IImageEncoder encoder;
 
             //var ext = Path.GetExtension(fileName);
@@ -55,13 +64,15 @@ namespace SAM.WPF.Core
 
             using var isoStorage = GetStore();
 
-            if (isoStorage.FileExists(fileName))
-            {
-                if (!overwrite) throw new ArgumentException(nameof(fileName));
-                isoStorage.DeleteFile(fileName);
-            }
+            //if (isoStorage.FileExists(fileName))
+            //{
+            //    if (!overwrite) throw new ArgumentException(nameof(fileName));
+            //    isoStorage.DeleteFile(fileName);
+            //}
 
-            using var file = isoStorage.CreateFile(fileName);
+            //using var file = isoStorage.CreateFile(fileName);
+
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, isoStorage);
             using var writer = new StreamWriter(file);
             writer.WriteLine(text);
         }
@@ -74,12 +85,16 @@ namespace SAM.WPF.Core
 
             if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
 
-            using var file = isoStorage.OpenFile(fileName, FileMode.Open, FileAccess.Read);
+            //using var file = isoStorage.OpenFile(fileName, FileMode.Open, FileAccess.Read);
             //using var reader = new StreamReader(file);
 
-            var bmp = new Bitmap(file); //Image.FromStream(file);
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.Open, FileAccess.Read, isoStorage);
 
-            return bmp;
+            var img = Image.FromStream(file);
+
+            //var bmp = new Bitmap(file); //Image.FromStream(file);
+
+            return img;
         }
 
         public static string GetTextFile(string fileName)
@@ -90,7 +105,7 @@ namespace SAM.WPF.Core
 
             if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
 
-            using var file = isoStorage.OpenFile(fileName, FileMode.Open);
+            using var file = isoStorage.OpenFile(fileName, FileMode.Open, FileAccess.Read);
             using var reader = new StreamReader(file);
 
             var fileText = reader.ReadToEnd();
@@ -133,11 +148,18 @@ namespace SAM.WPF.Core
 
         public static IsolatedStorageFile GetStore()
         {
-            var isoStorage = IsolatedStorageFile.GetStore(IsolatedStorageScope.User | IsolatedStorageScope.Domain | IsolatedStorageScope.Assembly, null, null);
+            var store = IsolatedStorageFile.GetMachineStoreForAssembly();
 
-            if (!isoStorage.DirectoryExists("apps")) isoStorage.CreateDirectory("apps");
+            //var path = isoStorage.GetType().GetField("m_RootDir", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(isoStorage).ToString();
 
-            return isoStorage;
+            var fi = store.GetType().GetField("_rootDirectory", BindingFlags.NonPublic | BindingFlags.Instance);
+            var path = (string) fi.GetValue(store);
+
+            log.Debug($"IsolatedStorageFile Path: '{path}'");
+
+            if (!store.DirectoryExists("apps")) store.CreateDirectory("apps");
+
+            return store;
         }
 
     }

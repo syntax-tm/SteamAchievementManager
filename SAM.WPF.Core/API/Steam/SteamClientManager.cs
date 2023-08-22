@@ -35,7 +35,7 @@ namespace SAM.WPF.Core.API.Steam
             {
                 if (IsInitialized)
                 {
-                    throw new InvalidOperationException($"Client is already initalized with app id '{AppId}'.");
+                    throw new InvalidOperationException($"Client is already initialized with app id '{AppId}'.");
                 }
 
                 Default.Initialize(appId);

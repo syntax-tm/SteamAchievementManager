@@ -110,7 +110,7 @@ namespace SAM.WPF.Core
                 AddGame(game);
 
                 if (_refreshQueue.Count % 5 == 0) ProgressUpdate();
-                if (_refreshQueue.Count % 10 == 0) CacheRefreshProgress();
+                //if (_refreshQueue.Count % 10 == 0) CacheRefreshProgress();
             }
         }
         
@@ -127,13 +127,11 @@ namespace SAM.WPF.Core
 
             if (type != GameInfoType.Normal && type != GameInfoType.Mod) return;
             if (_addedGames.Contains(app)) return;
-                
-            using var client = new Client();
-            client.Initialize(0);
+            
+            if (!SteamClientManager.Default.OwnsGame(app.Id)) return;
 
-            if (!client.OwnsGame(app.Id)) return;
+            var steamGame = new SteamApp(app.Id, type);
 
-            var steamGame = SteamApp.Create(app.Id, type);
             Items.Add(steamGame);
                 
             _addedGames.Add(app);
@@ -145,7 +143,7 @@ namespace SAM.WPF.Core
             JunkCount = Items.Count(g => g.GameInfoType == GameInfoType.Junk);
             DemoCount = Items.Count(g => g.GameInfoType == GameInfoType.Demo);
 
-            CacheLibrary();
+            //CacheLibrary();
         }
 
         private void LoadRefreshProgress()

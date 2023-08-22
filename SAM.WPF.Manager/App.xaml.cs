@@ -41,7 +41,7 @@ namespace SAM.WPF.Manager
 
                 ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
                 ThemeManager.Current.SyncTheme();
-                ThemeManager.Current.ChangeThemeColorScheme(this, "Red");
+                //ThemeManager.Current.ChangeThemeColorScheme(this, "Red");
 
                 SplashScreenHelper.Init();
                 SplashScreenHelper.Show("Loading game info...");
@@ -50,9 +50,7 @@ namespace SAM.WPF.Manager
 
                 var supportedApp = SAMLibraryHelper.GetApp(appId);
                 var appInfo = SteamApp.Create(supportedApp);
-
-                appInfo.Load();
-
+                
                 SplashScreenHelper.SetStatus(appInfo.Name);
 
                 var gameVm = SteamGameViewModel.Create(appInfo);

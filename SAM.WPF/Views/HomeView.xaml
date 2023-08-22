@@ -32,7 +32,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <library:LibraryDataGridView />
+        <library:LibraryItemsControlView />
         <StatusBar Grid.Row="1" BorderBrush="#878787" Background="#202020"
                    BorderThickness="0,1,0,0" Margin="-1,0,-1,-1"
                    Padding="2">
