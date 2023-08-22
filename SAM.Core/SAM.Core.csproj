@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <DefineConstants>TRACE;JETBRAINS_ANNOTATIONS</DefineConstants>
+    <DefineConstants>TRACE;JETBRAINS_ANNOTATIONS;DEBUG</DefineConstants>
     <WarningsAsErrors>;NU1605;NU1702</WarningsAsErrors>
   </PropertyGroup>
 

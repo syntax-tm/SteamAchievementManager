@@ -66,7 +66,7 @@ namespace SAM.Manager
                 SteamClientManager.Init(appId);
 
                 var supportedApp = SAMLibraryHelper.GetApp(appId);
-                var appInfo = new SteamApp(supportedApp);
+                var appInfo = SteamApp.Create(supportedApp);
                 
                 appInfo.LoadClientInfo();
 

@@ -39,7 +39,6 @@ namespace SAM.Core
             get => GetProperty(() => SupportedGamesCount);
             set => SetProperty(() => SupportedGamesCount, value);
         }
-
         public int TotalCount
         {
             get => GetProperty(() => TotalCount);
@@ -81,7 +80,7 @@ namespace SAM.Core
             set => SetProperty(() => IsLoading, value);
         }
         
-        public ObservableCollection<SteamApp> Items { get; private set; }
+        public ObservableCollection<SteamApp> Items { get; }
 
         public SteamLibrary()
         {
@@ -194,7 +193,7 @@ namespace SAM.Core
 
                 if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;
 
-                var steamGame = new SteamApp(app.Id, type);
+                var steamGame = SteamApp.Create(app.Id, type);
 
                 Items.Add(steamGame);
 

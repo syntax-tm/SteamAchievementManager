@@ -33,10 +33,7 @@ namespace SAM.Core
             Type = type;
         }
 
-        public SupportedApp(KeyValuePair<uint, string> kvPair)
-        {
-            (Id, Type) = kvPair;
-        }
+        public SupportedApp(KeyValuePair<uint, string> kvPair) => (Id, Type) = kvPair;
 
         public override string ToString()
         {

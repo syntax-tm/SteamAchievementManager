@@ -5,6 +5,7 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
                  xmlns:views="clr-namespace:SAM.Views"
+                 xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  xmlns:sam="urn:sam"
                  xmlns:vm="clr-namespace:SAM.ViewModels"
@@ -12,6 +13,7 @@
                  d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
                  DataContext="{dxmvvm:ViewModelSource Type={x:Type vm:MainWindowViewModel}}"
                  Title="{Binding Title, Mode=OneWay}"
+                 Icon="{iconPacks:FontAwesomeImage SteamSymbolBrands, Brush=White}"
                  Style="{StaticResource ChromeMetroWindowStyle}">
 
     <dxmvvm:Interaction.Behaviors>

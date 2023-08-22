@@ -17,17 +17,12 @@ namespace SAM.Core
     public class SteamApp : ViewModelBase
     {
         protected readonly ILog log = LogManager.GetLogger(nameof(SteamApp));
-        
-        private bool _statsLoaded;
+
         private Process _managerProcess;
 
         public uint Id { get; }
 
-        public virtual string Name
-        {
-            get => GetProperty(() => Name);
-            set => SetProperty(() => Name, value);
-        }
+        public virtual string Name { get; set; }
         public virtual GameInfoType GameInfoType { get; set; }
         public bool IsJunk => GameInfoType == GameInfoType.Junk;
         public bool IsDemo => GameInfoType == GameInfoType.Demo;
@@ -44,7 +39,7 @@ namespace SAM.Core
         public virtual Image Capsule { get; set; }
         public virtual string Group { get; set; }
 
-        public SteamApp(uint id, GameInfoType type)
+        protected SteamApp(uint id, GameInfoType type)
         {
             Id = id;
             GameInfoType = type;
@@ -52,7 +47,7 @@ namespace SAM.Core
             Load();
         }
         
-        public SteamApp(SupportedApp supportedApp) 
+        protected SteamApp(SupportedApp supportedApp) 
             : this(supportedApp.Id, supportedApp.GameInfoType)
         {
         }
