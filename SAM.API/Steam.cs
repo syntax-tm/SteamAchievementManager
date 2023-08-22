@@ -8,21 +8,13 @@ namespace SAM.API
     public static class Steam
     {
         private static string _installPath;
+        
+        private static nint _handle = nint.Zero;
+        private static NativeCreateInterface _callCreateInterface;
+        private static NativeSteamGetCallback _callSteamBGetCallback;
+        private static NativeSteamFreeLastCallback _callSteamFreeLastCallback;
 
-#if BUILD_X86
-        private const string STEAM_CLIENT_DLL = @"steamclient.dll";
-#elif BUILD_X64
-        private const string STEAM_CLIENT_DLL = @"steamclient64.dll";
-#elif BUILD_ANYCPU
-        private const string STEAM_CLIENT_DLL = @"steamclient.dll";
-#else
-#error Unsupported platform. Target either x86 for 32-bit or x64 for 64-bit.
-#endif
-
-        private static nint _Handle = nint.Zero;
-        private static NativeCreateInterface _CallCreateInterface;
-        private static NativeSteamGetCallback _CallSteamBGetCallback;
-        private static NativeSteamFreeLastCallback _CallSteamFreeLastCallback;
+        private static string SteamClientDll => Environment.Is64BitProcess ? @"steamclient64.dll" : @"steamclient.dll";
 
         private static Delegate GetExportDelegate<TDelegate>(nint module, string name)
         {
@@ -34,8 +26,6 @@ namespace SAM.API
             where TDelegate : class
         {
             return GetExportDelegate<TDelegate>(module, name) as TDelegate;
-
-            //return (TDelegate)((object)GetExportDelegate<TDelegate>(module, name));
         }
 
         public static string GetInstallPath()
@@ -55,7 +45,7 @@ namespace SAM.API
         public static TClass CreateInterface<TClass>(string version)
             where TClass : INativeWrapper, new()
         {
-            var address = _CallCreateInterface(version, nint.Zero);
+            var address = _callCreateInterface(version, nint.Zero);
 
             if (address == nint.Zero) return default;
 
@@ -66,41 +56,41 @@ namespace SAM.API
 
         public static bool GetCallback(int pipe, out CallbackMessage message, out int call)
         {
-            return _CallSteamBGetCallback(pipe, out message, out call);
+            return _callSteamBGetCallback(pipe, out message, out call);
         }
 
         public static bool FreeLastCallback(int pipe)
         {
-            return _CallSteamFreeLastCallback(pipe);
+            return _callSteamFreeLastCallback(pipe);
         }
 
         public static bool Load()
         {
-            if (_Handle != nint.Zero)
+            if (_handle != nint.Zero)
             {
-                Native.FreeLibrary(_Handle);
-                _Handle = nint.Zero;
+                Native.FreeLibrary(_handle);
+                _handle = nint.Zero;
             }
 
             var path = GetInstallPath();
             if (path == null) return false;
 
             Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
-            path = Path.Combine(path, STEAM_CLIENT_DLL);
+            path = Path.Combine(path, SteamClientDll);
 
             var module = Native.LoadLibraryEx(path, nint.Zero, Native.LoadWithAlteredSearchPath);
             if (module == nint.Zero) return false;
 
-            _CallCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
-            if (_CallCreateInterface == null) return false;
+            _callCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
+            if (_callCreateInterface == null) return false;
 
-            _CallSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
-            if (_CallSteamBGetCallback == null) return false;
+            _callSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
+            if (_callSteamBGetCallback == null) return false;
 
-            _CallSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
-            if (_CallSteamFreeLastCallback == null) return false;
+            _callSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
+            if (_callSteamFreeLastCallback == null) return false;
 
-            _Handle = module;
+            _handle = module;
             return true;
         }
 
