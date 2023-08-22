@@ -7,6 +7,7 @@ namespace SAM.API
         public readonly ClientInitFailure Failure;
 
         public ClientInitializeException(ClientInitFailure failure)
+            : base (failure.GetDescription())
         {
             Failure = failure;
         }

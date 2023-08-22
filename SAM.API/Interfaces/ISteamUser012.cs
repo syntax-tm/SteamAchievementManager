@@ -6,21 +6,21 @@ namespace SAM.API
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct ISteamUser012
     {
-        public IntPtr GetHSteamUser;
-        public IntPtr LoggedOn;
-        public IntPtr GetSteamID;
-        public IntPtr InitiateGameConnection;
-        public IntPtr TerminateGameConnection;
-        public IntPtr TrackAppUsageEvent;
-        public IntPtr GetUserDataFolder;
-        public IntPtr StartVoiceRecording;
-        public IntPtr StopVoiceRecording;
-        public IntPtr GetCompressedVoice;
-        public IntPtr DecompressVoice;
-        public IntPtr GetAuthSessionTicket;
-        public IntPtr BeginAuthSession;
-        public IntPtr EndAuthSession;
-        public IntPtr CancelAuthTicket;
-        public IntPtr UserHasLicenseForApp;
+        public nint GetHSteamUser;
+        public nint LoggedOn;
+        public nint GetSteamID;
+        public nint InitiateGameConnection;
+        public nint TerminateGameConnection;
+        public nint TrackAppUsageEvent;
+        public nint GetUserDataFolder;
+        public nint StartVoiceRecording;
+        public nint StopVoiceRecording;
+        public nint GetCompressedVoice;
+        public nint DecompressVoice;
+        public nint GetAuthSessionTicket;
+        public nint BeginAuthSession;
+        public nint EndAuthSession;
+        public nint CancelAuthTicket;
+        public nint UserHasLicenseForApp;
     }
 }

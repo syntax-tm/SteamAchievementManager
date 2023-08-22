@@ -54,7 +54,7 @@ namespace SAM.API.Wrappers
 #region CreateSteamPipe
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeCreateSteamPipe(IntPtr self);
+        private delegate int NativeCreateSteamPipe(nint self);
 
         public int CreateSteamPipe()
         {
@@ -67,7 +67,7 @@ namespace SAM.API.Wrappers
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeReleaseSteamPipe(IntPtr self, int pipe);
+        private delegate bool NativeReleaseSteamPipe(nint self, int pipe);
 
         public bool ReleaseSteamPipe(int pipe)
         {
@@ -80,7 +80,7 @@ namespace SAM.API.Wrappers
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeShutdownIfAllPipesClosed(IntPtr self);
+        private delegate bool NativeShutdownIfAllPipesClosed(nint self);
 
         public bool ShutdownIfAllPipesClosed()
         {
@@ -92,7 +92,7 @@ namespace SAM.API.Wrappers
 #region CreateLocalUser
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeCreateLocalUser(IntPtr self, ref int pipe, AccountType type);
+        private delegate int NativeCreateLocalUser(nint self, ref int pipe, AccountType type);
 
         public int CreateLocalUser(ref int pipe, AccountType type)
         {
@@ -105,7 +105,7 @@ namespace SAM.API.Wrappers
 #region ConnectToGlobalUser
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeConnectToGlobalUser(IntPtr self, int pipe);
+        private delegate int NativeConnectToGlobalUser(nint self, int pipe);
 
         public int ConnectToGlobalUser(int pipe)
         {
@@ -120,7 +120,7 @@ namespace SAM.API.Wrappers
 #region ReleaseUser
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void NativeReleaseUser(IntPtr self, int pipe, int user);
+        private delegate void NativeReleaseUser(nint self, int pipe, int user);
 
         public void ReleaseUser(int pipe, int user)
         {
@@ -132,7 +132,7 @@ namespace SAM.API.Wrappers
 #region SetLocalIPBinding
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate void NativeSetLocalIPBinding(IntPtr self, uint host, ushort port);
+        private delegate void NativeSetLocalIPBinding(nint self, uint host, ushort port);
 
         public void SetLocalIPBinding(uint host, ushort port)
         {
@@ -144,14 +144,14 @@ namespace SAM.API.Wrappers
 #region GetISteamUser
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetISteamUser(IntPtr self, int user, int pipe, IntPtr version);
+        private delegate nint NativeGetISteamUser(nint self, int user, int pipe, nint version);
 
         private TClass GetISteamUser<TClass>(int user, int pipe, string version)
             where TClass : INativeWrapper, new()
         {
             using var nativeVersion = NativeStrings.StringToStringHandle(version);
 
-            var address = Call<IntPtr, NativeGetISteamUser>(
+            var address = Call<nint, NativeGetISteamUser>(
                 Functions.GetISteamUser,
                 ObjectAddress,
                 user,
@@ -167,14 +167,14 @@ namespace SAM.API.Wrappers
 #region GetISteamUserStats
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetISteamUserStats(IntPtr self, int user, int pipe, IntPtr version);
+        private delegate nint NativeGetISteamUserStats(nint self, int user, int pipe, nint version);
 
         private TClass GetISteamUserStats<TClass>(int user, int pipe, string version)
             where TClass : INativeWrapper, new()
         {
             using var nativeVersion = NativeStrings.StringToStringHandle(version);
 
-            var address = Call<IntPtr, NativeGetISteamUserStats>(
+            var address = Call<nint, NativeGetISteamUserStats>(
                 Functions.GetISteamUserStats,
                 ObjectAddress,
                 user,
@@ -190,14 +190,14 @@ namespace SAM.API.Wrappers
 #region GetISteamUtils
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetISteamUtils(IntPtr self, int pipe, IntPtr version);
+        private delegate nint NativeGetISteamUtils(nint self, int pipe, nint version);
 
         public TClass GetISteamUtils<TClass>(int pipe, string version)
             where TClass : INativeWrapper, new()
         {
             using var nativeVersion = NativeStrings.StringToStringHandle(version);
 
-            var address = Call<IntPtr, NativeGetISteamUtils>(
+            var address = Call<nint, NativeGetISteamUtils>(
                 Functions.GetISteamUtils,
                 ObjectAddress,
                 pipe,
@@ -211,14 +211,14 @@ namespace SAM.API.Wrappers
 
 #region GetISteamApps
 
-        private delegate IntPtr NativeGetISteamApps(int user, int pipe, IntPtr version);
+        private delegate nint NativeGetISteamApps(int user, int pipe, nint version);
 
         private TClass GetISteamApps<TClass>(int user, int pipe, string version)
             where TClass : INativeWrapper, new()
         {
             using var nativeVersion = NativeStrings.StringToStringHandle(version);
 
-            var address = Call<IntPtr, NativeGetISteamApps>(
+            var address = Call<nint, NativeGetISteamApps>(
                 Functions.GetISteamApps,
                 user,
                 pipe,

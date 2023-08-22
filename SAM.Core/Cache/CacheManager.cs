@@ -66,6 +66,29 @@ namespace SAM.Core
 
             return IsolatedStorageManager.GetImageFile(filePath);
         }
+        
+        public static bool TryPopulateObject<T>(ICacheKey key, T target)
+        {
+            var filePath = key?.GetFullPath();
+
+            ArgumentException.ThrowIfNullOrEmpty(filePath);
+            
+            using var isoStorage = IsolatedStorageManager.GetStore();
+
+            if (!IsolatedStorageManager.FileExists(filePath))
+            {
+                return false;
+            }
+            
+            using var file =  new IsolatedStorageFileStream(filePath, FileMode.Open, FileAccess.ReadWrite, isoStorage);
+            using var reader = new StreamReader(file);
+
+            var fileText = reader.ReadToEnd();
+
+            JsonConvert.PopulateObject(fileText, target);
+
+            return true;
+        }
 
         public static bool TryGetObject<T>(ICacheKey key, out T cachedObject)
         {
@@ -90,8 +113,7 @@ namespace SAM.Core
 
             return true;
         }
-
-
+        
         public static bool TryGetTextFile(ICacheKey key, out string fileText)
         {
             var filePath = key?.GetFullPath();

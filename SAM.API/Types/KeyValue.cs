@@ -7,7 +7,7 @@ namespace SAM.API.Types
 {
     public class KeyValue
     {
-        private static readonly KeyValue _Invalid = new();
+        private static readonly KeyValue _invalid = new();
 
         public List<KeyValue> Children;
         public string Name = @"<root>";
@@ -21,9 +21,7 @@ namespace SAM.API.Types
             {
                 var child = Children?.SingleOrDefault(c => string.Compare(c.Name, key, StringComparison.InvariantCultureIgnoreCase) == 0);
 
-                if (child == null) return _Invalid;
-
-                return child;
+                return child ?? _invalid;
             }
         }
 
@@ -106,77 +104,60 @@ namespace SAM.API.Types
 
         public bool ReadAsBinary(Stream input)
         {
-            Children = new List<KeyValue>();
+            Children = new ();
 
             try
             {
-                while (true)
-                {
-                    var type = (KeyValueType)input.ReadValueU8();
-                    if (type == KeyValueType.End) break;
+                var type = input.ReadKeyValueType();
 
+                while (type != KeyValueType.End)
+                {
                     var current = new KeyValue
                     {
                         Type = type,
                         Name = input.ReadStringUnicode()
                     };
 
+                    // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
                     switch (type)
                     {
                         case KeyValueType.None:
-                        {
                             current.ReadAsBinary(input);
                             break;
-                        }
                         case KeyValueType.String:
-                        {
                             current.Valid = true;
                             current.Value = input.ReadStringUnicode();
                             break;
-                        }
                         case KeyValueType.WideString:
-                        {
                             throw new FormatException($"{nameof(KeyValueType.WideString)} is unsupported");
-                        }
                         case KeyValueType.Int32:
-                        {
                             current.Valid = true;
                             current.Value = input.ReadValueS32();
                             break;
-                        }
                         case KeyValueType.UInt64:
-                        {
                             current.Valid = true;
                             current.Value = input.ReadValueU64();
                             break;
-                        }
                         case KeyValueType.Float32:
-                        {
                             current.Valid = true;
                             current.Value = input.ReadValueF32();
                             break;
-                        }
                         case KeyValueType.Color:
-                        {
                             current.Valid = true;
                             current.Value = input.ReadValueU32();
                             break;
-                        }
                         case KeyValueType.Pointer:
-                        {
                             current.Valid = true;
                             current.Value = input.ReadValueU32();
                             break;
-                        }
-                        default:
-                        {
-                            throw new FormatException();
-                        }
+                        default: throw new FormatException();
                     }
 
                     if (input.Position >= input.Length) throw new FormatException();
 
                     Children.Add(current);
+
+                    type = input.ReadKeyValueType();
                 }
 
                 Valid = true;

@@ -14,15 +14,20 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
-        <sam:GroupStyleSelector x:Key="CustomGroupStyleSelector" 
-                                NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
-                                DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />
-        
-        <Style TargetType="{x:Type Separator}">
-            <Setter Property="Opacity" Value="0.4" />
-            <Setter Property="Margin" Value="0,-2,0,-2" />
-        </Style>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Assets/StaticColors.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!--<sam:GroupStyleSelector x:Key="CustomGroupStyleSelector" 
+                                    NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
+                                    DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />-->
+            <!--<Style TargetType="{x:Type Separator}">
+                <Setter Property="Opacity" Value="0.4" />
+                <Setter Property="Margin" Value="0,-2,0,-2" />
+            </Style>-->
+            <SolidColorBrush x:Key="AccentSemiTransparentBrush" Color="{StaticResource SystemAccentColorPrimary}" Opacity="0.75" />
+            <SolidColorBrush x:Key="AccentTransparentBrush" Color="{StaticResource SystemAccentColorPrimary}" Opacity="0.5" />
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
@@ -30,40 +35,48 @@
                                       HorizontalContentAlignment="Center">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="True" VirtualizationMode="Recycling"
+                    <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="False" VirtualizationMode="Recycling"
                                               IsVirtualizing="True" />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
+            <ui:VirtualizingItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Control.MaxHeight" Value="100" />
+                </Style>
+            </ui:VirtualizingItemsControl.ItemContainerStyle>
             <ui:VirtualizingItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type sam:SteamApp}">
                     <Grid>
                         <ui:Button Padding="0">
+                            <ui:Button.Resources>
+                                <sam:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
+                            </ui:Button.Resources>
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}">
                                     <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="Margin" Value="3" />
                                     <Setter Property="ToolTip" Value="{Binding Name}" />
-                                    <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                                    <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+                                    <Setter Property="BorderThickness" Value="3" />
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="BorderBrush" Value="DodgerBlue" />
-                                            <Setter Property="Foreground" Value="#1B1B1B" />
-                                            <Setter Property="BorderThickness" Value="3" />
-                                            <Setter Property="Margin" Value="0" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource AccentSemiTransparentBrush}" />
                                         </Trigger>
                                         <Trigger Property="IsPressed" Value="True">
-                                            <Setter Property="BorderBrush" Value="DodgerBlue" />
-                                            <Setter Property="Opacity" Value="0.5" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource AccentTransparentBrush}" />
                                         </Trigger>
+                                        <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource AccentTransparentBrush}" />
+                                        </DataTrigger>
                                         <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
-                                            <Setter Property="Background" Value="DodgerBlue" />
-                                            <Setter Property="ToolTip" Value="{x:Null}" />
+                                            <Setter Property="Background" Value="{StaticResource SystemAccentColorPrimary}" />
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </ui:Button.Style>
                             <ui:Button.ContextMenu>
-                                <ContextMenu>
+                                <ContextMenu IsOpen="{Binding Data, Source={StaticResource BindingProxy}, Mode=OneWayToSource}">
+                                    <!-- ReSharper disable Xaml.RedundantResource -->
                                     <ui:MenuItem Header="{Binding Name}" IsEnabled="False" Margin="0,5,0,0">
                                         <ui:MenuItem.HeaderTemplate>
                                             <DataTemplate>
@@ -118,15 +131,30 @@
                                     <Separator />
                                     <ui:MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}"
                                                  SymbolIcon="Copy20" />
+                                    <!-- ReSharper restore Xaml.RedundantResource -->
                                 </ContextMenu>
                             </ui:Button.ContextMenu>
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
                             </dxmvvm:Interaction.Behaviors>
                             <Grid>
-                                <Viewbox Stretch="Fill" StretchDirection="Both">
-                                    <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}" Height="80" />
-                                </Viewbox>
+                                <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.25" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.75" />
+                                                </DataTrigger>
+                                                <!--<DataTrigger Binding="{Binding ContextMenu.IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
+                                                        <Setter Property="Opacity" Value="0.25" />
+                                                    </DataTrigger>-->
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
                                 <TextBlock Text="{Binding Name}" 
                                            FontSize="30" TextAlignment="Center" Margin="10" TextWrapping="Wrap">
                                     <TextBlock.Style>

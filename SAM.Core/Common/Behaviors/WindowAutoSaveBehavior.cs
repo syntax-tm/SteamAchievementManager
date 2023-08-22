@@ -5,10 +5,11 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.UI.Interactivity;
 using log4net;
 using Newtonsoft.Json;
+using Wpf.Ui.Controls;
 
 namespace SAM.Core.Behaviors
 {
-    public class WindowAutoSaveBehavior : Behavior<Window>
+    public class WindowAutoSaveBehavior : Behavior<UiWindow>
     {
         public static readonly DependencyProperty ConfigProperty = DependencyProperty.Register(nameof(Config), typeof(WindowSettings), typeof(WindowAutoSaveBehavior), new (OnConfigPropertyChanged));
 

@@ -1,4 +1,6 @@
-﻿namespace SAM.API.Stats
+﻿using System;
+
+namespace SAM.API.Stats
 {
     public abstract class StatInfo
     {
@@ -8,6 +10,8 @@
         public abstract object Value { get; set; }
         public bool IsIncrementOnly { get; set; }
         public int Permission { get; set; }
+
+        //public bool IsProtected => Enum.
 
         public string Extra
         {

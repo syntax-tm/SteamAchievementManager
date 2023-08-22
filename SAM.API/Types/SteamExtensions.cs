@@ -8,11 +8,11 @@ namespace SAM.API.Types
 {
     public static class SteamExtensions
     {
-        public static byte ReadValueU8(this Stream stream)
+        public static KeyValueType ReadKeyValueType(this Stream stream)
         {
-            return (byte)stream.ReadByte();
+            return (KeyValueType) stream.ReadByte();
         }
-
+        
         public static int ReadValueS32(this Stream stream)
         {
             var data = new byte[4];
@@ -48,7 +48,7 @@ namespace SAM.API.Types
         public static string ReadStringInternalDynamic(this Stream stream, Encoding encoding, char end)
         {
             var characterSize = encoding.GetByteCount("e");
-            Debug.Assert(characterSize == 1 || characterSize == 2 || characterSize == 4);
+            Debug.Assert(characterSize is 1 or 2 or 4);
             var characterEnd = end.ToString(CultureInfo.InvariantCulture);
 
             var i = 0;
@@ -66,7 +66,7 @@ namespace SAM.API.Types
                 i += characterSize;
             }
 
-            return i == 0 ? "" : encoding.GetString(data, 0, i);
+            return i == 0 ? string.Empty : encoding.GetString(data, 0, i);
         }
 
         public static string ReadStringAscii(this Stream stream)

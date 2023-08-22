@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using SAM.API.Types;
 using SAM.API.Wrappers;
 
 namespace SAM.API
 {
     public class Client : IDisposable
     {
-        private readonly List<ICallback> _Callbacks = new();
+        private readonly List<ICallback> _callbacks = new();
 
         private bool _isDisposed;
         private int _pipe;
 
-        private bool _RunningCallbacks;
+        private bool _runningCallbacks;
         private int _user;
         public SteamApps001 SteamApps001;
         public SteamApps008 SteamApps008;
@@ -25,7 +24,7 @@ namespace SAM.API
 
         public void Initialize(long appId)
         {
-            if (string.IsNullOrEmpty(Steam.GetInstallPath())) throw new ClientInitializeException(ClientInitFailure.GetInstallPath, "failed to get Steam install path");
+            if (string.IsNullOrEmpty(Steam.GetInstallPath())) throw new ClientInitializeException(ClientInitFailure.GetInstallPath);
 
             if (appId != 0) Environment.SetEnvironmentVariable(@"SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
 
@@ -98,21 +97,21 @@ namespace SAM.API
             where TCallback : ICallback, new()
         {
             var callback = new TCallback();
-            _Callbacks.Add(callback);
+            _callbacks.Add(callback);
             return callback;
         }
 
         public void RunCallbacks(bool server)
         {
-            if (_RunningCallbacks) return;
+            if (_runningCallbacks) return;
 
-            _RunningCallbacks = true;
+            _runningCallbacks = true;
 
             while (Steam.GetCallback(_pipe, out var message, out _))
             {
                 var callbackId = message.Id;
 
-                foreach (var callback in _Callbacks.Where(
+                foreach (var callback in _callbacks.Where(
                     candidate => candidate.Id == callbackId &&
                         candidate.IsServer == server))
                 {
@@ -122,7 +121,7 @@ namespace SAM.API
                 Steam.FreeLastCallback(_pipe);
             }
 
-            _RunningCallbacks = false;
+            _runningCallbacks = false;
         }
     }
 }

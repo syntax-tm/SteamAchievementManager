@@ -9,7 +9,7 @@ namespace SAM.API.Wrappers
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeIsSubscribedApp(IntPtr self, uint gameId);
+        private delegate bool NativeIsSubscribedApp(nint self, uint gameId);
 
         public bool IsSubscribedApp(uint gameId)
         {
@@ -21,11 +21,11 @@ namespace SAM.API.Wrappers
 #region GetCurrentGameLanguage
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate IntPtr NativeGetCurrentGameLanguage(IntPtr self);
+        private delegate nint NativeGetCurrentGameLanguage(nint self);
 
         public string GetCurrentGameLanguage()
         {
-            var languagePointer = Call<IntPtr, NativeGetCurrentGameLanguage>(
+            var languagePointer = Call<nint, NativeGetCurrentGameLanguage>(
                 Functions.GetCurrentGameLanguage,
                 ObjectAddress);
             return NativeStrings.PointerToString(languagePointer);

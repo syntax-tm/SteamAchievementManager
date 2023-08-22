@@ -6,6 +6,6 @@ namespace SAM.API
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct ISteamApps001
     {
-        public IntPtr GetAppData;
+        public nint GetAppData;
     }
 }

@@ -4,18 +4,14 @@ namespace SAM.API.Stats
 {
     public class AchievementDefinition
     {
-        public string Description;
-        public string IconLocked;
-        public string IconNormal;
-        public string Id;
-        public bool IsHidden;
-        public string Name;
-        public int Permission;
-
-        public AchievementDefinition()
-        {
-        }
-
+        public readonly string Description;
+        public readonly string IconLocked;
+        public readonly string IconNormal;
+        public readonly string Id;
+        public readonly bool IsHidden;
+        public readonly string Name;
+        public readonly int Permission;
+        
         public AchievementDefinition(KeyValue bit, string currentLanguage)
         {
             Id = bit[@"name"].AsString();
