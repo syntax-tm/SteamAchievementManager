@@ -17,7 +17,7 @@ namespace SAM.Core
 
         public bool CanExecute(object parameter)
         {
-            var canExecute = this.CanExecuteDelegate;
+            var canExecute = CanExecuteDelegate;
             return canExecute == null || canExecute(parameter);
         }
 
@@ -29,7 +29,7 @@ namespace SAM.Core
 
         public void Execute(object parameter)
         {
-            this.ExecuteDelegate?.Invoke(parameter);
+            ExecuteDelegate?.Invoke(parameter);
         }
     }
 }

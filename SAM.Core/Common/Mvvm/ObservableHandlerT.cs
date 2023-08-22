@@ -11,8 +11,8 @@ namespace SAM.Core
         where T : class, INotifyPropertyChanged
     {
         private readonly WeakReference<T> m_source;
-        private readonly Dictionary<string, Action> m_handlers = new Dictionary<string, Action>();
-        private readonly Dictionary<string, Action<T>> m_handlersT = new Dictionary<string, Action<T>>();
+        private readonly Dictionary<string, Action> m_handlers = new ();
+        private readonly Dictionary<string, Action<T>> m_handlersT = new ();
 
         public ObservableHandler([NotNull] T source)
         {
@@ -21,7 +21,7 @@ namespace SAM.Core
                 throw new ArgumentNullException(nameof(source));
             }
 
-            m_source = new WeakReference<T>(source);
+            m_source = new (source);
         }
         
         [NotNull]
