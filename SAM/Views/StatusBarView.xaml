@@ -13,42 +13,52 @@
 
     <UserControl.Resources>
         <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
+        <Style TargetType="{x:Type StatusBarItem}">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Opacity" Value="0.7" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="1" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
-        <fluent:StatusBar>
-            <fluent:StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"
+        <StatusBar Height="40" Padding="10,0">
+            <StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"
                                   Visibility="{Binding Library.TotalCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=GamesStatusBarItem, Path=Visibility}" />
-            <fluent:StatusBarItem x:Name="GamesStatusBarItem" Content="{Binding Library.GamesCount, Mode=OneWay}" ContentStringFormat="{}{0} Games"
+            <StatusBarItem x:Name="GamesStatusBarItem" Content="{Binding Library.GamesCount, Mode=OneWay}" ContentStringFormat="{}{0} Games"
                                   Visibility="{Binding Library.GamesCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=ModsStatusBarItem, Path=Visibility}" />
-            <fluent:StatusBarItem x:Name="ModsStatusBarItem"
-                                  Value="{Binding Library.ModCount, Mode=OneWay}"
+            <StatusBarItem x:Name="ModsStatusBarItem"
+                           Content="{Binding Library.ModCount, Mode=OneWay}"
                                   ContentStringFormat="{}{0} Mods"
                                   Visibility="{Binding Library.ModCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=ToolsStatusBarItem, Path=Visibility}" />
-            <fluent:StatusBarItem x:Name="ToolsStatusBarItem"
-                                  Value="{Binding Library.ToolCount, Mode=OneWay}"
+            <StatusBarItem x:Name="ToolsStatusBarItem"
+                           Content="{Binding Library.ToolCount, Mode=OneWay}"
                                   ContentStringFormat="{}{0} Tools"
                                   Visibility="{Binding Library.ToolCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=DemosStatusBarItem, Path=Visibility}" />
-            <fluent:StatusBarItem x:Name="DemosStatusBarItem"
-                                  Value="{Binding Library.DemoCount, Mode=OneWay}"
+            <StatusBarItem x:Name="DemosStatusBarItem"
+                           Content="{Binding Library.DemoCount, Mode=OneWay}"
                                   ContentStringFormat="{}{0} Demos"
                                   Visibility="{Binding Library.DemoCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding Library.JunkCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
-            <fluent:StatusBarItem Content="{Binding Library.JunkCount, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
+            <StatusBarItem Content="{Binding Library.JunkCount, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
                            Visibility="{Binding Library.JunkCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
-            <fluent:StatusBarItem HorizontalAlignment="Right"
-                                  Value="{Binding Library.PercentComplete, Mode=OneWay, Converter={StaticResource PercentFormatConverter}}"
+            <StatusBarItem HorizontalAlignment="Right"
+                                  Content="{Binding Library.PercentComplete, Mode=OneWay, Converter={StaticResource PercentFormatConverter}}"
                                   ContentStringFormat="{}Loading... {0}"
                                   Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
-        </fluent:StatusBar>
+        </StatusBar>
     </Grid>
 </UserControl>
