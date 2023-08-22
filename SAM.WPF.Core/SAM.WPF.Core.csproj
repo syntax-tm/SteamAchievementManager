@@ -73,6 +73,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="API\Native\" />
     <Folder Include="Common\Behaviors\" />
   </ItemGroup>
 

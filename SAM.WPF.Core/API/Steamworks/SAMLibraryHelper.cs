@@ -7,7 +7,7 @@ using System.Net;
 using System.Xml.XPath;
 using log4net;
 
-namespace SAM.WPF.Core.API.Steam
+namespace SAM.WPF.Core.API
 {
     public static class SAMLibraryHelper
     {

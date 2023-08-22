@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SAM.WPF.Core.API.Steam
+namespace SAM.WPF.Core.API
 {
     public class PcRequirements
     {

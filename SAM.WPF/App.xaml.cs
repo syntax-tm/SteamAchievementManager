@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using FontAwesome.WPF;
 using log4net;
 using SAM.WPF.Core;
+using SAM.WPF.Core.API;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.SplashScreen;
 using SAM.WPF.Core.Themes;

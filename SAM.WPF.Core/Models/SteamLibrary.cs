@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Data;
 using DevExpress.Mvvm;
 using log4net;
+using SAM.WPF.Core.API;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Cache;
 using SAM.WPF.Core.Extensions;

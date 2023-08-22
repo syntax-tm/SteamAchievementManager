@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using log4net;
 using SAM.WPF.Core;
+using SAM.WPF.Core.API;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Extensions;
 using SAM.WPF.Core.SplashScreen;
