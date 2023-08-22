@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+                    xmlns:converters="clr-namespace:SAM.WPF.Core.Converters">
+    
+    <converters:BitmapToImageSourceConverter x:Key="BitmapToImageSourceConverter" />
+
+    <dxmvvm:EnumToStringConverter x:Key="EnumToStringConverter" />
+
+    <dxmvvm:NumericToBooleanConverter x:Key="NumericToBoolConverter" />
+    <dxmvvm:NumericToBooleanConverter x:Key="InverseNumericToBoolConverter" Inverse="True" />
+
+    <dxmvvm:NumericToVisibilityConverter x:Key="NumericToVisConverter" />
+    <dxmvvm:NumericToVisibilityConverter x:Key="InverseNumericToVisConverter" Inverse="True" />
+
+    <dxmvvm:BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    <dxmvvm:BooleanToVisibilityConverter x:Key="InverseBoolToVisConverter" Inverse="True" />
+
+    <dxmvvm:BooleanNegationConverter x:Key="BooleanNegationConverter" />
+
+</ResourceDictionary>

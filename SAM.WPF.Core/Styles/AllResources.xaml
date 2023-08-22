@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Converters.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/ContainerStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/DataGridStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/WindowStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

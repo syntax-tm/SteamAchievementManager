@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="SAM.WPF.Views.Library.LibraryGridView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
+             xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <ListView ItemsSource="{Binding Games, Mode=OneWay}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type models:SteamApp}">
+                                <Grid Margin="0">
+                                    <Image Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}"
+                                           Margin="0" />
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="100" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Developer" DisplayMemberBinding="{Binding Developer}" />
+                    <GridViewColumn Header="Publisher" DisplayMemberBinding="{Binding Publisher}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>

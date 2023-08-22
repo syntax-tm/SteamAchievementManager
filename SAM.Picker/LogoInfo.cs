@@ -24,7 +24,7 @@ using System.Drawing;
 
 namespace SAM.Picker
 {
-    internal class LogoInfo
+    public class LogoInfo
     {
         public readonly uint Id;
         public readonly Bitmap Bitmap;
