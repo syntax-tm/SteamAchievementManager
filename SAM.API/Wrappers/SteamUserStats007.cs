@@ -89,6 +89,22 @@ namespace SAM.API.Wrappers
         }
 
 #endregion
+        
+#region UpdateAvgRateStat
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private delegate bool NativeUpdateAvgRateStat(nint self, nint name, double sessionLength, out float data);
+
+        public bool UpdateAvgRateStat(string name, double sessionLength, out float value)
+        {
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            var call = GetFunction<NativeUpdateAvgRateStat>(Functions.UpdateAvgRateStat);
+            return call(ObjectAddress, nativeName.Handle, sessionLength, out value);
+        }
+
+#endregion
 
 #region GetAchievement
 
