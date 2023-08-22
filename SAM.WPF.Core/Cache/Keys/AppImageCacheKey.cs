@@ -1,13 +1,12 @@
-﻿namespace SAM.WPF.Core.Cache
+﻿namespace SAM.WPF.Core
 {
     public class AppImageCacheKey : CacheKeyBase
     {
         public uint AppId { get; }
         public string ImageFileName { get; }
-        public override string Key => ImageFileName;
-        public override string Path => $@"apps\{AppId}\";
-
+        
         public AppImageCacheKey(uint appId, string imageFileName)
+            : base(imageFileName, $@"apps\{appId}\")
         {
             AppId = appId;
             ImageFileName = imageFileName;

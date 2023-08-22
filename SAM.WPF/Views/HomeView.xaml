@@ -7,6 +7,7 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:library="clr-namespace:SAM.WPF.Views.Library"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
@@ -29,11 +30,12 @@
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <library:LibraryItemsControlView />
-        <StatusBar Grid.Row="1" BorderBrush="#878787" Background="#202020"
+        <library:LibraryItemsControlView Grid.Row="1" />
+        <StatusBar Grid.Row="2" BorderBrush="#878787" Background="{DynamicResource MahApps.Brushes.WindowTitle}"
                    BorderThickness="0,1,0,0" Margin="-1,0,-1,-1"
                    Padding="2">
             <StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"

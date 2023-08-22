@@ -5,7 +5,6 @@ using System.Text.Json;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using SAM.WPF.Core.Cache;
 
 namespace SAM.WPF.Core.API
 {

@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.IsolatedStorage;
 using Newtonsoft.Json;
 
-namespace SAM.WPF.Core.Cache
+namespace SAM.WPF.Core
 {
     public static class CacheManager
     {

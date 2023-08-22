@@ -6,6 +6,7 @@
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/TextStyles.xaml" />
 
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.expander.xaml" />
         <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.tabcontrol.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -17,64 +18,36 @@
         <Setter Property="Margin" Value="5" />
     </Style>
 
-    <!--<Style TargetType="{x:Type TabPanel}">
-        <Setter Property="Background" Value="{StaticResource ContainerBackgroundBrush}" />
-        <Setter Property="Height" Value="50" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
-    </Style>
-
-    <Style TargetType="{x:Type TabControl}">
-        <Setter Property="Background" Value="{StaticResource ContainerBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource TransparentBrush}" />
-        <Setter Property="BorderThickness" Value="0" />
+    <Style x:Key="NoGroupHeaderStyle" TargetType="{x:Type GroupItem}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="TabControl">
-                    <Grid UseLayoutRounding="True">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <TabPanel IsItemsHost="True" Grid.Row="0" />
-                        <Border Grid.Row="1" BorderThickness="0" Padding="0" Margin="0"
-                                Background="{StaticResource ContainerBackgroundBrush}"
-                                BorderBrush="{StaticResource TransparentBrush}">
-                            <ContentPresenter Margin="0" ContentSource="SelectedContent" />
-                        </Border>
-                    </Grid>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <ItemsPresenter />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type TabItem}">
-        <Setter Property="FontSize" Value="{DynamicResource LargeFontSize}" />
-        <Setter Property="Background" Value="{StaticResource ContainerBackgroundBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-        <Setter Property="Margin" Value="5" />
+    <Style x:Key="DefaultGroupHeaderStyle" TargetType="{x:Type GroupItem}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type TabItem}">
-                    <Border BorderBrush="{StaticResource TransparentBrush}"
-                            BorderThickness="0" VerticalAlignment="Center"
-                            HorizontalAlignment="Stretch"
-                            CornerRadius="0" Background="{StaticResource TransparentBrush}">
-                        <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
-                                          VerticalAlignment="Center" HorizontalAlignment="Center" />
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="FontSize" Value="{DynamicResource LargerFontSize}" />
-                            <Setter Property="Margin" Value="5" />
-                            <Setter Property="Padding" Value="10,0" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+                <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <Expander IsExpanded="True" FontSize="20"
+                              FlowDirection="RightToLeft">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                <TextBlock Text="{Binding Name}"
+                                           Margin="15,0,0,0" />
+                                <TextBlock Text="{Binding ItemCount, StringFormat='{}({0})'}"
+                                           Margin="8,0"
+                                           Opacity="0.5" FontWeight="Normal" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <ItemsPresenter FlowDirection="LeftToRight" />
+                    </Expander>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>-->
+    </Style>
 
 </ResourceDictionary>

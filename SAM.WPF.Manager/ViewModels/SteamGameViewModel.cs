@@ -24,6 +24,7 @@ namespace SAM.WPF.Manager.ViewModels
 
         public virtual bool AllowEdit { get; set; }
         public virtual bool IsModified { get; set; }
+        public virtual bool ShowHidden { get; set;  }
         public virtual AchievementFilter SelectedAchievementFilter { get; set; }
 
         public virtual SteamApp SteamApp { get; set; }

@@ -72,6 +72,11 @@ namespace SAM.WPF.Core
             get => GetProperty(() => Header);
             set => SetProperty(() => Header, value);
         }
+        public Image CapsuleMedium
+        {
+            get => GetProperty(() => CapsuleMedium);
+            set => SetProperty(() => CapsuleMedium, value);
+        }
         public string Group
         {
             get => GetProperty(() => Group);
@@ -79,6 +84,11 @@ namespace SAM.WPF.Core
         }
 
         public ICommand ManageAppCommand => new DelegateCommand(ManageApp);
+        public ICommand ViewOnSteamDBCommand => new DelegateCommand(ViewOnSteamDB);
+        public ICommand ViewOnSteamCommand => new DelegateCommand(ViewOnSteam);
+        public ICommand ViewOnSteamCardExchangeCommand => new DelegateCommand(ViewOnSteamCardExchange);
+        public ICommand ViewOnPCGWCommand => new DelegateCommand(ViewOnPCGW);
+        public ICommand CopySteamIDCommand => new DelegateCommand(CopySteamID);
 
         public SteamApp(uint id, GameInfoType type)
         {
@@ -101,6 +111,31 @@ namespace SAM.WPF.Core
             {
                 _managerProcess = SAMHelper.OpenManager(Id);
             }
+        }
+        
+        public void ViewOnSteamDB()
+        {
+            BrowserHelper.ViewOnSteamDB(Id);
+        }
+
+        public void ViewOnSteam()
+        {
+            BrowserHelper.ViewOnSteamStore(Id);
+        }
+
+        public void ViewOnSteamCardExchange()
+        {
+            BrowserHelper.ViewOnSteamCardExchange(Id);
+        }
+
+        public void ViewOnPCGW()
+        {
+            BrowserHelper.ViewOnPCGW(Id);
+        }
+
+        public void CopySteamID()
+        {
+            TextCopy.ClipboardService.SetText(Id.ToString());
         }
 
         public void Load()
@@ -186,6 +221,7 @@ namespace SAM.WPF.Core
             }
 
             Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Header);
+            CapsuleMedium = SteamCdnHelper.DownloadImage(Id, SteamImageType.MediumCapsule);
         }
 
     }

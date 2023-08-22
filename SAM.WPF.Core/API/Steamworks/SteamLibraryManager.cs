@@ -29,6 +29,8 @@ namespace SAM.WPF.Core.API
             }
         }
         
+        public static SteamLibrary DefaultLibrary => Default.Library;
+
         public static void Init()
         {
             try
@@ -42,13 +44,15 @@ namespace SAM.WPF.Core.API
                 library.Refresh();
 
                 Default.Library = library;
+
+                IsInitialized = true;
             }
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to initialize the Steam library. {e.Message}";
                 log.Error(message, e);
 
-                throw new ConfigurationErrorsException(message, e);
+                throw new SAMInitializationException(message, e);
             }
         }
 

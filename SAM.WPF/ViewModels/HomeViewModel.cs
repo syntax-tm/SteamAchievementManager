@@ -1,17 +1,29 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Windows.Data;
 using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.WPF.Core;
 using SAM.WPF.Core.API;
+using SAM.WPF.Core.Converters;
+using SAM.WPF.Core.Extensions;
 
 namespace SAM.WPF.ViewModels
 {
     public class HomeViewModel
     {
-
         protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
         
-        public virtual SteamApp SelectedItem { get; set; }
+        public virtual int Columns { get; set; }
+        public virtual bool EnableGrouping { get; set; }
+        public virtual string FilterText { get; set; }
+        public CollectionViewSource ItemsViewSource { get; set; }
+        public ICollectionView ItemsView { get; set; }
+
+        public SteamApp SelectedItem
+        {
+            get => (SteamApp) ItemsView.CurrentItem;
+            set => ItemsView.MoveCurrentTo(value);
+        }
         public virtual SteamLibrary Library { get; set; }
 
         protected HomeViewModel()
@@ -19,7 +31,26 @@ namespace SAM.WPF.ViewModels
             //Library = SteamLibrary.Create();
             //Library.Refresh(true);
 
-            Library = SteamLibraryManager.Default.Library;
+            Library = SteamLibraryManager.DefaultLibrary;
+            
+            ItemsViewSource = new CollectionViewSource();
+            ItemsViewSource.Source = Library.Items;
+            ItemsView = ItemsViewSource.View;
+
+            ItemsViewSource.IsLiveSortingRequested = true;
+
+            //ItemsView.SortDescriptions.Clear();
+            //ItemsView.SortDescriptions.Add(new SortDescription(nameof(SteamApp.Name), ListSortDirection.Ascending));
+
+            using (ItemsViewSource.DeferRefresh())
+            {
+                ItemsViewSource.SortDescriptions.Clear();
+                ItemsViewSource.SortDescriptions.Add(new SortDescription(nameof(SteamApp.Name), ListSortDirection.Ascending));
+            }
+
+            //ItemsViewSource.LiveSortingProperties.Add(nameof(SteamApp.Name));
+
+            EnableGrouping = true;
         }
 
         public static HomeViewModel Create()
@@ -29,49 +60,38 @@ namespace SAM.WPF.ViewModels
 
         public void Loaded()
         {
-
         }
 
-        public void ManageApp()
+        protected void OnEnableGroupingChanged()
         {
-            if (SelectedItem == null) return;
+            ItemsView.GroupDescriptions.Clear();
 
-            Process.Start("SAM.WPF.Manager.exe", SelectedItem.Id.ToString());
+            ItemsViewSource.IsLiveGroupingRequested = EnableGrouping;
+
+            if (EnableGrouping)
+            {
+                ItemsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
+            }
         }
 
-        public void ViewOnSteamDB()
+        protected void OnFilterTextChanged()
         {
-            if (SelectedItem == null) return;
+            if (string.IsNullOrWhiteSpace(FilterText))
+            {
+                ItemsView.Filter += o => true;
+                return;
+            }
 
-            BrowserHelper.ViewOnSteamDB(SelectedItem.Id);
+            ItemsView.Filter += o =>
+            {
+                if (!(o is SteamApp app))
+                {
+                    return false;
+                }
+
+                return app.Name.ContainsIgnoreCase(FilterText);
+            };
         }
 
-        public void ViewOnSteam()
-        {
-            if (SelectedItem == null) return;
-
-            BrowserHelper.ViewOnSteamStore(SelectedItem.Id);
-        }
-
-        public void ViewOnSteamCardExchange()
-        {
-            if (SelectedItem == null) return;
-
-            BrowserHelper.ViewOnSteamCardExchange(SelectedItem.Id);
-        }
-
-        public void ViewOnPCGW()
-        {
-            if (SelectedItem == null) return;
-
-            BrowserHelper.ViewOnPCGW(SelectedItem.Id);
-        }
-
-        public void CopySteamID()
-        {
-            if (SelectedItem == null) return;
-
-            TextCopy.ClipboardService.SetText(SelectedItem.Id.ToString());
-        }
     }
 }

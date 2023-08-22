@@ -77,8 +77,7 @@ namespace SAM.WPF.Core.SplashScreen
             _splashWindow.NonActiveGlowBrush = new SolidColorBrush(Color.FromArgb(80, 255, 255, 255));
             _splashWindow.BorderThickness = new Thickness(1);
             
-            var splashView = new SplashScreenView();
-            _splashWindow.Content = splashView;
+            _splashWindow.Content = new SplashScreenView();
 
             _splashWindow.Show();
 

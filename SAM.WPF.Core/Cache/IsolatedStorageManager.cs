@@ -7,18 +7,15 @@ using log4net;
 
 namespace SAM.WPF.Core
 {
-    public class IsolatedStorageManager
+    public static class IsolatedStorageManager
     {
 
         private static readonly ILog log = LogManager.GetLogger(nameof(IsolatedStorageManager));
 
-        private static bool _shownPathMessage;
-        private static bool _createdAppsDirectory;
-
         public static void SaveImage(string fileName, Image img, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
-            
+
             //if (isoStorage.FileExists(fileName))
             //{
             //    if (!overwrite) throw new ArgumentException(nameof(fileName));
@@ -27,12 +24,11 @@ namespace SAM.WPF.Core
 
             //using var file = isoStorage.CreateFile(fileName);
 
-            using (var isoStorage = GetStore())
-            using (var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage))
-            {
-                img.Save(file, img.RawFormat);
-            }
-            
+            using var isoStorage = GetStore();
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+
+            img.Save(file, img.RawFormat);
+
             //using var file = isoStorage.CreateFile(fileName);
 
             //IImageEncoder encoder;
@@ -72,13 +68,12 @@ namespace SAM.WPF.Core
             //}
 
             //using var file = isoStorage.CreateFile(fileName);
-            
-            using (var isoStorage = GetStore())
-            using (var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, isoStorage))
-            using (var writer = new StreamWriter(file))
-            {
-                writer.WriteLine(text);
-            }
+
+            using var isoStorage = GetStore();
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, isoStorage);
+            using var writer = new StreamWriter(file);
+
+            writer.WriteLine(text);
         }
 
         public static Image GetImageFile(string fileName)
@@ -107,18 +102,14 @@ namespace SAM.WPF.Core
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
-            using (var isoStorage = GetStore())
-            {
-                if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
+            using var isoStorage = GetStore();
+            if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
 
-                using (var file = new IsolatedStorageFileStream(fileName, FileMode.Open, FileAccess.ReadWrite, isoStorage))
-                using (var reader = new StreamReader(file))
-                {
-                    var fileText = reader.ReadToEnd();
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.Open, FileAccess.ReadWrite, isoStorage);
+            using var reader = new StreamReader(file);
+            var fileText = reader.ReadToEnd();
 
-                    return fileText;
-                }
-            }
+            return fileText;
         }
 
         public static void CreateDirectory(string path)

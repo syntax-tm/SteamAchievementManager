@@ -1,8 +1,11 @@
-﻿namespace SAM.WPF.Core.Cache
+﻿namespace SAM.WPF.Core
 {
     public class AppListCacheKey : CacheKeyBase
     {
-        public override string Key { get; } = "appList.json";
-        public override string Path { get; } = string.Empty;
+        public AppListCacheKey()
+            : base("appList.json")
+        {
+
+        }
     }
 }
