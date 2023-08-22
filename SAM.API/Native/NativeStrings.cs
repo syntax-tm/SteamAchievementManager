@@ -16,7 +16,7 @@ namespace SAM.API
 
             var p = Marshal.AllocHGlobal(length + 1);
             Marshal.Copy(bytes, 0, p, bytes.Length);
-            ((byte*)p)[length] = 0;
+            (((byte*)p)!)[length] = 0;
             return new StringHandle(p, true);
         }
 
@@ -87,14 +87,11 @@ namespace SAM.API
 
             protected override bool ReleaseHandle()
             {
-                if (handle != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(handle);
-                    handle = IntPtr.Zero;
-                    return true;
-                }
+                if (handle == IntPtr.Zero) return false;
 
-                return false;
+                Marshal.FreeHGlobal(handle);
+                handle = IntPtr.Zero;
+                return true;
             }
         }
     }

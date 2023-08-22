@@ -12,7 +12,7 @@ namespace SAM.API
 
         public void Run(IntPtr param)
         {
-            OnRun(param);
+            OnRun!(param);
         }
 
         public event CallbackFunction OnRun;
@@ -28,8 +28,8 @@ namespace SAM.API
 
         public void Run(IntPtr pvParam)
         {
-            var data = (TParameter)Marshal.PtrToStructure(pvParam, typeof(TParameter));
-            OnRun(data);
+            var data = (TParameter)Marshal.PtrToStructure(pvParam, typeof(TParameter))!;
+            OnRun!(data);
         }
 
         public event CallbackFunction OnRun;
