@@ -15,6 +15,7 @@ namespace SAM.Core.Stats
         public int Permission => StatInfo?.Permission ?? default;
 
         public StatInfo StatInfo { get; set; }
+        public StatType StatType { get; set; }
 
         public object Value
         {
@@ -32,9 +33,10 @@ namespace SAM.Core.Stats
 
         }
 
-        public SteamStatistic(StatInfo stat)
+        public SteamStatistic(StatInfo stat, StatType type)
         {
             StatInfo = stat;
+            StatType = type;
         }
         
         public void Reset()

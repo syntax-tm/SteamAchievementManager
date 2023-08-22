@@ -5,7 +5,7 @@ namespace SAM.API.Stats
     public class FloatStatDefinition : StatDefinition
     {
         public float DefaultValue;
-        public bool IncrementOnly;
+        public readonly bool IncrementOnly;
         public float MaxChange;
         public float MaxValue;
         public float MinValue;

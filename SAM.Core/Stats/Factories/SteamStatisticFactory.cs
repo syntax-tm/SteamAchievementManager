@@ -27,7 +27,7 @@ namespace SAM.Core.Stats
                         Permission = definition.Permission,
                     };
 
-                    return new SteamStatistic(intStat);
+                    return new (intStat, StatType.Integer);
                 }
                 case FloatStatDefinition floatDefinition:
                 {
@@ -43,7 +43,7 @@ namespace SAM.Core.Stats
                         Permission = floatDefinition.Permission,
                     };
 
-                    return new SteamStatistic(floatStat);
+                    return new (floatStat, StatType.Integer);
                 }
             }
 

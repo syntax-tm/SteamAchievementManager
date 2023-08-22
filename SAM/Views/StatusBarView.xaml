@@ -65,7 +65,7 @@
                     </StatusBarItem>
 
                     <StatusBarItem Content="{Binding Library.PercentComplete, Mode=OneWay, Converter={StaticResource PercentFormatConverter}}"
-                                   ContentStringFormat="{}Loading... {0}"
+                                   ContentStringFormat="{}Loading... {0}" FontFamily="Consolas" FontWeight="Light"
                                    Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
                     <StatusBarItem Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}">
                         <ui:Button Content="Refresh" Icon="ArrowReset20" Appearance="Primary"

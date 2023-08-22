@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Data;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
+using JetBrains.Annotations;
 using log4net;
 using SAM.Core.Stats;
 
@@ -16,6 +17,7 @@ namespace SAM.Core.ViewModels
 
         public virtual ICurrentWindowService CurrentWindow { get { return null; } }
 
+        [UsedImplicitly]
         private ObservableHandler<SteamStatsManager> _statsHandler;
 
         private readonly SteamStatsManager _statsManager;
