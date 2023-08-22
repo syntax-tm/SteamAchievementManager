@@ -132,7 +132,7 @@ namespace SAM.Core
 
                 return storeApp;
             }
-            catch (WebException) { throw; }
+            catch (HttpRequestException) { throw; }
             catch (Exception e)
             {
                 var message = $"Failed to get app info for app id '{id}'. {e.Message}";

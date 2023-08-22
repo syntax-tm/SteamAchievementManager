@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using DevExpress.Mvvm;
@@ -167,7 +168,7 @@ namespace SAM.Core
 
         private void LoadStoreInfo()
         {
-            var retryTime = TimeSpan.FromSeconds(30);
+            var retryTime = TimeSpan.FromSeconds(60);
 
             while (StoreInfo == null)
             {
@@ -180,7 +181,7 @@ namespace SAM.Core
                     Publisher = StoreInfo.Publishers.FirstOrDefault();
                     Developer = StoreInfo.Developers.FirstOrDefault();
                 }
-                catch (WebException wex) when (((HttpWebResponse) wex.Response)?.StatusCode == HttpStatusCode.TooManyRequests)
+                catch (HttpRequestException hre) when (hre.StatusCode == HttpStatusCode.TooManyRequests)
                 {
                     var retrySb = new StringBuilder();
 
