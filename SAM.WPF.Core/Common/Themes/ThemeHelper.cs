@@ -74,12 +74,14 @@ namespace SAM.WPF.Core.Themes
         {
             var baseTheme = SystemAppTheme.GetDescription();
             var generatedTheme = RuntimeThemeGenerator.Current.GenerateRuntimeTheme(baseTheme, ThemeSettings.Default.Accent);
-
+            
             Debug.Assert(generatedTheme != null);
             
             ThemeManager.Current.AddTheme(generatedTheme);
-
+            
             ThemeManager.Current.ChangeTheme(app, generatedTheme);
+            
+            //ThemeManager.Current.ChangeTheme(app, @"Dark.Red");
 
             ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
             ThemeManager.Current.SyncTheme();

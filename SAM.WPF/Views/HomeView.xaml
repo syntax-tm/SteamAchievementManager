@@ -16,6 +16,6 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <library:LibraryTilesView />
+        <library:LibraryItemsControlView />
     </Grid>
 </UserControl>

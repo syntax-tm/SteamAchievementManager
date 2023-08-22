@@ -22,7 +22,7 @@ namespace SAM.WPF.Core.Extensions
 
         public static string GetAppLogo(this Client client, uint id)
         {
-            return client.SteamApps001.GetAppData(id, @"logo");
+            return client.SteamApps001.GetAppLogo(id);
         }
     }
 }

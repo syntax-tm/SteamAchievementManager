@@ -19,6 +19,4 @@
 
     <dxmvvm:BooleanNegationConverter x:Key="BooleanNegationConverter" />
 
-    <iconPacks:PackIconKindToImageConverter x:Key="PackIconToImageConverter" Brush="{StaticResource MahApps.Brushes.IdealForeground}" />
-
 </ResourceDictionary>

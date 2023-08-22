@@ -9,7 +9,6 @@ using MahApps.Metro.Controls;
 using MahApps.Metro.IconPacks;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
-using Pen = System.Windows.Media.Pen;
 
 namespace SAM.WPF.Core.SplashScreen
 {
@@ -23,11 +22,11 @@ namespace SAM.WPF.Core.SplashScreen
         
         public static void Init()
         {
-            if (_isInitialized) throw new ConfigurationErrorsException();
+            if (_isInitialized) throw new SAMException();
             
             _splashScreenVm = SplashScreenViewModel.Create();
 
-            _splashWindowThread = new Thread(ThreadStartingPoint);
+            _splashWindowThread = new (ThreadStartingPoint);
             _splashWindowThread.SetApartmentState(ApartmentState.STA);
             _splashWindowThread.IsBackground = true;
             

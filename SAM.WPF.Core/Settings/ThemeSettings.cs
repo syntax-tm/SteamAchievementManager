@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Media;
-using ControlzEx.Theming;
+﻿using System.Windows.Media;
 using Newtonsoft.Json;
 using SAM.WPF.Core.Themes;
 
@@ -12,21 +8,17 @@ namespace SAM.WPF.Core.Settings
     public class ThemeSettings
     {
 
+        private const string ACCENT_COLOR = "#F73541";
+
         public SystemAppTheme SystemAppTheme { get; set; }
         public string AccentColor { get; set; }
-        public Color Accent => ColorHelper.ToMediaColor("#F73541");
+        public Color Accent => ColorHelper.ToMediaColor(ACCENT_COLOR);
 
-        public static ThemeSettings Default
-        {
-            get
+        public static ThemeSettings Default =>
+            new()
             {
-                return new ThemeSettings
-                {
-                    SystemAppTheme = SystemAppTheme.Dark,
-                    AccentColor = "#F73541"
-                };
-            }
-        }
-
+                SystemAppTheme = SystemAppTheme.Dark,
+                AccentColor = ACCENT_COLOR
+            };
     }
 }
