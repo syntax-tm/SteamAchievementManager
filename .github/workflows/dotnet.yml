@@ -23,16 +23,17 @@ jobs:
         dotnet-version: 7.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build -c Release -v n --no-restore
+    # - name: Build
+    #   run: dotnet build -c Release -v m --no-restore
+    - name: Publish
+      run: dotnet publish .\SAM\SAM.csproj -c Release -a x86 -o publish
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
     - name: Print output
-      run: Get-ChildItem . -Recurse -Depth 3 | Select-Object -ExpandProperty FullName | Sort-Object
+      run: Get-ChildItem publish
     # - name: Upload a Build Artifact
     #   uses: actions/upload-artifact@v3.1.2
     #   with:
-    #     # Artifact name
     #     name: SAM
-    #     path: SAM/bin/x86/Release
+    #     path: publish
     #     if-no-files-found: error
