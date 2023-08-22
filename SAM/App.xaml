@@ -6,8 +6,6 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:ThemesDictionary Theme="Dark" />
-                <ui:ControlsDictionary />
                 <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

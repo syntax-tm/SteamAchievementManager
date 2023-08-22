@@ -8,6 +8,8 @@ using ControlzEx.Theming;
 using log4net;
 using SAM.Core.Extensions;
 using SAM.Core.Settings;
+using Wpf.Ui.Appearance;
+using Wpf.Ui.Mvvm.Services;
 
 namespace SAM.Core
 {
@@ -19,93 +21,26 @@ namespace SAM.Core
 
         private static readonly ILog log = LogManager.GetLogger(nameof(ThemeHelper));
 
-        private static List<AccentColorMenuData> _accentColors;
-        private static List<AppThemeMenuData> _appThemeMenuData;
-        private static SystemAppTheme? _systemAppTheme;
+        private static readonly ThemeService _themeService = new ();
+        
+        private static ThemeType? _systemAppTheme;
 
-        public static SystemAppTheme SystemAppTheme
+        public static ThemeType SystemAppTheme
         {
             get
             {
                 if (_systemAppTheme != null) return _systemAppTheme.Value;
-                _systemAppTheme = GetSystemTheme();
+                _systemAppTheme = _themeService.GetSystemTheme();
                 return _systemAppTheme ?? default;
             }
         }
-        public static Theme CurrentTheme { get; set; }
 
-        public static List<AccentColorMenuData> AccentColors
+        public static void SetTheme()
         {
-            get
-            {
-                if (_accentColors != null) return _accentColors;
+            _themeService.SetTheme(ThemeType.Dark);
+            _themeService.SetAccent((Color)ColorConverter.ConvertFromString("#111111"));
 
-                _accentColors = ThemeManager.Current.Themes
-                    .GroupBy(x => x.ColorScheme)
-                    .OrderBy(a => a.Key)
-                    .Select(a => new AccentColorMenuData { Name = a.Key, ColorBrush = a.First().ShowcaseBrush })
-                    .ToList();
-
-                return _accentColors;
-            }
+            //_themeService.SetSystemAccent();
         }
-        public static List<AppThemeMenuData> AppThemeMenuData
-        {
-            get
-            {
-                if (_appThemeMenuData != null) return _appThemeMenuData;
-
-                _appThemeMenuData = ThemeManager.Current.Themes
-                    .GroupBy(x => x.BaseColorScheme)
-                    .Select(x => x.First())
-                    .Select(a => new AppThemeMenuData
-                        {
-                            Name = a.BaseColorScheme, 
-                            BorderColorBrush = a.Resources["MahApps.Brushes.ThemeForeground"] as Brush, 
-                            ColorBrush = a.Resources["MahApps.Brushes.ThemeBackground"] as Brush
-                        })
-                    .ToList();
-
-                return _appThemeMenuData;
-            }
-        }
-        
-        public static void SetTheme(Application app)
-        {
-            var baseTheme = SystemAppTheme.GetDescription();
-            var generatedTheme = RuntimeThemeGenerator.Current.GenerateRuntimeTheme(baseTheme, ThemeSettings.Default.Accent);
-            
-            Debug.Assert(generatedTheme != null);
-            
-            ThemeManager.Current.AddTheme(generatedTheme);
-            
-            ThemeManager.Current.ChangeTheme(app, generatedTheme);
-            
-            //ThemeManager.Current.ChangeTheme(app, @"Dark.Red");
-
-            ThemeManager.Current.ThemeSyncMode = ThemeSyncMode.SyncWithAppMode;
-            ThemeManager.Current.SyncTheme();
-        }
-        
-        private static SystemAppTheme GetSystemTheme()
-        {
-            try
-            {
-                var themeValue = (int) Microsoft.Win32.Registry.GetValue(APP_THEME_REGISTRY_PATH, APP_THEME_KEY, null);
-
-                if (Enum.IsDefined(typeof(SystemAppTheme), themeValue))
-                {
-                    return (SystemAppTheme) themeValue;
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error($"An error occurred checking the system app theme setting. {e.Message}", e);
-            }
-
-            return default;
-        }
-
-
     }
 }

@@ -17,39 +17,17 @@
         <sam:GroupStyleSelector x:Key="CustomGroupStyleSelector" 
                                 NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
                                 DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />
+        
+        <Style TargetType="{x:Type Separator}">
+            <Setter Property="Opacity" Value="0.4" />
+            <Setter Property="Margin" Value="0,-2,0,-2" />
+        </Style>
 
-        <ItemsPanelTemplate x:Key="ItemsPanelTemplate">
-            <!--<UniformGrid>
-                <dxmvvm:Interaction.Behaviors>
-                    <behaviors:AutoResizeBehavior MaxItemWidth="300" />
-                </dxmvvm:Interaction.Behaviors>
-            </UniformGrid>-->
-            <UniformGrid>
-                <UniformGrid.Rows>
-                    <MultiBinding Converter="{sam:MathDivideConverter}">
-                        <MultiBinding.Bindings>
-                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ItemsControl}" Path="Items.Count" />
-                            <Binding Path="DisplayColumns" />
-                        </MultiBinding.Bindings>
-                    </MultiBinding>
-                </UniformGrid.Rows>
-            </UniformGrid>
-        </ItemsPanelTemplate>
     </UserControl.Resources>
 
     <Grid>
         <ui:VirtualizingItemsControl x:Name="libraryItemsView" ItemsSource="{Binding ItemsView}"
                                       HorizontalContentAlignment="Center">
-            <!--<ItemsControl.GroupStyle>
-                <GroupStyle ContainerStyleSelector="{StaticResource CustomGroupStyleSelector}"
-                            Panel="{StaticResource ItemsPanelTemplate}">
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate DataType="{x:Type CollectionViewGroup}">
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </ItemsControl.GroupStyle>-->
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="True" />
@@ -70,7 +48,7 @@
                                             <Setter Property="BorderBrush" Value="DodgerBlue" />
                                             <Setter Property="Foreground" Value="#1B1B1B" />
                                             <Setter Property="BorderThickness" Value="3" />
-                                            <Setter Property="Margin" Value="-1,0" />
+                                            <Setter Property="Margin" Value="0" />
                                         </Trigger>
                                         <Trigger Property="IsPressed" Value="True">
                                             <Setter Property="BorderBrush" Value="DodgerBlue" />
@@ -84,41 +62,32 @@
                                 </Style>
                             </ui:Button.Style>
                             <ui:Button.ContextMenu>
-                                <ContextMenu Style="{x:Null}">
-                                    <ui:MenuItem Header="{Binding Name}" FontWeight="SemiBold"
-                                                 ToolTip="Open in Manager" Command="{Binding ManageAppCommand}">
-                                        <ui:MenuItem.Icon>
-                                            <iconPacks:PackIconMaterial Kind="OpenInApp" />
-                                        </ui:MenuItem.Icon>
+                                <ContextMenu>
+                                    <ui:MenuItem Header="{Binding Name}" IsEnabled="False" Margin="0,5,0,0">
+                                        <ui:MenuItem.HeaderTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <TextBlock Text="{Binding}" FontWeight="SemiBold"
+                                                               HorizontalAlignment="Center" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ui:MenuItem.HeaderTemplate>
                                     </ui:MenuItem>
-                                    <Separator Style="{StaticResource SAM.Styles.ContextMenu.Separator}" />
-                                    <ui:MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
-                                        <ui:MenuItem.Icon>
-                                            <iconPacks:PackIconMaterial Kind="Database" />
-                                        </ui:MenuItem.Icon>
-                                    </ui:MenuItem>
+                                    <Separator />
+                                    <ui:MenuItem Header="Open in Manager" Command="{Binding ManageAppCommand}"
+                                                 SymbolIcon="AppGeneric24" SymbolIconFilled="False" />
+                                    <Separator />
+                                    <ui:MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}"
+                                                 SymbolIcon="Database20" />
                                     <ui:MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
-                                                 Style="{StaticResource MahApps.Styles.MenuItem}">
-                                        <ui:MenuItem.Icon>
-                                            <iconPacks:PackIconMaterial Kind="Steam" />
-                                        </ui:MenuItem.Icon>
-                                    </ui:MenuItem>
-                                    <ui:MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}">
-                                        <ui:MenuItem.Icon>
-                                            <iconPacks:PackIconMaterial Kind="Server" />
-                                        </ui:MenuItem.Icon>
-                                    </ui:MenuItem>
-                                    <ui:MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}">
-                                        <ui:MenuItem.Icon>
-                                            <iconPacks:PackIconMaterial Kind="Card" />
-                                        </ui:MenuItem.Icon>
-                                    </ui:MenuItem>
-                                    <Separator Style="{StaticResource SAM.Styles.ContextMenu.Separator}" />
-                                    <ui:MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
-                                        <ui:MenuItem.Icon>
-                                            <iconPacks:PackIconMaterial Kind="ContentCopy" />
-                                        </ui:MenuItem.Icon>
-                                    </ui:MenuItem>
+                                                 SymbolIcon="ShoppingBag16" />
+                                    <ui:MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}"
+                                                 SymbolIcon="Server20" />
+                                    <ui:MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}"
+                                                 SymbolIcon="ArrowSwap20" />
+                                    <Separator />
+                                    <ui:MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}"
+                                                 SymbolIcon="Copy20" />
                                 </ContextMenu>
                             </ui:Button.ContextMenu>
                             <dxmvvm:Interaction.Behaviors>
@@ -126,7 +95,7 @@
                             </dxmvvm:Interaction.Behaviors>
                             <Grid>
                                 <Viewbox Stretch="Fill" StretchDirection="Both">
-                                    <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}" />
+                                    <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}" Height="80" />
                                 </Viewbox>
                                 <TextBlock Text="{Binding Name}" 
                                            FontSize="30" TextAlignment="Center" Margin="10" TextWrapping="Wrap">
