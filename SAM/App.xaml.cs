@@ -36,9 +36,7 @@ namespace SAM
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
                 IsolatedStorageManager.Init();
-
-                ThemeHelper.SetTheme();
-
+                
                 // create the default Client instance
                 SteamClientManager.Init(0);
 

@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using SAM.Core.Converters;
 
 namespace SAM.Core
 {
     [DefaultValue(All)]
+    [TypeConverter(typeof(EnumDescriptionConverter))]
     public enum AchievementFilter
     {
         [Display(Name = "All", Description = "All achievements.")]

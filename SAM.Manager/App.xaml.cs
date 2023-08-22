@@ -59,8 +59,6 @@ namespace SAM.Manager
                 TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
                 IsolatedStorageManager.Init();
-
-                ThemeHelper.SetTheme();
                 
                 SplashScreenHelper.Show("Loading game info...");
 
