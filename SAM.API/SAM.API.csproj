@@ -3,6 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Platforms>x86</Platforms>
+    <Title>SAM API</Title>
+    <Description>Steamworks wrapper used by the Steam Achievement Manager.</Description>
+    <PackageProjectUrl>https://github.com/syntax-tm/SteamAchievementManager</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/syntax-tm/SteamAchievementManager</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>sam;steam;steamworks;games;achievement;manager;valve;api;</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -25,6 +32,17 @@
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
