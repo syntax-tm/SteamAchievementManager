@@ -1,7 +1,7 @@
 # Steam Achievement Manager
 
 <p align="center">
-  <img src="./resources/SAM_logo_red.svg">
+  <img src="./resources/SAM_logo_light_blue.svg">
 </p>
 
 ## Overview
