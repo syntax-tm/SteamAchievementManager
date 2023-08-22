@@ -45,6 +45,76 @@
                   AutoGenerateColumns="False" HeadersVisibility="None"
                   CanUserAddRows="False" SelectionMode="Single"
                   EnableRowVirtualization="False" EnableColumnVirtualization="False">
+            <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="Padding" Value="1" />
+                        <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimary}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWayToSource}" />
+                        <Setter Property="ToolTip">
+                            <Setter.Value>
+                                <Grid>
+                                    <StackPanel Margin="2">
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2" />
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontStyle="Italic" />
+                                        <Separator Margin="0,6,0,4"
+                                                   Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}" />
+                                        <TextBlock Text="Unsaved change."
+                                                   Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}">
+                                            <TextBlock.Foreground>
+                                                <SolidColorBrush Opacity="0.7" Color="{DynamicResource PaletteOrangeColor}" />
+                                            </TextBlock.Foreground>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource TextFillColorLightPrimary}" />
+                                <Setter Property="BorderBrush" Value="{DynamicResource PaletteLightBlueColor}" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Padding" Value="0" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsModified}" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                    <Condition Binding="{Binding IsSelected}" Value="False" />
+                                    <Condition Binding="{Binding IsModified}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
+                                <Setter Property="Background" Value="{DynamicResource PaletteLightBlueColor}" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                    <Condition Binding="{Binding IsModified}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Opacity="0.7" Color="{DynamicResource PaletteOrangeColor}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                                    <Condition Binding="{Binding IsModified}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Opacity="0.9" Color="{DynamicResource PaletteOrangeColor}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderBrush" Value="{DynamicResource TextFillColorLightPrimary}" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
