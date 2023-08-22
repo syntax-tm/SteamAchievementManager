@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -16,6 +17,8 @@ namespace SAM.Core
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamworksManager));
 
+        private static readonly HttpClient _client = new ();
+
         public static Dictionary<uint, string> GetAppList()
         {
             try
@@ -28,9 +31,8 @@ namespace SAM.Core
                 {
                     return cachedApps;
                 }
-
-                using var wc = new HttpClient();
-                var apiResponse = wc.GetStringAsync(GETAPPLIST_URL).Result;
+                
+                var apiResponse = _client.GetStringAsync(GETAPPLIST_URL).Result;
                 
                 if (string.IsNullOrEmpty(apiResponse))
                 {
@@ -70,8 +72,15 @@ namespace SAM.Core
 
         public static SteamStoreApp GetAppInfo(uint id, bool loadDlc = false)
         {
+
             try
             {
+                if (ShouldSkip(id))
+                {
+                    log.Debug($"Skipping {nameof(GetAppInfo)} for app id '{id}'.");
+                    return null;
+                }
+
                 var cacheKey = CacheKeyFactory.CreateAppCacheKey(id);
 
                 // if we have the file in the cache, then deserialize the cached json and
@@ -82,26 +91,32 @@ namespace SAM.Core
                 }
 
                 var storeUrl = string.Format(APPDETAILS_URL, id);
+                
+                var appInfoText = _client.GetStringAsync(storeUrl).Result;
+                var jo = JObject.Parse(appInfoText);
 
-                using var wc = new HttpClient();
-
-                var appInfoText = wc.GetByteArrayAsync(storeUrl).Result;
-                var convertedString = System.Text.Encoding.Default.GetString(appInfoText);
-                var jo = JObject.Parse(convertedString);
-
-                var appElementName = id.ToString();
-                var success = jo[appElementName]["success"].Value<bool>();
-
+                var successElement = jo.SelectToken($"{id}.success");
+                var success = successElement != null && successElement.Value<bool>();
+                
                 if (!success)
                 {
-                    log.Warn($@"The Steam Web API appdetails call for app id '{id}' was not successful.");
+                    log.Warn($@"Steam Web API appdetails for app id '{id}' failed.");
+
+                    return null;
+                }
+                
+                var appData = jo.SelectToken($"{id}.data")?.ToString();
+
+                if (string.IsNullOrWhiteSpace(appData))
+                {
+                    log.Warn($@"Steam Web API appdetails for app id '{id}' returned no data.");
 
                     return null;
                 }
 
-                var appInfo = jo[id.ToString()]["data"];
-                var storeApp = JsonConvert.DeserializeObject<SteamStoreApp>(appInfo.ToString());
+                var storeApp = JsonConvert.DeserializeObject<SteamStoreApp>(appData);
 
+                // TODO: Add caching for DLC items
                 //if (loadDlc && storeApp.Dlc.Any())
                 //{
                 //    foreach (var dlc in storeApp.Dlc)
@@ -126,5 +141,29 @@ namespace SAM.Core
                 throw;
             }
         }
+
+        private static bool ShouldSkip(uint id)
+        {
+            return _skipStoreInfoAppIds.Contains(id);
+        }
+        
+        // TODO: Create a better way to skip non-queryable apps in the store API
+        // these are all app ids that do not return successfully so we can skip them
+        // and reduce calls to the store API
+        private static readonly uint[] _skipStoreInfoAppIds =
+        {
+            41010,  // Serious Sam HD: The Second Encounter
+            42160,  // War of the Roses
+            91310,  // Dead Island
+            92500,  // PC Gamer
+            200110, // Nosgoth
+            202270, // Leviathan: Warships
+            204080, // The Showdown Effect
+            218130, // Dungeonland
+            223390, // Forge
+            225140, // Duke Nukem 3D: Megaton Edition
+            254270, // Dungeonland - All access pass
+            321040  // DiRT 3 Complete Edition
+        };
     }
 }

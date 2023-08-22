@@ -37,7 +37,6 @@ namespace SAM.Core
 
     public class Sub
     {
-
         [JsonProperty("packageid")]
         public int PackageId { get; set; }
 
@@ -65,7 +64,6 @@ namespace SAM.Core
 
     public class PackageGroup
     {
-
         [JsonProperty("name")]
         public string Name { get; set; }
 
@@ -87,13 +85,17 @@ namespace SAM.Core
         [JsonProperty("is_recurring_subscription")]
         public string IsRecurringSubscription { get; set; }
 
-        [JsonProperty("subs")]
-        public IList<Sub> Subs { get; set; } = new List<Sub>();
+        [JsonProperty("subs", NullValueHandling = NullValueHandling.Ignore)]
+        public List<Sub> Subs { get; set; }
+
+        public PackageGroup()
+        {
+            Subs = new ();
+        }
     }
 
     public class Platforms
     {
-
         [JsonProperty("windows")]
         public bool Windows { get; set; }
 
@@ -106,7 +108,6 @@ namespace SAM.Core
 
     public class Category
     {
-
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -116,7 +117,6 @@ namespace SAM.Core
 
     public class Genre
     {
-
         [JsonProperty("id")]
         public string Id { get; set; }
 
@@ -126,7 +126,6 @@ namespace SAM.Core
 
     public class Screenshot
     {
-
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -137,29 +136,17 @@ namespace SAM.Core
         public string PathFull { get; set; }
     }
 
-    public class Webm
+    public class SteamStoreMovieInfo
     {
-
         [JsonProperty("480")]
         public string Default { get; set; }
 
         [JsonProperty("max")]
         public string Max { get; set; }
     }
-
-    public class Mp4
+    
+    public class SteamStoreMovie
     {
-
-        [JsonProperty("480")]
-        public string Default { get; set; }
-
-        [JsonProperty("max")]
-        public string Max { get; set; }
-    }
-
-    public class Movy
-    {
-
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -170,10 +157,10 @@ namespace SAM.Core
         public string Thumbnail { get; set; }
 
         [JsonProperty("webm")]
-        public Webm Webm { get; set; }
+        public SteamStoreMovieInfo WebM { get; set; }
 
         [JsonProperty("mp4")]
-        public Mp4 Mp4 { get; set; }
+        public SteamStoreMovieInfo MP4 { get; set; }
 
         [JsonProperty("highlight")]
         public bool Highlight { get; set; }
@@ -181,14 +168,12 @@ namespace SAM.Core
 
     public class Recommendations
     {
-
         [JsonProperty("total")]
         public int Total { get; set; }
     }
 
     public class Highlighted
     {
-
         [JsonProperty("name")]
         public string Name { get; set; }
 
@@ -198,17 +183,20 @@ namespace SAM.Core
 
     public class Achievements
     {
-
         [JsonProperty("total")]
         public int Total { get; set; }
 
-        //[JsonProperty("highlighted")]
-        //public IList<Highlighted> Highlighted { get; set; } = new List<Highlighted>();
+        [JsonProperty("highlighted", NullValueHandling = NullValueHandling.Ignore)]
+        public List<Highlighted> Highlighted { get; set; }
+
+        public Achievements()
+        {
+            Highlighted = new ();
+        }
     }
 
     public class ReleaseDate
     {
-
         [JsonProperty("coming_soon")]
         public bool ComingSoon { get; set; }
 
@@ -218,7 +206,6 @@ namespace SAM.Core
 
     public class SupportInfo
     {
-
         [JsonProperty("url")]
         public string Url { get; set; }
 
@@ -228,17 +215,20 @@ namespace SAM.Core
 
     public class ContentDescriptors
     {
-
-        [JsonProperty("ids")]
-        public IList<object> Ids { get; set; }
+        [JsonProperty("ids", NullValueHandling = NullValueHandling.Ignore)]
+        public List<object> Ids { get; set; }
 
         [JsonProperty("notes")]
         public object Notes { get; set; }
+
+        public ContentDescriptors()
+        {
+            Ids = new ();
+        }
     }
 
     public class SteamStoreApp
     {
-
         [JsonProperty("type")]
         public string Type { get; set; }
 
@@ -257,10 +247,10 @@ namespace SAM.Core
         [JsonProperty("controller_support")]
         public string ControllerSupport { get; set; }
         
-        [JsonProperty("dlc")]
-        public IList<uint> Dlc { get; set; } = new List<uint>();
+        [JsonProperty("dlc", NullValueHandling = NullValueHandling.Ignore)]
+        public List<uint> Dlc { get; set; }
         
-        public IList<SteamStoreApp> DlcInfo { get; set; } = new List<SteamStoreApp>();
+        public List<SteamStoreApp> DlcInfo { get; set; } = new ();
         
         [JsonProperty("detailed_description")]
         public string DetailedDescription { get; set; }
@@ -295,35 +285,35 @@ namespace SAM.Core
         [JsonProperty("legal_notice")]
         public string LegalNotice { get; set; }
         
-        [JsonProperty("developers")]
-        public IList<string> Developers { get; set; }
+        [JsonProperty("developers", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Developers { get; set; }
         
-        [JsonProperty("publishers")]
-        public IList<string> Publishers { get; set; }
+        [JsonProperty("publishers", NullValueHandling = NullValueHandling.Ignore)]
+        public List<string> Publishers { get; set; }
         
         [JsonProperty("price_overview")]
         public PriceOverview PriceOverview { get; set; }
-        
-        [JsonProperty("packages")]
-        public IList<int> Packages { get; set; }
-        
-        [JsonProperty("package_groups")]
-        public IList<PackageGroup> PackageGroups { get; set; }
+
+        [JsonProperty("packages", NullValueHandling = NullValueHandling.Ignore)]
+        public List<int> Packages { get; set; } = new ();
+
+        [JsonProperty("package_groups", NullValueHandling = NullValueHandling.Ignore)]
+        public List<PackageGroup> PackageGroups { get; set; }
         
         [JsonProperty("platforms")]
         public Platforms Platforms { get; set; }
         
-        [JsonProperty("categories")]
-        public IList<Category> Categories { get; set; }
+        [JsonProperty("categories", NullValueHandling = NullValueHandling.Ignore)]
+        public List<Category> Categories { get; set; }
+
+        [JsonProperty("genres", NullValueHandling = NullValueHandling.Ignore)]
+        public List<Genre> Genres { get; set; }
         
-        [JsonProperty("genres")]
-        public IList<Genre> Genres { get; set; }
+        [JsonProperty("screenshots", NullValueHandling = NullValueHandling.Ignore)]
+        public List<Screenshot> Screenshots { get; set; }
         
-        [JsonProperty("screenshots")]
-        public IList<Screenshot> Screenshots { get; set; }
-        
-        [JsonProperty("movies")]
-        public IList<Movy> Movies { get; set; }
+        [JsonProperty("movies", NullValueHandling = NullValueHandling.Ignore)]
+        public List<SteamStoreMovie> Movies { get; set; }
         
         [JsonProperty("recommendations")]
         public Recommendations Recommendations { get; set; }
@@ -342,5 +332,17 @@ namespace SAM.Core
         
         [JsonProperty("content_descriptors")]
         public ContentDescriptors ContentDescriptors { get; set; }
+
+        public SteamStoreApp()
+        {
+            Dlc = new (0);
+            Developers = new ();
+            Publishers = new();
+            PackageGroups = new ();
+            Categories = new ();
+            Screenshots = new ();
+            Genres = new ();
+            Movies = new ();
+        }
     }
 }

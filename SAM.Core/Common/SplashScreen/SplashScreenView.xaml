@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              xmlns:local="clr-namespace:SAM.Core"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
@@ -16,7 +15,8 @@
              WindowBackdropType="Mica" ShowActivated="True" ShowInTaskbar="True"
              WindowStartupLocation="CenterScreen"
              FontFamily="Segoe UI Light"
-             Foreground="{StaticResource TextFillColorLightPrimaryBrush}">
+             Foreground="{StaticResource TextFillColorLightPrimaryBrush}"
+             Icon="{svgc:SvgImage Source=/Styles/Images/steam-symbol.svg}">
 
     <ui:UiWindow.Resources>
         <ResourceDictionary>
@@ -31,6 +31,14 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="{x:Type svgc:SvgViewbox}">
+                <Setter Property="Opacity" Value="0.1" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:UiWindow}}, Path=IsMouseOver}" Value="True">
+                        <Setter Property="Opacity" Value="0.12" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </ui:UiWindow.Resources>
 
@@ -39,20 +47,7 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <Viewbox Stretch="Uniform" HorizontalAlignment="Left">
-            <iconPacks:PackIconFontAwesome Kind="SteamSymbolBrands" Margin="0">
-                <iconPacks:PackIconFontAwesome.Style>
-                    <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
-                        <Setter Property="Opacity" Value="0.1" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:UiWindow}}, Path=IsMouseOver}" Value="True">
-                                <Setter Property="Opacity" Value="0.12" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </iconPacks:PackIconFontAwesome.Style>
-            </iconPacks:PackIconFontAwesome>
-        </Viewbox>
+        <svgc:SvgViewbox Source="/Styles/Images/steam-symbol.svg" Stretch="Uniform" HorizontalAlignment="Left" />
         <ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" ShowHelp="False" Opacity="0.5" />
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,8,25">

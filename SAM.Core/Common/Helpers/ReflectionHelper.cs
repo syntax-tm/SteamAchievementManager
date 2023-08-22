@@ -44,7 +44,7 @@ namespace SAM.Core
                 if (appCacheType != null) return appCacheType;
             }
 
-            throw new Exception($"Couldn't find {type}");
+            throw new ($"Couldn't find {type}");
         }
     }
 }

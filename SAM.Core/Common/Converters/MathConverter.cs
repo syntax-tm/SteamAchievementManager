@@ -6,7 +6,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using JetBrains.Annotations;
-using MahApps.Metro.Converters;
 
 namespace SAM.Core.Converters
 {

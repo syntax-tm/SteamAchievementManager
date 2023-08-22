@@ -5,17 +5,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:views="clr-namespace:SAM.Views"
-             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:sam="urn:sam"
              xmlns:vm="clr-namespace:SAM.ViewModels"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
              DataContext="{dxmvvm:ViewModelSource Type={x:Type vm:MainWindowViewModel}}"
-             Icon="{iconPacks:FontAwesomeImage SteamSymbolBrands, Brush={StaticResource TextFillColorLightPrimaryBrush}}"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica"
-             ShowActivated="True" ShowInTaskbar="True">
+             ShowActivated="True" ShowInTaskbar="True"
+             Icon="{svgc:SvgImage Source=/SAMCore;/Styles/Images/square-steam.svg}">
 
     <dxmvvm:Interaction.Behaviors>
         <sam:WindowAutoSaveBehavior Config="{Binding Config}" />

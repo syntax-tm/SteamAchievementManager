@@ -2,7 +2,6 @@
 {
     public static class CacheKeyFactory
     {
-
         public static ICacheKey CreateAppListCacheKey()
         {
             var key = new AppListCacheKey();
@@ -37,6 +36,5 @@
             
             return key;
         }
-
     }
 }

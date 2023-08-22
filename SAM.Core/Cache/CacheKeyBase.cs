@@ -5,6 +5,7 @@ using log4net;
 
 namespace SAM.Core
 {
+    // TODO: Add configurable cache expiration
     [DebuggerDisplay("{GetFullPath()}")]
     public abstract class CacheKeyBase : ICacheKey
     {

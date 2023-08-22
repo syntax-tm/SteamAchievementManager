@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using log4net;
 using SAM.API;
 
@@ -6,33 +7,30 @@ namespace SAM.Core
 {
     public static class SteamClientManager
     {
-        private static readonly ILog log = LogManager.GetLogger(nameof(SteamClientManager));
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
         private static readonly object syncLock = new ();
-        private static Client _client;
+        private static bool _isInitialized;
         
         public static uint AppId { get; private set; }
         public static string CurrentLanguage { get; private set; }
-
-        public static Client Default => _client;
+        public static Client Default { get; private set; }
 
         public static void Init(uint appId)
         {
+            if (_isInitialized) throw new SAMInitializationException($"The Steam {nameof(Client)} has already been initialized.");
+
             try
             {
-                if (_client != null)
-                {
-                    _client.Dispose();
-                    _client = null;
-                }
-
                 lock (syncLock)
                 {
-                    _client = new ();
-                    _client.Initialize(appId);
+                    Default = new ();
+                    Default.Initialize(appId);
 
                     AppId = appId;
                     CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
+
+                    _isInitialized = true;
                 }
             }
             catch (Exception e)

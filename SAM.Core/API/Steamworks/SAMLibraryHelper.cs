@@ -11,11 +11,17 @@ namespace SAM.Core
 {
     public static class SAMLibraryHelper
     {
-
+        // TODO: Make this a configurable setting
         private const string SAM_GAME_LIST_URL = @"http://gib.me/sam/games.xml";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMLibraryHelper));
-
+        
+        // TODO: Store this somewhere outside of the application so that it can be actively maintained separately
+        private static readonly uint[] _ignoredApps =
+        {
+            13260 // Unreal Development Kit
+        };
+        // TODO: This will probably be better off as a ConcurrentDictionary (for thread safety during Library init) or other keyed collection
         private static List<SupportedApp> _gameList;
 
         public static List<SupportedApp> GetSupportedGames()
@@ -28,15 +34,13 @@ namespace SAM.Core
                 
                 using var wc = new HttpClient();
                 var bytes = wc.GetByteArrayAsync(new Uri(SAM_GAME_LIST_URL)).Result;
-
-                var ignoredApps = GetIgnoredApps();
-
+                
                 using var stream = new MemoryStream(bytes, false);
 
                 var document = new XPathDocument(stream);
                 var navigator = document.CreateNavigator();
 
-                Debug.Assert(navigator is not null, $"The {nameof(XPathDocument)}'s {nameof(navigator)} cannot be null.");
+                Debug.Assert(navigator is not null, $"The {nameof(XPathNavigator)} cannot be null.");
 
                 var nodes = navigator.Select("/games/game");
 
@@ -44,9 +48,9 @@ namespace SAM.Core
                 {
                     var gameId = (uint) nodes.Current.ValueAsLong;
 
-                    if (ignoredApps.Contains(gameId))
+                    if (_ignoredApps.Contains(gameId))
                     {
-                        log.Debug($"Ignoring Steam app with ID '{gameId}'.");
+                        log.Debug($"Skipping app id '{gameId}'.");
                         continue;
                     }
 
@@ -85,7 +89,7 @@ namespace SAM.Core
             }
             catch (Exception e)
             {
-                var message = $"An error occurred attempting to get app {id}. {e.Message}";
+                var message = $"An error occurred getting the app id '{id}'. {e.Message}";
 
                 log.Warn(message, e);
                 
@@ -93,6 +97,7 @@ namespace SAM.Core
             }
         }
 
+        // TODO: Add a way to check and see if an app is supported instead of just trying it
         public static SupportedApp GetApp(uint id)
         {
             if (TryGetApp(id, out var app)) return app;
@@ -100,15 +105,5 @@ namespace SAM.Core
             var message = $"App '{id}' is not currently supported.";
             throw new SAMException(message);
         }
-        
-        public static List<uint> GetIgnoredApps()
-        {
-            return new()
-            {
-                13260 // unreal development kit
-            };
-        }
-
-
     }
 }

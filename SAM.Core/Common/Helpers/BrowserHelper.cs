@@ -10,6 +10,8 @@ namespace SAM.Core
     /// <seealso href="https://steamcommunity.com/dev/registerkey">Steam Web API Key</seealso>
     public static class BrowserHelper
     {
+        // TODO: Make these configurable to disable or enable
+        // TODO: Add support for custom context menu items
         private const string APP_NEWS_URI_FORMAT = @"steam://appnews/{0}";
         private const string UPDATE_NEWS_URI_FORMAT = @"steam://updatenews/{0}";
         private const string FRIENDS_URI = @"steam://friends/";

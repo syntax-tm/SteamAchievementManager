@@ -13,4 +13,13 @@
     <Color x:Key="ProgressIndeterminateColor3">#4C000000</Color>
     <Color x:Key="ProgressIndeterminateColor4">#4C000000</Color>
 
+    <Color x:Key="AccentPrimaryColor">#559CE4</Color>
+
+    <SolidColorBrush x:Key="AccentPrimaryBrush" Color="{StaticResource AccentPrimaryColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="Accent2PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.9" po:Freeze="true" />
+    <SolidColorBrush x:Key="Accent3PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.8" po:Freeze="true" />
+    <SolidColorBrush x:Key="Accent4PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.7" po:Freeze="true" />
+    <SolidColorBrush x:Key="Accent5PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.5" po:Freeze="true" />
+    <SolidColorBrush x:Key="Accent6PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.25" po:Freeze="true" />
+
 </ResourceDictionary>
