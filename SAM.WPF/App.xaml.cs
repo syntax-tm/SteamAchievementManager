@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using FontAwesome.WPF;
 using log4net;
+using MahApps.Metro.IconPacks;
 using SAM.WPF.Core;
 using SAM.WPF.Core.API;
 using SAM.WPF.Core.API.Steam;
@@ -54,8 +54,11 @@ namespace SAM.WPF
                 var iconColor = (Color) ColorConverter.ConvertFromString("#9EE6E6E6");
                 var iconBrush = new SolidColorBrush(iconColor);
 
+                var packIcon = new PackIconFontAwesome { Kind = PackIconFontAwesomeKind.SteamSymbolBrands, Foreground = iconBrush };
+
+                var icon = PackIconHelper.GetImageSource(packIcon, iconBrush);
+
                 MainWindow = new MainWindow();
-                MainWindow.Icon = ImageAwesome.CreateImageSource(FontAwesomeIcon.Steam, iconBrush);
                 MainWindow.Show();
 
                 SplashScreenHelper.Close();
@@ -80,7 +83,7 @@ namespace SAM.WPF
             }
             catch (Exception e)
             {
-                log.Error($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
+                log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
             }
         }
 

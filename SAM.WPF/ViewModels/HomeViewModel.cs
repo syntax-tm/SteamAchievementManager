@@ -15,10 +15,16 @@ namespace SAM.WPF.ViewModels
         protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
         
         private readonly CollectionViewSource _itemsViewSource;
-        
-        public virtual bool EnableGrouping { get; set; }
-        public virtual bool FilterJunk { get; set; }
+        private bool _loading = true;
+
+        public virtual bool EnableGrouping { get; set; } = true;
+        public virtual int DisplayColumns { get; set; } = 6;
         public virtual string FilterText { get; set; }
+        public virtual string FilterNormal { get; set; }
+        public virtual string FilterDemos { get; set; }
+        public virtual string FilterMods { get; set; }
+        public virtual bool FilterJunk { get; set; }
+        public virtual string FilterTool { get; set; }
         public virtual ICollectionView ItemsView { get; set; }
 
         public SteamApp SelectedItem
@@ -32,21 +38,38 @@ namespace SAM.WPF.ViewModels
         {
             Library = SteamLibraryManager.DefaultLibrary;
             
-            _itemsViewSource = new CollectionViewSource();
-            _itemsViewSource.Source = Library.Items;
+            _itemsViewSource = new CollectionViewSource
+            {
+                Source = Library.Items
+            };
             ItemsView = _itemsViewSource.View;
-            ItemsView.Filter += Filter;
 
-            _itemsViewSource.IsLiveFilteringRequested = true;
-            _itemsViewSource.IsLiveSortingRequested = true;
-            
             using (_itemsViewSource.DeferRefresh())
             {
+                _itemsViewSource.Filter += ItemsViewSourceOnFilter;
+
                 _itemsViewSource.SortDescriptions.Clear();
                 _itemsViewSource.SortDescriptions.Add(new SortDescription(nameof(SteamApp.Name), ListSortDirection.Ascending));
+
+                _itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
+
+                _itemsViewSource.IsLiveFilteringRequested = true;
+                _itemsViewSource.IsLiveSortingRequested = true;
+                _itemsViewSource.IsLiveGroupingRequested = true;
             }
             
-            EnableGrouping = true;
+            _loading = false;
+        }
+
+        private void ItemsViewSourceOnFilter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
+
+            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
+            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText);
+            var isJunkFiltered = !FilterJunk || app.IsJunk;
+
+            e.Accepted = isNameMatch && isJunkFiltered;
         }
 
         public static HomeViewModel Create()
@@ -57,28 +80,31 @@ namespace SAM.WPF.ViewModels
         public void Loaded()
         {
         }
-        
-        protected void OnEnableGroupingChanged()
+
+        protected void OnFilterTextChanged()
         {
-            ItemsView.GroupDescriptions.Clear();
+            if (_loading) return;
 
-            _itemsViewSource.IsLiveGroupingRequested = EnableGrouping;
-
-            if (EnableGrouping)
+            using (_itemsViewSource.DeferRefresh())
             {
-                ItemsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
+                _itemsViewSource.IsLiveFilteringRequested = !string.IsNullOrWhiteSpace(FilterText) || FilterJunk;
             }
         }
         
-        private bool Filter(object obj)
+        protected void OnEnableGroupingChanged()
         {
-            if (obj is not SteamApp app) throw new ArgumentException(nameof(obj));
+            if (_loading) return;
+            
+            using (_itemsViewSource.DeferRefresh())
+            {
+                _itemsViewSource.GroupDescriptions.Clear();
+                _itemsViewSource.IsLiveGroupingRequested = EnableGrouping;
 
-            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
-            var nameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText);
-            var isJunkFiltered = !FilterJunk || app.IsJunk;
-
-            return nameMatch && isJunkFiltered;
+                if (EnableGrouping)
+                {
+                    ItemsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
+                }
+            }
         }
     }
 }

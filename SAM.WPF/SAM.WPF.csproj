@@ -12,17 +12,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DevExpressMvvm" Version="20.2.3" />
-    <PackageReference Include="Fluent.Ribbon" Version="8.0.3" />
-    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9">
-      <NoWarn>NU1701</NoWarn>
-    </PackageReference>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
-    <PackageReference Include="log4net" Version="2.0.12" />
-    <PackageReference Include="MahApps.Metro" Version="2.4.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
-    <PackageReference Include="TextCopy" Version="4.2.0" />
+    <PackageReference Include="DevExpressMvvm" Version="21.1.5" />
+    <PackageReference Include="Fluent.Ribbon" Version="9.0.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" />
+    <PackageReference Include="log4net" Version="2.0.13" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="MahApps.Metro.IconPacks" Version="4.11.0" />
+    <PackageReference Include="MahApps.Metro.IconPacks.MaterialLight" Version="4.11.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="TextCopy" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>

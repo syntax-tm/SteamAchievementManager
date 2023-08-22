@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using log4net;
 
@@ -14,7 +15,7 @@ namespace SAM.WPF.Core
         private string _fullPath;
 
         public string Key { get; protected set; }
-        public string Path { get; protected set; }
+        public string FilePath { get; protected set; }
 
         protected CacheKeyBase()
         {
@@ -25,19 +26,17 @@ namespace SAM.WPF.Core
         {
             SetKey(key);
 
-            Path = path;
+            FilePath = path;
         }
 
         protected void SetKey(string key)
         {
             var fileName = key;
             
-            var hasExtension = System.IO.Path.HasExtension(key);
+            var hasExtension = Path.HasExtension(key);
             if (!hasExtension)
             {
-                log.Debug($"No extension for {nameof(key)} '{key}', defaulting to '{DEFAULT_EXTENSION}'.");
-
-                fileName = System.IO.Path.ChangeExtension(fileName, DEFAULT_EXTENSION);
+                fileName = Path.ChangeExtension(fileName, DEFAULT_EXTENSION);
             }
 
             Key = fileName;
@@ -47,7 +46,7 @@ namespace SAM.WPF.Core
         {
             if (_fullPath != null) return _fullPath;
             
-            return _fullPath = System.IO.Path.Combine(Path, Key);
+            return _fullPath = Path.Combine(FilePath, Key);
         }
     }
 }

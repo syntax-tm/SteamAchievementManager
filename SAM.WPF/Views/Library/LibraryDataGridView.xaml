@@ -10,6 +10,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -24,29 +25,38 @@
             </dxmvvm:Interaction.Behaviors>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}" Padding="2">
+                    <MenuItem Header="{Binding Name}" FontWeight="SemiBold"
+                              ToolTip="Open in Manager" Command="{Binding ManageAppCommand}">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="Database" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
-                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                            <iconPacks:PackIconMaterial Kind="OpenInApp" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}" Padding="2">
+                    <Separator Style="{StaticResource ContextMenuSeparator}" />
+                    <MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="SteamSquare" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
-                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                            <iconPacks:PackIconMaterial Kind="Database" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}" Padding="2">
+                    <MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
+                              Style="{StaticResource MahApps.Styles.MenuItem}">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="Server" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
-                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                            <iconPacks:PackIconMaterial Kind="Steam" />
                         </MenuItem.Icon>
                     </MenuItem>
-                    <Separator />
-                    <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}" Padding="2">
+                    <MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}">
                         <MenuItem.Icon>
-                            <fa:ImageAwesome Icon="Clipboard" Margin="3,0,0,0" Width="18" Height="18" Stretch="Uniform" StretchDirection="Both"
-                                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                            <iconPacks:PackIconMaterial Kind="Server" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}">
+                        <MenuItem.Icon>
+                            <iconPacks:PackIconMaterial Kind="Card" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <Separator Style="{StaticResource ContextMenuSeparator}" />
+                    <MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}">
+                        <MenuItem.Icon>
+                            <iconPacks:PackIconMaterial Kind="ContentCopy" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
@@ -77,8 +87,8 @@
                                 <Grid Width="32" Height="32">
                                     <Image Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}"
                                            Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisConverter}}" />
-                                    <fa:ImageAwesome Icon="Spinner" Spin="True" SpinDuration="10" 
-                                                     Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisConverter}}" />
+                                    <iconPacks:PackIconMaterial Kind="Loading" Spin="True" SpinDuration="10" 
+                                                     Visibility="{Binding IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

@@ -3,7 +3,7 @@
     public interface ICacheKey
     {
         string Key { get; }
-        string Path { get; }
+        string FilePath { get; }
 
         string GetFullPath();
     }

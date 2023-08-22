@@ -26,8 +26,7 @@ namespace SAM.API.Wrappers
         public ulong GetSteamId()
         {
             var call = GetFunction<NativeGetSteamId>(Functions.GetSteamID);
-            ulong steamId;
-            call(ObjectAddress, out steamId);
+            call(ObjectAddress, out var steamId);
             return steamId;
         }
 

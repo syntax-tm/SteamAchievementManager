@@ -7,6 +7,7 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:local="clr-namespace:SAM.WPF.Core.SplashScreen"
              xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}">
@@ -23,8 +24,8 @@
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="LayoutRoot" Property="Background" Value="#E5E5E5"/>
-                                <Setter TargetName="txt" Property="Foreground" Value="#000000"/>
+                                <Setter TargetName="LayoutRoot" Property="Background" Value="#53303030"/>
+                                <Setter TargetName="txt" Property="Foreground" Value="White"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -56,39 +57,54 @@
 
     <Grid Width="500" Height="300">
         <Grid Background="#1a1a1a">
-                <!--<StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
-                    <Button BorderBrush="Transparent" BorderThickness="0" Margin="3" Background="Transparent"
-                            Command="{Binding HideCommand}" Padding="0">
-                        <fa:ImageAwesome Icon="Minus" Foreground="#11eeeeee" Width="16" Height="16" />
-                    </Button>
-                    <Button BorderBrush="Transparent" BorderThickness="0" Margin="3" Background="Transparent"
-                            Command="{Binding ExitCommand}" Padding="0">
-                        <fa:ImageAwesome Icon="Times" Foreground="#11eeeeee" Width="16" Height="16" />
-                    </Button>
-                </StackPanel>-->
+            <!--<StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
+                <Button BorderBrush="Transparent" BorderThickness="0" Margin="3" Background="Transparent"
+                        Command="{Binding HideCommand}" Padding="0">
+                    <fa:ImageAwesome Icon="Minus" Foreground="#11eeeeee" Width="16" Height="16" />
+                </Button>
+                <Button BorderBrush="Transparent" BorderThickness="0" Margin="3" Background="Transparent"
+                        Command="{Binding ExitCommand}" Padding="0">
+                    <fa:ImageAwesome Icon="Times" Foreground="#11eeeeee" Width="16" Height="16" />
+                </Button>
+            </StackPanel>-->
+            <!--<Grid>
                 <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal" Margin="2">
                     <Button Style="{StaticResource MinimizeButtonStyle}" Command="{Binding HideCommand}" />
                     <Button Style="{StaticResource CloseButtonStyle}" Command="{Binding ExitCommand}" />
                 </StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <fa:ImageAwesome Icon="Steam" Foreground="#43FFFFFF" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-                </Grid>
-                <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-                    <StackPanel Orientation="Vertical" Margin="0,0,8,0" VerticalAlignment="Bottom">
-                        <TextBlock Text="Steam Achievement Manager" FontSize="22" Margin="2" HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom" Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
-                        <TextBlock Text="{Binding Status, Mode=OneWay}"
-                                   Visibility="{Binding ShowStatus, Mode=OneWay, Converter={dxmvvm:BooleanToVisibilityConverter}}"
-                                   FontSize="20" Margin="2" HorizontalAlignment="Right"
-                                   TextWrapping="Wrap" Opacity="0.8"
-                                   Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
-                    </StackPanel>
-                    <mah:MetroProgressBar IsIndeterminate="True" Margin="10" HorizontalAlignment="Stretch" Foreground="White" />
-                </StackPanel>
+            </Grid>-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <iconPacks:PackIconFontAwesome Kind="SteamSymbolBrands" Margin="0" Height="300" Width="300"
+                                            HorizontalAlignment="Left" HorizontalContentAlignment="Left">
+                    <iconPacks:PackIconFontAwesome.Style>
+                        <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
+                            <Setter Property="Opacity" Value="0.1" />
+                            <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.IdealForeground}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.12" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </iconPacks:PackIconFontAwesome.Style>
+                </iconPacks:PackIconFontAwesome>
             </Grid>
+            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Vertical" Margin="0,0,8,0" VerticalAlignment="Bottom">
+                    <TextBlock Text="Steam Achievement Manager" FontSize="26" Margin="2" HorizontalAlignment="Right"
+                               VerticalAlignment="Bottom" Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Status, Mode=OneWay}"
+                               Visibility="{Binding ShowStatus, Mode=OneWay, Converter={dxmvvm:BooleanToVisibilityConverter}}"
+                               FontSize="20" Margin="2" HorizontalAlignment="Right"
+                               TextWrapping="Wrap" Opacity="0.8"
+                               Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
+                </StackPanel>
+                <mah:MetroProgressBar IsIndeterminate="True" Margin="10" HorizontalAlignment="Stretch" Foreground="White" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>
