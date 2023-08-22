@@ -17,9 +17,8 @@
                     <Setter.Value>
                         <ControlTemplate>
                             <Grid>
-                                <iconPacks:PackIconMaterial Kind="Loading" Spin="True" SpinDuration="10" Height="32" Width="32"
-                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                 Foreground="{StaticResource TextFillColorLightPrimaryBrush}"/>
+                                <ui:ProgressRing IsIndeterminate="True" VerticalAlignment="Center"
+                                                 HorizontalAlignment="Center" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
