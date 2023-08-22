@@ -8,7 +8,6 @@ using System.Threading;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
-using SAM.API;
 using SAM.Core.Extensions;
 
 namespace SAM.Core
@@ -139,11 +138,9 @@ namespace SAM.Core
             }
         }
         
-        public void LoadClientInfo(Client client = null)
+        public void LoadClientInfo()
         {
-            client ??= SteamClientManager.Default;
-
-            Name = client.GetAppName(Id);
+            Name = SteamClientManager.Default.GetAppName(Id);
 
             if (string.IsNullOrEmpty(Name)) return;
 
@@ -186,20 +183,26 @@ namespace SAM.Core
             }
         }
 
-        private void LoadImages(Client client = null)
+        private void LoadImages()
         {
-            client ??= SteamClientManager.Default;
-
-            var iconName = client.GetAppIcon(Id);
-            if (!string.IsNullOrEmpty(iconName))
+            try
             {
-                Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
+                var iconName = SteamClientManager.Default.GetAppIcon(Id);
+                if (!string.IsNullOrEmpty(iconName))
+                {
+                    Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
+                }
+
+                var appLogo = SteamClientManager.Default.GetAppLogo(Id);
+                if (!string.IsNullOrEmpty(appLogo))
+                {
+                    Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);
+                }
             }
-
-            var appLogo = client.SteamApps001.GetAppLogo(Id);
-            if (!string.IsNullOrEmpty(appLogo))
+            catch (Exception e)
             {
-                Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);
+                var message = $"An error occurred loading the images for {Name} ({Id}). {e.Message}";
+                log.Error(message, e);
             }
         }
     }

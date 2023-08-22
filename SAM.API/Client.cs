@@ -31,23 +31,23 @@ namespace SAM.API
 
         public void Initialize(long appId)
         {
-            if (string.IsNullOrEmpty(Steam.GetInstallPath())) throw new ClientInitializeException(ClientInitializeFailure.GetInstallPath, "failed to get Steam install path");
+            if (string.IsNullOrEmpty(Steam.GetInstallPath())) throw new ClientInitializeException(ClientInitFailure.GetInstallPath, "failed to get Steam install path");
 
-            if (appId != 0) Environment.SetEnvironmentVariable("SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
+            if (appId != 0) Environment.SetEnvironmentVariable(@"SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
 
-            if (Steam.Load() == false) throw new ClientInitializeException(ClientInitializeFailure.Load, "failed to load SteamClient");
+            if (Steam.Load() == false) throw new ClientInitializeException(ClientInitFailure.Load, "failed to load SteamClient");
 
             SteamClient = Steam.CreateInterface<SteamClient018>("SteamClient018");
-            if (SteamClient == null) throw new ClientInitializeException(ClientInitializeFailure.CreateSteamClient, "failed to create ISteamClient018");
+            if (SteamClient == null) throw new ClientInitializeException(ClientInitFailure.CreateSteamClient, "failed to create ISteamClient018");
 
             _Pipe = SteamClient.CreateSteamPipe();
-            if (_Pipe == 0) throw new ClientInitializeException(ClientInitializeFailure.CreateSteamPipe, "failed to create pipe");
+            if (_Pipe == 0) throw new ClientInitializeException(ClientInitFailure.CreateSteamPipe, "failed to create pipe");
 
             _User = SteamClient.ConnectToGlobalUser(_Pipe);
-            if (_User == 0) throw new ClientInitializeException(ClientInitializeFailure.ConnectToGlobalUser, "failed to connect to global user");
+            if (_User == 0) throw new ClientInitializeException(ClientInitFailure.ConnectToGlobalUser, "failed to connect to global user");
 
             SteamUtils = SteamClient.GetSteamUtils004(_Pipe);
-            if (appId > 0 && SteamUtils.GetAppId() != (uint)appId) throw new ClientInitializeException(ClientInitializeFailure.AppIdMismatch, "appID mismatch");
+            if (appId > 0 && SteamUtils.GetAppId() != (uint)appId) throw new ClientInitializeException(ClientInitFailure.AppIdMismatch, "appID mismatch");
 
             SteamUser = SteamClient.GetSteamUser012(_User, _Pipe);
             SteamUserStats = SteamClient.GetSteamUserStats006(_User, _Pipe);

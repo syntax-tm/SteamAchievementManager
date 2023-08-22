@@ -19,7 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.datagrid.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.expander.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/SAM.WPF.Core;component/Styles/AllResources.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <dxmvvm:BooleanToObjectConverter x:Key="UnlockedConverter" TrueValue="Unlocked" FalseValue="Locked" />
             <Style x:Key="GroupHeaderTextBlockStyle" TargetType="{x:Type TextBlock}">

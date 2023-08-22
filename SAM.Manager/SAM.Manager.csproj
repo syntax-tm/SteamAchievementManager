@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="SAM.Manager.csproj.DotSettings" />
+    <None Remove="SAM.WPF.Manager.csproj.DotSettings" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +36,7 @@
     <PackageReference Include="MahApps.Metro.IconPacks.MaterialLight" Version="4.11.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    <PackageReference Include="TextCopy" Version="5.0.0" />
+    <PackageReference Include="TextCopy" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
