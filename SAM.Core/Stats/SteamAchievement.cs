@@ -9,6 +9,7 @@ namespace SAM.Core.Stats
     [DebuggerDisplay("{Name} ({Id})")]
     public class SteamAchievement : BindableBase
     {
+        private readonly bool _isLoading = true;
 
         public uint GameId { get; }
         public string Id => AchievementInfo.Id;
@@ -16,6 +17,7 @@ namespace SAM.Core.Stats
         public string IconNormalName => AchievementInfo.IconNormal;
         public string Name => AchievementInfo.Name;
         public string Description => AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : AchievementInfo.Description;
+        public string FullDescription => AchievementInfo.Description;
         public int Permission => AchievementInfo.Permission;
         public bool OriginalLockState
         {
@@ -71,11 +73,13 @@ namespace SAM.Core.Stats
             GameId = gameId;
             AchievementInfo = info;
             AchievementDefinition = definition;
-
-            IsAchieved = info.IsAchieved;
+            
             OriginalLockState = info.IsAchieved;
+            IsAchieved = info.IsAchieved;
 
             DownloadIcons();
+
+            _isLoading = false;
         }
 
         public void Unlock()
@@ -133,6 +137,8 @@ namespace SAM.Core.Stats
 
         private void OnIsAchievedChanged()
         {
+            if (_isLoading) return;
+
             RefreshImage();
 
             IsModified = IsAchieved != OriginalLockState;

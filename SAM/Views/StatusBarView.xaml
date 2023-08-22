@@ -63,7 +63,8 @@
                                    ContentStringFormat="{}Loading... {0}"
                                    Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
                     <StatusBarItem Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}">
-                        <ui:Button Content="Refresh" Icon="ArrowReset20" Appearance="Primary" />
+                        <ui:Button Content="Refresh" Icon="ArrowReset20" Appearance="Primary"
+                                   Command="{Binding RefreshCommand}" IsEnabled="False" />
                     </StatusBarItem>
                 </StackPanel>
             </StatusBarItem>

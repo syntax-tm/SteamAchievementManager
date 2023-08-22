@@ -12,11 +12,10 @@ namespace SAM.Core.ViewModels
     {
         protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
         
-        private readonly CollectionViewSource _itemsViewSource;
-        private readonly bool _loading = true;
+        private CollectionViewSource _itemsViewSource;
+        private bool _loading = true;
 
-        public virtual bool EnableGrouping { get; set; } = true;
-        public virtual int DisplayColumns { get; set; }
+        public virtual bool EnableGrouping { get; set; }
         public virtual string FilterText { get; set; }
         public virtual string FilterNormal { get; set; }
         public virtual string FilterDemos { get; set; }
@@ -34,6 +33,38 @@ namespace SAM.Core.ViewModels
 
         protected HomeViewModel()
         {
+            Refresh();
+        }
+        
+        public static HomeViewModel Create()
+        {
+            return ViewModelSource.Create(() => new HomeViewModel());
+        }
+
+        private void ItemsViewSourceOnFilter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
+
+            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
+            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText);
+            var isJunkFiltered = !FilterJunk || app.IsJunk;
+
+            e.Accepted = isNameMatch && isJunkFiltered;
+        }
+
+        public void Loaded()
+        {
+        }
+
+        public void Refresh(bool force = true)
+        {
+            _loading = true;
+
+            if (force)
+            {
+                //SteamLibraryManager.Refresh();
+            }
+
             Library = SteamLibraryManager.DefaultLibrary;
             
             _itemsViewSource = new ()
@@ -56,29 +87,7 @@ namespace SAM.Core.ViewModels
                 _itemsViewSource.IsLiveGroupingRequested = false;
             }
 
-            DisplayColumns = 6;
-            
             _loading = false;
-        }
-
-        private void ItemsViewSourceOnFilter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
-
-            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
-            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText);
-            var isJunkFiltered = !FilterJunk || app.IsJunk;
-
-            e.Accepted = isNameMatch && isJunkFiltered;
-        }
-
-        public static HomeViewModel Create()
-        {
-            return ViewModelSource.Create(() => new HomeViewModel());
-        }
-
-        public void Loaded()
-        {
         }
 
         protected void OnFilterTextChanged()

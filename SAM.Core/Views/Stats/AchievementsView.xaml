@@ -9,6 +9,8 @@
              xmlns:vm="clr-namespace:SAM.Core.ViewModels"
              xmlns:stats="clr-namespace:SAM.Core.Stats"
              xmlns:converters="clr-namespace:SAM.Core.Converters"
+             xmlns:views="clr-namespace:SAM.Core.Views"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
@@ -17,8 +19,6 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.datagrid.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.expander.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <dxmvvm:BooleanToObjectConverter x:Key="UnlockedConverter" TrueValue="Unlocked" FalseValue="Locked" />
@@ -42,13 +42,14 @@
 
     <Grid>
         <DataGrid ItemsSource="{Binding Source={StaticResource AchievementCollection}}"
+                  SelectedItem="{Binding SelectedAchievement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False" HeadersVisibility="None"
                   CanUserAddRows="False" SelectionMode="Single"
                   EnableRowVirtualization="False" EnableColumnVirtualization="False">
             <DataGrid.RowStyle>
                     <Style TargetType="{x:Type DataGridRow}">
                         <Setter Property="Padding" Value="1" />
-                        <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimary}" />
+                        <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWayToSource}" />
                         <Setter Property="ToolTip">
                             <Setter.Value>
@@ -58,25 +59,28 @@
                                         <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontStyle="Italic" />
                                         <Separator Margin="0,6,0,4"
                                                    Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}" />
-                                        <TextBlock Text="Unsaved change."
-                                                   Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}">
-                                            <TextBlock.Foreground>
-                                                <SolidColorBrush Opacity="0.7" Color="{DynamicResource PaletteOrangeColor}" />
-                                            </TextBlock.Foreground>
-                                        </TextBlock>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ui:FontIcon Glyph="&#xE7BA;"
+                                                         Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}"
+                                                         Foreground="{StaticResource PaletteOrangeBrush}"/>
+                                            <TextBlock Text="Unsaved change." Foreground="{StaticResource PaletteOrangeBrush}"
+                                                       Margin="5,0"
+                                                       Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}">
+                                            </TextBlock>
+                                        </StackPanel>
                                     </StackPanel>
                                 </Grid>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource TextFillColorLightPrimary}" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource PaletteLightBlueColor}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+                                <Setter Property="Background" Value="{StaticResource PaletteBlueBrush}" />
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Padding" Value="0" />
                             </Trigger>
                             <DataTrigger Binding="{Binding IsModified}" Value="False">
-                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                             </DataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
@@ -84,18 +88,21 @@
                                     <Condition Binding="{Binding IsSelected}" Value="False" />
                                     <Condition Binding="{Binding IsModified}" Value="False" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
-                                <Setter Property="Background" Value="{DynamicResource PaletteLightBlueColor}" />
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteBlueColor}" />
+                                    </Setter.Value>
+                                </Setter>
                             </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
                                     <Condition Binding="{Binding IsModified}" Value="True" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <SolidColorBrush Opacity="0.7" Color="{DynamicResource PaletteOrangeColor}" />
+                                        <SolidColorBrush Opacity="0.4" Color="{StaticResource PaletteOrangeColor}" />
                                     </Setter.Value>
                                 </Setter>
                             </MultiDataTrigger>
@@ -104,13 +111,12 @@
                                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
                                     <Condition Binding="{Binding IsModified}" Value="True" />
                                 </MultiDataTrigger.Conditions>
-                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorLightPrimary}" />
+                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                                 <Setter Property="Background">
                                     <Setter.Value>
-                                        <SolidColorBrush Opacity="0.9" Color="{DynamicResource PaletteOrangeColor}" />
+                                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteOrangeColor}" />
                                     </Setter.Value>
                                 </Setter>
-                                <Setter Property="BorderBrush" Value="{DynamicResource TextFillColorLightPrimary}" />
                             </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -164,10 +170,35 @@
                                                Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
                                 </Grid>
                                 <Grid Grid.Row="1">
-                                    <TextBlock Text="{Binding Description, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
                                                TextWrapping="Wrap" FontSize="{StaticResource SmallFontSize}"
-                                               Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
+                                               Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Text" Value="{Binding Description}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:AchievementsView}}, Path=DataContext.ShowHidden}"
+                                                                 Value="True">
+                                                        <Setter Property="Text" Value="{Binding FullDescription}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
                                 </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="50">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type stats:SteamAchievement}">
+                            <Grid>
+                                <Viewbox Margin="15">
+                                    <ui:FontIcon Glyph="&#xE7BA;"
+                                                 Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}"
+                                                 Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}"/>
+                                </Viewbox>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

@@ -15,62 +15,19 @@ namespace SAM.Core
         public static void SaveImage(string fileName, Image img, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
-
-            //if (isoStorage.FileExists(fileName))
-            //{
-            //    if (!overwrite) throw new ArgumentException(nameof(fileName));
-            //    isoStorage.DeleteFile(fileName);
-            //}
-
-            //using var file = isoStorage.CreateFile(fileName);
-
+            
             using var isoStorage = GetStore();
             using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
 
             img.Save(file, img.RawFormat);
-
-            //using var file = isoStorage.CreateFile(fileName);
-
-            //IImageEncoder encoder;
-
-            //var ext = Path.GetExtension(fileName);
-
-            //switch (ext)
-            //{
-            //    case "bmp":
-            //        encoder = new BmpEncoder();
-            //        break;
-            //    case "jpg":
-            //    case "jpeg":
-            //        encoder = new JpegEncoder();
-            //        break;
-            //    case "png":
-            //        encoder = new PngEncoder();
-            //        break;
-            //    default:
-            //        throw new ArgumentOutOfRangeException(nameof(ext), ext, $"'{ext}' file type is not supported.");
-            //}
-
-            //isImg.Save(file, encoder);
-
-            //using var writer = new StreamWriter(file);
-            //img.Save(file, img.RawFormat);
         }
 
         public static void SaveText(string fileName, string text, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
-
-            //if (isoStorage.FileExists(fileName))
-            //{
-            //    if (!overwrite) throw new ArgumentException(nameof(fileName));
-            //    isoStorage.DeleteFile(fileName);
-            //}
-
-            //using var file = isoStorage.CreateFile(fileName);
-
+            
             using var isoStorage = GetStore();
-            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, isoStorage);
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
             using var writer = new StreamWriter(file);
 
             writer.WriteLine(text);
@@ -80,22 +37,15 @@ namespace SAM.Core
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
-            using (var isoStorage = GetStore())
-            {
-                if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
+            using var isoStorage = GetStore();
 
-                //using var file = isoStorage.OpenFile(fileName, FileMode.Open, FileAccess.Read);
-                //using var reader = new StreamReader(file);
+            if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
+            
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
 
-                using (var file = new IsolatedStorageFileStream(fileName, FileMode.Open, FileAccess.ReadWrite, isoStorage))
-                {
-                    var img = Image.FromStream(file);
-
-                    //var bmp = new Bitmap(file); //Image.FromStream(file);
-
-                    return img;
-                }
-            }
+            var img = Image.FromStream(file);
+            
+            return img;
         }
 
         public static string GetTextFile(string fileName)
@@ -105,7 +55,7 @@ namespace SAM.Core
             using var isoStorage = GetStore();
             if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
 
-            using var file = new IsolatedStorageFileStream(fileName, FileMode.Open, FileAccess.ReadWrite, isoStorage);
+            using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
             using var reader = new StreamReader(file);
             var fileText = reader.ReadToEnd();
 
@@ -131,7 +81,7 @@ namespace SAM.Core
             return isoStorage.FileExists(fileName);
         }
 
-        private static readonly object _initLock = new object();
+        private static readonly object _initLock = new ();
 
         private static bool _initialized;
 
