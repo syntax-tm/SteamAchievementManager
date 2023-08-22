@@ -11,10 +11,9 @@ on:
     branches: [ "master" ]
 
 env:
-  project: .\SAM\SAM.csproj
-  configuration: Release
-  platform: x86
-  output: publish
+  CONFIGURATION: Release
+  PLATFORM: x86
+  OUTPUT: publish
 
 jobs:
   build:
@@ -30,12 +29,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish
-      run: dotnet publish $project -c $configuration -a $platform -o $output
+      run: dotnet publish .\SAM\SAM.csproj -c $CONFIGURATION -a $PLATFORM -o $OUTPUT
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
         name: SAM
-        path: $output
+        path: $OUTPUT
         if-no-files-found: error
