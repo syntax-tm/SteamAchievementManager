@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -33,5 +34,15 @@ namespace SAM.WPF.Core.Converters
         {
             throw new NotImplementedException();
         }
+    }
+
+    public class BitmapToImageSourceConverterExtension : MarkupExtension
+    {
+        public IValueConverter ItemConverter { get; set; }
+
+        public BitmapToImageSourceConverterExtension() { }
+        public BitmapToImageSourceConverterExtension(IValueConverter itemConverter) => ItemConverter = itemConverter;
+
+        public override object ProvideValue(IServiceProvider serviceProvider) => new BitmapToImageSourceConverter();
     }
 }

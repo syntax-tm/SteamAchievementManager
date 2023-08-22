@@ -8,6 +8,6 @@
         CreateSteamClient,
         CreateSteamPipe,
         ConnectToGlobalUser,
-        AppIdMismatch,
+        AppIdMismatch
     }
 }

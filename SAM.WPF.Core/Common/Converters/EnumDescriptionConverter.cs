@@ -29,11 +29,7 @@ namespace SAM.WPF.Core.Converters
     {
         public IValueConverter ItemConverter { get; set; }
 
-        public EnumDescriptionConverterExtension()
-        {
-
-        }
-
+        public EnumDescriptionConverterExtension() { }
         public EnumDescriptionConverterExtension(IValueConverter itemConverter)
         {
             ItemConverter = itemConverter;

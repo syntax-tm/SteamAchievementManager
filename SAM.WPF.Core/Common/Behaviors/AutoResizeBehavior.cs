@@ -8,7 +8,7 @@ namespace SAM.WPF.Core.Behaviors
     public class AutoResizeBehavior : Behavior<UniformGrid>
     {
         public static readonly DependencyProperty MaxItemWidthProperty =
-            DependencyProperty.Register("MaxItemWidth", typeof(double), typeof(AutoResizeBehavior),
+            DependencyProperty.Register(nameof(MaxItemWidth), typeof(double), typeof(AutoResizeBehavior),
             new PropertyMetadata());
 
         public double MaxItemWidth {

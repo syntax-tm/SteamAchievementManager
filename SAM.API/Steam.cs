@@ -2,25 +2,19 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+using SAM.API.Types;
 
 namespace SAM.API
 {
     public static class Steam
     {
-        private struct Native
-        {
-            [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-            internal static extern IntPtr GetProcAddress(IntPtr module, string name);
+        private static IntPtr _Handle = IntPtr.Zero;
 
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
+        private static NativeCreateInterface _CallCreateInterface;
 
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool SetDllDirectory(string path);
+        private static NativeSteamGetCallback _CallSteamBGetCallback;
 
-            internal const uint LoadWithAlteredSearchPath = 8;
-        }
+        private static NativeSteamFreeLastCallback _CallSteamFreeLastCallback;
 
         private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
         {
@@ -30,12 +24,11 @@ namespace SAM.API
 
         private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
             where TDelegate : class
-        { 
+        {
             return GetExportDelegate<TDelegate>(module, name) as TDelegate;
+
             //return (TDelegate)((object)GetExportDelegate<TDelegate>(module, name));
         }
-
-        private static IntPtr _Handle = IntPtr.Zero;
 
         public static string GetInstallPath()
         {
@@ -48,42 +41,22 @@ namespace SAM.API
             //return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
         }
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        private delegate IntPtr NativeCreateInterface(string version, IntPtr returnCode);
-
-        private static NativeCreateInterface _CallCreateInterface;
-
         public static TClass CreateInterface<TClass>(string version)
             where TClass : INativeWrapper, new()
         {
             var address = _CallCreateInterface(version, IntPtr.Zero);
 
-            if (address == IntPtr.Zero)
-            {
-                return default;
-            }
+            if (address == IntPtr.Zero) return default;
 
             var rez = new TClass();
             rez.SetupFunctions(address);
             return rez;
         }
 
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeSteamGetCallback(int pipe, out Types.CallbackMessage message, out int call);
-
-        private static NativeSteamGetCallback _CallSteamBGetCallback;
-
-        public static bool GetCallback(int pipe, out Types.CallbackMessage message, out int call)
+        public static bool GetCallback(int pipe, out CallbackMessage message, out int call)
         {
             return _CallSteamBGetCallback(pipe, out message, out call);
         }
-
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeSteamFreeLastCallback(int pipe);
-
-        private static NativeSteamFreeLastCallback _CallSteamFreeLastCallback;
 
         public static bool FreeLastCallback(int pipe)
         {
@@ -92,16 +65,10 @@ namespace SAM.API
 
         public static bool Load()
         {
-            if (_Handle != IntPtr.Zero)
-            {
-                return true;
-            }
+            if (_Handle != IntPtr.Zero) return true;
 
             var path = GetInstallPath();
-            if (path == null)
-            {
-                return false;
-            }
+            if (path == null) return false;
 
             Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
 
@@ -123,31 +90,45 @@ namespace SAM.API
 #endif
 
             var module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
-            if (module == IntPtr.Zero)
-            {
-                return false;
-            }
+            if (module == IntPtr.Zero) return false;
 
             _CallCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
-            if (_CallCreateInterface == null)
-            {
-                return false;
-            }
+            if (_CallCreateInterface == null) return false;
 
             _CallSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
-            if (_CallSteamBGetCallback == null)
-            {
-                return false;
-            }
+            if (_CallSteamBGetCallback == null) return false;
 
             _CallSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
-            if (_CallSteamFreeLastCallback == null)
-            {
-                return false;
-            }
+            if (_CallSteamFreeLastCallback == null) return false;
 
             _Handle = module;
             return true;
         }
+
+        private struct Native
+        {
+            [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
+            internal static extern IntPtr GetProcAddress(IntPtr module, string name);
+
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            internal static extern IntPtr LoadLibraryEx(string path, IntPtr file, uint flags);
+
+            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool SetDllDirectory(string path);
+
+            internal const uint LoadWithAlteredSearchPath = 8;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        private delegate IntPtr NativeCreateInterface(string version, IntPtr returnCode);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private delegate bool NativeSteamGetCallback(int pipe, out CallbackMessage message, out int call);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private delegate bool NativeSteamFreeLastCallback(int pipe);
     }
 }

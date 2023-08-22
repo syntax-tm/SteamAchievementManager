@@ -37,6 +37,11 @@ namespace SAM.WPF.Core
             get => GetProperty(() => GameInfoType);
             set => SetProperty(() => GameInfoType, value);
         }
+        public bool IsJunk => GameInfoType == GameInfoType.Junk;
+        public bool IsDemo => GameInfoType == GameInfoType.Demo;
+        public bool IsNormal => GameInfoType == GameInfoType.Normal;
+        public bool IsTool => GameInfoType == GameInfoType.Tool;
+        public bool IsMod => GameInfoType == GameInfoType.Mod;
         public virtual bool IsLoading
         {
             get => GetProperty(() => IsLoading);

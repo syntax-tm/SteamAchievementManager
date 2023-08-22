@@ -4,15 +4,14 @@ namespace SAM.API.Stats
 {
     public class FloatStatDefinition : StatDefinition
     {
-        public float MinValue;
-        public float MaxValue;
-        public float MaxChange;
-        public bool IncrementOnly;
         public float DefaultValue;
+        public bool IncrementOnly;
+        public float MaxChange;
+        public float MaxValue;
+        public float MinValue;
 
         public FloatStatDefinition()
         {
-
         }
 
         public FloatStatDefinition(KeyValue stat, string currentLanguage)

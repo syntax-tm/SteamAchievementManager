@@ -1,33 +1,12 @@
-﻿/* Copyright (c) 2019 Rick (rick 'at' gibbed 'dot' us)
- * 
- * This software is provided 'as-is', without any express or implied
- * warranty. In no event will the authors be held liable for any damages
- * arising from the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose,
- * including commercial applications, and to alter it and redistribute it
- * freely, subject to the following restrictions:
- * 
- * 1. The origin of this software must not be misrepresented; you must not
- *    claim that you wrote the original software. If you use this software
- *    in a product, an acknowledgment in the product documentation would
- *    be appreciated but is not required.
- * 
- * 2. Altered source versions must be plainly marked as such, and must not
- *    be misrepresented as being the original software.
- * 
- * 3. This notice may not be removed or altered from any source
- *    distribution.
- */
-
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 
 namespace SAM.API.Wrappers
 {
     public class SteamUserStats007 : NativeWrapper<ISteamUserStats007>
     {
-        #region RequestCurrentStats
+#region RequestCurrentStats
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeRequestCurrentStats(IntPtr self);
@@ -36,9 +15,11 @@ namespace SAM.API.Wrappers
         {
             return Call<bool, NativeRequestCurrentStats>(Functions.RequestCurrentStats, ObjectAddress);
         }
-        #endregion
 
-        #region GetStatValue (int)
+#endregion
+
+#region GetStatValue (int)
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeGetStatInt(IntPtr self, IntPtr name, out int data);
@@ -51,9 +32,11 @@ namespace SAM.API.Wrappers
                 return call(ObjectAddress, nativeName.Handle, out value);
             }
         }
-        #endregion
 
-        #region GetStatValue (float)
+#endregion
+
+#region GetStatValue (float)
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeGetStatFloat(IntPtr self, IntPtr name, out float data);
@@ -66,9 +49,11 @@ namespace SAM.API.Wrappers
                 return call(ObjectAddress, nativeName.Handle, out value);
             }
         }
-        #endregion
 
-        #region SetStatValue (int)
+#endregion
+
+#region SetStatValue (int)
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeSetStatInt(IntPtr self, IntPtr name, int data);
@@ -84,9 +69,11 @@ namespace SAM.API.Wrappers
                     value);
             }
         }
-        #endregion
 
-        #region SetStatValue (float)
+#endregion
+
+#region SetStatValue (float)
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeSetStatFloat(IntPtr self, IntPtr name, float data);
@@ -102,9 +89,11 @@ namespace SAM.API.Wrappers
                     value);
             }
         }
-        #endregion
 
-        #region GetAchievement
+#endregion
+
+#region GetAchievement
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeGetAchievement(
@@ -120,9 +109,11 @@ namespace SAM.API.Wrappers
                 return call(ObjectAddress, nativeName.Handle, out isAchieved);
             }
         }
-        #endregion
 
-        #region SetAchievementState
+#endregion
+
+#region SetAchievementState
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeSetAchievement(IntPtr self, IntPtr name);
@@ -136,12 +127,10 @@ namespace SAM.API.Wrappers
             using (var nativeName = NativeStrings.StringToStringHandle(name))
             {
                 if (state == false)
-                {
                     return Call<bool, NativeClearAchievement>(
                         Functions.ClearAchievement,
                         ObjectAddress,
                         nativeName.Handle);
-                }
 
                 return Call<bool, NativeSetAchievement>(
                     Functions.SetAchievement,
@@ -149,9 +138,11 @@ namespace SAM.API.Wrappers
                     nativeName.Handle);
             }
         }
-        #endregion
 
-        #region StoreStats
+#endregion
+
+#region StoreStats
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeStoreStats(IntPtr self);
@@ -160,9 +151,11 @@ namespace SAM.API.Wrappers
         {
             return Call<bool, NativeStoreStats>(Functions.StoreStats, ObjectAddress);
         }
-        #endregion
 
-        #region GetAchievementIcon
+#endregion
+
+#region GetAchievementIcon
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate int NativeGetAchievementIcon(IntPtr self, IntPtr name);
 
@@ -176,9 +169,11 @@ namespace SAM.API.Wrappers
                     nativeName.Handle);
             }
         }
-        #endregion
 
-        #region GetAchievementDisplayAttribute
+#endregion
+
+#region GetAchievementDisplayAttribute
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         private delegate IntPtr NativeGetAchievementDisplayAttribute(IntPtr self, IntPtr name, IntPtr key);
 
@@ -195,9 +190,11 @@ namespace SAM.API.Wrappers
                 return NativeStrings.PointerToString(result);
             }
         }
-        #endregion
 
-        #region ResetAllStats
+#endregion
+
+#region ResetAllStats
+
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
         private delegate bool NativeResetAllStats(IntPtr self, [MarshalAs(UnmanagedType.I1)] bool achievementsToo);
@@ -209,6 +206,7 @@ namespace SAM.API.Wrappers
                 ObjectAddress,
                 achievementsToo);
         }
-        #endregion
+
+#endregion
     }
 }

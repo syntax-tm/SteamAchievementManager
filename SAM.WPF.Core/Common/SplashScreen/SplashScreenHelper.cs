@@ -13,15 +13,15 @@ namespace SAM.WPF.Core.SplashScreen
     {
 
         private static bool _isInitialized;
-        private static SplashScreenViewModel SplashScreenVm { get; set; }
-        private static MetroWindow _splashWindow;
         private static Thread _splashWindowThread;
+        private static MetroWindow _splashWindow;
+        private static SplashScreenViewModel _splashScreenVm;
         
         public static void Init()
         {
             if (_isInitialized) throw new ConfigurationErrorsException();
             
-            SplashScreenVm = SplashScreenViewModel.Create();
+            _splashScreenVm = SplashScreenViewModel.Create();
 
             _splashWindowThread = new Thread(ThreadStartingPoint);
             _splashWindowThread.SetApartmentState(ApartmentState.STA);
@@ -32,7 +32,7 @@ namespace SAM.WPF.Core.SplashScreen
 
         public static void SetStatus(string status = null)
         {
-            SplashScreenVm.Status = status;
+            _splashScreenVm.Status = status;
         }
 
         public static void Show(string status = null)
@@ -42,7 +42,7 @@ namespace SAM.WPF.Core.SplashScreen
                 Init();
             }
 
-            SplashScreenVm.Status = status;
+            _splashScreenVm.Status = status;
             
             _splashWindowThread.Start();
         }
@@ -60,7 +60,7 @@ namespace SAM.WPF.Core.SplashScreen
         private static void ThreadStartingPoint()
         {
             _splashWindow = new MetroWindow();
-            _splashWindow.DataContext = SplashScreenVm;
+            _splashWindow.DataContext = _splashScreenVm;
 
             _splashWindow.Title = "Steam Achievement Manager";
             _splashWindow.WindowStyle = WindowStyle.None;

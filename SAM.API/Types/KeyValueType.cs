@@ -10,6 +10,6 @@
         WideString = 5,
         Color = 6,
         UInt64 = 7,
-        End = 8,
+        End = 8
     }
 }
