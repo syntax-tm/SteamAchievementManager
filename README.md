@@ -1,5 +1,9 @@
 # Steam Achievement Manager
 
+<p align="center">
+  <img src="./resources/SAM_logo_black.svg">
+</p>
+
 ## Overview
 
 The Steam Achievement Manager lets you lock/unlock achievements for any currently supported app. Some games have achievements that are no longer reasonably, or actually, attainable. While SAM can be used to abuse the achiement system, it also lets people who do care about achievements unlock achievements that would otherwise be impossible. One great example is achievements requiring you to play multiplayer for a game that no longer has any active players. SAM is a potential solution for a game's poorly designed achievements.
