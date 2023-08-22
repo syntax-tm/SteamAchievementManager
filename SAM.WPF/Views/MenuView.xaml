@@ -4,11 +4,151 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.WPF.Views"
+             xmlns:fluent="clr-namespace:Fluent;assembly=Fluent"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Ribbon>
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}">
 
-        </Ribbon>
+    <UserControl.Resources>
+        <Style TargetType="{x:Type fa:ImageAwesome}">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Self}, Path=Width}" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
+        </Style>
+        <Style TargetType="{x:Type fluent:Button}">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Size" Value="Large" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
+        </Style>
+        <Style TargetType="{x:Type fluent:SplitButton}">
+            <Setter Property="HasTriangle" Value="True" />
+            <Setter Property="Padding" Value="2" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Size" Value="Middle" />
+            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
+            <Style.Triggers>
+                <Trigger Property="IsButtonEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type fluent:BackstageTabControl}"
+               BasedOn="{StaticResource {x:Type fluent:BackstageTabControl}}">
+            <Setter Property="SelectedContentMargin" Value="0" />
+            <Setter Property="ItemsPanelBackground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+        </Style>
+        <Style TargetType="{x:Type fluent:MenuItem}">
+            <Setter Property="GroupName" Value="ColumnCount" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <fluent:Ribbon IsCollapsed="False" IsMouseWheelScrollingEnabled="True"
+                       IsDefaultContextMenuEnabled="True">
+            <fluent:RibbonTabItem Header="Home" KeyTip="H">
+                <fluent:RibbonGroupBox Header="Apps" IsLauncherEnabled="False">
+                    <fluent:RibbonGroupBox.Icon>
+                        <fa:ImageAwesome Icon="Desktop" />
+                    </fluent:RibbonGroupBox.Icon>
+                    <fluent:Button Header="Refresh">
+                        <fluent:Button.LargeIcon>
+                            <fa:ImageAwesome Icon="Refresh" />
+                        </fluent:Button.LargeIcon>
+                    </fluent:Button>
+                    <Separator Margin="4,0" />
+                    <fluent:DropDownButton Header="Hidden Apps" Size="Middle">
+                        <fluent:DropDownButton.Icon>
+                            <fa:ImageAwesome Icon="Lock" Width="10" />
+                        </fluent:DropDownButton.Icon>
+                        <fluent:MenuItem Header="Edit Hidden Apps">
+                            <fluent:MenuItem.Icon>
+                                <fa:ImageAwesome Icon="Edit" Width="14" />
+                            </fluent:MenuItem.Icon>
+                        </fluent:MenuItem>
+                        <fluent:MenuItem Header="Show Hidden Apps">
+                            <fluent:MenuItem.Icon>
+                                <fa:ImageAwesome Icon="List" Width="14" />
+                            </fluent:MenuItem.Icon>
+                        </fluent:MenuItem>
+                        <fluent:MenuItem Header="Reset Hidden Apps">
+                            <fluent:MenuItem.Icon>
+                                <fa:ImageAwesome Icon="Undo" Width="14" />
+                            </fluent:MenuItem.Icon>
+                        </fluent:MenuItem>
+                    </fluent:DropDownButton>
+                    <fluent:Button Header="Add Missing" Size="Middle">
+                        <fluent:Button.Icon>
+                            <fa:ImageAwesome Icon="SearchPlus" Width="10" Margin="-1,0,3,0" />
+                        </fluent:Button.Icon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Add Missing App"
+                                              Text="Manually add an application using it's Steam App ID." />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="View" IsLauncherEnabled="False">
+                    <fluent:Button Header="Sort" Size="Large">
+                        <fluent:Button.LargeIcon>
+                            <fa:ImageAwesome Icon="Sort" />
+                        </fluent:Button.LargeIcon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Sort Apps"
+                                              Text="Change the sorting sort field and direction of the app list." />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                    <fluent:Button Header="Filter" Size="Large">
+                        <fluent:Button.LargeIcon>
+                            <fa:ImageAwesome Icon="Filter" />
+                        </fluent:Button.LargeIcon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Filter Apps"
+                                              Text="Apply or remove filters for the app list." />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                </fluent:RibbonGroupBox>
+                <fluent:RibbonGroupBox Header="Help">
+                    <fluent:Button Header="Profile">
+                        <fluent:Button.LargeIcon>
+                            <fa:ImageAwesome Icon="User" />
+                        </fluent:Button.LargeIcon>
+                        <fluent:Button.ToolTip>
+                            <fluent:ScreenTip Title="Steam Account"
+                                              Text="Shows information about the currently connected Steam account." />
+                        </fluent:Button.ToolTip>
+                    </fluent:Button>
+                    <fluent:Button Header="Issues">
+                        <fluent:Button.LargeIcon>
+                            <fa:ImageAwesome Icon="Bug" />
+                        </fluent:Button.LargeIcon>
+                    </fluent:Button>
+                    <fluent:Button Header="GitHub">
+                        <fluent:Button.LargeIcon>
+                            <fa:ImageAwesome Icon="Github" />
+                        </fluent:Button.LargeIcon>
+                    </fluent:Button>
+                    <Separator Margin="5,0" />
+                    <fluent:Button Size="Middle" Header="About">
+                        <fluent:Button.Icon>
+                            <fa:ImageAwesome Icon="InfoCircle" Width="13" />
+                        </fluent:Button.Icon>
+                    </fluent:Button>
+                    <fluent:Button Size="Middle" Header="Check for Updates">
+                        <fluent:Button.Icon>
+                            <fa:ImageAwesome Icon="Download" Width="13" />
+                        </fluent:Button.Icon>
+                    </fluent:Button>
+                </fluent:RibbonGroupBox>
+            </fluent:RibbonTabItem>
+            <fluent:RibbonTabItem Header="Help" IsSeparatorVisible="False">
+                
+            </fluent:RibbonTabItem>
+        </fluent:Ribbon>
     </Grid>
 </UserControl>

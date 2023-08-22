@@ -42,7 +42,7 @@ namespace SAM.WPF
 
                 IsolatedStorageManager.Init();
 
-                ThemeHelper.SetTheme();
+                ThemeHelper.SetTheme(this);
                 
                 // create the default Client instance
                 SteamClientManager.Init(0);

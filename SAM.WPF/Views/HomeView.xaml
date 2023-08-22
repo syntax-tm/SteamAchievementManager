@@ -15,9 +15,6 @@
 
     <UserControl.Resources>
         <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
-        <dxmvvm:FormatStringConverter x:Key="DemoCountFormatConverter" FormatString="{}{0} Demos"/>
-        <dxmvvm:FormatStringConverter x:Key="JunkCountFormatConverter" FormatString="{}{0} Junk"/>
-
         <Style TargetType="{x:Type StatusBarItem}">
             <Setter Property="Margin" Value="4" />
             <Setter Property="FontSize" Value="13" />
@@ -34,7 +31,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <local:MenuView />
         <library:LibraryItemsControlView Grid.Row="1" />
         <StatusBar Grid.Row="2" BorderBrush="#878787" Background="{DynamicResource MahApps.Brushes.WindowTitle}"
                    BorderThickness="0,1,0,0" Margin="-1,0,-1,-1"

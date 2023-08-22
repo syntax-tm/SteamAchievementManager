@@ -24,7 +24,7 @@ namespace SAM.API
 
         private static Delegate GetExportDelegate<TDelegate>(IntPtr module, string name)
         {
-            IntPtr address = Native.GetProcAddress(module, name);
+            var address = Native.GetProcAddress(module, name);
             return address == IntPtr.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
         }
 
@@ -38,14 +38,11 @@ namespace SAM.API
 
         public static string GetInstallPath()
         {
-            using (var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32))
-            {
-                using (var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false))
-                {
-                    var path = (string)clsid32.GetValue("InstallPath");
-                    return path;
-                }
-            }
+            using var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+            using var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false);
+
+            var path = (string) clsid32.GetValue("InstallPath");
+            return path;
 
             //return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
         }
@@ -58,11 +55,11 @@ namespace SAM.API
         public static TClass CreateInterface<TClass>(string version)
             where TClass : INativeWrapper, new()
         {
-            IntPtr address = _CallCreateInterface(version, IntPtr.Zero);
+            var address = _CallCreateInterface(version, IntPtr.Zero);
 
             if (address == IntPtr.Zero)
             {
-                return default(TClass);
+                return default;
             }
 
             var rez = new TClass();
@@ -99,7 +96,7 @@ namespace SAM.API
                 return true;
             }
 
-            string path = GetInstallPath();
+            var path = GetInstallPath();
             if (path == null)
             {
                 return false;
@@ -124,7 +121,7 @@ namespace SAM.API
 #error Unknown project platform. Target either x86 for 32-bit or x64 for 64-bit.
 #endif
 
-            IntPtr module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
+            var module = Native.LoadLibraryEx(path, IntPtr.Zero, Native.LoadWithAlteredSearchPath);
             if (module == IntPtr.Zero)
             {
                 return false;

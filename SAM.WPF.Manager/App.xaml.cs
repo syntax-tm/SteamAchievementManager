@@ -59,7 +59,7 @@ namespace SAM.WPF.Manager
 
                 IsolatedStorageManager.Init();
 
-                ThemeHelper.SetTheme();
+                ThemeHelper.SetTheme(this);
                 
                 SplashScreenHelper.Show("Loading game info...");
 
