@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F94F40D4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.UnitTests", "SAM.UnitTests\SAM.UnitTests.csproj", "{CE4B1B8F-B7CE-407C-82C3-9398E053535F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.WPF.Manager", "SAM.WPF.Manager\SAM.WPF.Manager.csproj", "{E9021D4E-7FF7-4975-A4DF-1AB2CC55A706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.WPF.Manager", "SAM.WPF.Manager\SAM.WPF.Manager.csproj", "{E9021D4E-7FF7-4975-A4DF-1AB2CC55A706}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

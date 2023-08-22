@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
@@ -37,6 +38,11 @@ namespace SAM.WPF.Core.SplashScreen
 
         public static void Show(string status = null)
         {
+            if (!_isInitialized)
+            {
+                Init();
+            }
+
             SplashScreenVm.Status = status;
             
             _splashWindowThread.Start();
@@ -46,6 +52,8 @@ namespace SAM.WPF.Core.SplashScreen
         {
             _splashWindow.Dispatcher.BeginInvoke(() =>
             {
+                Thread.Sleep(new TimeSpan(0, 0, 0, 1, 500));
+
                 _splashWindow.Close();
             });
         }
@@ -74,7 +82,7 @@ namespace SAM.WPF.Core.SplashScreen
 
             _splashWindow.Show();
 
-            System.Windows.Threading.Dispatcher.Run();
+            Dispatcher.Run();
         }
 
     }

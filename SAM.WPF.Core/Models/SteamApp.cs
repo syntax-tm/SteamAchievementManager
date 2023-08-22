@@ -2,9 +2,11 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.Text;
+using System.Threading;
+using System.Windows.Input;
 using DevExpress.Mvvm;
-using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.API;
 using SAM.WPF.Core.API.Steam;
@@ -19,46 +21,81 @@ namespace SAM.WPF.Core
         protected readonly ILog log = LogManager.GetLogger(nameof(SteamApp));
 
         //private bool _statsLoaded;
-        
+
+        private Process _managerProcess;
+
         public uint Id { get; }
-        public virtual string Name { get; set; }
-        public GameInfoType GameInfoType { get; set; }
-        public virtual bool IsLoading { get; set; }
-        public virtual bool Loaded { get; set; }
-        public virtual string Publisher { get; set; }
-        public virtual string Developer { get; set; }
-        public virtual SteamStoreApp StoreInfo { get; set; }
-        public virtual Image Icon { get; set; }
-        public virtual Image Header { get; set; }
-        //public virtual SteamStatsManager StatsManager { get; set; }
 
-        protected SteamApp(SupportedApp supportedApp)
+        public string Name
         {
-            Id = supportedApp.Id;
-            GameInfoType = supportedApp.GameInfoType;
-
-            Task.Run(Load).ConfigureAwait(false);
+            get => GetProperty(() => Name);
+            set => SetProperty(() => Name, value);
         }
+        public GameInfoType GameInfoType
+        {
+            get => GetProperty(() => GameInfoType);
+            set => SetProperty(() => GameInfoType, value);
+        }
+        public virtual bool IsLoading
+        {
+            get => GetProperty(() => IsLoading);
+            set => SetProperty(() => IsLoading, value);
+        }
+        public bool Loaded
+        {
+            get => GetProperty(() => Loaded);
+            set => SetProperty(() => Loaded, value);
+        }
+        public string Publisher
+        {
+            get => GetProperty(() => Publisher);
+            set => SetProperty(() => Publisher, value);
+        }
+        public string Developer 
+        {
+            get => GetProperty(() => Developer);
+            set => SetProperty(() => Developer, value);
+        }
+        public SteamStoreApp StoreInfo
+        {
+            get => GetProperty(() => StoreInfo);
+            set => SetProperty(() => StoreInfo, value);
+        }
+        public Image Icon
+        {
+            get => GetProperty(() => Icon);
+            set => SetProperty(() => Icon, value);
+        }
+        public Image Header
+        {
+            get => GetProperty(() => Header);
+            set => SetProperty(() => Header, value);
+        }
+
+        public ICommand ManageAppCommand => new DelegateCommand(ManageApp);
 
         public SteamApp(uint id, GameInfoType type)
         {
             Id = id;
             GameInfoType = type;
 
-            //Task.Run(Load).ConfigureAwait(false);
-            
             Load();
         }
-
-        public static SteamApp Create(SupportedApp supportedApp)
+        
+        public SteamApp(SupportedApp supportedApp) 
+            : this(supportedApp.Id, supportedApp.GameInfoType)
         {
-            return ViewModelSource.Create(() => new SteamApp(supportedApp));
         }
 
-        //public static SteamApp Create(uint id, GameInfoType type)
-        //{
-        //    return ViewModelSource.Create(() => new SteamApp(id, type));
-        //}
+        public void ManageApp()
+        {
+            if (!Loaded) return;
+
+            if (_managerProcess == null || !_managerProcess.SetActive())
+            {
+                _managerProcess = SAMHelper.OpenManager(Id);
+            }
+        }
 
         public void Load()
         {
@@ -70,17 +107,16 @@ namespace SAM.WPF.Core
 
                 IsolatedStorageManager.CreateDirectory($@"apps\{Id}");
 
-                using var client = new Client();
-                client.Initialize(0);
+                //using var client = new Client();
+                //client.Initialize(0);
 
-                LoadDetails(client);
+                LoadClientInfo();
                 LoadStoreInfo();
-                LoadImages(client);
+                LoadImages();
             }
             catch (Exception e)
             {
-                log.Error(e);
-                throw;
+                log.Error($"An error occurred attempting to load app info for app id {Id}. {e.Message}", e);
             }
             finally
             {
@@ -88,44 +124,53 @@ namespace SAM.WPF.Core
                 IsLoading = false;
             }
         }
-
-        //public void LoadStats()
-        //{
-        //    if (_statsLoaded) return;
-
-        //    try
-        //    {
-        //        StatsManager = new SteamStatsManager(Id);
-        //        StatsManager.RefreshStats();
-
-        //        _statsLoaded = true;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        log.Error($"An error occurred loading the stats for app '{Id}'. {e.Message}", e);
-
-        //        throw;
-        //    }
-        //}
         
-        private void LoadDetails(Client steamClient)
+        public void LoadClientInfo(Client client = null)
         {
-            Name = steamClient.GetAppName(Id);
+            client ??= SteamClientManager.Default;
+
+            Name = client.GetAppName(Id);
         }
 
         private void LoadStoreInfo()
         {
-            StoreInfo = SteamworksManager.GetAppInfo(Id);
+            var retryTime = new TimeSpan(0, 1, 0);
 
-            if (StoreInfo == null) return;
+            while (StoreInfo == null)
+            {
+                try
+                {
+                    StoreInfo = SteamworksManager.GetAppInfo(Id);
 
-            Publisher = StoreInfo.Publishers.FirstOrDefault();
-            Developer = StoreInfo.Developers.FirstOrDefault();
+                    if (StoreInfo == null) return;
+
+                    Publisher = StoreInfo.Publishers.FirstOrDefault();
+                    Developer = StoreInfo.Developers.FirstOrDefault();
+                }
+                catch (WebException wex) when (((HttpWebResponse) wex.Response).StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    var retrySb = new StringBuilder();
+
+                    retrySb.Append($"Request for store info on app '{Id}' returned {nameof(HttpStatusCode)} {HttpStatusCode.TooManyRequests} for {nameof(HttpStatusCode.TooManyRequests)}. ");
+                    retrySb.Append($"Waiting {retryTime.TotalMinutes:0.#} minute(s) and then retrying...");
+
+                    log.Warn(retrySb);
+
+                    Thread.Sleep(retryTime);
+                }
+                catch (Exception e)
+                {
+                    log.Error($"An error occurred attempting to load the store info for app {Id}. {e.Message}", e);
+                    break;
+                }
+            }
         }
 
-        private void LoadImages(Client steamClient)
+        private void LoadImages(Client client = null)
         {
-            var iconName = steamClient.GetAppIcon(Id);
+            client ??= SteamClientManager.Default;
+
+            var iconName = client.GetAppIcon(Id);
             if (!string.IsNullOrEmpty(iconName))
             {
                 Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);

@@ -113,6 +113,7 @@ namespace SAM.WPF.Core.API.Steam
                 return storeApp;
             }
             catch (ArgumentNullException) { throw; }
+            catch (WebException) { throw; }
             catch (Exception e)
             {
                 log.Error(e);

@@ -6,14 +6,17 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:SAM.WPF.ViewModels"
              xmlns:models="clr-namespace:SAM.WPF.Core;assembly=SAM.WPF.Core"
+             xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:local="clr-namespace:SAM.WPF.Views.Library"
              mc:Ignorable="d" 
              DataContext="{dxmvvm:ViewModelSource Type=vm:HomeViewModel}"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <ItemsControl ItemsSource="{Binding Library.Items, Mode=OneWay}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" PanningRatio="2.5" PanningMode="VerticalOnly"
+                      CanContentScroll="False" SnapsToDevicePixels="True">
+            <ItemsControl ItemsSource="{Binding Library.Items, Mode=OneWay}" Margin="3">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal" />
@@ -21,11 +24,23 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:SteamApp}">
-                        <Border BorderThickness="2" BorderBrush="#282828" Margin="2">
+                        <mah:Tile mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                                  ToolTip="{Binding Name}" Width="{Binding ElementName=HeaderImage, Path=Width}"
+                                  Height="{Binding ElementName=HeaderImage, Path=Height}">
+                            <dxmvvm:Interaction.Behaviors>
+                                <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
+                            </dxmvvm:Interaction.Behaviors>
+                            <Grid>
+                                <Image x:Name="HeaderImage" Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="368" Height="172" />
+                            </Grid>
+                        </mah:Tile>
+
+                        <!--<Border BorderThickness="2" BorderBrush="#282828" Margin="2"
+                                ToolTip="{Binding Name}">
                             <Grid>
                                 <Image Source="{Binding Header, Converter={StaticResource BitmapToImageSourceConverter}}" Width="368" Height="172" />
                             </Grid>
-                        </Border>
+                        </Border>-->
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
