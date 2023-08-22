@@ -20,7 +20,8 @@ namespace SAM.WPF.Core.Converters
                 return string.Empty;
             }
 
-            var firstChar = text.ToUpper()[0];
+            var formatted = text.Trim().ToUpper();
+            var firstChar = formatted[0];
 
             if (char.IsLetter(firstChar))
             {
@@ -39,7 +40,7 @@ namespace SAM.WPF.Core.Converters
                 return "-";
             }
 
-            return firstChar;
+            return "-";
         }
  
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

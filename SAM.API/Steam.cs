@@ -31,7 +31,8 @@ namespace SAM.API
         private static TDelegate GetExportFunction<TDelegate>(IntPtr module, string name)
             where TDelegate : class
         { 
-            return (TDelegate)((object)GetExportDelegate<TDelegate>(module, name));
+            return GetExportDelegate<TDelegate>(module, name) as TDelegate;
+            //return (TDelegate)((object)GetExportDelegate<TDelegate>(module, name));
         }
 
         private static IntPtr _Handle = IntPtr.Zero;
@@ -41,7 +42,7 @@ namespace SAM.API
             using var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
             using var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false);
 
-            var path = (string) clsid32.GetValue("InstallPath");
+            var path = (string) clsid32.GetValue(@"InstallPath");
             return path;
 
             //return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
@@ -111,7 +112,7 @@ namespace SAM.API
 #elif BUILD_ANYCPU
             // for AnyCPU we need to check and see if we're running as a 32-bit
             // or 64-bit process since it depends on the processor architecture
-            var is64Bit = Environment.Is64BitProcess;
+            var is64Bit = Environment.Is64BitOperatingSystem && Environment.Is64BitProcess;
             var clientDll = is64Bit
                 ? "steamclient64.dll"
                 : "steamclient.dll";
