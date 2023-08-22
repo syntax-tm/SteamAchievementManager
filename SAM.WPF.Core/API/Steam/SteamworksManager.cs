@@ -73,34 +73,29 @@ namespace SAM.WPF.Core.API.Steam
 
                 // if we have the file in the cache, then deserialize the cached json and
                 // return that
-                //if (CacheManager.TryGetObject<SteamStoreApp>(cacheKey, out var cachedApp))
-                //{
-                //    return cachedApp;
-                //}
+                if (CacheManager.TryGetObject<SteamStoreApp>(cacheKey, out var cachedApp))
+                {
+                    return cachedApp;
+                }
 
                 var storeUrl = $"https://store.steampowered.com/api/appdetails/?appids={id}";
 
                 using var wc = new WebClient();
+
                 var appInfoText = wc.DownloadData(storeUrl);
-
-                //if (string.IsNullOrEmpty(appInfoText)) throw new ArgumentNullException(nameof(appInfoText));
-
                 var convertedString = System.Text.Encoding.Default.GetString(appInfoText);
                 var jo = JObject.Parse(convertedString);
+
+                var success = jo[id.ToString()]["success"].Value<bool>();
+
+                if (!success)
+                {
+                    log.Warn($@"The Steam store API call for app {id} 'appdetails was not successful.");
+
+                    return null;
+                }
+
                 var appInfo = jo[id.ToString()]["data"];
-
-                //var jd = JsonDocument.Parse(unescapedText);
-                //var rootProperty = jd.RootElement.GetProperty(id.ToString());
-
-                //var isSuccess = rootProperty.GetProperty("success").GetBoolean();
-                //if (!isSuccess)
-                //{
-                //    return null;
-                //}
-                
-                //var dataProperty = rootProperty.GetProperty("data");
-                //var dataText = dataProperty.GetRawText();
-
                 var storeApp = JsonConvert.DeserializeObject<SteamStoreApp>(appInfo.ToString());
 
                 //if (loadDlc && storeApp.Dlc.Any())
@@ -125,6 +120,5 @@ namespace SAM.WPF.Core.API.Steam
                 throw;
             }
         }
-        
     }
 }

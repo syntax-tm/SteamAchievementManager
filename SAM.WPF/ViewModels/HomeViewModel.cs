@@ -2,6 +2,7 @@
 using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.WPF.Core;
+using SAM.WPF.Core.API.Steam;
 
 namespace SAM.WPF.ViewModels
 {
@@ -15,8 +16,10 @@ namespace SAM.WPF.ViewModels
 
         protected HomeViewModel()
         {
-            Library = SteamLibrary.Create();
-            Library.Refresh(true);
+            //Library = SteamLibrary.Create();
+            //Library.Refresh(true);
+
+            Library = SteamLibraryManager.Default.Library;
         }
 
         public static HomeViewModel Create()

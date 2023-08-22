@@ -4,16 +4,15 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
-using DevExpress.Mvvm.POCO;
+using DevExpress.Mvvm;
 using log4net;
-using SAM.API;
 using SAM.WPF.Core.API.Steam;
 using SAM.WPF.Core.Cache;
 using SAM.WPF.Core.Extensions;
 
 namespace SAM.WPF.Core
 {
-    public class SteamLibrary
+    public class SteamLibrary : ViewModelBase
     {
 
         private readonly ILog log = LogManager.GetLogger(nameof(SteamLibrary));
@@ -25,25 +24,73 @@ namespace SAM.WPF.Core
         private Queue<SupportedApp> _refreshQueue;
         private List<SupportedApp> _addedGames;
 
-        public virtual int QueueCount { get; set; }
-        public virtual int CompletedCount { get; set; }
-        public virtual int SupportedGamesCount { get; set; }
+        public int QueueCount 
+        {
+            get => GetProperty(() => QueueCount);
+            set => SetProperty(() => QueueCount, value);
+        }
+        public int CompletedCount 
+        {
+            get => GetProperty(() => CompletedCount);
+            set => SetProperty(() => CompletedCount, value);
+        }
+        public int SupportedGamesCount
+        {
+            get => GetProperty(() => SupportedGamesCount);
+            set => SetProperty(() => SupportedGamesCount, value);
+        }
 
-        public virtual int TotalCount { get; set; }
-        public virtual int GamesCount { get; set; }
-        public virtual int JunkCount { get; set; }
-        public virtual int ToolCount { get; set; }
-        public virtual int ModCount { get; set; }
-        public virtual int DemoCount { get; set; }
-        public virtual decimal PercentComplete { get; set; }
-        public virtual bool IsLoading { get; set; }
-        public virtual ObservableCollection<SteamApp> Items { get; set; }
+        public int TotalCount
+        {
+            get => GetProperty(() => TotalCount);
+            set => SetProperty(() => TotalCount, value);
+        }
+        public int GamesCount 
+        {
+            get => GetProperty(() => GamesCount);
+            set => SetProperty(() => GamesCount, value);
+        }
+        public int JunkCount 
+        {
+            get => GetProperty(() => JunkCount);
+            set => SetProperty(() => JunkCount, value);
+        }
+        public int ToolCount 
+        {
+            get => GetProperty(() => ToolCount);
+            set => SetProperty(() => ToolCount, value);
+        }
+        public int ModCount 
+        {
+            get => GetProperty(() => ModCount);
+            set => SetProperty(() => ModCount, value);
+        }
+        public int DemoCount 
+        {
+            get => GetProperty(() => DemoCount);
+            set => SetProperty(() => DemoCount, value);
+        }
+        public decimal PercentComplete
+        {
+            get => GetProperty(() => PercentComplete);
+            set => SetProperty(() => PercentComplete, value);
+        }
 
-        protected SteamLibrary()
+        public bool IsLoading
+        {
+            get => GetProperty(() => IsLoading);
+            set => SetProperty(() => IsLoading, value);
+        }
+        public ObservableCollection<SteamApp> Items { get; private set; }
+
+        public SteamLibrary()
         {
             _supportedGames = SAMLibraryHelper.GetSupportedGames();
 
             SupportedGamesCount = _supportedGames.Count;
+            
+            Items = new ObservableCollection<SteamApp>();
+            BindingOperations.EnableCollectionSynchronization(Items, _lock);
 
             _libraryWorker = new BackgroundWorker();
             _libraryWorker.WorkerSupportsCancellation = true;
@@ -52,18 +99,17 @@ namespace SAM.WPF.Core
             _libraryWorker.RunWorkerCompleted += LibraryWorkerOnRunWorkerCompleted;
         }
 
-        public static SteamLibrary Create()
-        {
-            return ViewModelSource.Create(() => new SteamLibrary());
-        }
+        //public static SteamLibrary Create()
+        //{
+        //    return ViewModelSource.Create(() => new SteamLibrary());
+        //}
 
         public void Refresh(bool loadCache = false)
         {
             _refreshQueue = new Queue<SupportedApp>(_supportedGames);
             _addedGames = new List<SupportedApp>();
 
-            Items = new ObservableCollection<SteamApp>();
-            BindingOperations.EnableCollectionSynchronization(Items, _lock);
+            Items.Clear();
 
             //if (loadCache)
             //{
