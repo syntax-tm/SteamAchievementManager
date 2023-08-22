@@ -1,0 +1,44 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/controls.checkbox.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MahApps.Styles.CheckBox}">
+        <Setter Property="mah:CheckBoxHelper.CheckGlyphForegroundChecked" Value="#63CE63" />
+        <Setter Property="mah:CheckBoxHelper.BorderBrushChecked" Value="#63CE63" />
+        <Setter Property="mah:CheckBoxHelper.ForegroundChecked" Value="#63CE63" />
+        <Setter Property="mah:CheckBoxHelper.BorderBrushUnchecked" Value="#CECECE" />
+        <Setter Property="mah:CheckBoxHelper.ForegroundUnchecked" Value="#CECECE" />
+        <!--<Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Green"/>
+        <Setter Property="Foreground" Value="Transparent"/>
+    
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border BorderBrush="White" BorderThickness="1">
+                        <Grid Width="15" Height="15" >
+                            <Rectangle Fill="{TemplateBinding Background}"/>
+                            <TextBlock Foreground="{TemplateBinding Foreground}" Margin="0 0 0 1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="√"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Foreground" Value="ForestGreen"/>
+            </Trigger>
+
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource }"/>
+            </Trigger>
+        </Style.Triggers>-->
+    </Style>
+    
+</ResourceDictionary>

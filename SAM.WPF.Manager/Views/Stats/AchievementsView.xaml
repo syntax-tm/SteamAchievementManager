@@ -3,11 +3,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:SAM.WPF.Manager.ViewModels"
              xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+             xmlns:stats="clr-namespace:SAM.WPF.Core.Stats;assembly=SAM.WPF.Core"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
+
+    <UserControl.Resources>
+        <dxmvvm:BooleanToObjectConverter x:Key="UnlockedConverter" TrueValue="Unlocked" FalseValue="Locked">
+        </dxmvvm:BooleanToObjectConverter>
+        
+        <Style x:Key="GroupHeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Expander}}, Path=(mah:HeaderedControlHelper.HeaderForeground)}" />
+        </Style>
+
+        <CollectionViewSource x:Key="AchievementCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="IsAchieved" />
+            </CollectionViewSource.GroupDescriptions>
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="IsAchieved" Direction="Ascending" />
+                <scm:SortDescription PropertyName="IsModified" Direction="Descending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -18,35 +42,115 @@
 
         </Grid>
         <Grid Grid.Row="1">
-            <DataGrid ItemsSource="{Binding Achievements, Mode=OneWay}"
+            <DataGrid ItemsSource="{Binding Source={StaticResource AchievementCollection}}"
                       AutoGenerateColumns="False" HeadersVisibility="None"
-                      CanUserAddRows="False"
+                      CanUserAddRows="False" SelectionMode="Single"
                       EnableRowVirtualization="False" EnableColumnVirtualization="False">
+                <DataGrid.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Margin" Value="0,0,0,0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Border BorderThickness="0,2,0,0" BorderBrush="Black">
+                                                <Expander Padding="0" IsExpanded="True" BorderThickness="0">
+                                                    <Expander.Style>
+                                                        <Style TargetType="{x:Type Expander}" BasedOn="{StaticResource MahApps.Styles.Expander}">
+                                                            <Setter Property="mah:HeaderedControlHelper.HeaderBackground" Value="#4DBE4D" />
+                                                            <Setter Property="mah:HeaderedControlHelper.HeaderForeground" Value="Black" />
+                                                            <Setter Property="mah:HeaderedControlHelper.HeaderFontWeight" Value="Bold" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Name, Converter={StaticResource UnlockedConverter}}" Value="Locked">
+                                                                    <Setter Property="mah:HeaderedControlHelper.HeaderBackground" Value="#F44444" />
+                                                                    <Setter Property="mah:HeaderedControlHelper.HeaderForeground" Value="Black" />
+                                                                    <Setter Property="mah:HeaderedControlHelper.HeaderFontWeight" Value="Bold" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Expander.Style>
+                                                    <Expander.Header>
+                                                        <DockPanel Height="28">
+                                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,3" VerticalAlignment="Center">
+                                                                <TextBlock Text="{Binding Path=Name, Converter={StaticResource UnlockedConverter}}" Margin="5,0"
+                                                                           Style="{StaticResource GroupHeaderTextBlockStyle}" />
+                                                                <TextBlock Text="{Binding Path=ItemCount, StringFormat='{}({0})'}" 
+                                                                           Style="{StaticResource GroupHeaderTextBlockStyle}" />
+                                                            </StackPanel>
+                                                        </DockPanel>
+                                                    </Expander.Header>
+                                                    <Expander.Content>
+                                                        <ItemsPresenter />
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
                 <DataGrid.RowStyle>
                     <Style TargetType="{x:Type DataGridRow}">
                         <Setter Property="Padding" Value="1" />
+                        <Setter Property="Foreground" Value="{StaticResource BlackBrush}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWayToSource}" />
                         <Setter Property="ToolTip">
                             <Setter.Value>
                                 <Grid>
-                                    <StackPanel>
-                                        <TextBlock Text="{Binding Name}" />
-                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                                    <StackPanel Margin="2">
+                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2" />
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontStyle="Italic" />
+                                        <Separator Foreground="{DynamicResource MahApps.Brushes.Gray.SemiTransparent}"
+                                                   Margin="0,6,0,4"
+                                                   Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}" />
+                                        <TextBlock Text="Unsaved change." Foreground="{StaticResource WarningBrush}"
+                                                   Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}" />
                                     </StackPanel>
                                 </Grid>
                             </Setter.Value>
                         </Setter>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsModified}" Value="True">
-                                <Setter Property="Background" Value="#ddffff72" />
-                                <Setter Property="Foreground" Value="{StaticResource BlackBrush}" />
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="{StaticResource FocusedControlBrush}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}" />
+                                <Setter Property="BorderThickness" Value="0,1,0,1" />
+                                <Setter Property="Padding" Value="0,-1,0,-1" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource MouseOverControlBrush}" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsModified}" Value="False">
+                                <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
                             </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected}" Value="False" />
+                                    <Condition Binding="{Binding IsModified}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="{StaticResource BlackBrush}" />
+                                <Setter Property="Background" Value="{StaticResource EditedBrush}" />
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected}" Value="True" />
+                                    <Condition Binding="{Binding IsModified}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Foreground" Value="{StaticResource BlackBrush}" />
+                                <Setter Property="Background" Value="{StaticResource WarningBrush}" />
+                                <Setter Property="BorderBrush" Value="{StaticResource BlackBrush}" />
+                                <Setter Property="BorderThickness" Value="0,1,0,1" />
+                                <Setter Property="Padding" Value="0,-1,0,-1" />
+                            </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn ElementStyle="{StaticResource MahApps.Styles.CheckBox.DataGrid}"
                                             EditingElementStyle="{DynamicResource MahApps.Styles.CheckBox.DataGrid}"
-                                            Header="IsSelected" HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
+                                            HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                             Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                             Width="50">
                         <DataGridCheckBoxColumn.CellStyle>
@@ -56,7 +160,7 @@
                                         <ControlTemplate TargetType="{x:Type DataGridCell}">
                                             <Viewbox Margin="12,1,0,2">
                                                 <CheckBox IsChecked="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                          Margin="3"/>
+                                                          Margin="0,4,4,4" />
                                             </Viewbox>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -80,9 +184,9 @@
                     </DataGridCheckBoxColumn>-->
                     <DataGridTemplateColumn Header="" IsReadOnly="True" CanUserSort="False" Width="SizeToCells">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="{x:Type stats:SteamAchievement}">
                                 <Border BorderThickness="2" BorderBrush="Black" Padding="0" Margin="0">
-                                    <Grid Width="40" Height="40" ToolTip="{Binding Name, Mode=OneWay}">
+                                    <Grid Width="40" Height="40">
                                         <Image Source="{Binding Image, Mode=OneWay, Converter={StaticResource BitmapToImageSourceConverter}}" Margin="-1" />
                                     </Grid>
                                 </Border>
@@ -92,15 +196,14 @@
                     <DataGridTextColumn Header="ID" Binding="{Binding Id, Mode=OneWay}"
                                         HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         CellStyle="{StaticResource CenterAlignedCellStyle}"
-                                        SortDirection="Ascending" CanUserSort="False" Width="100"
-                                        Visibility="Collapsed" />
+                                        Width="100" Visibility="Collapsed" />
                     <!--<DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}"
                                         HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         CellStyle="{StaticResource CenteredTextCellStyle}" />-->
                     <DataGridTemplateColumn Header="Description" Width="*"
                                         HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="{x:Type stats:SteamAchievement}">
                                 <Grid Margin="6,3">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -108,16 +211,30 @@
                                     </Grid.RowDefinitions>
                                     <Grid>
                                         <TextBlock Text="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                   FontWeight="SemiBold" FontSize="{DynamicResource LargeFontSize}" />
+                                                   FontWeight="SemiBold" FontSize="{DynamicResource LargeFontSize}"
+                                                   Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
                                     </Grid>
                                     <Grid Grid.Row="1">
                                         <TextBlock Text="{Binding Description, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center"
-                                                   TextWrapping="Wrap" FontSize="{DynamicResource SmallFontSize}" />
+                                                   TextWrapping="Wrap" FontSize="{DynamicResource SmallFontSize}"
+                                                   Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
                                     </Grid>
                                 </Grid>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
+                    <!--<DataGridTemplateColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
+                                            CellStyle="{StaticResource CenterAlignedCellStyle}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate DataType="{x:Type stats:SteamAchievement}">
+                                <Button Content="Reset" IsEnabled="{Binding IsModified, Mode=OneWay}" Command="{Binding ResetCommand}"
+                                        Style="{StaticResource MahApps.Styles.Button.Flat}"
+                                        Margin="0" Width="50"
+                                        mah:ControlsHelper.ContentCharacterCasing="Normal"
+                                        mah:ControlsHelper.CornerRadius="0" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>-->
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

@@ -11,9 +11,10 @@ namespace SAM.WPF.Core.API.Steam
 
         private static readonly object syncLock = new object();
         private static Client _client;
-
-        public static bool IsInitialized { get; private set; }
+        
         public static uint AppId { get; private set; }
+        public static bool IsInitialized { get; private set; }
+        public static string CurrentLanguage { get; private set; }
 
         public static Client Default
         {
@@ -32,7 +33,8 @@ namespace SAM.WPF.Core.API.Steam
         {
             if (IsInitialized)
             {
-                throw new InvalidOperationException($"Client is already initialized with app id '{AppId}'.");
+                var message = $"Client is already initialized with app id '{AppId}'.";
+                throw new InvalidOperationException(message);
             }
 
             try
@@ -40,6 +42,7 @@ namespace SAM.WPF.Core.API.Steam
                 Default.Initialize(appId);
 
                 AppId = appId;
+                CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
 
                 IsInitialized = true;
             }

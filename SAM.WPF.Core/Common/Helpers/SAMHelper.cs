@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using log4net;
 using SAM.WPF.Core.Extensions;
@@ -15,18 +16,41 @@ namespace SAM.WPF.Core
         private const string CLASSIC_PICKER_EXE = @"SAM.Picker.exe";
         private const string WPF_PICKER_EXE = @"SAM.WPF.exe";
 
+        private const string PICKER_PROCESS_REGEX = @"^SAM(?:\.WPF)?(?:\.Picker)?(?:\.exe)?$";
+        private const string MANAGER_PROCESS_REGEX = @"^SAM(?:\.WPF)?\.Manager(?:\.exe)?$";
+
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMHelper));
 
-        public static void OpenPicker(bool useClassicPicker = false)
+        public static bool IsPickerRunning()
+        {
+            var processes = Process.GetProcesses();
+            return processes.Any(p => Regex.IsMatch(p.ProcessName, PICKER_PROCESS_REGEX));
+        }
+
+        public static Process OpenPicker(bool useClassicPicker = false)
         {
             var pickerExe = GetPickerExe(useClassicPicker);
 
             if (!File.Exists(pickerExe))
             {
-                throw new FileNotFoundException($"Unable to start '{pickerExe}' because it does not exist.", pickerExe);
+                log.Warn($"The SAM Picker '{pickerExe}' does not exist.");
+                
+                // try to fall back to the other manager
+                var otherPicker = GetManagerExe(!useClassicPicker);
+                
+                if (!File.Exists(otherPicker))
+                {
+                    throw new FileNotFoundException($"Unable to start '{pickerExe}' because it does not exist.", pickerExe);
+                }
+
+                pickerExe = otherPicker;
             }
 
-            Process.Start(pickerExe);
+            var proc = Process.Start(pickerExe);
+
+            proc.SetActive();
+
+            return proc;
         }
 
         public static Process OpenManager(uint appId, bool useClassicManager = false)
@@ -59,13 +83,21 @@ namespace SAM.WPF.Core
         
         public static void CloseAllManagers()
         {
-            var managerRegex = @"^SAM(?:\.WPF)?\.Manager(?:\.exe)?$";
-
-            foreach (var proc in Process.GetProcesses())
+            try
             {
-                if (!Regex.IsMatch(proc.ProcessName, managerRegex)) continue;
+                foreach (var proc in Process.GetProcesses())
+                {
+                    if (!Regex.IsMatch(proc.ProcessName, MANAGER_PROCESS_REGEX)) continue;
 
-                proc.Kill();
+                    log.Info($"Found SAM Manager process with process ID {proc.Id}.");
+
+                    proc.Kill();
+                }
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to close the SAM Managers. {e.Message}";
+                log.Error(message, e);
             }
         }
 

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,6 +11,9 @@ namespace SAM.WPF.Core.API.Steam
 {
     public static class SteamworksManager
     {
+
+        private const string GETAPPLIST_URL = @"https://api.steampowered.com/ISteamApps/GetAppList/v2/";
+        private const string APPDETAILS_URL = @"https://store.steampowered.com/api/appdetails/?appids={0}";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamworksManager));
 
@@ -29,23 +30,24 @@ namespace SAM.WPF.Core.API.Steam
                     return cachedApps;
                 }
 
-                const string url = @"https://api.steampowered.com/ISteamApps/GetAppList/v2/";
-
                 using var wc = new WebClient();
-                var apiResponse = wc.DownloadString(url);
+                var apiResponse = wc.DownloadString(GETAPPLIST_URL);
                 
-                if (string.IsNullOrEmpty(apiResponse)) throw new ArgumentNullException(nameof(apiResponse));
+                if (string.IsNullOrEmpty(apiResponse))
+                {
+                    throw new SAMInitializationException(@"The Steam API request for GetAppList returned nothing.");
+                }
 
                 var jd = JsonDocument.Parse(apiResponse);
                 var apps = new Dictionary<uint, string>();
 
-                foreach (var item in jd.RootElement.GetProperty("applist").GetProperty("apps").EnumerateArray())
+                foreach (var item in jd.RootElement.GetProperty(@"applist").GetProperty(@"apps").EnumerateArray())
                 {
-                    var appid = item.GetProperty("appid").GetUInt32();
+                    var appid = item.GetProperty(@"appid").GetUInt32();
 
                     if (apps.ContainsKey(appid)) continue;
                     
-                    var name = item.GetProperty("name").GetString();
+                    var name = item.GetProperty(@"name").GetString();
 
                     apps.Add(appid, name);
                 }
@@ -56,10 +58,12 @@ namespace SAM.WPF.Core.API.Steam
 
                 return apps;
             }
-            catch (ArgumentNullException) { throw; }
+            catch (SAMInitializationException) { throw; }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                var message = $"An error occurred loading the app list from the Steam Web API. {e.Message}";
+
+                log.Error(message, e);
 
                 throw;
             }
@@ -78,7 +82,7 @@ namespace SAM.WPF.Core.API.Steam
                     return cachedApp;
                 }
 
-                var storeUrl = $"https://store.steampowered.com/api/appdetails/?appids={id}";
+                var storeUrl = string.Format(APPDETAILS_URL, id);
 
                 using var wc = new WebClient();
 
@@ -86,11 +90,12 @@ namespace SAM.WPF.Core.API.Steam
                 var convertedString = System.Text.Encoding.Default.GetString(appInfoText);
                 var jo = JObject.Parse(convertedString);
 
-                var success = jo[id.ToString()]["success"].Value<bool>();
+                var appElementName = id.ToString();
+                var success = jo[appElementName]["success"].Value<bool>();
 
                 if (!success)
                 {
-                    log.Warn($@"The Steam store API call for app {id} 'appdetails was not successful.");
+                    log.Warn($@"The Steam Web API appdetails call for app id '{id}' was not successful.");
 
                     return null;
                 }
@@ -112,11 +117,12 @@ namespace SAM.WPF.Core.API.Steam
 
                 return storeApp;
             }
-            catch (ArgumentNullException) { throw; }
             catch (WebException) { throw; }
             catch (Exception e)
             {
-                log.Error(e);
+                var message = $"An error occurred getting the app info for app id '{id}'. {e.Message}";
+
+                log.Error(message, e);
 
                 throw;
             }

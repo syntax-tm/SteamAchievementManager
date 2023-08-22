@@ -3,9 +3,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
 using ControlzEx.Theming;
-using SAM.WPF.Core.Themes;
 
-namespace SAM.WPF.Core
+namespace SAM.WPF.Core.Themes
 {
     public static class ThemeHelper
     {
@@ -52,7 +51,7 @@ namespace SAM.WPF.Core
         
         public static void SetTheme()
         {
-            var generatedTheme = RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", Colors.White);
+            var generatedTheme = RuntimeThemeGenerator.Current.GenerateRuntimeTheme("Dark", (Color) ColorConverter.ConvertFromString("#F73541"));
 
             Debug.Assert(generatedTheme != null);
             

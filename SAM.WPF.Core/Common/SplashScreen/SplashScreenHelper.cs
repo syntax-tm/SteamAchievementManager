@@ -4,7 +4,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using ControlzEx.Theming;
 using FontAwesome.WPF;
 using MahApps.Metro.Controls;
 
@@ -73,6 +72,7 @@ namespace SAM.WPF.Core.SplashScreen
             _splashWindow.ShowTitleBar = false;
             _splashWindow.ShowSystemMenu = false;
             _splashWindow.UseNoneWindowStyle = true;
+            _splashWindow.ShowInTaskbar = false;
             _splashWindow.GlowBrush = new SolidColorBrush(Color.FromArgb(100, 255, 255, 255));
             _splashWindow.NonActiveGlowBrush = new SolidColorBrush(Color.FromArgb(80, 255, 255, 255));
             _splashWindow.BorderThickness = new Thickness(1);

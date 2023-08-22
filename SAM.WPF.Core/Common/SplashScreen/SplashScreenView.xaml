@@ -19,7 +19,7 @@
                         <Grid x:Name="LayoutRoot" Background="Transparent" Width="44" Height="30">
                             <TextBlock x:Name="txt" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="10" 
                                        Foreground="#999999" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased"  TextOptions.TextFormattingMode="Display"/>
+                                       RenderOptions.ClearTypeHint="Auto" TextOptions.TextRenderingMode="Aliased" TextOptions.TextFormattingMode="Display"/>
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -75,15 +75,17 @@
                         <ColumnDefinition Width="300" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <fa:ImageAwesome Icon="Steam" Foreground="#ABFFFFFF" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                    <fa:ImageAwesome Icon="Steam" Foreground="#43FFFFFF" Margin="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
                 </Grid>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-                    <TextBlock Text="Steam Achievement Manager" FontSize="22" Margin="2" HorizontalAlignment="Right"
-                               VerticalAlignment="Bottom" Foreground="#ddffffff" FontFamily="Segoe UI Light" />
-                    <TextBlock Text="{Binding Status, Mode=OneWay}" FontSize="20" Margin="2" HorizontalAlignment="Right"
-                               TextWrapping="Wrap"
-                               Foreground="#ddffffff" FontFamily="Segoe UI Light" />
-                    <mah:MetroProgressBar IsIndeterminate="True" Margin="20" Width="400" Foreground="White" />
+                    <StackPanel Orientation="Vertical" Margin="0,0,8,0" VerticalAlignment="Bottom">
+                        <TextBlock Text="Steam Achievement Manager" FontSize="22" Margin="2" HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom" Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
+                        <TextBlock Text="{Binding Status, Mode=OneWay}" FontSize="20" Margin="2" HorizontalAlignment="Right"
+                                   TextWrapping="Wrap"
+                                   Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
+                    </StackPanel>
+                    <mah:MetroProgressBar IsIndeterminate="True" Margin="10" HorizontalAlignment="Stretch" Foreground="White" />
                 </StackPanel>
             </Grid>
     </Grid>

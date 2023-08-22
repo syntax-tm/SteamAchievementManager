@@ -10,8 +10,9 @@ namespace SAM.WPF.Core
     public class ObservableHandler<T> : IWeakEventListener
         where T : class, INotifyPropertyChanged
     {
-        private readonly WeakReference m_source;
-        private readonly Dictionary<string, Action<T>> m_handlers = new Dictionary<string, Action<T>>();
+        private readonly WeakReference<T> m_source;
+        private readonly Dictionary<string, Action> m_handlers = new Dictionary<string, Action>();
+        private readonly Dictionary<string, Action<T>> m_handlersT = new Dictionary<string, Action<T>>();
 
         public ObservableHandler([NotNull] T source)
         {
@@ -20,11 +21,11 @@ namespace SAM.WPF.Core
                 throw new ArgumentNullException(nameof(source));
             }
 
-            m_source = new WeakReference(source);
+            m_source = new WeakReference<T>(source);
         }
-
+        
         [NotNull]
-        public ObservableHandler<T> Add([NotNull] Expression<Func<T, object>> expression, [NotNull] Action<T> handler)
+        public ObservableHandler<T> Add([NotNull] Expression<Func<T, object>> expression, [NotNull] Action handler)
         {
             if (handler == null)
             {
@@ -46,8 +47,29 @@ namespace SAM.WPF.Core
         }
 
         [NotNull]
-        public ObservableHandler<T> AddAndInvoke([NotNull] Expression<Func<T, object>> expression,
-            [NotNull] Action<T> handler)
+        public ObservableHandler<T> Add([NotNull] Expression<Func<T, object>> expression, [NotNull] Action<T> handler)
+        {
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+
+            var source = GetSource();
+            if (source == null)
+            {
+                throw new InvalidOperationException("Source has been garbage collected.");
+            }
+
+            var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
+
+            m_handlersT[propertyName] = handler;
+            PropertyChangedEventManager.AddListener(source, this, propertyName);
+
+            return this;
+        }
+
+        [NotNull]
+        public ObservableHandler<T> AddAndInvoke([NotNull] Expression<Func<T, object>> expression, [NotNull] Action<T> handler)
         {
             Add(expression, handler);
             handler(GetSource());
@@ -56,8 +78,9 @@ namespace SAM.WPF.Core
 
         private T GetSource()
         {
-            var source = m_source.Target as T;
-            return source;
+            if (m_source.TryGetTarget(out var source)) return source;
+
+            throw new InvalidOperationException($"{nameof(source)} has been garbage collected.");
         }
 
         bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -73,7 +96,8 @@ namespace SAM.WPF.Core
             }
 
             var propertyName = ((PropertyChangedEventArgs)e).PropertyName;
-            Notify( propertyName);
+            Notify(propertyName);
+
             return true;
         }
 
@@ -89,13 +113,20 @@ namespace SAM.WPF.Core
             {
                 foreach (var handler in m_handlers.Values)
                 {
+                    handler();
+                }
+                foreach (var handler in m_handlersT.Values)
+                {
                     handler(source);
                 }
             }
             else
             {
                 if (m_handlers.TryGetValue(propertyName, out var handler))
-                    handler(source);
+                    handler();
+
+                if (m_handlersT.TryGetValue(propertyName, out var handlerT))
+                    handlerT(source);
             }
         }
     }

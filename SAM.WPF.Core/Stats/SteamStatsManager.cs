@@ -5,6 +5,7 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 using DevExpress.Mvvm;
+using log4net;
 using SAM.API;
 using SAM.API.Types;
 using SAM.Game;
@@ -17,9 +18,14 @@ namespace SAM.WPF.Core.Stats
     public class SteamStatsManager : BindableBase
     {
 
+        private readonly ILog log = LogManager.GetLogger(nameof(SteamStatsManager));
+
         private Client _client => SteamClientManager.Default;
         private readonly SAM.API.Callbacks.UserStatsReceived _UserStatsReceivedCallback;
         private readonly Timer _callbackTimer;
+
+        private List<ObservableHandler<SteamAchievement>> _achievementHandlers;
+        private List<ObservableHandler<SteamStatistic>> _statHandlers;
 
         public uint AppId { get; }
         public bool IsLoading 
@@ -32,7 +38,21 @@ namespace SAM.WPF.Core.Stats
             get => GetProperty(() => Loaded);
             set => SetProperty(() => Loaded, value);
         }
-
+        public bool IsModified 
+        {
+            get => GetProperty(() => IsModified);
+            set => SetProperty(() => IsModified, value);
+        }
+        public bool IsAchievementsModified 
+        {
+            get => GetProperty(() => IsAchievementsModified);
+            set => SetProperty(() => IsAchievementsModified, value, OnItemChanged);
+        }
+        public bool IsStatsModified 
+        {
+            get => GetProperty(() => IsStatsModified);
+            set => SetProperty(() => IsStatsModified, value, OnItemChanged);
+        }
         public List<SteamStatistic> Statistics
         {
             get => GetProperty(() => Statistics);
@@ -99,7 +119,7 @@ namespace SAM.WPF.Core.Stats
         {
             try
             {
-                if (param.Result != 1)
+                if (!param.IsSuccess)
                 {
                     IsLoading = false;
                     return;
@@ -117,7 +137,11 @@ namespace SAM.WPF.Core.Stats
             catch (Exception e)
             {
                 IsLoading = false;
-                MessageBox.Show($"Error when handling stats retrieval:\r\n{e}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                var message = $"An error occurred handling stats retrieval. {e.Message}";
+                log.Error(message, e);
+
+                MessageBox.Show(message, "Steam Stats Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -133,9 +157,9 @@ namespace SAM.WPF.Core.Stats
             try
             {
                 path = Steam.GetInstallPath();
-                path = Path.Combine(path, "appcache");
-                path = Path.Combine(path, "stats");
-                path = Path.Combine(path, $"UserGameStatsSchema_{AppId}.bin");
+                path = Path.Combine(path, @"appcache");
+                path = Path.Combine(path, @"stats");
+                path = Path.Combine(path, $@"UserGameStatsSchema_{AppId}.bin");
 
                 if (!File.Exists(path)) return false;
             }
@@ -153,15 +177,15 @@ namespace SAM.WPF.Core.Stats
             AchievementDefinitions.Clear();
             StatDefinitions.Clear();
 
-            var stats = kv[AppId.ToString()]["stats"];
+            var stats = kv[AppId.ToString()][@"stats"];
 
             if (stats.Valid == false || stats.Children == null) return false;
 
             foreach (var stat in stats.Children.Where(s => s.Valid))
             {
-                var rawType = stat["type_int"].Valid
-                                  ? stat["type_int"].AsInteger(0)
-                                  : stat["type"].AsInteger(0);
+                var rawType = stat[@"type_int"].Valid
+                                  ? stat[@"type_int"].AsInteger()
+                                  : stat[@"type"].AsInteger();
                 var type = (UserStatType) rawType;
                 switch (type)
                 {
@@ -171,77 +195,35 @@ namespace SAM.WPF.Core.Stats
                     }
                     case UserStatType.Integer:
                     {
-                        var id = stat["name"].AsString(string.Empty);
-                        var name = GetLocalizedString(stat["display"]["name"], currentLanguage, id);
-
-                        StatDefinitions.Add(new IntegerStatDefinition
-                        {
-                            Id = stat["name"].AsString(string.Empty),
-                            DisplayName = name,
-                            MinValue = stat["min"].AsInteger(int.MinValue),
-                            MaxValue = stat["max"].AsInteger(int.MaxValue),
-                            MaxChange = stat["maxchange"].AsInteger(0),
-                            IncrementOnly = stat["incrementonly"].AsBoolean(false),
-                            DefaultValue = stat["default"].AsInteger(0),
-                            Permission = stat["permission"].AsInteger(0),
-                        });
+                        StatDefinitions.Add(new IntegerStatDefinition(stat, currentLanguage));
                         break;
                     }
-
                     case UserStatType.Float:
                     case UserStatType.AverageRate:
                     {
-                        var id = stat["name"].AsString(string.Empty);
-                        var name = GetLocalizedString(stat["display"]["name"], currentLanguage, id);
-
-                        StatDefinitions.Add(new FloatStatDefinition
-                        {
-                            Id = stat["name"].AsString(string.Empty),
-                            DisplayName = name,
-                            MinValue = stat["min"].AsFloat(float.MinValue),
-                            MaxValue = stat["max"].AsFloat(float.MaxValue),
-                            MaxChange = stat["maxchange"].AsFloat(0.0f),
-                            IncrementOnly = stat["incrementonly"].AsBoolean(false),
-                            DefaultValue = stat["default"].AsFloat(0.0f),
-                            Permission = stat["permission"].AsInteger(0),
-                        });
+                        StatDefinitions.Add(new FloatStatDefinition(stat, currentLanguage));
                         break;
                     }
-
                     case UserStatType.Achievements:
                     case UserStatType.GroupAchievements:
                     {
                         if (stat.Children != null)
                         {
-                            foreach (var bits in stat.Children.Where(b => b.Name.EqualsIgnoreCase("bits")))
+                            foreach (var bits in stat.Children.Where(b => b.Name.EqualsIgnoreCase(@"bits")))
                             {
-                                if (bits.Valid == false || bits.Children == null)
+                                if (!bits.Valid || bits.Children == null)
                                 {
                                     continue;
                                 }
 
                                 foreach (var bit in bits.Children)
                                 {
-                                    var id = bit["name"].AsString("");
-                                    var name = GetLocalizedString(bit["display"]["name"], currentLanguage, id);
-                                    var desc = GetLocalizedString(bit["display"]["desc"], currentLanguage, "");
-
-                                    AchievementDefinitions.Add(new AchievementDefinition
-                                    {
-                                        Id = id,
-                                        Name = name,
-                                        Description = desc,
-                                        IconNormal = bit["display"]["icon"].AsString(""),
-                                        IconLocked = bit["display"]["icon_gray"].AsString(""),
-                                        IsHidden = bit["display"]["hidden"].AsBoolean(false),
-                                        Permission = bit["permission"].AsInteger(0),
-                                    });
+                                    AchievementDefinitions.Add(new AchievementDefinition(bit, currentLanguage));
                                 }
                             }
                         }
                         break;
                     }
-
                     default:
                     {
                         throw new ArgumentOutOfRangeException(nameof(rawType), @$"Invalid stat type '{rawType}'.");
@@ -268,44 +250,59 @@ namespace SAM.WPF.Core.Stats
             }
 
             Achievements = new List<SteamAchievement>(achievements);
+            
+            //foreach (var achievement in Achievements)
+            //{
+            //    var achievementHandler = new ObservableHandler<SteamAchievement>(achievement)
+            //        .Add(a => a.IsModified, OnAchievementChanged);
+
+            //    _achievementHandlers.Add(achievementHandler);
+            //}
+
+            var handlers = Achievements.Select(achievement => new ObservableHandler<SteamAchievement>(achievement).Add(a => a.IsModified, OnAchievementChanged));
+
+            _achievementHandlers = new List<ObservableHandler<SteamAchievement>>();
+            _achievementHandlers.AddRange(handlers);
         }
 
         private void GetStatistics()
         {
             var stats = new List<SteamStatistic>();
+            var validDefinitions = StatDefinitions.Where(statDef => !string.IsNullOrEmpty(statDef?.Id));
 
-            foreach (var statDef in StatDefinitions)
+            foreach (var statDef in validDefinitions)
             {
-                if (string.IsNullOrEmpty(statDef?.Id)) continue;
-
                 var stat = SteamStatisticFactory.CreateStat(_client, statDef);
                 stats.Add(stat);
             }
 
             Statistics = new List<SteamStatistic>(stats);
-        }
+            
+            //foreach (var statHandler in Statistics.Select(stat => new ObservableHandler<SteamStatistic>(stat)
+            //    .Add(s => s.IsModified, OnStatChanged)))
+            //{
+            //    _statHandlers.Add(statHandler);
+            //}
 
-        private static string GetLocalizedString(KeyValue kv, string language, string defaultValue)
+            var handlers = Statistics.Select(stat => new ObservableHandler<SteamStatistic>(stat).Add(s => s.IsModified, OnStatChanged));
+
+            _statHandlers = new List<ObservableHandler<SteamStatistic>>();
+            _statHandlers.AddRange(handlers);
+        }
+        
+        private void OnItemChanged()
         {
-            var name = kv[language].AsString(string.Empty);
-            if (string.IsNullOrEmpty(name) == false)
-            {
-                return name;
-            }
-
-            if (language != "english")
-            {
-                name = kv["english"].AsString(string.Empty);
-
-                if (!string.IsNullOrEmpty(name))
-                {
-                    return name;
-                }
-            }
-
-            name = kv.AsString(string.Empty);
-            return string.IsNullOrEmpty(name) ? defaultValue : name;
+            IsModified = IsAchievementsModified || IsStatsModified;
         }
 
+        private void OnAchievementChanged()
+        {
+            IsAchievementsModified = Achievements.Any(a => a.IsModified);
+        }
+
+        private void OnStatChanged()
+        {
+            IsStatsModified = Statistics.Any(s => s.IsModified);
+        }
     }
 }
