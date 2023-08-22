@@ -11,6 +11,7 @@
              xmlns:converters="clr-namespace:SAM.Core.Converters"
              xmlns:views="clr-namespace:SAM.Core.Views"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
@@ -27,12 +28,22 @@
                 <Setter Property="FontWeight" Value="SemiBold" />
                 <Setter Property="Foreground" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Expander}}, Path=(mah:HeaderedControlHelper.HeaderForeground)}" />
             </Style>
-            <CollectionViewSource x:Key="AchievementCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True">
+            <CollectionViewSource x:Key="AchievementCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True"
+                                  IsLiveFilteringRequested="True">
                 <CollectionViewSource.GroupDescriptions>
                     <PropertyGroupDescription PropertyName="OriginalLockState" />
                 </CollectionViewSource.GroupDescriptions>
                 <CollectionViewSource.SortDescriptions>
                     <scm:SortDescription PropertyName="OriginalLockState" Direction="Ascending" />
+                    <scm:SortDescription PropertyName="Name" Direction="Ascending" />
+                </CollectionViewSource.SortDescriptions>
+                <CollectionViewSource.LiveFilteringProperties>
+                    <system:String>Name</system:String>
+                    <system:String>Description</system:String>
+                </CollectionViewSource.LiveFilteringProperties>
+            </CollectionViewSource>
+            <CollectionViewSource x:Key="AchievementNamesCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True">
+                <CollectionViewSource.SortDescriptions>
                     <scm:SortDescription PropertyName="Name" Direction="Ascending" />
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
@@ -45,88 +56,15 @@
                   SelectedItem="{Binding SelectedAchievement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False" HeadersVisibility="None"
                   CanUserAddRows="False" SelectionMode="Single"
-                  EnableRowVirtualization="False" EnableColumnVirtualization="False">
-            <DataGrid.RowStyle>
-                    <Style TargetType="{x:Type DataGridRow}">
-                        <Setter Property="Padding" Value="1" />
-                        <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWayToSource}" />
-                        <Setter Property="ToolTip">
-                            <Setter.Value>
-                                <Grid>
-                                    <StackPanel Margin="2">
-                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2" />
-                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontStyle="Italic" />
-                                        <Separator Margin="0,6,0,4"
-                                                   Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}" />
-                                        <StackPanel Orientation="Horizontal">
-                                            <ui:FontIcon Glyph="&#xE7BA;"
-                                                         Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}"
-                                                         Foreground="{StaticResource PaletteOrangeBrush}"/>
-                                            <TextBlock Text="Unsaved change." Foreground="{StaticResource PaletteOrangeBrush}"
-                                                       Margin="5,0"
-                                                       Visibility="{Binding IsModified, Converter={StaticResource BoolToVisConverter}}">
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </StackPanel>
-                                </Grid>
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                                <Setter Property="Background" Value="{StaticResource PaletteBlueBrush}" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Padding" Value="0" />
-                            </Trigger>
-                            <DataTrigger Binding="{Binding IsModified}" Value="False">
-                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                            </DataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                    <Condition Binding="{Binding IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding IsModified}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteBlueColor}" />
-                                    </Setter.Value>
-                                </Setter>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                    <Condition Binding="{Binding IsModified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <SolidColorBrush Opacity="0.4" Color="{StaticResource PaletteOrangeColor}" />
-                                    </Setter.Value>
-                                </Setter>
-                            </MultiDataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
-                                    <Condition Binding="{Binding IsModified}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                                <Setter Property="Background">
-                                    <Setter.Value>
-                                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteOrangeColor}" />
-                                    </Setter.Value>
-                                </Setter>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.RowStyle>
+                  EnableRowVirtualization="False" EnableColumnVirtualization="False"
+                  RowStyle="{StaticResource AchievementGridRowStyle}"
+                  GridLinesVisibility="None">
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                         Width="50">
                     <DataGridCheckBoxColumn.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
+                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle}">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type DataGridCell}">

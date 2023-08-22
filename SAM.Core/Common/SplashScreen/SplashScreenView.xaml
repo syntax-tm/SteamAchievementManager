@@ -11,9 +11,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}"
-             ExtendsContentIntoTitleBar="True" SizeToContent="WidthAndHeight"
+             Width="500" Height="340"
+             ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica" ShowActivated="True" ShowInTaskbar="True"
-             WindowStartupLocation="CenterScreen">
+             WindowStartupLocation="CenterScreen"
+             FontFamily="Segoe UI Light"
+             Foreground="{StaticResource TextFillColorLightPrimaryBrush}">
 
     <ui:UiWindow.Resources>
         <ResourceDictionary>
@@ -35,40 +38,32 @@
         <dxmvvm:CurrentWindowService />
     </dxmvvm:Interaction.Behaviors>
 
-    <Grid Width="500" Height="325">
-        <ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" Opacity="0.5" />
-        <Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="300" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <iconPacks:PackIconFontAwesome Kind="SteamSymbolBrands" Margin="0" Height="300" Width="300"
-                                            HorizontalAlignment="Left" HorizontalContentAlignment="Left">
-                    <iconPacks:PackIconFontAwesome.Style>
-                        <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
-                            <Setter Property="Opacity" Value="0.1" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:UiWindow}}, Path=IsMouseOver}" Value="True">
-                                    <Setter Property="Opacity" Value="0.12" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </iconPacks:PackIconFontAwesome.Style>
-                </iconPacks:PackIconFontAwesome>
-            </Grid>
-            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
-                <StackPanel Orientation="Vertical" Margin="0,0,8,25" VerticalAlignment="Bottom">
-                    <TextBlock Text="Steam Achievement Manager" FontSize="26" Margin="2" HorizontalAlignment="Right"
-                               VerticalAlignment="Bottom" Foreground="{StaticResource TextFillColorLightPrimaryBrush}" FontFamily="Segoe UI Light" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Status, Mode=OneWay}"
-                               Visibility="{Binding ShowStatus, Mode=OneWay, Converter={dxmvvm:BooleanToVisibilityConverter}}"
-                               FontSize="20" Margin="2" HorizontalAlignment="Right"
-                               TextWrapping="Wrap"
-                               Foreground="#E1FFFFFF" FontFamily="Segoe UI Light" />
-                </StackPanel>
+    <Grid>
+        <Viewbox Stretch="Uniform" HorizontalAlignment="Left">
+            <iconPacks:PackIconFontAwesome Kind="SteamSymbolBrands" Margin="0">
+                <iconPacks:PackIconFontAwesome.Style>
+                    <Style TargetType="{x:Type iconPacks:PackIconFontAwesome}">
+                        <Setter Property="Opacity" Value="0.1" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:UiWindow}}, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Opacity" Value="0.12" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </iconPacks:PackIconFontAwesome.Style>
+            </iconPacks:PackIconFontAwesome>
+        </Viewbox>
+        <ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" ShowHelp="False" Opacity="0.5" />
+        <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
+            <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,8,25">
+                <TextBlock Text="Steam Achievement Manager" FontSize="26" Margin="2" HorizontalAlignment="Right"
+                           VerticalAlignment="Bottom" FontWeight="SemiBold" />
+                <TextBlock Text="{Binding Status, Mode=OneWay}"
+                           Visibility="{Binding Status, Mode=OneWay, Converter={dxmvvm:StringToVisibilityConverter}}"
+                           FontSize="20" Margin="2" HorizontalAlignment="Right"
+                           TextWrapping="Wrap" />
             </StackPanel>
-            <ProgressBar IsIndeterminate="True" VerticalAlignment="Bottom" />
-        </Grid>
+            <ProgressBar IsIndeterminate="True" />
+        </StackPanel>
     </Grid>
 </ui:UiWindow>

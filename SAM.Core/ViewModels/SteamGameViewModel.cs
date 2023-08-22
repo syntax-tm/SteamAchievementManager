@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
@@ -19,6 +20,7 @@ namespace SAM.Core.ViewModels
 
         private readonly SteamStatsManager _statsManager;
 
+        public virtual string SearchText { get; set; }
         public virtual bool AllowEdit { get; set; }
         public virtual bool IsModified { get; set; }
         public virtual bool ShowHidden { get; set; }
@@ -30,6 +32,8 @@ namespace SAM.Core.ViewModels
 
         public virtual List<SteamStatistic> Statistics { get; set; }
         public virtual List<SteamAchievement> Achievements { get; set; }
+
+        public virtual CollectionView AchievementsView { get; set; }
 
         protected SteamGameViewModel()
         {
@@ -147,8 +151,21 @@ namespace SAM.Core.ViewModels
         private void ManagerAchievementsChanged(SteamStatsManager obj)
         {
             Achievements = new (obj.Achievements);
+
+            AchievementsView = (CollectionView) CollectionViewSource.GetDefaultView(Achievements);
+            AchievementsView.Filter = AchievementFilter;
         }
-        
+
+        private bool AchievementFilter(object obj)
+        {
+            if (obj is not SteamAchievement achievement)
+            {
+                throw new InvalidOperationException($"{nameof(obj)} must be of type {nameof(SteamAchievement)}.");
+            }
+
+            return true;
+        }
+
         private void ManagerStatisticsChanged(SteamStatsManager obj)
         {
             Statistics = new (obj.Statistics);
