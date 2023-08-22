@@ -69,14 +69,50 @@
                 <StatusBarItem HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
                         <ui:Button Command="{Binding UnlockAllAchievementsCommand}" Icon="LockOpen20" Content="Unlock All"
-                                   IsEnabled="{Binding AllowUnlockAll, Mode=OneWay}"
-                                   Appearance="Secondary" />
+                                   IsEnabled="{Binding AllowUnlockAll, Mode=OneWay}">
+                            <ui:Button.Style>
+                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="Width" Value="120" />
+                                    <Setter Property="Appearance" Value="Secondary" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Appearance" Value="Primary" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
+                        </ui:Button>
                         <ui:Button Command="{Binding ResetCommand}" Icon="ArrowUndo20" Content="Reset"
-                                   Appearance="Danger" />
+                                   IsEnabled="{Binding IsModified}">
+                            <ui:Button.Style>
+                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="Width" Value="120" />
+                                    <Setter Property="Appearance" Value="Secondary" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsModified}" Value="True">
+                                            <Setter Property="Appearance" Value="Danger" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
+                        </ui:Button>
                         <ui:Button Command="{Binding SaveCommand}"
-                                   Appearance="Primary"
                                    IsEnabled="{Binding IsModified, Mode=OneWay}"
-                                   Content="Save" Icon="Save20" />
+                                   Content="Save" Icon="Save20">
+                            <ui:Button.Style>
+                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="Width" Value="120" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Appearance" Value="Primary" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
+                        </ui:Button>
                     </StackPanel>
                 </StatusBarItem>
             </StatusBar>

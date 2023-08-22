@@ -72,11 +72,12 @@ namespace SAM.Core
             MemberSince = doc.GetValue(@"//memberSince");
             Headline = doc.GetValue(@"//Headline");
             Location = doc.GetValue(@"//location");
-            DisplayLocation = LocationHelper.GetShortLocation(Location);
+
+            DisplayLocation = !string.IsNullOrEmpty(Location) ? LocationHelper.GetShortLocation(Location) : string.Empty;
 
             RealName = doc.GetValue(@"//realname");
             
-            // TODO: no idea what this is for since min and everyone i checked was empty
+            // TODO: no idea what this is for since mine and everyone i checked was empty
             //var steamRating = GetValue(doc, @"//steamRating");
             
             VACBanned = doc.GetValueAsBool(@"//vacBanned");

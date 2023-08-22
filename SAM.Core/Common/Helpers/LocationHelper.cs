@@ -57,6 +57,18 @@ namespace SAM.Core
             public string State { get; set; }
             public string Country { get; set; }
 
+            public static SteamLocation Default => new ()
+            {
+                City = string.Empty,
+                State = string.Empty,
+                Country = string.Empty
+            };
+
+            protected SteamLocation()
+            {
+
+            }
+
             public SteamLocation(string location)
             {
                 _location = location;

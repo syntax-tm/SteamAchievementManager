@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using DevExpress.Mvvm;
+using DevExpress.Mvvm.Native;
 using DevExpress.Mvvm.POCO;
 using JetBrains.Annotations;
 using log4net;
@@ -19,7 +21,10 @@ namespace SAM.Core.ViewModels
 
         [UsedImplicitly]
         private ObservableHandler<SteamStatsManager> _statsHandler;
-
+        
+        [UsedImplicitly]
+        private ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement> _achievementsPropertyHandler;
+        
         private readonly SteamStatsManager _statsManager;
 
         public virtual string SearchText { get; set; }
@@ -33,8 +38,8 @@ namespace SAM.Core.ViewModels
         
         public virtual SteamAchievement SelectedAchievement { get; set; }
 
-        public virtual List<SteamStatistic> Statistics { get; set; }
-        public virtual List<SteamAchievement> Achievements { get; set; }
+        public virtual ObservableCollection<SteamStatistic> Statistics { get; set; }
+        public virtual ObservableCollection<SteamAchievement> Achievements { get; set; }
 
         public virtual CollectionView AchievementsView { get; set; }
 
@@ -146,10 +151,16 @@ namespace SAM.Core.ViewModels
             Achievements.ForEach(a => a.Unlock());
         }
 
+        protected void Refresh()
+        {
+            AllowUnlockAll = Achievements.Any(a => !a.IsAchieved);
+        }
+
         protected void OnManagerIsModifiedChanged()
         {
             IsModified = _statsManager.IsModified;
-            AllowUnlockAll = Achievements.Any(a => !a.IsAchieved);
+
+            Refresh();
         }
 
         private void ManagerAchievementsChanged(SteamStatsManager obj)
@@ -158,6 +169,14 @@ namespace SAM.Core.ViewModels
 
             AchievementsView = (CollectionView) CollectionViewSource.GetDefaultView(Achievements);
             AchievementsView.Filter = AchievementFilter;
+
+            _achievementsPropertyHandler = new ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement>(Achievements)
+                .Add(a => a.IsModified, OnAchievementModifiedHandler);
+        }
+
+        private void OnAchievementModifiedHandler(ObservableCollection<SteamAchievement> arg1, SteamAchievement arg2)
+        {
+            Refresh();
         }
 
         private bool AchievementFilter(object obj)
