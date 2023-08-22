@@ -15,8 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Controls/button.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Controls/togglebutton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/wpf.ui.xaml" />
                 <ResourceDictionary>
                     <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
                         <Setter Property="Margin" Value="10,0" />

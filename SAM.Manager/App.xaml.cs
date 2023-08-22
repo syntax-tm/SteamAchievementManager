@@ -21,8 +21,6 @@ namespace SAM.Manager
         {
             base.OnStartup(args);
             
-            //WalkDictionary(Resources);
-
             try
             {
                 var commandLineArgs = Environment.GetCommandLineArgs();
@@ -87,8 +85,6 @@ namespace SAM.Manager
                 MainWindow.Show();
 
                 ShutdownMode = ShutdownMode.OnMainWindowClose;
-
-                SplashScreenHelper.Close();
             }
             catch (Exception e)
             {
@@ -100,6 +96,10 @@ namespace SAM.Manager
 
                 Environment.Exit(SAMExitCode.UnhandledException);
             }
+            finally
+            {
+                SplashScreenHelper.Close();
+            }
         }
 
         protected override void OnExit(ExitEventArgs args)
@@ -109,15 +109,6 @@ namespace SAM.Manager
             log.Info(@$"SAM manager for app {_appID} is exiting.");
         }
         
-        private static void WalkDictionary(ResourceDictionary resources)
-        {
-            foreach (var _ in resources) { }
-            foreach (var rd in resources.MergedDictionaries)
-            {
-                WalkDictionary(rd);
-            }
-        }
-
         private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
         {
             try
