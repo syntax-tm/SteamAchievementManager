@@ -11,6 +11,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
 using SAM.Core.Extensions;
+using SAM.Core.Settings;
 using SAM.Core.Storage;
 
 namespace SAM.Core
@@ -43,6 +44,7 @@ namespace SAM.Core
         public virtual bool IsHidden { get; set; }
         public virtual bool IsFavorite { get; set; }
         public virtual bool IsMenuOpen { get; set; }
+        public virtual SteamAppSettings AppSettings { get; set; }
 
         protected SteamApp(uint id, GameInfoType type)
         {
@@ -122,11 +124,15 @@ namespace SAM.Core
         public void ToggleVisibility()
         {
             IsHidden = !IsHidden;
+
+            SaveSettings();
         }
         
         public void ToggleFavorite()
         {
             IsFavorite = !IsFavorite;
+
+            SaveSettings();
         }
 
         public void Load()
@@ -143,6 +149,9 @@ namespace SAM.Core
                 LoadClientInfo();
                 LoadStoreInfo();
                 LoadImages();
+
+                // load user preferences (hidden, favorite, etc) for app
+                LoadSettings();
             }
             catch (Exception e)
             {
@@ -242,6 +251,36 @@ namespace SAM.Core
                 var message = $"An error occurred loading images for {Name} ({Id}). {e.Message}";
                 log.Error(message, e);
             }
+        }
+
+        private void LoadSettings()
+        {
+            var key = new AppSettingsCacheKey(Id);
+
+            if (!CacheManager.TryGetObject<SteamAppSettings>(key, out var settings))
+            {
+                return;
+            }
+
+            IsFavorite = settings.IsFavorite;
+            IsHidden = settings.IsHidden;
+
+            log.Debug($"Loaded {nameof(SteamAppSettings)} {settings}.");
+        }
+
+        private void SaveSettings()
+        {
+            var key = new AppSettingsCacheKey(Id);
+            var settings = new SteamAppSettings
+            {
+                AppId = Id,
+                IsFavorite = IsFavorite,
+                IsHidden = IsHidden
+            };
+
+            CacheManager.CacheObject(key, settings);
+            
+            log.Debug($"Saving {nameof(SteamAppSettings)} {settings}.");
         }
     }
 }
