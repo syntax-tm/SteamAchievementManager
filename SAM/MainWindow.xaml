@@ -22,7 +22,7 @@
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <ui:TitleBar Title="{Binding Title, Mode=OneWay}" DockPanel.Dock="Top" UseSnapLayout="True" />
+            <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top" />
             <views:StatusBarView DockPanel.Dock="Bottom" DataContext="{Binding HomeVm}" />
             <views:HomeView DataContext="{Binding HomeVm}" />
         </DockPanel>
