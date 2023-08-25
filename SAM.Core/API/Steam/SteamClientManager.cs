@@ -8,8 +8,7 @@ namespace SAM.Core
     public static class SteamClientManager
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
-
-        private static readonly object syncLock = new ();
+        
         private static bool _isInitialized;
         
         public static uint AppId { get; private set; }
@@ -22,16 +21,13 @@ namespace SAM.Core
 
             try
             {
-                lock (syncLock)
-                {
-                    Default = new ();
-                    Default.Initialize(appId);
+                Default = new ();
+                Default.Initialize(appId);
 
-                    AppId = appId;
-                    CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
+                AppId = appId;
+                CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
 
-                    _isInitialized = true;
-                }
+                _isInitialized = true;
             }
             catch (Exception e)
             {

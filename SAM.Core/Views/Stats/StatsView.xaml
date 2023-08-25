@@ -34,14 +34,13 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type stats:SteamStatistic}">
                             <!-- TODO: Verify if stat minimum is 0 or can be negative -->
-                            <ui:NumberBox Value="{Binding Value, TargetNullValue=0}" BorderThickness="0" Height="32" Min="0"
+                            <ui:NumberBox Value="{Binding Value, TargetNullValue=0}" BorderThickness="0" Height="32" Minimum="0"
                                           TextAlignment="Center" ClearButtonEnabled="False" Background="Transparent">
                                 <ui:NumberBox.Style>
                                     <Style TargetType="{x:Type ui:NumberBox}" BasedOn="{StaticResource DefaultUiNumberBoxStyle}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding StatType}" Value="Integer">
-                                                <Setter Property="IntegersOnly" Value="True" />
-                                                <Setter Property="DecimalPlaces" Value="0" />
+                                                <Setter Property="MaxDecimalPlaces" Value="0" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

@@ -8,21 +8,15 @@
              xmlns:viewModels="clr-namespace:SAM.Manager.ViewModels"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}"
-             Title="{Binding Title, Mode=OneWay}"
-             ExtendsContentIntoTitleBar="True"
-             WindowBackdropType="Mica"
-             Left="{Binding Config.X}" Top="{Binding Config.Y}"
-             Width="{Binding Config.Width}" Height="{Binding Config.Height}">
+             d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}">
 
     <dxmvvm:Interaction.Behaviors>
-        <sam:WindowAutoSaveBehavior Config="{Binding Config}" />
+        <sam:WindowAutoSaveBehavior />
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <ui:TitleBar Title="{Binding Title, Mode=OneWay}"
-                         DockPanel.Dock="Top" UseSnapLayout="True" />
+            <ui:TitleBar DockPanel.Dock="Top" UseSnapLayout="True" Header="{Binding Title}" />
             <sam:SteamGameView DataContext="{Binding GameVm}" />
         </DockPanel>
     </Grid>

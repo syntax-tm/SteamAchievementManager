@@ -1,43 +1,30 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
-using DevExpress.Mvvm;
 using DevExpress.Mvvm.UI.Interactivity;
 using log4net;
 using Newtonsoft.Json;
 using SAM.Core.Storage;
-using Wpf.Ui.Controls;
 
 namespace SAM.Core.Behaviors
 {
-    public class WindowAutoSaveBehavior : Behavior<UiWindow>
+    public class WindowAutoSaveBehavior : Behavior<Window>
     {
-        public static readonly DependencyProperty ConfigProperty = DependencyProperty.Register(nameof(Config), typeof(WindowSettings), typeof(WindowAutoSaveBehavior), new (OnConfigPropertyChanged));
-
-        public WindowSettings Config
-        {
-            get => (WindowSettings) GetValue(ConfigProperty);
-            set => SetValue(ConfigProperty, value);
-        }
-
-        private static void OnConfigPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var b = d as WindowAutoSaveBehavior;
-            if (e.NewValue is not null)
-            {
-                b?.LoadSettings();
-            }
-        }
-
         private bool _initialized;
+        private readonly WindowSettings _config;
+
+        public WindowAutoSaveBehavior()
+        {
+            _config = new ();
+        }
 
         protected override void OnAttached()
         {
             base.OnAttached();
             
             LoadSettings();
-
-            AssociatedObject.SizeChanged += WindowSizedChanged;
+            
             AssociatedObject.StateChanged += WindowStateChanged;
             AssociatedObject.Closing += WindowClosing;
         }
@@ -48,7 +35,6 @@ namespace SAM.Core.Behaviors
             
             if (AssociatedObject == null) return;
             
-            AssociatedObject.SizeChanged -= WindowSizedChanged;
             AssociatedObject.StateChanged -= WindowStateChanged;
             AssociatedObject.Closing -= WindowClosing;
 
@@ -57,42 +43,37 @@ namespace SAM.Core.Behaviors
 
         private void LoadSettings()
         {
-            if (Config == null) return;
+            if (_config == null) return;
             if (AssociatedObject == null) return;
             
-            AssociatedObject.WindowState = Config.WindowState;
-            AssociatedObject.WindowStartupLocation = Config.StartupLocation;
-            AssociatedObject.Width = Config.Width;
-            AssociatedObject.Height = Config.Height;
-            AssociatedObject.Left = Config.X;
-            AssociatedObject.Top = Config.Y;
+            AssociatedObject.WindowState = _config.WindowState;
+            AssociatedObject.WindowStartupLocation = _config.StartupLocation;
+            AssociatedObject.Width = _config.Width;
+            AssociatedObject.Height = _config.Height;
+            AssociatedObject.Left = _config.X;
+            AssociatedObject.Top = _config.Y;
 
             _initialized = true;
         }
 
         private void SaveSettings()
         {
-            if (Config == null || !_initialized) return;
+            if (_config == null || !_initialized) return;
 
             var state = AssociatedObject.WindowState;
 
-            Config.WindowState = state;
-            Config.StartupLocation = AssociatedObject.WindowStartupLocation;
+            _config.WindowState = state;
+            _config.StartupLocation = AssociatedObject.WindowStartupLocation;
             
             if (state == WindowState.Normal)
             {
-                Config.Width = AssociatedObject.Width;
-                Config.Height = AssociatedObject.Height;
-                Config.X = AssociatedObject.Left;
-                Config.Y = AssociatedObject.Top;
+                _config.Width = AssociatedObject.Width;
+                _config.Height = AssociatedObject.Height;
+                _config.X = AssociatedObject.Left;
+                _config.Y = AssociatedObject.Top;
             }
 
-            Config.Save();
-        }
-        
-        private void WindowSizedChanged(object sender, SizeChangedEventArgs e)
-        {
-            SaveSettings();
+            _config.Save();
         }
         
         private void WindowStateChanged(object sender, EventArgs e)
@@ -106,7 +87,7 @@ namespace SAM.Core.Behaviors
         }
     }
 
-    public class WindowSettings : BindableBase
+    public class WindowSettings
     {
         private readonly ILog log = LogManager.GetLogger(typeof(WindowSettings));
 
@@ -116,72 +97,38 @@ namespace SAM.Core.Behaviors
         private readonly string _fileName;
         private readonly object syncLock = new();
         
-        [JsonProperty]
-        public WindowState WindowState
-        {
-            get => GetProperty(() => WindowState);
-            set => SetProperty(() => WindowState, value);
-        }
+        public WindowState WindowState { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public WindowStartupLocation StartupLocation { get; set; } = WindowStartupLocation.Manual;
         
-        [JsonProperty]
-        public double X
+        public WindowSettings()
         {
-            get => GetProperty(() => X);
-            set => SetProperty(() => X, value);
-        }
-        
-        [JsonProperty]
-        public double Y
-        {
-            get => GetProperty(() => Y);
-            set => SetProperty(() => Y, value);
-        }
+            var assemblyName = Assembly.GetEntryAssembly()!.GetName().Name;
+            var fullName = nameof(WindowSettings);
 
-        [JsonProperty]
-        public double Width
-        {
-            get => GetProperty(() => Width);
-            set => SetProperty(() => Width, value);
-        }
-        
-        [JsonProperty]
-        public double Height
-        {
-            get => GetProperty(() => Height);
-            set => SetProperty(() => Height, value);
-        }
-        
-        [JsonProperty]
-        public WindowStartupLocation StartupLocation
-        {
-            get => GetProperty(() => StartupLocation);
-            set => SetProperty(() => StartupLocation, value);
-        }
+            var settingsKey = $"{assemblyName}_{fullName}";
 
-        [JsonConstructor]
-        protected WindowSettings()
-        {
-
-        }
-
-        public WindowSettings(string key)
-        {
-            _key = key;
+            _key = settingsKey;
             _fileName = $"{_key}.json";
 
             Load();
         }
-
+        
         public static WindowSettings Default
         {
             get
             {
                 if (_default is not null) return _default;
 
+                var defaultResolution = SystemParameters.WorkArea;
+
                 _default = new()
                 {
-                    Width = 1280,
-                    Height = 720,
+                    Width = Math.Min(1280, defaultResolution.Width),
+                    Height = Math.Min(720, defaultResolution.Height),
                     WindowState = WindowState.Normal,
                     StartupLocation = WindowStartupLocation.CenterScreen
                 };
@@ -197,27 +144,16 @@ namespace SAM.Core.Behaviors
                 var exists = CacheManager.StorageManager.FileExists(_fileName);
                 if (!exists)
                 {
-                    var defaults = Default;
-                    
-                    Width = defaults.Width;
-                    Height = defaults.Height;
-                    WindowState = defaults.WindowState;
-                    StartupLocation = defaults.StartupLocation;
+                    Width = Default.Width;
+                    Height = Default.Height;
+                    WindowState = Default.WindowState;
+                    StartupLocation = Default.StartupLocation;
 
                     return;
                 }
 
                 var configText = CacheManager.StorageManager.GetTextFile(_fileName);
-                //JsonConvert.PopulateObject(configText, this);
-
-                var config = JsonConvert.DeserializeObject<WindowSettings>(configText);
-                
-                WindowState = config.WindowState;
-                StartupLocation = config.StartupLocation;
-                Width = config.Width;
-                Height = config.Height;
-                X = config.X;
-                Y = config.Y;
+                JsonConvert.PopulateObject(configText, this);
             }
             catch (Exception e)
             {
@@ -235,6 +171,8 @@ namespace SAM.Core.Behaviors
                     var configText = JsonConvert.SerializeObject(this, Formatting.None);
 
                     CacheManager.StorageManager.SaveText(_fileName, configText);
+
+                    log.Debug($"Saved {nameof(WindowSettings)} to '{_fileName}'.");
                 }
             }
             catch (Exception e)

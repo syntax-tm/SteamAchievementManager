@@ -143,7 +143,7 @@ namespace SAM.Core.Storage
             return isoStorage.FileExists(fileName);
         }
         
-        public IsolatedStorageFile GetStore()
+        public static IsolatedStorageFile GetStore()
         {
             return IsolatedStorageFile.GetMachineStoreForAssembly();
         }

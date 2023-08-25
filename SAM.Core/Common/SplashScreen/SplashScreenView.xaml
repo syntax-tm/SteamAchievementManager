@@ -11,7 +11,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}"
              Width="500" Height="340"
-             ExtendsContentIntoTitleBar="True"
+             ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
              WindowBackdropType="Mica" ShowActivated="True" ShowInTaskbar="True"
              WindowStartupLocation="CenterScreen"
              FontFamily="Segoe UI Light"
