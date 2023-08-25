@@ -28,7 +28,7 @@ namespace SAM.Core.ViewModels
         private readonly SteamStatsManager _statsManager;
 
         public virtual string SearchText { get; set; }
-        public virtual bool AllowUnlockAll { get; set; }
+        public virtual bool AllowUnlockAll { get; set; } = true;
         public virtual bool AllowEdit { get; set; }
         public virtual bool IsModified { get; set; }
         public virtual bool ShowHidden { get; set; }
@@ -123,8 +123,6 @@ namespace SAM.Core.ViewModels
         public void RefreshStats()
         {
             _statsManager.RefreshStats();
-
-            //SpinWait.SpinUntil(() => _statsManager.Loaded, new TimeSpan(0, 0, 30));
         }
 
         public void ResetAchievements()
@@ -155,6 +153,8 @@ namespace SAM.Core.ViewModels
 
         protected void Refresh()
         {
+            if (!Achievements.Any()) return;
+
             AllowUnlockAll = Achievements.Any(a => !a.IsAchieved);
         }
 
