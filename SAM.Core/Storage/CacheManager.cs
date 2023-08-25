@@ -34,7 +34,7 @@ namespace SAM.Core.Storage
             var filePath = key?.GetFullPath();
             
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
+            
             StorageManager.SaveText(filePath, text, overwrite);
         }
 

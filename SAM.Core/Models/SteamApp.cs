@@ -220,7 +220,7 @@ namespace SAM.Core
                     // TODO: Move image cache key creation to WebManager
                     var uri = new Uri(StoreInfo.HeaderImage);
                     var fileName = Path.GetFileName(uri.LocalPath);
-                    var key = CacheKeyFactory.CreateAppImageCacheKey(Id, fileName);
+                    var key = CacheKeys.CreateAppImageCacheKey(Id, fileName);
 
                     var storeHeader = WebManager.DownloadImage(StoreInfo.HeaderImage, key);
 
@@ -254,7 +254,7 @@ namespace SAM.Core
 
         private void LoadSettings()
         {
-            var key = new AppSettingsCacheKey(Id);
+            var key = CacheKeys.CreateAppSettingsCacheKey(Id);
 
             if (!CacheManager.TryGetObject<SteamAppSettings>(key, out var settings))
             {
@@ -269,7 +269,7 @@ namespace SAM.Core
 
         private void SaveSettings()
         {
-            var key = new AppSettingsCacheKey(Id);
+            var key = CacheKeys.CreateAppSettingsCacheKey(Id);
             var settings = new SteamAppSettings
             {
                 AppId = Id,

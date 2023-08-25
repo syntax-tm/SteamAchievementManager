@@ -35,7 +35,7 @@ namespace SAM.Core
             if (_isInitialized) return;
 
             var fileName = Path.GetFileName(COUNTRIES_STATES_JSON_URL);
-            var cacheKey = new TextCacheKey(fileName);
+            var cacheKey = new CacheKey(fileName, CacheKeyType.Data);
             var countryStateJson = WebManager.DownloadString(COUNTRIES_STATES_JSON_URL, cacheKey);
 
             var jo = JObject.Parse(countryStateJson);
@@ -114,12 +114,9 @@ namespace SAM.Core
                     ? country.GetStateByName(State)?.Code
                     : State;
                 
-                if (!string.IsNullOrEmpty(stateCode))
-                {
-                    return $"{City}, {stateCode}, {countryCode}";
-                }
-
-                return $"{City}, {countryCode}";
+                return !string.IsNullOrEmpty(stateCode)
+                    ? $"{City}, {stateCode}, {countryCode}"
+                    : $"{City}, {countryCode}";
             }
         }
 

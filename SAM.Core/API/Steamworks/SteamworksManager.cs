@@ -24,7 +24,7 @@ namespace SAM.Core
         {
             try
             {
-                var cacheKey = CacheKeyFactory.CreateAppListCacheKey();
+                var cacheKey = CacheKeys.AppList;
 
                 // if we have the file in the cache, then deserialize the cached json and
                 // return that
@@ -82,7 +82,7 @@ namespace SAM.Core
                     return null;
                 }
 
-                var cacheKey = CacheKeyFactory.CreateAppCacheKey(id);
+                var cacheKey = CacheKeys.CreateAppCacheKey(id);
 
                 // if we have the file in the cache, then deserialize the cached json and
                 // return that

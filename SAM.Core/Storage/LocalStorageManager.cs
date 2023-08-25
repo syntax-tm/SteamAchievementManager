@@ -40,6 +40,8 @@ namespace SAM.Core.Storage
 
             var path = Path.Combine(ApplicationStoragePath, fileName);
 
+            CreateFileDirectory(path);
+
             if (!overwrite)
             {
                 if (File.Exists(path))
@@ -56,7 +58,9 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
             var path = Path.Combine(ApplicationStoragePath, fileName);
-            
+
+            CreateFileDirectory(path);
+
             if (!overwrite)
             {
                 if (File.Exists(path))
@@ -73,6 +77,8 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
             var path = Path.Combine(ApplicationStoragePath, fileName);
+
+            CreateFileDirectory(path);
 
             if (!overwrite)
             {
@@ -123,6 +129,15 @@ namespace SAM.Core.Storage
             
             return bytes;
         }
+        
+        public void CreateFileDirectory(string fullPath)
+        {
+            if (fullPath == null) throw new ArgumentNullException(nameof(fullPath));
+            
+            var path = Directory.GetParent(fullPath);
+            
+            Directory.CreateDirectory(path.FullName);
+        }
 
         public void CreateDirectory(string directory)
         {
@@ -142,6 +157,5 @@ namespace SAM.Core.Storage
 
             return exists;
         }
-
     }
 }

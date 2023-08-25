@@ -10,8 +10,6 @@ namespace SAM.Core.Settings
     {
         private static UserSettings _instance;
         private static readonly object syncLock = new ();
-
-        private static readonly UserSettingsKey _settingsKey = new ();
         
         public ManagerSettings ManagerSettings
         {
@@ -47,17 +45,17 @@ namespace SAM.Core.Settings
         
         private void Load()
         {
-            if (CacheManager.TryPopulateObject(_settingsKey, this))
+            if (CacheManager.TryPopulateObject(CacheKeys.UserSettings, this))
             {
                 return;
             }
 
-            CacheManager.CacheObject(_settingsKey, this);
+            CacheManager.CacheObject(CacheKeys.UserSettings, this);
         }
 
         public void Save()
         {
-            CacheManager.CacheObject(_settingsKey, this);
+            CacheManager.CacheObject(CacheKeys.UserSettings, this);
         }
     }
 }

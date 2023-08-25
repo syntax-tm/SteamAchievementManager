@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Data;
-using System.Windows.Input;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.Core.Extensions;
@@ -219,8 +218,7 @@ namespace SAM.Core
         {
             try
             {
-                var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
-                if (!CacheManager.TryGetObject<List<SupportedApp>>(cacheKey, out var refreshQueue)) return;
+                if (!CacheManager.TryGetObject<List<SupportedApp>>(CacheKeys.CheckedAppList, out var refreshQueue)) return;
 
                 _refreshQueue = new (refreshQueue);
             }
@@ -235,10 +233,9 @@ namespace SAM.Core
         {
             try
             {
-                var cacheKey = CacheKeyFactory.CreateCheckedAppsCacheKey();
                 var refreshItems = _refreshQueue.ToList();
 
-                CacheManager.CacheObject(cacheKey, refreshItems);
+                CacheManager.CacheObject(CacheKeys.CheckedAppList, refreshItems);
             }
             catch (Exception e)
             {
@@ -251,8 +248,7 @@ namespace SAM.Core
         {
             try
             {
-                var cacheKey = CacheKeyFactory.CreateUserLibraryCacheKey();
-                if (!CacheManager.TryGetObject<List<SupportedApp>>(cacheKey, out var ownedApps)) return;
+                if (!CacheManager.TryGetObject<List<SupportedApp>>(CacheKeys.UserLibrary, out var ownedApps)) return;
 
                 foreach (var app in ownedApps)
                 {
@@ -280,9 +276,8 @@ namespace SAM.Core
             try
             {
                 var ownedApps = _addedGames.ToList();
-                var cacheKey = CacheKeyFactory.CreateUserLibraryCacheKey();
             
-                CacheManager.CacheObject(cacheKey, ownedApps);
+                CacheManager.CacheObject(CacheKeys.UserLibrary, ownedApps);
             }
             catch (Exception e)
             {

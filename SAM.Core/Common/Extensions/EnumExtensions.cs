@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace SAM.Core.Extensions
@@ -13,15 +14,22 @@ namespace SAM.Core.Extensions
                 return string.Empty;
             }
 
-            var attributes = (DisplayAttribute[]) fi.GetCustomAttributes(typeof(DisplayAttribute), false);
-
-            if (attributes.Length > 0)
+            var descAttributes = (DescriptionAttribute[]) fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+            if (descAttributes.Length > 0)
             {
-                var displayAttr = attributes[0];
+                return descAttributes[0].Description;
+            }
+
+            var displayAttributes = (DisplayAttribute[]) fi.GetCustomAttributes(typeof(DisplayAttribute), false);
+            if (displayAttributes.Length > 0)
+            {
+                var displayAttr = displayAttributes[0];
 
                 if (!string.IsNullOrWhiteSpace(displayAttr.Description)) return displayAttr.Description;
                 if (!string.IsNullOrWhiteSpace(displayAttr.Name)) return displayAttr.Name;
                 if (!string.IsNullOrWhiteSpace(displayAttr.ShortName)) return displayAttr.ShortName;
+
+                return string.Empty;
             }
 
             return value.ToString();

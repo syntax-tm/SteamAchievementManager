@@ -12,11 +12,11 @@ namespace SAM.Core.Behaviors
     public class WindowAutoSaveBehavior : Behavior<Window>
     {
         private bool _initialized;
-        private readonly WindowSettings _config;
+        private WindowSettings _config;
 
         public WindowAutoSaveBehavior()
         {
-            _config = new ();
+            
         }
 
         protected override void OnAttached()
@@ -43,8 +43,9 @@ namespace SAM.Core.Behaviors
 
         private void LoadSettings()
         {
-            if (_config == null) return;
             if (AssociatedObject == null) return;
+
+            _config = new (AssociatedObject.GetType().Name);
             
             AssociatedObject.WindowState = _config.WindowState;
             AssociatedObject.WindowStartupLocation = _config.StartupLocation;
@@ -96,6 +97,7 @@ namespace SAM.Core.Behaviors
         private readonly string _key;
         private readonly string _fileName;
         private readonly object syncLock = new();
+        private readonly CacheKey _cacheKey;
         
         public WindowState WindowState { get; set; }
         public double X { get; set; }
@@ -103,16 +105,28 @@ namespace SAM.Core.Behaviors
         public double Width { get; set; }
         public double Height { get; set; }
         public WindowStartupLocation StartupLocation { get; set; } = WindowStartupLocation.Manual;
-        
-        public WindowSettings()
+
+        protected WindowSettings()
+        {
+            var defaultResolution = SystemParameters.WorkArea;
+
+            Width = Math.Min(1280, defaultResolution.Width);
+            Height = Math.Min(720, defaultResolution.Height);
+            WindowState = WindowState.Normal;
+            StartupLocation = WindowStartupLocation.CenterScreen;
+        }
+
+        public WindowSettings(string id)
         {
             var assemblyName = Assembly.GetEntryAssembly()!.GetName().Name;
             var fullName = nameof(WindowSettings);
 
-            var settingsKey = $"{assemblyName}_{fullName}";
+            var settingsKey = $"{assemblyName}_{id}_{fullName}";
 
-            _key = settingsKey;
+            _key = settingsKey.ToLower();
             _fileName = $"{_key}.json";
+
+            _cacheKey = new (_fileName, CacheKeyType.Settings);
 
             Load();
         }
@@ -122,16 +136,8 @@ namespace SAM.Core.Behaviors
             get
             {
                 if (_default is not null) return _default;
-
-                var defaultResolution = SystemParameters.WorkArea;
-
-                _default = new()
-                {
-                    Width = Math.Min(1280, defaultResolution.Width),
-                    Height = Math.Min(720, defaultResolution.Height),
-                    WindowState = WindowState.Normal,
-                    StartupLocation = WindowStartupLocation.CenterScreen
-                };
+                
+                _default = new ();
 
                 return _default;
             }
@@ -141,7 +147,7 @@ namespace SAM.Core.Behaviors
         {
             try
             {
-                var exists = CacheManager.StorageManager.FileExists(_fileName);
+                var exists = CacheManager.TryGetTextFile(_cacheKey, out var configText);
                 if (!exists)
                 {
                     Width = Default.Width;
@@ -151,8 +157,7 @@ namespace SAM.Core.Behaviors
 
                     return;
                 }
-
-                var configText = CacheManager.StorageManager.GetTextFile(_fileName);
+                
                 JsonConvert.PopulateObject(configText, this);
             }
             catch (Exception e)
@@ -170,7 +175,7 @@ namespace SAM.Core.Behaviors
                 {
                     var configText = JsonConvert.SerializeObject(this, Formatting.None);
 
-                    CacheManager.StorageManager.SaveText(_fileName, configText);
+                    CacheManager.CacheText(_cacheKey, configText);
 
                     log.Debug($"Saved {nameof(WindowSettings)} to '{_fileName}'.");
                 }

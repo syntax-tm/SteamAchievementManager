@@ -40,7 +40,7 @@ namespace SAM.Core
                 };
 
                 var fileName = Path.GetFileName(url);
-                var cacheKey = CacheKeyFactory.CreateAppImageCacheKey(id, fileName);
+                var cacheKey = CacheKeys.CreateAppImageCacheKey(id, fileName);
                 
                 var img = WebManager.DownloadImage(url, cacheKey);
                 
