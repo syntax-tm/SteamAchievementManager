@@ -12,8 +12,8 @@
              d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}"
              Width="500" Height="340"
              ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-             WindowBackdropType="Mica" ShowActivated="True" ShowInTaskbar="True"
-             WindowStartupLocation="CenterScreen"
+             WindowStyle="None" WindowBackdropType="None"
+             ShowActivated="True" ShowInTaskbar="True" WindowStartupLocation="CenterScreen"
              FontFamily="Segoe UI Light"
              Foreground="{StaticResource TextFillColorLightPrimaryBrush}"
              Icon="{svgc:SvgImage Source=/Styles/Images/steam-symbol.svg}">

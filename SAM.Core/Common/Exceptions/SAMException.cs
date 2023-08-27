@@ -1,21 +1,18 @@
 ﻿using System;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+[Serializable]
+public class SAMException : Exception
 {
-    [Serializable]
-    public class SAMException : Exception
+    public SAMException()
     {
 
-        public SAMException()
-        {
+    }
 
-        }
-
-        public SAMException(string message, Exception innerException = null)
-            : base(message, innerException)
-        {
-
-        }
+    public SAMException(string message, Exception innerException = null)
+        : base(message, innerException)
+    {
 
     }
 }

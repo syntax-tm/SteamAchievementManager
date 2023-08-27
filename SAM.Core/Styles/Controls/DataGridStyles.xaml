@@ -68,7 +68,7 @@
         <Setter Property="CanUserResizeRows" Value="False" />
     </Style>
 
-    <Style x:Key="AchievementGridRowStyle" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+    <Style x:Key="AchievementGridRowStyle" TargetType="{x:Type DataGridRow}">
         <Setter Property="Padding" Value="1" />
         <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWayToSource}" />
@@ -94,48 +94,99 @@
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <!-- selected -->
             <Trigger Property="IsSelected" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                 <Setter Property="Background" Value="{StaticResource PaletteBlueBrush}" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Padding" Value="0" />
             </Trigger>
-            <DataTrigger Binding="{Binding IsModified}" Value="False">
+            <!-- hover -->
+            <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-            </DataTrigger>
-            <MultiDataTrigger>
-                <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                    <Condition Binding="{Binding IsSelected}" Value="False" />
-                    <Condition Binding="{Binding IsModified}" Value="False" />
-                </MultiDataTrigger.Conditions>
+                <Setter Property="Background" Value="{StaticResource PaletteBlueBrush}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
                 <Setter Property="Background">
                     <Setter.Value>
                         <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteBlueColor}" />
                     </Setter.Value>
                 </Setter>
+            </Trigger>
+            <!-- unlocked -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding IsAchieved}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="1" Color="{StaticResource PaletteLightGreenColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                    <Condition Binding="{Binding IsAchieved}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="0.7" Color="{StaticResource PaletteLightGreenColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <!-- modified (adding) -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding IsModified}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="1" Color="{StaticResource PaletteYellowColor}" />
+                    </Setter.Value>
+                </Setter>
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
                     <Condition Binding="{Binding IsModified}" Value="True" />
                 </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="0.8" Color="{StaticResource PaletteYellowColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <!-- modified (removing) -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding IsModified}" Value="True" />
+                    <Condition Binding="{Binding IsAchieved}" Value="False" />
+                </MultiDataTrigger.Conditions>
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="0.4" Color="{StaticResource PaletteOrangeColor}" />
+                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteDeepOrangeColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
                     <Condition Binding="{Binding IsModified}" Value="True" />
+                    <Condition Binding="{Binding IsAchieved}" Value="False" />
                 </MultiDataTrigger.Conditions>
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteOrangeColor}" />
+                        <SolidColorBrush Opacity="0.4" Color="{StaticResource PaletteDeepOrangeColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>

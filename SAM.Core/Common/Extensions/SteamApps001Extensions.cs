@@ -1,24 +1,23 @@
 ﻿using SAM.API.Wrappers;
 
-namespace SAM.Core.Extensions
+namespace SAM.Core.Extensions;
+
+public static class SteamApps001Extensions
 {
-    public static class SteamApps001Extensions
+
+    public static string GetAppName(this SteamApps001 clientApps, uint id)
     {
-
-        public static string GetAppName(this SteamApps001 clientApps, uint id)
-        {
-            return clientApps.GetAppData(id, @"name");
-        }
-
-        public static string GetAppIcon(this SteamApps001 clientApps, uint id)
-        {
-            return clientApps.GetAppData(id, @"icon");
-        }
-
-        public static string GetAppLogo(this SteamApps001 clientApps, uint id)
-        {
-            return clientApps.GetAppData(id, @"logo");
-        }
-
+        return clientApps.GetAppData(id, @"name");
     }
+
+    public static string GetAppIcon(this SteamApps001 clientApps, uint id)
+    {
+        return clientApps.GetAppData(id, @"icon");
+    }
+
+    public static string GetAppLogo(this SteamApps001 clientApps, uint id)
+    {
+        return clientApps.GetAppData(id, @"logo");
+    }
+
 }

@@ -1,27 +1,24 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace SAM.Core.Extensions
+namespace SAM.Core.Extensions;
+
+public static class StringExtensions
 {
-    public static class StringExtensions
+    public static bool EqualsIgnoreCase([NotNull] this string a, string b)
     {
+        if (string.IsNullOrEmpty(b)) return false;
 
-        public static bool EqualsIgnoreCase([NotNull] this string a, string b)
+        return a.Equals(b, StringComparison.CurrentCultureIgnoreCase);
+    }
+
+    public static bool ContainsIgnoreCase([NotNull] this string a, string b)
+    {
+        if (string.IsNullOrEmpty(b))
         {
-            if (string.IsNullOrEmpty(b)) return false;
-
-            return a.Equals(b, StringComparison.CurrentCultureIgnoreCase);
+            throw new ArgumentNullException(nameof(b));
         }
 
-        public static bool ContainsIgnoreCase([NotNull] this string a, string b)
-        {
-            if (string.IsNullOrEmpty(b))
-            {
-                throw new ArgumentNullException(nameof(b));
-            }
-
-            return a.Contains(b, StringComparison.CurrentCultureIgnoreCase);
-        }
-
+        return a.Contains(b, StringComparison.CurrentCultureIgnoreCase);
     }
 }

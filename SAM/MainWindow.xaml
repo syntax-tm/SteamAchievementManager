@@ -13,7 +13,7 @@
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
              DataContext="{dxmvvm:ViewModelSource Type={x:Type vm:MainWindowViewModel}}"
              ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-             WindowBackdropType="Mica"
+             WindowStyle="None" WindowBackdropType="None"
              Icon="{svgc:SvgImage Source=/SAMCore;/Styles/Images/square-steam.svg}">
 
     <dxmvvm:Interaction.Behaviors>

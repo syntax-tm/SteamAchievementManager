@@ -10,7 +10,7 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}"
              ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-             WindowBackdropType="Mica">
+             WindowStyle="None" WindowBackdropType="None">
 
     <dxmvvm:Interaction.Behaviors>
         <sam:WindowAutoSaveBehavior />

@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+[Serializable]
+public class SteamClientException : SAMException
 {
-    [Serializable]
-    public class SteamClientException : SAMException
-    {
-    }
 }
