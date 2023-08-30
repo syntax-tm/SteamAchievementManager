@@ -122,7 +122,7 @@
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="1" Color="{StaticResource PaletteLightGreenColor}" />
+                        <SolidColorBrush Opacity="1" Color="{StaticResource GreenColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>
@@ -134,7 +134,7 @@
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="0.7" Color="{StaticResource PaletteLightGreenColor}" />
+                        <SolidColorBrush Opacity="0.7" Color="{StaticResource GreenColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>
@@ -147,7 +147,7 @@
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="1" Color="{StaticResource PaletteYellowColor}" />
+                        <SolidColorBrush Opacity="1" Color="{StaticResource YellowColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>
@@ -159,7 +159,7 @@
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="0.8" Color="{StaticResource PaletteYellowColor}" />
+                        <SolidColorBrush Opacity="0.8" Color="{StaticResource YellowColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>
@@ -173,7 +173,7 @@
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteDeepOrangeColor}" />
+                        <SolidColorBrush Opacity="0.6" Color="{StaticResource RedColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>
@@ -186,7 +186,7 @@
                 <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
                 <Setter Property="Background">
                     <Setter.Value>
-                        <SolidColorBrush Opacity="0.4" Color="{StaticResource PaletteDeepOrangeColor}" />
+                        <SolidColorBrush Opacity="0.4" Color="{StaticResource RedColor}" />
                     </Setter.Value>
                 </Setter>
             </MultiDataTrigger>

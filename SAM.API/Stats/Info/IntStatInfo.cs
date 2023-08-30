@@ -1,27 +1,14 @@
 ﻿using System.Globalization;
 
-namespace SAM.API.Stats
+namespace SAM.API.Stats;
+
+public class IntStatInfo : StatInfo
 {
-    public class IntStatInfo : StatInfo
-    {
-        public int IntValue;
-        public int OriginalValue;
+    public int IntValue;
+    public int OriginalValue;
 
-        public override object Value
-        {
-            get => IntValue;
-            set
-            {
-                var i = int.Parse((string)value, CultureInfo.CurrentCulture);
+    public override UserStatType Type => UserStatType.Integer;
 
-                if ((Permission & 2) != 0 &&
-                    IntValue != i)
-                    throw new StatIsProtectedException();
-
-                IntValue = i;
-            }
-        }
-
-        public override bool IsModified => IntValue != OriginalValue;
-    }
+    public override object Value => IntValue;
+    public override bool IsModified => IntValue != OriginalValue;
 }

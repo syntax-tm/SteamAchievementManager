@@ -8,6 +8,10 @@
     <Color x:Key="BlackColor">Black</Color>
     <Color x:Key="WhiteColor">White</Color>
     <Color x:Key="AccentPrimaryColor">#559CE4</Color>
+    <Color x:Key="YellowColor">#F7F76D</Color>
+    <Color x:Key="GreenColor">#91DB75</Color>
+    <Color x:Key="OrangeColor">#FE7F49</Color>
+    <Color x:Key="RedColor">#F04646</Color>
 
     <!-- Colors | Controls -->
     <Color x:Key="ControlBorderColor">#6F6F6F</Color>
@@ -28,6 +32,12 @@
     <Color x:Key="ProgressIndeterminateColor2">#33959595</Color>
     <Color x:Key="ProgressIndeterminateColor3">#4C000000</Color>
     <Color x:Key="ProgressIndeterminateColor4">#4C000000</Color>
+
+    <!-- Brushes -->
+    <SolidColorBrush x:Key="YellowBrush" Color="{StaticResource YellowColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="GreenBrush" Color="{StaticResource GreenColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="OrangeBrush" Color="{StaticResource OrangeColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="RedBrush" Color="{StaticResource RedColor}" po:Freeze="true" />
 
     <!-- Brushes | Accent -->
     <SolidColorBrush x:Key="AccentPrimaryBrush" Color="{StaticResource AccentPrimaryColor}" po:Freeze="true" />

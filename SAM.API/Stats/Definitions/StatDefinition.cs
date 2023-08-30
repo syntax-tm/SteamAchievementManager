@@ -32,9 +32,9 @@ namespace SAM.API.Stats
             {
                 return new IntegerStatDefinition(stat, currentLanguage);
             }
-            if (typeof(T) == typeof(FloatStatDefinition))
+            if (typeof(T) == typeof(AvgRateStatDefinition))
             {
-                return new FloatStatDefinition(stat, currentLanguage);
+                return new AvgRateStatDefinition(stat, currentLanguage);
             }
             if (typeof(T) == typeof(FloatStatDefinition))
             {

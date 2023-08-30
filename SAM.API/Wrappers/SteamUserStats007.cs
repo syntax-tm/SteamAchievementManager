@@ -1,10 +1,7 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace SAM.API.Wrappers
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SteamUserStats007 : NativeWrapper<ISteamUserStats007>
     {
 #region RequestCurrentStats
@@ -15,7 +12,8 @@ namespace SAM.API.Wrappers
 
         public bool RequestCurrentStats()
         {
-            return Call<bool, NativeRequestCurrentStats>(Functions.RequestCurrentStats, ObjectAddress);
+            var call = GetFunction<NativeRequestCurrentStats>(Functions.RequestCurrentStats);
+            return call(ObjectAddress);
         }
 
 #endregion
@@ -62,11 +60,8 @@ namespace SAM.API.Wrappers
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return Call<bool, NativeSetStatInt>(
-                                                Functions.SetStatInteger,
-                                                ObjectAddress,
-                                                nativeName.Handle,
-                                                value);
+            var call = GetFunction<NativeSetStatInt>(Functions.SetStatInteger);
+            return call(ObjectAddress, nativeName.Handle, value);
         }
 
 #endregion
@@ -80,12 +75,9 @@ namespace SAM.API.Wrappers
         public bool SetStatValue(string name, float value)
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
-
-            return Call<bool, NativeSetStatFloat>(
-                                                  Functions.SetStatFloat,
-                                                  ObjectAddress,
-                                                  nativeName.Handle,
-                                                  value);
+            
+            var call = GetFunction<NativeSetStatFloat>(Functions.UpdateAvgRateStat);
+            return call(ObjectAddress, nativeName.Handle, value);
         }
 
 #endregion
@@ -94,14 +86,14 @@ namespace SAM.API.Wrappers
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeUpdateAvgRateStat(nint self, nint name, double sessionLength, out float data);
+        private delegate bool NativeUpdateAvgRateStat(nint self, nint name, float countThisSession, double sessionLength);
 
-        public bool UpdateAvgRateStat(string name, double sessionLength, out float value)
+        public bool UpdateAvgRateStat(string name, float countThisSession, double sessionLength)
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
 
             var call = GetFunction<NativeUpdateAvgRateStat>(Functions.UpdateAvgRateStat);
-            return call(ObjectAddress, nativeName.Handle, sessionLength, out value);
+            return call(ObjectAddress, nativeName.Handle, countThisSession, sessionLength);
         }
 
 #endregion
@@ -110,10 +102,7 @@ namespace SAM.API.Wrappers
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetAchievement(
-            nint self,
-            nint name,
-            [MarshalAs(UnmanagedType.I1)] out bool isAchieved);
+        private delegate bool NativeGetAchievement(nint self, nint name, [MarshalAs(UnmanagedType.I1)] out bool isAchieved);
 
         public bool GetAchievementState(string name, out bool isAchieved)
         {
@@ -139,13 +128,14 @@ namespace SAM.API.Wrappers
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return state == false
-                ? Call<bool, NativeClearAchievement>(Functions.ClearAchievement,
-                                                     ObjectAddress,
-                                                     nativeName.Handle)
-                : Call<bool, NativeSetAchievement>(Functions.SetAchievement,
-                                                   ObjectAddress,
-                                                   nativeName.Handle);
+            if (state)
+            {
+                var call = GetFunction<NativeSetAchievement>(Functions.SetAchievement);
+                return call(ObjectAddress, nativeName.Handle);
+            }
+
+            var clearCall = GetFunction<NativeClearAchievement>(Functions.ClearAchievement);
+            return clearCall(ObjectAddress, nativeName.Handle);
         }
 
 #endregion
@@ -158,7 +148,8 @@ namespace SAM.API.Wrappers
 
         public bool StoreStats()
         {
-            return Call<bool, NativeStoreStats>(Functions.StoreStats, ObjectAddress);
+            var call = GetFunction<NativeStoreStats>(Functions.StoreStats);
+            return call(ObjectAddress);
         }
 
 #endregion
@@ -171,10 +162,9 @@ namespace SAM.API.Wrappers
         public int GetAchievementIcon(string name)
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
-
-            return Call<int, NativeGetAchievementIcon>(Functions.GetAchievementIcon,
-                                                       ObjectAddress,
-                                                       nativeName.Handle);
+            
+            var call = GetFunction<NativeGetAchievementIcon>(Functions.GetAchievementIcon);
+            return call(ObjectAddress, nativeName.Handle);
         }
 
 #endregion
@@ -189,10 +179,9 @@ namespace SAM.API.Wrappers
             using var nativeName = NativeStrings.StringToStringHandle(name);
             using var nativeKey = NativeStrings.StringToStringHandle(key);
 
-            var result = Call<nint, NativeGetAchievementDisplayAttribute>(Functions.GetAchievementDisplayAttribute, 
-                                                                            ObjectAddress,
-                                                                            nativeName.Handle,
-                                                                            nativeKey.Handle);
+            var call = GetFunction<NativeGetAchievementDisplayAttribute>(Functions.GetAchievementDisplayAttribute);
+            var result = call(ObjectAddress, nativeName.Handle, nativeKey.Handle);
+
             return NativeStrings.PointerToString(result);
         }
 
@@ -206,10 +195,8 @@ namespace SAM.API.Wrappers
 
         public bool ResetAllStats(bool achievementsToo)
         {
-            return Call<bool, NativeResetAllStats>(
-                Functions.ResetAllStats,
-                ObjectAddress,
-                achievementsToo);
+            var call = GetFunction<NativeResetAllStats>(Functions.ResetAllStats);
+            return call(ObjectAddress, achievementsToo);
         }
 
 #endregion

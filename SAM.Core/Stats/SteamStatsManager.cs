@@ -29,7 +29,7 @@ namespace SAM.Core.Stats
         private AutoResetEvent _resetEvent;
 
         private List<ObservableHandler<SteamAchievement>> _achievementHandlers;
-        private List<ObservableHandler<SteamStatistic>> _statHandlers;
+        private List<ObservableHandler<SteamStatisticBase>> _statHandlers;
 
         public uint AppId { get; }
         public bool IsLoading 
@@ -57,7 +57,7 @@ namespace SAM.Core.Stats
             get => GetProperty(() => IsStatsModified);
             set => SetProperty(() => IsStatsModified, value, OnItemChanged);
         }
-        public List<SteamStatistic> Statistics
+        public List<SteamStatisticBase> Statistics
         {
             get => GetProperty(() => Statistics);
             set => SetProperty(() => Statistics, value);
@@ -209,6 +209,10 @@ namespace SAM.Core.Stats
                         break;
                     }
                     case UserStatType.Float:
+                    {
+                        StatDefinitions.Add(new AvgRateStatDefinition(stat, currentLanguage));
+                        break;
+                    }
                     case UserStatType.AverageRate:
                     {
                         StatDefinitions.Add(new FloatStatDefinition(stat, currentLanguage));
@@ -261,14 +265,6 @@ namespace SAM.Core.Stats
 
             Achievements = new (achievements);
             
-            //foreach (var achievement in Achievements)
-            //{
-            //    var achievementHandler = new ObservableHandler<SteamAchievement>(achievement)
-            //        .Add(a => a.IsModified, OnAchievementChanged);
-
-            //    _achievementHandlers.Add(achievementHandler);
-            //}
-
             var handlers = Achievements.Select(achievement => new ObservableHandler<SteamAchievement>(achievement).Add(a => a.IsModified, OnAchievementChanged));
 
             _achievementHandlers = new ();
@@ -277,7 +273,7 @@ namespace SAM.Core.Stats
 
         private void GetStatistics()
         {
-            var stats = new List<SteamStatistic>();
+            var stats = new List<SteamStatisticBase>();
             var validDefinitions = StatDefinitions.Where(statDef => !string.IsNullOrEmpty(statDef?.Id));
 
             foreach (var statDef in validDefinitions)
@@ -288,13 +284,7 @@ namespace SAM.Core.Stats
 
             Statistics = new (stats);
             
-            //foreach (var statHandler in Statistics.Select(stat => new ObservableHandler<SteamStatistic>(stat)
-            //    .Add(s => s.IsModified, OnStatChanged)))
-            //{
-            //    _statHandlers.Add(statHandler);
-            //}
-
-            var handlers = Statistics.Select(stat => new ObservableHandler<SteamStatistic>(stat).Add(s => s.IsModified, OnStatChanged));
+            var handlers = Statistics.Select(stat => new ObservableHandler<SteamStatisticBase>(stat).Add(s => s.IsModified, OnStatChanged));
 
             _statHandlers = new ();
             _statHandlers.AddRange(handlers);

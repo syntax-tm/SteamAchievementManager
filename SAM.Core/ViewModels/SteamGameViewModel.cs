@@ -38,7 +38,7 @@ namespace SAM.Core.ViewModels
         
         public virtual SteamAchievement SelectedAchievement { get; set; }
 
-        public virtual ObservableCollection<SteamStatistic> Statistics { get; set; }
+        public virtual ObservableCollection<SteamStatisticBase> Statistics { get; set; }
         public virtual ObservableCollection<SteamAchievement> Achievements { get; set; }
 
         public virtual CollectionView AchievementsView { get; set; }
@@ -77,6 +77,7 @@ namespace SAM.Core.ViewModels
                 var modified = Achievements.Where(a => a.IsModified).ToList();
                 if (!modified.Any())
                 {
+                    log.Info("User achievements have not been modified. Skipping save.");
                     return;
                 }
 
@@ -111,7 +112,60 @@ namespace SAM.Core.ViewModels
 
         public void SaveStats()
         {
-            // TODO: save any modified stats
+            try
+            {
+                var modified = Statistics.Where(a => a.IsModified).ToList();
+                if (!modified.Any())
+                {
+                    log.Info("User stats have not been modified. Skipping save.");
+                    return;
+                }
+
+                var stats = SteamClientManager.Default.SteamUserStats;
+
+                foreach (var stat in modified)
+                {
+                    bool result;
+                    if (stat.IsInteger)
+                    {
+                        result = stats.SetStatValue(stat.Id, (int) stat.GetValue());
+                    }
+                    else if (stat.IsFloat)
+                    {
+                        result = stats.SetStatValue(stat.Id, (float) stat.GetValue());
+                    }
+                    else if (stat.IsAverageRate)
+                    {
+                        var avgRate = (FloatSteamStatistic) stat;
+                        result = stats.UpdateAvgRateStat(stat.Id, avgRate.AvgRateNumerator, avgRate.AvgRateDenominator);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Unknown stat type {stat.StatType} is modified and cannot be saved.");
+                    }
+
+                    if (!result)
+                    {
+                        var message = $"Failed to update {stat.StatType} stat {stat.Id}.";
+
+                        throw new SAMException(message);
+                    }
+
+                    log.Info($"Successfully saved {stat.StatType} stat {stat.Id}.");
+
+                    stat.CommitChanges();
+                }
+
+                stats.StoreStats();
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to save stats. {e.Message}";
+
+                log.Error(message, e);
+
+                MessageBox.Show(message, "Error Updating Stats", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public void Save()

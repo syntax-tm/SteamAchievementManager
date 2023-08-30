@@ -1,28 +1,24 @@
-﻿using System;
+﻿namespace SAM.API.Stats;
 
-namespace SAM.API.Stats
+public abstract class StatInfo
 {
-    public abstract class StatInfo
+    public abstract bool IsModified { get; }
+    public string Id { get; set; }
+    public string DisplayName { get; set; }
+    public abstract object Value { get; }
+    public bool IsIncrementOnly { get; set; }
+    public int Permission { get; set; }
+    public abstract UserStatType Type { get; }
+        
+    public string Extra
     {
-        public abstract bool IsModified { get; }
-        public string Id { get; set; }
-        public string DisplayName { get; set; }
-        public abstract object Value { get; set; }
-        public bool IsIncrementOnly { get; set; }
-        public int Permission { get; set; }
-
-        //public bool IsProtected => Enum.
-
-        public string Extra
+        get
         {
-            get
-            {
-                var flags = StatFlags.None;
-                flags |= IsIncrementOnly == false ? 0 : StatFlags.IncrementOnly;
-                flags |= ((Permission & 2) != 0) == false ? 0 : StatFlags.Protected;
-                flags |= ((Permission & ~2) != 0) == false ? 0 : StatFlags.UnknownPermission;
-                return flags.ToString();
-            }
+            var flags = StatFlags.None;
+            flags |= IsIncrementOnly == false ? 0 : StatFlags.IncrementOnly;
+            flags |= ((Permission & 2) != 0) == false ? 0 : StatFlags.Protected;
+            flags |= ((Permission & ~2) != 0) == false ? 0 : StatFlags.UnknownPermission;
+            return flags.ToString();
         }
     }
 }
