@@ -17,13 +17,12 @@ namespace SAM.Core.Stats
         public string Id => StatInfo?.Id;
         public string DisplayName => StatInfo?.DisplayName;
         public bool IsIncrementOnly => StatInfo?.IsIncrementOnly ?? default;
-        public bool IsStatInfoModified => StatInfo?.IsModified ?? default;
         public int Permission => StatInfo?.Permission ?? default;
         public bool IsAverageRate => StatType == StatType.AvgRate;
         public bool IsFloat => StatType is StatType.Float or StatType.Unknown;
         public bool IsInteger => StatType == StatType.Integer;
 
-        public StatInfo StatInfo { get; }
+        public StatInfoBase StatInfo { get; }
         public abstract StatType StatType { get; }
         
         public bool IsModified
@@ -49,7 +48,7 @@ namespace SAM.Core.Stats
 
         }
 
-        protected SteamStatisticBase(StatInfo stat)
+        protected SteamStatisticBase(StatInfoBase stat)
         {
             StatInfo = stat ?? throw new ArgumentNullException(nameof(stat));
 

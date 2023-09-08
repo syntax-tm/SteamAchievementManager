@@ -35,7 +35,7 @@ namespace SAM.Core.Stats
 
         }
 
-        public FloatSteamStatistic(StatInfo stat, StatType type) : base(stat)
+        public FloatSteamStatistic(StatInfoBase stat, StatType type) : base(stat)
         {
             StatType = type;
 
@@ -86,9 +86,9 @@ namespace SAM.Core.Stats
             if (_loading) return;
             if (IsAverageRate) return;
 
-            const double tolerance = 0.000000001;
+            const double TOLERANCE = 0.000000001;
 
-            IsModified = Math.Abs(Value - OriginalValue) < tolerance;
+            IsModified = Math.Abs(Value - OriginalValue) < TOLERANCE;
         }
 
         protected void OnAvgRateValueChanged()

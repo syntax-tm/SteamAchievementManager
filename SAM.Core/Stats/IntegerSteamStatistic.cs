@@ -24,7 +24,7 @@ namespace SAM.Core.Stats
 
         }
 
-        public IntegerSteamStatistic(StatInfo stat) : base(stat)
+        public IntegerSteamStatistic(StatInfoBase stat) : base(stat)
         {
             Refresh();
 

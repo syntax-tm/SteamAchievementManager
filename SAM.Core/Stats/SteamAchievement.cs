@@ -12,13 +12,13 @@ namespace SAM.Core.Stats
         private readonly bool _isLoading = true;
 
         public uint GameId { get; }
-        public string Id => AchievementInfo.Id;
-        public string IconLockedName => AchievementInfo.IconLocked;
-        public string IconNormalName => AchievementInfo.IconNormal;
-        public string Name => AchievementInfo.Name;
-        public string Description => AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : AchievementInfo.Description;
-        public string FullDescription => AchievementInfo.Description;
-        public int Permission => AchievementInfo.Permission;
+        public string Id => AchievementDefinition.Id;
+        public string IconLockedName => AchievementDefinition.IconLocked;
+        public string IconNormalName => AchievementDefinition.IconNormal;
+        public string Name => AchievementDefinition.Name;
+        public string Description => AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : AchievementDefinition.Description;
+        public string FullDescription => AchievementDefinition.Description;
+        public int Permission => AchievementDefinition.Permission;
         public bool OriginalLockState
         {
             get => GetProperty(() => OriginalLockState);
@@ -55,8 +55,7 @@ namespace SAM.Core.Stats
             set => SetProperty(() => IsAchieved, value, OnIsAchievedChanged);
         }
         
-        public AchievementInfo AchievementInfo { get; }
-        public AchievementDefinition AchievementDefinition { get; }
+        public AchievementInfo AchievementDefinition { get; }
 
         public ICommand UnlockCommand => new DelegateCommand(Unlock);
         public ICommand LockCommand => new DelegateCommand(Lock);
@@ -68,14 +67,13 @@ namespace SAM.Core.Stats
 
         }
 
-        public SteamAchievement(uint gameId, AchievementInfo info, AchievementDefinition definition)
+        public SteamAchievement(uint gameId, AchievementInfo definition)
         {
             GameId = gameId;
-            AchievementInfo = info;
             AchievementDefinition = definition;
             
-            OriginalLockState = info.IsAchieved;
-            IsAchieved = info.IsAchieved;
+            OriginalLockState = definition.IsAchieved;
+            IsAchieved = definition.IsAchieved;
 
             DownloadIcons();
 

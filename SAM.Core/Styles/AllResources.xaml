@@ -12,6 +12,7 @@
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ContainerStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/DataGridStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/MenuStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/NumberBoxStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/StatusBarStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/WindowStyles.xaml" />

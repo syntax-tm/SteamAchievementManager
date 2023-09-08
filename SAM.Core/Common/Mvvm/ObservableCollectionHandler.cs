@@ -84,7 +84,7 @@ namespace SAM.Core
         }
 
         [CanBeNull]
-        private T GetSource()
+        protected T GetSource()
         {
             var source = m_source.Target as T;
 
@@ -105,7 +105,7 @@ namespace SAM.Core
             m_isRegistered = true;
         }
 
-        public virtual bool OnCollectionReceiveWeakEvent(Type managerType, object sender, EventArgs e)
+        protected virtual bool OnCollectionReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
             if (managerType != typeof(CollectionChangedEventManager))
                 return false;

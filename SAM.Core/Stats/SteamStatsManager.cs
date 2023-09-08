@@ -23,7 +23,7 @@ namespace SAM.Core.Stats
 
         private readonly ILog log = LogManager.GetLogger(nameof(SteamStatsManager));
 
-        private static Client _client => SteamClientManager.Default;
+        private Client _client => SteamClientManager.Default;
         private readonly UserStatsReceived _userStatsReceivedCallback;
         private readonly Timer _callbackTimer;
         private AutoResetEvent _resetEvent;
@@ -67,12 +67,12 @@ namespace SAM.Core.Stats
             get => GetProperty(() => Achievements);
             set => SetProperty(() => Achievements, value);
         }
-        public List<StatDefinition> StatDefinitions 
+        public List<StatInfoBase> StatDefinitions 
         {
             get => GetProperty(() => StatDefinitions);
             set => SetProperty(() => StatDefinitions, value);
         }
-        public List<AchievementDefinition> AchievementDefinitions 
+        public List<AchievementInfo> AchievementDefinitions 
         {
             get => GetProperty(() => AchievementDefinitions);
             set => SetProperty(() => AchievementDefinitions, value);
@@ -205,17 +205,17 @@ namespace SAM.Core.Stats
                     }
                     case UserStatType.Integer:
                     {
-                        StatDefinitions.Add(new IntegerStatDefinition(stat, currentLanguage));
+                        StatDefinitions.Add(new IntegerStatInfo(stat, currentLanguage));
                         break;
                     }
                     case UserStatType.Float:
                     {
-                        StatDefinitions.Add(new AvgRateStatDefinition(stat, currentLanguage));
+                        StatDefinitions.Add(new AvgRateStatInfo(stat, currentLanguage));
                         break;
                     }
                     case UserStatType.AverageRate:
                     {
-                        StatDefinitions.Add(new FloatStatDefinition(stat, currentLanguage));
+                        StatDefinitions.Add(new FloatStatInfo(stat, currentLanguage));
                         break;
                     }
                     case UserStatType.Achievements:
@@ -232,7 +232,8 @@ namespace SAM.Core.Stats
 
                                 foreach (var bit in bits.Children)
                                 {
-                                    AchievementDefinitions.Add(new (bit, currentLanguage));
+                                    var achievement = UserStatsFactory.Create(bit, currentLanguage);
+                                    AchievementDefinitions.Add(achievement);
                                 }
                             }
                         }
@@ -256,9 +257,10 @@ namespace SAM.Core.Stats
             {
                 if (string.IsNullOrEmpty(def.Id)) continue;
                 if (!_client.SteamUserStats.GetAchievementState(def.Id, out var isAchieved)) continue;
-
-                var info = SteamAchievementFactory.CreateAchievementInfo(def, isAchieved);
-                var achievement = new SteamAchievement(AppId, info, def);
+                
+                def.IsAchieved = isAchieved;
+                
+                var achievement = new SteamAchievement(AppId, def);
 
                 achievements.Add(achievement);
             }

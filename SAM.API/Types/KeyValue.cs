@@ -71,10 +71,26 @@ namespace SAM.API.Types
                 KeyValueType.String     => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
                 KeyValueType.WideString => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
                 KeyValueType.Int32      => (int) Value != 0,
-                KeyValueType.Float32    => (int) (float) Value != 0,
+                KeyValueType.Float32    => (float) Value != 0,
                 KeyValueType.UInt64     => (ulong) Value != 0,
                 _                       => defaultValue
             };
+        }
+
+        public string GetLocalizedString(string language, string defaultValue)
+        {
+            var name = this[language].AsString();
+            if (!string.IsNullOrEmpty(name)) return name;
+
+            if (language != @"english")
+            {
+                name = this[@"english"].AsString();
+
+                if (!string.IsNullOrEmpty(name)) return name;
+            }
+
+            name = AsString();
+            return string.IsNullOrEmpty(name) ? defaultValue : name;
         }
 
         public override string ToString()

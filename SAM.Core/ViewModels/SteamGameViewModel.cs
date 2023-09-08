@@ -9,6 +9,7 @@ using DevExpress.Mvvm.Native;
 using DevExpress.Mvvm.POCO;
 using JetBrains.Annotations;
 using log4net;
+using SAM.Core.Settings;
 using SAM.Core.Stats;
 
 namespace SAM.Core.ViewModels
@@ -117,7 +118,13 @@ namespace SAM.Core.ViewModels
                 var modified = Statistics.Where(a => a.IsModified).ToList();
                 if (!modified.Any())
                 {
-                    log.Info("User stats have not been modified. Skipping save.");
+                    log.Info("User stats have not been modified. Skipping save...");
+                    return;
+                }
+
+                if (!ApplicationSettings.AllowStatsSave)
+                {
+                    log.Warn("User stats have been modified but will not be saved.");
                     return;
                 }
 

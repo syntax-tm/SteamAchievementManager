@@ -1,15 +1,13 @@
 ﻿namespace SAM.API.Stats;
 
-public abstract class StatInfo
+public abstract class StatInfoBase
 {
-    public abstract bool IsModified { get; }
-    public string Id { get; set; }
-    public string DisplayName { get; set; }
-    public abstract object Value { get; }
-    public bool IsIncrementOnly { get; set; }
-    public int Permission { get; set; }
+    public string Id { get; protected init; }
+    public string DisplayName { get; protected init; }
+    public bool IsIncrementOnly { get; protected init; }
+    public int Permission { get; protected init; }
     public abstract UserStatType Type { get; }
-        
+    
     public string Extra
     {
         get
@@ -21,4 +19,9 @@ public abstract class StatInfo
             return flags.ToString();
         }
     }
+}
+
+public abstract class StatInfoBase<T> : StatInfoBase
+{
+    public abstract T Value { get; set; }
 }

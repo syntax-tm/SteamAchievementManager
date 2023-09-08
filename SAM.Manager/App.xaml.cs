@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using log4net;
 using SAM.Core;
 using SAM.Core.Extensions;
+using SAM.Core.Settings;
 using SAM.Core.ViewModels;
 using SAM.Manager.ViewModels;
 
@@ -45,6 +47,18 @@ namespace SAM.Manager
                 }
 
                 _appID = appId;
+
+                foreach (var arg in commandLineArgs.Skip(2))
+                {
+                    if (arg == nameof(ApplicationSettings.AllowStatsEdit))
+                    {
+                        ApplicationSettings.AllowStatsEdit = true;
+                    }
+                    else if (arg == nameof(ApplicationSettings.AllowStatsSave))
+                    {
+                        ApplicationSettings.AllowStatsSave = true;
+                    }
+                }
                 
                 //  handle any WPF dispatcher exceptions
                 Current.DispatcherUnhandledException += OnDispatcherException;
