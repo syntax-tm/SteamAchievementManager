@@ -29,7 +29,7 @@ public static class SteamStatisticFactory
                     
                 avgRateDefinition.Value = value;
 
-                return new FloatSteamStatistic(avgRateDefinition, StatType.AvgRate);
+                return new AverageRateSteamStatistic(avgRateDefinition);
             }
             // STAT_FLOAT
             case FloatStatInfo floatDefinition:
@@ -38,7 +38,7 @@ public static class SteamStatisticFactory
                     
                 floatDefinition.Value = value;
 
-                return new FloatSteamStatistic(floatDefinition, StatType.Float);
+                return new FloatSteamStatistic(floatDefinition);
             }
         }
 

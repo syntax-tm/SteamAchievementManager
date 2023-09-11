@@ -7,7 +7,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Converters.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/wpf.ui.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/styles/wpf.ui.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Thickness x:Key="NumberBoxBorderThemeThickness">1,1,1,0</Thickness>
@@ -33,11 +33,8 @@
                 <ControlTemplate TargetType="{x:Type ui:NumberBox}">
                     <Grid HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}">
                         <Border x:Name="ContentBorder"
-                                MinWidth="{TemplateBinding MinWidth}"
-                                MinHeight="{TemplateBinding MinHeight}"
-                                Padding="0"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch">
+                                MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}"
+                                Padding="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Grid HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -47,106 +44,68 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <ContentControl x:Name="ControlIconLeft"
-                                                Grid.Column="0"
-                                                Margin="{StaticResource NumberBoxLeftIconMargin}"
-                                                Padding="0"
-                                                VerticalAlignment="Top"
-                                                Content="{TemplateBinding Icon}"
-                                                FontSize="16"
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Visibility="Collapsed" />
-                                <ui:Button x:Name="InlineDecrementButton"
-                                           Grid.Column="1"
-                                           Width="{StaticResource NumberBoxButtonHeight}"
-                                           Height="{StaticResource NumberBoxButtonHeight}"
-                                           Margin="{StaticResource NumberBoxButtonMargin}"
-                                           Padding="{StaticResource NumberBoxButtonPadding}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           HorizontalContentAlignment="Center"
-                                           VerticalContentAlignment="Center"
-                                           Appearance="Secondary"
-                                           Background="Transparent"
-                                           BorderBrush="Transparent"
+                                <ContentControl x:Name="ControlIconLeft" Grid.Column="0"
+                                                Margin="{StaticResource NumberBoxLeftIconMargin}" Padding="0"
+                                                VerticalAlignment="Top" Content="{TemplateBinding Icon}" FontSize="16"
+                                                Foreground="{TemplateBinding Foreground}" Visibility="Collapsed" />
+                                <ui:Button x:Name="InlineDecrementButton" Grid.Column="1"
+                                           Width="{StaticResource NumberBoxButtonHeight}" Height="{StaticResource NumberBoxButtonHeight}"
+                                           Margin="{StaticResource NumberBoxButtonMargin}" Padding="{StaticResource NumberBoxButtonPadding}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                           Appearance="Secondary" Background="Transparent" BorderBrush="Transparent"
                                            Command="{Binding Path=TemplateButtonCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                           CommandParameter="decrement"
-                                           Cursor="Arrow"
+                                           CommandParameter="decrement" Cursor="Arrow"
                                            FontSize="{StaticResource NumberBoxButtonIconSize}"
-                                           Visibility="Hidden"
-                                           Icon="ChevronDown24">
+                                           Visibility="Hidden" Icon="ChevronDown24">
                                     <ui:Button.Foreground>
                                         <SolidColorBrush Color="{DynamicResource TextFillColorTertiary}" />
                                     </ui:Button.Foreground>
                                 </ui:Button>
                                 <Grid Grid.Column="2" Margin="{TemplateBinding Padding}">
-                                    <Decorator x:Name="PART_ContentHost"
-                                               Margin="0"
+                                    <Decorator x:Name="PART_ContentHost" Margin="0"
                                                VerticalAlignment="Center"
-                                               TextElement.Foreground="{TemplateBinding Foreground}" />
-                                    <TextBlock x:Name="PlaceholderTextBox"
-                                               Margin="0"
-                                               Padding="1,0"
-                                               VerticalAlignment="Center"
-                                               Text="{TemplateBinding PlaceholderText}">
-                                        <TextBlock.Foreground>
+                                               TextElement.Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
+                                    <TextBlock x:Name="PlaceholderTextBox" Margin="0"
+                                               Padding="1,0" VerticalAlignment="Center"
+                                               Text="{TemplateBinding PlaceholderText}"
+                                               Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}">
+                                        <!--<TextBlock.Foreground>
                                             <SolidColorBrush Color="{DynamicResource TextPlaceholderColor}" />
-                                        </TextBlock.Foreground>
+                                        </TextBlock.Foreground>-->
                                     </TextBlock>
                                 </Grid>
                                 <!--  Buttons and Icons have no padding from the main element to allow absolute positions if height is larger than the text entry zone  -->
-                                <ui:Button x:Name="ClearButton"
-                                           Grid.Column="3"
-                                           Width="{StaticResource NumberBoxButtonHeight}"
-                                           Height="{StaticResource NumberBoxButtonHeight}"
-                                           Margin="{StaticResource NumberBoxButtonMargin}"
-                                           Padding="{StaticResource NumberBoxButtonPadding}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Top"
-                                           HorizontalContentAlignment="Center"
-                                           VerticalContentAlignment="Center"
-                                           Appearance="Secondary"
-                                           Background="Transparent"
-                                           BorderBrush="Transparent"
+                                <ui:Button x:Name="ClearButton" Grid.Column="3"
+                                           Width="{StaticResource NumberBoxButtonHeight}" Height="{StaticResource NumberBoxButtonHeight}"
+                                           Margin="{StaticResource NumberBoxButtonMargin}" Padding="{StaticResource NumberBoxButtonPadding}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Appearance="Secondary"
+                                           Background="Transparent" BorderBrush="Transparent"
                                            Command="{Binding Path=TemplateButtonCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                           CommandParameter="clear"
-                                           Cursor="Arrow"
-                                           Icon="Dismiss24"
+                                           CommandParameter="clear" Cursor="Arrow" Icon="Dismiss24"
                                            Visibility="Collapsed">
                                     <ui:Button.Foreground>
                                         <SolidColorBrush Color="{DynamicResource TextFillColorTertiary}" />
                                     </ui:Button.Foreground>
                                 </ui:Button>
-                                <ui:Button x:Name="InlineIncrementButton"
-                                           Grid.Column="4"
-                                           Width="{StaticResource NumberBoxButtonHeight}"
-                                           Height="{StaticResource NumberBoxButtonHeight}"
-                                           Margin="{StaticResource NumberBoxButtonMargin}"
-                                           Padding="{StaticResource NumberBoxButtonPadding}"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           HorizontalContentAlignment="Center"
-                                           VerticalContentAlignment="Center"
-                                           Appearance="Secondary"
-                                           Background="Transparent"
-                                           BorderBrush="Transparent"
+                                <ui:Button x:Name="InlineIncrementButton" Grid.Column="4"
+                                           Width="{StaticResource NumberBoxButtonHeight}" Height="{StaticResource NumberBoxButtonHeight}"
+                                           Margin="{StaticResource NumberBoxButtonMargin}" Padding="{StaticResource NumberBoxButtonPadding}"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                           Appearance="Secondary" Background="Transparent" BorderBrush="Transparent"
                                            Command="{Binding Path=TemplateButtonCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                           CommandParameter="increment"
-                                           Visibility="Hidden"
-                                           Cursor="Arrow"
+                                           CommandParameter="increment" Visibility="Hidden" Cursor="Arrow"
                                            Icon="ChevronUp24">
                                     <ui:Button.Foreground>
                                         <SolidColorBrush Color="{DynamicResource TextFillColorTertiary}" />
                                     </ui:Button.Foreground>
                                 </ui:Button>
-                                <ContentControl x:Name="ControlIconRight"
-                                                Grid.Column="5"
+                                <ContentControl x:Name="ControlIconRight" Grid.Column="5" Padding="0"
                                                 Margin="{StaticResource NumberBoxRightIconMargin}"
-                                                Padding="0"
-                                                VerticalAlignment="Top"
-                                                Content="{TemplateBinding Icon}"
-                                                FontSize="16"
-                                                Foreground="{TemplateBinding Foreground}" />
+                                                VerticalAlignment="Top" Content="{TemplateBinding Icon}"
+                                                FontSize="16" Foreground="{TemplateBinding Foreground}" />
                             </Grid>
                         </Border>
                         <!--  The Accent Border is a separate element so that changes to the border thickness do not affect the position of the element  -->
@@ -203,7 +162,7 @@
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
-                        <MultiTrigger>
+                        <!--<MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsEnabled" Value="True" />
                                 <Condition Property="IsMouseOver" Value="True" />
@@ -214,7 +173,7 @@
                                     <SolidColorBrush Color="{DynamicResource ControlFillColorSecondary}" />
                                 </Setter.Value>
                             </Setter>
-                        </MultiTrigger>
+                        </MultiTrigger>-->
                         <!--<Trigger Property="IsReadOnly" Value="True">
                             <Setter TargetName="ClearButton" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="ClearButton" Property="Margin" Value="0" />

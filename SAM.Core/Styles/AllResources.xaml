@@ -3,9 +3,6 @@
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     
     <ResourceDictionary.MergedDictionaries>
-        <!-- Fluent ribbon resources -->
-        <!--<ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Themes/dark.red.xaml" />-->
         <!-- SAM controls -->
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ButtonStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/CheckBoxStyles.xaml" />

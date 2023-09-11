@@ -1,23 +1,17 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using SAM.API.Stats;
 
 namespace SAM.Core.Stats
 {
     [DebuggerDisplay("{DisplayName} ({Id})")]
-    public class FloatSteamStatistic : SteamStatisticBase
+    public class AverageRateSteamStatistic : SteamStatisticBase
     {
-        public override StatType StatType => StatType.Float;
+        public override StatType StatType => StatType.AvgRate;
         
-        public float OriginalValue
-        {
-            get => GetProperty(() => OriginalValue);
-            set => SetProperty(() => OriginalValue, value);
-        }
         public float Value
         {
             get => GetProperty(() => Value);
-            set => SetProperty(() => Value, value, OnValueChanged);
+            set => SetProperty(() => Value, value);
         }
         public float AvgRateNumerator
         {
@@ -30,12 +24,12 @@ namespace SAM.Core.Stats
             set => SetProperty(() => AvgRateDenominator, value, OnAvgRateValueChanged);
         }
 
-        public FloatSteamStatistic()
+        public AverageRateSteamStatistic()
         {
 
         }
 
-        public FloatSteamStatistic(StatInfoBase stat) : base(stat)
+        public AverageRateSteamStatistic(StatInfoBase stat) : base(stat)
         {
             Refresh();
 
@@ -49,7 +43,6 @@ namespace SAM.Core.Stats
 
         public override void Reset()
         {
-            Value = OriginalValue;
             AvgRateNumerator = 0;
             AvgRateDenominator = 0;
             IsModified = false;
@@ -70,8 +63,6 @@ namespace SAM.Core.Stats
                 log.Warn($"Failed to get {StatType} stat '{Id}' value.");
             }
 
-            OriginalValue = Value;
-
             AvgRateNumerator = 0;
             AvgRateDenominator = 0;
             IsModified = false;
@@ -79,20 +70,9 @@ namespace SAM.Core.Stats
             _loading = false;
         }
 
-        protected void OnValueChanged()
-        {
-            if (_loading) return;
-            if (IsAverageRate) return;
-
-            const double TOLERANCE = 0.000000001;
-
-            IsModified = Math.Abs(Value - OriginalValue) < TOLERANCE;
-        }
-
         protected void OnAvgRateValueChanged()
         {
             if (_loading) return;
-            if (IsAverageRate) return;
 
             IsModified = AvgRateDenominator > 0 || AvgRateNumerator > 0;
         }
