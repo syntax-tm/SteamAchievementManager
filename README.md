@@ -25,44 +25,41 @@ This project is a fork of the [Steam Achievement Manager](https://github.com/gib
 
 **SAM** is comprised of five projects.
 
-<div style="height: 120px">
-  <ul style="width: 20%; float: left;">
-    <li><b><code style="color: #247FD4">SAM</code></b></li>
-    <li><b><code style="color: #247FD4">SAM.Manager</code></b></li>
-    <li><b><code style="color: #D63E48">SAM.Core</code></b></li>
-    <li><b><code style="color: #D63E48">SAM.API</code></b></li>
-    <li><b><code style="color: #9478F0">SAM.UnitTests</code></b></li>
-  </ul>
-  <table style="width: 20%; float: right;">
-    <tr>
-      <td style="border-width: 0;">
-        <span>
-          <div style="display: inline; border-width: 2px; background-color: #247FD4; width: 8px; height: 8px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-          &nbsp;
-          Application
-        </span>
-      </td>
-    </tr>
-    <tr>
-      <td style="border-width: 0;">
-        <span>
-          <div style="display: inline; border-width: 2px; background-color: #D63E48; width: 8px; height: 8px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-          &nbsp;
-          Class Library
-        </span>
-      </td>
-    </tr>
-    <tr>
-      <td style="border-width: 0;">
-        <span>
-          <div style="display: inline; border-width: 2px; background-color: #9478F0; width: 8px; height: 8px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-          &nbsp;
-          Unit Test
-        </span>
-      </td>
-    </tr>
-  </table>
-</div>
+<table>
+  <tr>
+    <td style="width: 80%;">
+      <ul>
+        <li><b><code style="color: #247FD4">SAM</code></b></li>
+        <li><b><code style="color: #247FD4">SAM.Manager</code></b></li>
+        <li><b><code style="color: #D63E48">SAM.Core</code></b></li>
+        <li><b><code style="color: #D63E48">SAM.API</code></b></li>
+        <li><b><code style="color: #9478F0">SAM.UnitTests</code></b></li>
+      </ul>
+    </td>
+    <td>
+      <table>
+        <tr>
+          <td style="border: 0;">
+            <img src="resources/SAM_project_type_app.png" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">
+            Application
+          </td>
+        </tr>
+        <tr>
+          <td style="border: 0;">
+            <img src="resources/SAM_project_type_lib.png" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">
+              Class Library
+          </td>
+        </tr>
+        <tr>
+          <td style="border: 0;">
+            <img src="resources/SAM_project_type_test.png" style="height: 18px; width: 18px; vertical-align: middle; margin-right: 5px;">
+            Unit Test
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 
 `SAM` and `SAM.Manager` are the two application projects that create an executable. `SAM` is the executable that will display your Steam library and let you select an app (game) to manage. When the manager is started, it's passed an ID for a Steam app after which it initializes the Steam API client with that AppID just like any game on Steam would. Steam will show you as in-game, record your play time, and you can earn trading cards (if you have drops left).
 
