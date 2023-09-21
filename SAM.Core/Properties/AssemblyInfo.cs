@@ -16,7 +16,6 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition(@"urn:sam", "SAM.Core.Converters")]
 [assembly: XmlnsDefinition(@"urn:sam", "SAM.Core.Controls")]
 [assembly: XmlnsDefinition(@"urn:sam", "SAM.Core.Resources")]
-[assembly: XmlnsDefinition(@"urn:sam", "SAM.Core.Services")]
 [assembly: XmlnsDefinition(@"urn:sam", "SAM.Core.Settings")]
 [assembly: XmlnsDefinition(@"urn:sam", "SAM.Core.Stats")]
 [assembly: XmlnsDefinition(@"urn:sam", "SAM.Core.Views")]

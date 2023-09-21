@@ -217,7 +217,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <!--<DataGridCheckBoxColumn Header="Increment Only" Binding="{Binding IsIncrementOnly, Mode=OneWay}" IsReadOnly="True" />-->
             </ui:DataGrid.Columns>
         </ui:DataGrid>
     </Grid>

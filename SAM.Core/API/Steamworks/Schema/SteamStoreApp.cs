@@ -5,7 +5,6 @@ namespace SAM.Core
 {
     public class PcRequirements
     {
-
         [JsonProperty("minimum")]
         public string Minimum { get; set; }
 

@@ -10,9 +10,9 @@ namespace SAM.Core
     public class ObservableHandler<T> : IWeakEventListener
         where T : class, INotifyPropertyChanged
     {
-        private readonly WeakReference<T> m_source;
-        private readonly Dictionary<string, Action> m_handlers = new ();
-        private readonly Dictionary<string, Action<T>> m_handlersT = new ();
+        private readonly WeakReference<T> _source;
+        private readonly Dictionary<string, Action> _handlers = new ();
+        private readonly Dictionary<string, Action<T>> _handlersT = new ();
 
         public ObservableHandler([NotNull] T source)
         {
@@ -21,7 +21,7 @@ namespace SAM.Core
                 throw new ArgumentNullException(nameof(source));
             }
 
-            m_source = new (source);
+            _source = new (source);
         }
         
         [NotNull]
@@ -40,7 +40,7 @@ namespace SAM.Core
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
-            m_handlers[propertyName] = handler;
+            _handlers[propertyName] = handler;
             PropertyChangedEventManager.AddListener(source, this, propertyName);
 
             return this;
@@ -62,7 +62,7 @@ namespace SAM.Core
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
-            m_handlersT[propertyName] = handler;
+            _handlersT[propertyName] = handler;
             PropertyChangedEventManager.AddListener(source, this, propertyName);
 
             return this;
@@ -86,7 +86,7 @@ namespace SAM.Core
         
         private T GetSource()
         {
-            if (m_source.TryGetTarget(out var source)) return source;
+            if (_source.TryGetTarget(out var source)) return source;
 
             throw new InvalidOperationException($"{nameof(source)} has been garbage collected.");
         }
@@ -119,21 +119,21 @@ namespace SAM.Core
 
             if (string.IsNullOrEmpty(propertyName))
             {
-                foreach (var handler in m_handlers.Values)
+                foreach (var handler in _handlers.Values)
                 {
                     handler();
                 }
-                foreach (var handler in m_handlersT.Values)
+                foreach (var handler in _handlersT.Values)
                 {
                     handler(source);
                 }
             }
             else
             {
-                if (m_handlers.TryGetValue(propertyName, out var handler))
+                if (_handlers.TryGetValue(propertyName, out var handler))
                     handler();
 
-                if (m_handlersT.TryGetValue(propertyName, out var handlerT))
+                if (_handlersT.TryGetValue(propertyName, out var handlerT))
                     handlerT(source);
             }
         }

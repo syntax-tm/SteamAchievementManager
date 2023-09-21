@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Markup;
 
 namespace SAM.Core
@@ -12,20 +8,22 @@ namespace SAM.Core
         private Type _enumType;
         public Type EnumType
         {
-            get { return this._enumType; }
+            get { return _enumType; }
             set
             {
-                if (value != this._enumType)
+                if (value == _enumType)
                 {
-                    if (null != value)
-                    {
-                        var enumType = Nullable.GetUnderlyingType(value) ?? value;
-                        if (!enumType.IsEnum)
-                            throw new ArgumentException("Type must be for an Enum.");
-                    }
-
-                    this._enumType = value;
+                    return;
                 }
+
+                if (null != value)
+                {
+                    var enumType = Nullable.GetUnderlyingType(value) ?? value;
+                    if (!enumType.IsEnum)
+                        throw new ArgumentException("Type must an Enum.");
+                }
+
+                _enumType = value;
             }
         }
 

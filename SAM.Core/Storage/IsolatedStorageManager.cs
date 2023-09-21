@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Reflection;
+using System.Threading.Tasks;
 using log4net;
 
 namespace SAM.Core.Storage
@@ -58,12 +59,38 @@ namespace SAM.Core.Storage
             file.Write(bytes, 0, bytes.Length);
         }
 
+        public async Task SaveBytesAsync(string fileName, byte[] bytes, bool overwrite = true)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            using var isoStorage = GetStore();
+
+            if (isoStorage.FileExists(fileName))
+            {
+                isoStorage.DeleteFile(fileName);
+            }
+
+            await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+
+            await file.WriteAsync(bytes, 0, bytes.Length);
+        }
+
         public void SaveImage(string fileName, Image img, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
             
             using var isoStorage = GetStore();
             using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+
+            img.Save(file, img.RawFormat);
+        }
+
+        public async Task SaveImageAsync(string fileName, Image img, bool overwrite = true)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            using var isoStorage = GetStore();
+            await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
 
             img.Save(file, img.RawFormat);
         }
@@ -78,6 +105,17 @@ namespace SAM.Core.Storage
 
             writer.WriteLine(text);
         }
+
+        public async Task SaveTextAsync(string fileName, string text, bool overwrite = true)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            using var isoStorage = GetStore();
+            await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+            await using var writer = new StreamWriter(file);
+
+            await writer.WriteLineAsync(text);
+        }
         
         public byte[] GetBytes(string fileName)
         {
@@ -91,6 +129,22 @@ namespace SAM.Core.Storage
 
             var buffer = new byte[file.Length];
             _ = file.Read(buffer, 0, buffer.Length);
+            
+            return buffer;
+        }
+
+        public async Task<byte[]> GetBytesAsync(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            if (!FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
+
+            using var isoStorage = GetStore();
+
+            await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+
+            var buffer = new byte[file.Length];
+            _ = await file.ReadAsync(buffer, 0, buffer.Length);
             
             return buffer;
         }
@@ -110,6 +164,21 @@ namespace SAM.Core.Storage
             return img;
         }
 
+        public async Task<Image> GetImageFileAsync(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+
+            using var isoStorage = GetStore();
+
+            if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
+            
+            await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+
+            var img = Image.FromStream(file);
+            
+            return img;
+        }
+
         public string GetTextFile(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
@@ -120,6 +189,20 @@ namespace SAM.Core.Storage
             using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
             using var reader = new StreamReader(file);
             var fileText = reader.ReadToEnd();
+
+            return fileText;
+        }
+
+        public async Task<string> GetTextFileAsync(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+
+            using var isoStorage = GetStore();
+            if (!isoStorage.FileExists(fileName)) throw new FileNotFoundException(nameof(fileName));
+
+            await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+            using var reader = new StreamReader(file);
+            var fileText = await reader.ReadToEndAsync();
 
             return fileText;
         }

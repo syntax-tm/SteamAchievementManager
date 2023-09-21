@@ -31,7 +31,7 @@
                                       HorizontalContentAlignment="Center">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ui:VirtualizingWrapPanel SpacingMode="Uniform" Orientation="Vertical" StretchItems="False"  />
+                    <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True" />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
             <!--<ui:VirtualizingItemsControl.ItemContainerStyle>
@@ -41,7 +41,19 @@
             </ui:VirtualizingItemsControl.ItemContainerStyle>-->
             <ui:VirtualizingItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type sam:SteamApp}">
-                    <Grid>
+                    <DataTemplate.Resources>
+                        <!-- for the icon on borders -->
+                        <!--<Style TargetType="{x:Type ui:SymbolIcon}">
+                            <Setter Property="Foreground" Value="Black" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}, Path=IsMouseOver}"
+                                             Value="True">
+                                    <Setter Property="Filled" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>-->
+                    </DataTemplate.Resources>
+                    <Grid Margin="5" Width="300">
                         <ui:Button Padding="0">
                             <ui:Button.Resources>
                                 <sam:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
@@ -135,12 +147,12 @@
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
                             </dxmvvm:Interaction.Behaviors>
-                            <Grid Width="300">
+                            <Grid>
                                 <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}" Stretch="Fill" StretchDirection="Both">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
+                                                <DataTrigger Binding="{Binding Source={StaticResource BindingProxy}, Path=Data, TargetNullValue=False, FallbackValue=False}" Value="True">
                                                     <Setter Property="Opacity" Value="0.25" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
@@ -168,6 +180,44 @@
                                 </TextBlock>
                             </Grid>
                         </ui:Button>
+                        <!--<Border BorderThickness="4" Margin="2">
+                            <Grid>
+                                <ui:Button HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                           Width="30" Height="30" Margin="0" Padding="0"
+                                           BorderThickness="0" CornerRadius="0"
+                                           Foreground="White" Icon="Heart24"
+                                           BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=BorderBrush}"
+                                           Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=BorderBrush}">
+                                    <ui:SymbolIcon Symbol="Toolbox24" Foreground="Black" Filled="True" Width="20" Height="20" />
+                                </ui:Button>
+                            </Grid>
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource YellowBrush}" />
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsMod}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource PalettePurpleBrush}" />
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource ControlBackgroundDisabledBrush}" />
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}, TargetNullValue=False, FallbackValue=False}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource YellowBrush}" />
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>-->
                     </Grid>
                 </DataTemplate>
             </ui:VirtualizingItemsControl.ItemTemplate>

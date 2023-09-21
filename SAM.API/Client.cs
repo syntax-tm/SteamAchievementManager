@@ -16,14 +16,15 @@ namespace SAM.API
         private bool _isDisposed;
         private int _pipe;
 
-        private bool _runningCallbacks;
+        private volatile bool _runningCallbacks;
         private int _user;
-        public SteamApps001 SteamApps001;
-        public SteamApps008 SteamApps008;
-        public SteamClient019 SteamClient;
-        public SteamUser017 SteamUser;
-        public SteamUserStats007 SteamUserStats;
-        public SteamUtils005 SteamUtils;
+
+        public SteamApps001 SteamApps001 { get; private set; }
+        public SteamApps008 SteamApps008 { get; private set; }
+        public SteamClient019 SteamClient { get; private set; }
+        public SteamUser017 SteamUser { get; private set; }
+        public SteamUserStats007 SteamUserStats { get; private set; }
+        public SteamUtils005 SteamUtils { get; private set; }
 
         public void Initialize(long appId)
         {
@@ -113,10 +114,10 @@ namespace SAM.API
             while (Steam.GetCallback(_pipe, out var message, out _))
             {
                 var callbackId = message.Id;
+                var messageCallbacks = _callbacks.Where(candidate => candidate.Id == callbackId &&
+                                                            candidate.IsServer == server);
 
-                foreach (var callback in _callbacks.Where(
-                    candidate => candidate.Id == callbackId &&
-                        candidate.IsServer == server))
+                foreach (var callback in messageCallbacks)
                 {
                     callback.Run(message.ParamPointer);
                 }

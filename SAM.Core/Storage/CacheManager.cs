@@ -7,6 +7,7 @@ namespace SAM.Core.Storage
 {
     public static class CacheManager
     {
+        // TODO: remove public access to the StorageManager
         public static IStorageManager StorageManager { get; } = LocalStorageManager.Default;
         
         public static void CacheBytes(ICacheKey key, byte[] bytes, bool overwrite = true)
@@ -59,9 +60,16 @@ namespace SAM.Core.Storage
                 return false;
             }
 
-            bytes = StorageManager.GetBytes(filePath);
-
-            return true;
+            try
+            {
+                bytes = StorageManager.GetBytes(filePath);
+                return bytes != null;
+            }
+            catch
+            {
+                bytes = null;
+                return false;
+            }
         }
 
         public static bool TryGetImageFile(ICacheKey key, out Image img)
@@ -76,9 +84,16 @@ namespace SAM.Core.Storage
                 return false;
             }
 
-            img = StorageManager.GetImageFile(filePath);
-
-            return true;
+            try
+            {
+                img = StorageManager.GetImageFile(filePath);
+                return img != null;
+            }
+            catch
+            {
+                img = null;
+                return false;
+            }
         }
 
         public static Image GetImageFile(ICacheKey key)
@@ -97,18 +112,26 @@ namespace SAM.Core.Storage
         {
             var filePath = key?.GetFullPath();
 
-            ArgumentException.ThrowIfNullOrEmpty(filePath);
-            
+            if (string.IsNullOrEmpty(filePath)) return false;
+            if (target == null) return false;
+
             if (!StorageManager.FileExists(filePath))
             {
                 return false;
             }
             
-            var fileText = StorageManager.GetTextFile(filePath);
-            
-            JsonConvert.PopulateObject(fileText, target);
+            try
+            {
+                var fileText = StorageManager.GetTextFile(filePath);
 
-            return true;
+                JsonConvert.PopulateObject(fileText, target);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static bool TryGetObject<T>(ICacheKey key, out T cachedObject)
@@ -123,11 +146,20 @@ namespace SAM.Core.Storage
                 return false;
             }
             
-            var fileText = StorageManager.GetTextFile(filePath);
+            try
+            {
+                var fileText = StorageManager.GetTextFile(filePath);
 
-            cachedObject = JsonConvert.DeserializeObject<T>(fileText);
+                cachedObject = JsonConvert.DeserializeObject<T>(fileText);
 
-            return true;
+                return cachedObject != null;
+            }
+            catch
+            {
+                cachedObject = default;
+
+                return false;
+            }
         }
         
         public static bool TryGetTextFile(ICacheKey key, out string fileText)
@@ -142,9 +174,16 @@ namespace SAM.Core.Storage
                 return false;
             }
             
-            fileText = StorageManager.GetTextFile(filePath);
-            
-            return true;
+            try
+            {
+                fileText = StorageManager.GetTextFile(filePath);
+                return fileText != null;
+            }
+            catch
+            {
+                fileText = null;
+                return false;
+            }
         }
 
         public static string GetTextFile(ICacheKey key)
