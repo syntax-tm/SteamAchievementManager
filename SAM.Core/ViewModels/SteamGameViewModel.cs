@@ -133,18 +133,17 @@ namespace SAM.Core.ViewModels
                 foreach (var stat in modified)
                 {
                     bool result;
-                    if (stat.IsInteger)
+                    if (stat is IntegerSteamStatistic intStat)
                     {
-                        result = stats.SetStatValue(stat.Id, (int) stat.GetValue());
+                        result = stats.SetStatValue(stat.Id, intStat.Value);
                     }
-                    else if (stat.IsFloat)
+                    else if (stat is AverageRateSteamStatistic avgRateStat)
                     {
-                        result = stats.SetStatValue(stat.Id, (float) stat.GetValue());
+                        result = stats.UpdateAvgRateStat(stat.Id, avgRateStat.AvgRateNumerator, avgRateStat.AvgRateDenominator);
                     }
-                    else if (stat.IsAverageRate)
+                    else if (stat is FloatSteamStatistic floatStat)
                     {
-                        var avgRate = (FloatSteamStatistic) stat;
-                        result = stats.UpdateAvgRateStat(stat.Id, avgRate.AvgRateNumerator, avgRate.AvgRateDenominator);
+                        result = stats.SetStatValue(stat.Id, floatStat.Value);
                     }
                     else
                     {

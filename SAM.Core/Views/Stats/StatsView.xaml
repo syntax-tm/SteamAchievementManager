@@ -25,16 +25,12 @@
                             <StackPanel Margin="2">
                                 <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" Margin="2" />
                                 <TextBlock Text="{Binding StatType, StringFormat='Type: {0}'}" FontStyle="Italic" />
-                                <Separator Margin="0,6,0,4"
-                                           Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:SymbolIcon Symbol="Warning24"
-                                                   Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}"
-                                                   Foreground="{StaticResource PaletteOrangeBrush}"/>
-                                    <TextBlock Text="Unsaved change." Foreground="{StaticResource PaletteOrangeBrush}"
-                                               Margin="5,0"
-                                               Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}">
-                                    </TextBlock>
+                                <StackPanel Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}">
+                                    <Separator Margin="0,6,0,4" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <ui:SymbolIcon Symbol="Warning24" Foreground="{StaticResource PaletteOrangeBrush}"/>
+                                        <TextBlock Text="Unsaved change." Foreground="{StaticResource PaletteOrangeBrush}" Margin="5,0" />
+                                    </StackPanel>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -68,7 +64,7 @@
                     <Grid Background="{StaticResource ControlBorderBrush}" />
                     <Separator Grid.Column="1" Margin="0" />
                     <ui:NumberBox Grid.Column="2" Margin="0,0,0,0" 
-                                  Value="{Binding Value, Mode=TwoWay}"
+                                  Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   Style="{StaticResource StatsNumberBoxStyle}" />
                 </Grid>
             </DataTemplate>
@@ -83,12 +79,12 @@
                     <Grid Background="{StaticResource ControlBorderBrush}" />
                     <Separator Grid.Column="1" Margin="0" />
                     <ui:NumberBox Grid.Column="2" Margin="0,0,0,0" 
-                                  Value="{Binding Value, Mode=TwoWay}" MaxDecimalPlaces="8"
+                                  Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
                                   Style="{StaticResource StatsNumberBoxStyle}" />
                 </Grid>
             </DataTemplate>
 
-            <DataTemplate x:Key="AverageRateStatisticTemplate">
+            <DataTemplate x:Key="AverageRateStatisticTemplate" DataType="{x:Type stats:AverageRateSteamStatistic}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -96,13 +92,13 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <!-- numerator -->
-                    <ui:NumberBox Value="{Binding AvgRateNumerator, Mode=TwoWay}" MaxDecimalPlaces="8"
+                    <ui:NumberBox Value="{Binding AvgRateNumerator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
                                   ToolTip="The value accumulation since the last call to this function."
                                   Style="{StaticResource StatsNumberBoxStyle}" />
                     <Separator Grid.Column="1" Margin="0" />
                     <!-- denominator -->
                     <ui:NumberBox Grid.Column="2"
-                                  Value="{Binding AvgRateDenominator, Mode=TwoWay}" MaxDecimalPlaces="8"
+                                  Value="{Binding AvgRateDenominator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
                                   ToolTip="The amount of time since the last call to this function."
                                   Style="{StaticResource StatsNumberBoxStyle}" />
                 </Grid>

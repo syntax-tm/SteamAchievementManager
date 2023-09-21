@@ -8,7 +8,7 @@ namespace SAM.Core.Controls
     public class AutoDisableImage : Image
     {
         protected bool IsGrayscaled => Source is FormatConvertedBitmap;
-        
+
         static AutoDisableImage()
         {
             IsEnabledProperty.OverrideMetadata(typeof(AutoDisableImage), new FrameworkPropertyMetadata(true, OnAutoDisableImagePropertyChanged));

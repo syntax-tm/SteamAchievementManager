@@ -59,9 +59,8 @@ namespace SAM.API.Wrappers
         public bool SetStatValue(string name, int value)
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
-
-            var call = GetFunction<NativeSetStatInt>(Functions.SetStatInteger);
-            return call(ObjectAddress, nativeName.Handle, value);
+            
+            return Call<bool, NativeSetStatInt>(Functions.SetStatInteger, ObjectAddress, nativeName.Handle, value);
         }
 
 #endregion
@@ -76,8 +75,7 @@ namespace SAM.API.Wrappers
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
             
-            var call = GetFunction<NativeSetStatFloat>(Functions.UpdateAvgRateStat);
-            return call(ObjectAddress, nativeName.Handle, value);
+            return Call<bool, NativeSetStatFloat>(Functions.SetStatFloat, ObjectAddress, nativeName.Handle, value);
         }
 
 #endregion

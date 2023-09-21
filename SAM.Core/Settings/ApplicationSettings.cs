@@ -4,6 +4,6 @@
     public static class ApplicationSettings
     {
         public static bool AllowStatsEdit { get; set; } = true;
-        public static bool AllowStatsSave { get; set; }
+        public static bool AllowStatsSave { get; set; } = true;
     }
 }
