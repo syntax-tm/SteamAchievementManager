@@ -1,6 +1,5 @@
-﻿<p align="center">
-  <img src="../resources/SAM_API_logo_dark_blue.svg">
-</p>
+﻿![](../resources/SAM_API_logo_white.svg#gh-dark-mode-only)
+![](../resources/SAM_API_logo_black.svg#gh-light-mode-only)
 
 ## Description
 
@@ -15,7 +14,7 @@ using SAM.API;
 // can only be set ONCE PER PROCESS when calling Client.Initialize
 // if you need to look up an App ID or other information, SteamDB is
 // a great resource. Some examples:
-// 
+//
 //   Resident Evil 5 (21690):
 //   https://steamdb.info/app/21690/
 //

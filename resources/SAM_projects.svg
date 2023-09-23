@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="140">
+  <foreignObject class="node" x="0" y="0" width="700" height="140">
+    <body xmlns="http://www.w3.org/1999/xhtml">
+      <ul style="float: left;">
+        <li><b style="font-size: 12pt"><code style="color: #247FD4">SAM</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #247FD4">SAM.Manager</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #D63E48">SAM.Core</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #D63E48">SAM.API</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #9478F0">SAM.UnitTests</code></b></li>
+      </ul>
+      <div style="float: right; vertical-align: middle; margin-top: 10px;">
+        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="resources/SAM_project_type_app.png"></img><span>Application</span><br/></div>
+        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="resources/SAM_project_type_lib.png"></img><span>Class Library</span><br/></div>
+        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="resources/SAM_project_type_test.png"></img><span>Unit Tests</span></div>
+      </div>
+    </body>
+  </foreignObject>
+</svg>
+<!-- <div style="display: inline; border: 2px; border-color: white; background-color: #247FD4; min-width: 20px; max-width: 20px; min-height: 20px; max-height: 20px;"></div> Applications
+ -->
