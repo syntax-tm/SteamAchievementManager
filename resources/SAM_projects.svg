@@ -9,9 +9,9 @@
         <li><b style="font-size: 12pt"><code style="color: #9478F0">SAM.UnitTests</code></b></li>
       </ul>
       <div style="float: right; vertical-align: middle; margin-top: 10px;">
-        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="resources/SAM_project_type_app.png"></img><span>Application</span><br/></div>
-        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="resources/SAM_project_type_lib.png"></img><span>Class Library</span><br/></div>
-        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="resources/SAM_project_type_test.png"></img><span>Unit Tests</span></div>
+        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="SAM_project_type_app.png"></img><span>Application</span><br/></div>
+        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="SAM_project_type_lib.png"></img><span>Class Library</span><br/></div>
+        <div style="margin-top: 5px;"><img width="24px" height="24px" style="display: inline; vertical-align: middle; margin-right: 4px; border-style: solid; border-color: #ccc; border-width: 1px;" src="SAM_project_type_test.png"></img><span>Unit Tests</span></div>
       </div>
     </body>
   </foreignObject>
