@@ -25,7 +25,8 @@ This project is a fork of the [Steam Achievement Manager](https://github.com/gib
 
 **SAM** is comprised of five projects.
 
-<img src="resources/SAM_projects.svg" /><br/>
+![](./resources/SAM_projects_white.svg#gh-dark-mode-only)
+![](./resources/SAM_projects_black.svg#gh-light-mode-only)
 
 `SAM` and `SAM.Manager` are the two application projects that create an executable. `SAM` is the executable that will display your Steam library and let you select an app (game) to manage. When the manager is started, it's passed an ID for a Steam app after which it initializes the Steam API client with that AppID just like any game on Steam would. Steam will show you as in-game, record your play time, and you can earn trading cards (if you have drops left).
 

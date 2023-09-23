@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="140">
+  <foreignObject class="node" x="0" y="0" width="700" height="140">
+    <body xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        ul {
+          list-style: none;
+        }
+
+        li {
+          margin-top: 2px;
+          margin-bottom: 2px;
+        }
+
+        ul li::before {
+          content: "\2022";
+          color: black;
+          font-weight: bold;
+          display: inline-block;
+          width: 1em;
+          margin-left: -1em;
+        }
+      </style>
+      <ul style="float: left;">
+        <li><b style="font-size: 12pt"><code style="color: #247FD4">SAM</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #247FD4">SAM.Manager</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #D63E48">SAM.Core</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #D63E48">SAM.API</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #9478F0">SAM.UnitTests</code></b></li>
+      </ul>
+    </body>
+  </foreignObject>
+</svg>
+<!-- <div style="display: inline; border: 2px; border-color: white; background-color: #247FD4; min-width: 20px; max-width: 20px; min-height: 20px; max-height: 20px;"></div> Applications
+ -->
