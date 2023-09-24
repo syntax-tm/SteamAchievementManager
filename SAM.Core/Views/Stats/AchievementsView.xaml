@@ -11,7 +11,7 @@
              xmlns:views="clr-namespace:SAM.Core.Views"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:system="clr-namespace:System;assembly=System.Runtime"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
 
@@ -21,38 +21,19 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <dxmvvm:BooleanToObjectConverter x:Key="UnlockedConverter" TrueValue="Unlocked" FalseValue="Locked" />
-            <CollectionViewSource x:Key="AchievementCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True"
-                                  IsLiveFilteringRequested="True">
-                <CollectionViewSource.GroupDescriptions>
-                    <PropertyGroupDescription PropertyName="OriginalLockState" />
-                </CollectionViewSource.GroupDescriptions>
-                <CollectionViewSource.SortDescriptions>
-                    <scm:SortDescription PropertyName="OriginalLockState" Direction="Ascending" />
-                    <scm:SortDescription PropertyName="Name" Direction="Ascending" />
-                </CollectionViewSource.SortDescriptions>
-                <CollectionViewSource.LiveFilteringProperties>
-                    <system:String>Name</system:String>
-                    <system:String>Description</system:String>
-                </CollectionViewSource.LiveFilteringProperties>
-            </CollectionViewSource>
-            <CollectionViewSource x:Key="AchievementNamesCollection" Source="{Binding Achievements}" IsLiveGroupingRequested="True">
-                <CollectionViewSource.SortDescriptions>
-                    <scm:SortDescription PropertyName="Name" Direction="Ascending" />
-                </CollectionViewSource.SortDescriptions>
-            </CollectionViewSource>
         </ResourceDictionary>
 
     </UserControl.Resources>
 
     <Grid>
-        <ui:DataGrid ItemsSource="{Binding Source={StaticResource AchievementCollection}}"
+        <ui:DataGrid ItemsSource="{Binding AchievementsView}"
                   SelectedItem="{Binding SelectedAchievement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False" HeadersVisibility="None"
                   CanUserAddRows="False" SelectionMode="Single"
                   EnableRowVirtualization="False" EnableColumnVirtualization="False"
                   RowStyle="{StaticResource AchievementGridRowStyle}"
-                  GridLinesVisibility="None">
+                  GridLinesVisibility="None"
+                  d:DesignSource="{d:DesignInstance Type={x:Type stats:SteamAchievement}, CreateList=True}">
             <ui:DataGrid.Columns>
                 <DataGridCheckBoxColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

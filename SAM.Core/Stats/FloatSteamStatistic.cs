@@ -19,16 +19,6 @@ namespace SAM.Core.Stats
             get => GetProperty(() => Value);
             set => SetProperty(() => Value, value, OnValueChanged);
         }
-        public float AvgRateNumerator
-        {
-            get => GetProperty(() => AvgRateNumerator);
-            set => SetProperty(() => AvgRateNumerator, value, OnAvgRateValueChanged);
-        }
-        public double AvgRateDenominator
-        {
-            get => GetProperty(() => AvgRateDenominator);
-            set => SetProperty(() => AvgRateDenominator, value, OnAvgRateValueChanged);
-        }
 
         public FloatSteamStatistic()
         {
@@ -50,8 +40,6 @@ namespace SAM.Core.Stats
         public override void Reset()
         {
             Value = OriginalValue;
-            AvgRateNumerator = 0;
-            AvgRateDenominator = 0;
             IsModified = false;
         }
 
@@ -72,8 +60,6 @@ namespace SAM.Core.Stats
 
             OriginalValue = Value;
 
-            AvgRateNumerator = 0;
-            AvgRateDenominator = 0;
             IsModified = false;
 
             _loading = false;
@@ -82,19 +68,10 @@ namespace SAM.Core.Stats
         protected void OnValueChanged()
         {
             if (_loading) return;
-            if (IsAverageRate) return;
 
             const double TOLERANCE = 0.000000001;
 
-            IsModified = Math.Abs(Value - OriginalValue) < TOLERANCE;
-        }
-
-        protected void OnAvgRateValueChanged()
-        {
-            if (_loading) return;
-            if (IsAverageRate) return;
-
-            IsModified = AvgRateDenominator > 0 || AvgRateNumerator > 0;
+            IsModified = Math.Abs(Value - OriginalValue) > TOLERANCE;
         }
     }
 }

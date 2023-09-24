@@ -1,4 +1,7 @@
 ﻿using System.Runtime.InteropServices;
+// ReSharper disable UnassignedField.Global
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable InconsistentNaming
 
 namespace SAM.API.Wrappers
 {

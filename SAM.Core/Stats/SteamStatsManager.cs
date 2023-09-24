@@ -13,11 +13,11 @@ using SAM.API.Stats;
 using SAM.API.Types;
 using SAM.Core.Extensions;
 using Timer = System.Timers.Timer;
+// ReSharper disable InconsistentNaming
+// ReSharper disable CollectionNeverQueried.Local
 
 namespace SAM.Core.Stats
 {
-    [SuppressMessage("ReSharper", "CollectionNeverQueried.Local", Justification = "INotifyPropertyChanged handler collection")]
-    [SuppressMessage("ReSharper", "PrivateFieldCanBeConvertedToLocalVariable", Justification = "Callback")]
     public class SteamStatsManager : BindableBase
     {
 
@@ -208,16 +208,17 @@ namespace SAM.Core.Stats
                         StatDefinitions.Add(new IntegerStatInfo(stat, currentLanguage));
                         break;
                     }
-                    case UserStatType.Float:
-                    {
-                        StatDefinitions.Add(new AvgRateStatInfo(stat, currentLanguage));
-                        break;
-                    }
                     case UserStatType.AverageRate:
+                    case UserStatType.Float:
                     {
                         StatDefinitions.Add(new FloatStatInfo(stat, currentLanguage));
                         break;
                     }
+                    //case UserStatType.AverageRate:
+                    //{
+                    //    StatDefinitions.Add(new FloatStatInfo(stat, currentLanguage));
+                    //    break;
+                    //}
                     case UserStatType.Achievements:
                     case UserStatType.GroupAchievements:
                     {

@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="SAM.Core.Views.StatEditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:stats="clr-namespace:SAM.Core.Stats"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignData d:Type={x:Type stats:SteamStatisticBase}}">
+
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type stats:IntegerSteamStatistic}">
+            <ui:NumberBox Margin="0,0,0,0" 
+                          Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Style="{StaticResource StatsNumberBoxStyle}" />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type stats:FloatSteamStatistic}">
+            <ui:NumberBox Margin="0,0,0,0" 
+                          Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
+                          Style="{StaticResource StatsNumberBoxStyle}" />
+        </DataTemplate>
+
+        <!--<DataTemplate DataType="{x:Type stats:AverageRateSteamStatistic}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                --><!-- numerator --><!--
+                <ui:NumberBox Value="{Binding AvgRateNumerator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
+                              ToolTip="The value accumulation since the last call to this function."
+                              Style="{StaticResource StatsNumberBoxStyle}" />
+                <Separator Grid.Column="1" Margin="0" />
+                --><!-- denominator --><!--
+                <ui:NumberBox Grid.Column="2"
+                              Value="{Binding AvgRateDenominator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
+                              ToolTip="The amount of time since the last call to this function."
+                              Style="{StaticResource StatsNumberBoxStyle}" />
+            </Grid>
+        </DataTemplate>-->
+
+        <DXDataTemplateSelector x:Key="StatisticsDataTemplateSelector">
+            <DXDataTemplateTrigger Binding="{Binding StatType}" Value="Integer" Template="{StaticResource IntegerStatisticTemplate}" />
+            <DXDataTemplateTrigger Binding="{Binding StatType}" Value="Float" Template="{StaticResource FloatStatisticTemplate}" />
+            <DXDataTemplateTrigger Binding="{Binding StatType}" Value="AvgRate" Template="{StaticResource AverageRateStatisticTemplate}" />
+        </DXDataTemplateSelector>
+    </UserControl.Resources>
+
+    <ContentControl Content="{Binding}"  />
+
+</UserControl>

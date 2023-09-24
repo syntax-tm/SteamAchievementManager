@@ -81,11 +81,24 @@ namespace SAM.API.Wrappers
         {
             using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return Call<bool, NativeSetStatFloat>(
-                                                  Functions.SetStatFloat,
-                                                  ObjectAddress,
-                                                  nativeName.Handle,
-                                                  value);
+            return Call<bool, NativeSetStatFloat>(Functions.SetStatFloat, ObjectAddress,
+                                                  nativeName.Handle, value);
+        }
+
+#endregion
+
+#region UpdateAvgRateStat
+
+        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private delegate bool NativeUpdateAvgRateStat(nint self, nint name, float flCountThisSession, double dSessionLength);
+
+        public bool UpdateAvgRateStat(string name, float flCountThisSession, double dSessionLength)
+        {
+            using var nativeName = NativeStrings.StringToStringHandle(name);
+
+            return Call<bool, NativeUpdateAvgRateStat>(Functions.UpdateAvgRateStat, ObjectAddress,
+                                                       nativeName.Handle, flCountThisSession, dSessionLength);
         }
 
 #endregion

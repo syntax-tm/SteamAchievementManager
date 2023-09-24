@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using SAM.API.Types;
+// ReSharper disable UnassignedField.Global
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable InconsistentNaming
 
 namespace SAM.API.Wrappers
 {
@@ -29,6 +32,15 @@ namespace SAM.API.Wrappers
         public SteamUserStats007 GetSteamUserStats006(int user, int pipe)
         {
             return GetISteamUserStats<SteamUserStats007>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION007");
+        }
+
+#endregion
+
+#region GetSteamUserStats011
+
+        public SteamUserStats011 GetSteamUserStats011(int user, int pipe)
+        {
+            return GetISteamUserStats<SteamUserStats011>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION011");
         }
 
 #endregion

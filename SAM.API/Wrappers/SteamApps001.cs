@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+// ReSharper disable UnassignedField.Global
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable InconsistentNaming
 
 namespace SAM.API.Wrappers
 {
@@ -8,12 +11,7 @@ namespace SAM.API.Wrappers
 #region GetAppData
 
         [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeGetAppData(
-            nint self,
-            uint appId,
-            nint key,
-            nint value,
-            int valueLength);
+        private delegate int NativeGetAppData(nint self, uint appId, nint key, nint value, int valueLength);
 
         public string GetAppData(uint appId, string key)
         {
@@ -21,13 +19,8 @@ namespace SAM.API.Wrappers
 
             const int valueLength = 1024;
             var valuePointer = Marshal.AllocHGlobal(valueLength);
-            var result = Call<int, NativeGetAppData>(
-                                                     Functions.GetAppData,
-                                                     ObjectAddress,
-                                                     appId,
-                                                     nativeHandle.Handle,
-                                                     valuePointer,
-                                                     valueLength);
+            var result = Call<int, NativeGetAppData>(Functions.GetAppData, ObjectAddress, appId,
+                                                     nativeHandle.Handle, valuePointer, valueLength);
             var value = result == 0 ? null : NativeStrings.PointerToString(valuePointer, valueLength);
             Marshal.FreeHGlobal(valuePointer);
             return value;

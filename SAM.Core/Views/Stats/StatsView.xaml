@@ -8,6 +8,7 @@
              xmlns:stats="clr-namespace:SAM.Core.Stats"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:converters="clr-namespace:SAM.Core.Converters"
+             xmlns:views="clr-namespace:SAM.Core.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
@@ -54,62 +55,6 @@
                 </Style.Triggers>
             </Style>
 
-            <DataTemplate x:Key="IntegerStatisticTemplate" DataType="{x:Type stats:IntegerSteamStatistic}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Background="{StaticResource ControlBorderBrush}" />
-                    <Separator Grid.Column="1" Margin="0" />
-                    <ui:NumberBox Grid.Column="2" Margin="0,0,0,0" 
-                                  Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                  Style="{StaticResource StatsNumberBoxStyle}" />
-                </Grid>
-            </DataTemplate>
-
-            <DataTemplate x:Key="FloatStatisticTemplate" DataType="{x:Type stats:FloatSteamStatistic}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Background="{StaticResource ControlBorderBrush}" />
-                    <Separator Grid.Column="1" Margin="0" />
-                    <ui:NumberBox Grid.Column="2" Margin="0,0,0,0" 
-                                  Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
-                                  Style="{StaticResource StatsNumberBoxStyle}" />
-                </Grid>
-            </DataTemplate>
-
-            <DataTemplate x:Key="AverageRateStatisticTemplate" DataType="{x:Type stats:AverageRateSteamStatistic}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <!-- numerator -->
-                    <ui:NumberBox Value="{Binding AvgRateNumerator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
-                                  ToolTip="The value accumulation since the last call to this function."
-                                  Style="{StaticResource StatsNumberBoxStyle}" />
-                    <Separator Grid.Column="1" Margin="0" />
-                    <!-- denominator -->
-                    <ui:NumberBox Grid.Column="2"
-                                  Value="{Binding AvgRateDenominator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
-                                  ToolTip="The amount of time since the last call to this function."
-                                  Style="{StaticResource StatsNumberBoxStyle}" />
-                </Grid>
-            </DataTemplate>
-
-            <DXDataTemplateSelector x:Key="StatisticsDataTemplateSelector">
-                <DXDataTemplateTrigger Binding="{Binding StatType}" Value="Integer" Template="{StaticResource IntegerStatisticTemplate}" />
-                <DXDataTemplateTrigger Binding="{Binding StatType}" Value="Float" Template="{StaticResource FloatStatisticTemplate}" />
-                <DXDataTemplateTrigger Binding="{Binding StatType}" Value="AvgRate" Template="{StaticResource AverageRateStatisticTemplate}" />
-            </DXDataTemplateSelector>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="5,0">
@@ -119,6 +64,8 @@
                 <DataGridTemplateColumn Header="" CanUserSort="True" IsReadOnly="True" MinWidth="50">
                     <DataGridTemplateColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="-2" />
                             <Setter Property="Background" Value="Transparent" />
                             <Setter Property="BorderBrush" Value="Transparent" />
                             <Style.Triggers>
@@ -131,7 +78,7 @@
                                     <Setter Property="Foreground" Value="White" />
                                     <Setter Property="Background">
                                         <Setter.Value>
-                                            <SolidColorBrush Opacity="1" Color="{StaticResource YellowColor}" />
+                                            <SolidColorBrush Opacity="1" Color="{StaticResource OrangeColor}" />
                                         </Setter.Value>
                                     </Setter>
                                 </MultiDataTrigger>
@@ -144,7 +91,7 @@
                                     <Setter Property="Foreground" Value="White" />
                                     <Setter Property="Background">
                                         <Setter.Value>
-                                            <SolidColorBrush Opacity="0.8" Color="{StaticResource YellowColor}" />
+                                            <SolidColorBrush Opacity="0.8" Color="{StaticResource OrangeColor}" />
                                         </Setter.Value>
                                     </Setter>
                                 </MultiDataTrigger>
@@ -153,55 +100,51 @@
                     </DataGridTemplateColumn.CellStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid Margin="5">
+                            <Grid Margin="8">
                                 <Viewbox>
-                                    <ui:SymbolIcon Symbol="Warning24"
-                                                   Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}"
-                                                   Foreground="Black" />
+                                    <ui:SymbolIcon Symbol="Warning24" Foreground="White"
+                                                   Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
                                 </Viewbox>
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Name" CanUserSort="True" IsReadOnly="True" MinWidth="300" Width="*">
+                <DataGridTemplateColumn Header="Id" CanUserSort="True" IsReadOnly="True" MinWidth="300" Width="*"
+                                        HeaderStyle="{StaticResource LeftGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding StatInfo.DisplayName}" Margin="5,0" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding Id}" Margin="5,0" FontStyle="Italic" FontWeight="Light" />
-                                </StackPanel>
+                            <Grid Margin="3,3,0,3">
+                                <TextBlock Text="{Binding Id}" Margin="5,0" VerticalAlignment="Center" />
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Name" CanUserSort="True" IsReadOnly="True" MinWidth="300" Width="2*"
+                                        HeaderStyle="{StaticResource LeftGridHeaderStyle}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid Margin="3,3,0,3">
+                                <TextBlock Text="{Binding StatInfo.DisplayName}" Margin="5,0" VerticalAlignment="Center" />
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Type" Width="150" CanUserResize="False">
-                    <DataGridTemplateColumn.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                        </Style>
-                    </DataGridTemplateColumn.CellStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type stats:SteamStatisticBase}">
                             <Grid>
                                 <TextBlock Text="{Binding StatType, Converter={converters:EnumDescriptionConverter}}"
-                                           TextAlignment="Center" VerticalAlignment="Center"
-                                           Foreground="{StaticResource TextFillColorLightDisabledBrush}" />
+                                           TextAlignment="Center" VerticalAlignment="Center" />
                             </Grid>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Value" MinWidth="250" Width="*" MaxWidth="400"
-                                        CellTemplateSelector="{StaticResource StatisticsDataTemplateSelector}">
-                    <DataGridTemplateColumn.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="BorderBrush" Value="Transparent" />
-                        </Style>
-                    </DataGridTemplateColumn.CellStyle>
+                <DataGridTemplateColumn Header="Value" Width="250">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <views:StatEditView DataContext="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Increment Only" IsReadOnly="True" Width="120" CanUserResize="False">
                     <DataGridTemplateColumn.CellTemplate>

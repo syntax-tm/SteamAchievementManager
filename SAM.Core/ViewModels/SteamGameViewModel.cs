@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using DevExpress.Mvvm;
@@ -9,8 +11,11 @@ using DevExpress.Mvvm.Native;
 using DevExpress.Mvvm.POCO;
 using JetBrains.Annotations;
 using log4net;
+using SAM.Core.Converters;
+using SAM.Core.Extensions;
 using SAM.Core.Settings;
 using SAM.Core.Stats;
+using SAM.Core.Views;
 
 namespace SAM.Core.ViewModels
 {
@@ -36,23 +41,23 @@ namespace SAM.Core.ViewModels
         public virtual AchievementFilter SelectedAchievementFilter { get; set; }
 
         public virtual SteamApp SteamApp { get; set; }
-        
+
         public virtual SteamAchievement SelectedAchievement { get; set; }
 
         public virtual ObservableCollection<SteamStatisticBase> Statistics { get; set; }
         public virtual ObservableCollection<SteamAchievement> Achievements { get; set; }
 
-        public virtual CollectionView AchievementsView { get; set; }
+        public virtual ICollectionView AchievementsView { get; set; }
 
         protected SteamGameViewModel()
         {
 
         }
-        
+
         protected SteamGameViewModel(SteamApp steamApp)
         {
             SteamApp = steamApp;
-            
+
             _statsManager = new ();
 
             _statsHandler = new ObservableHandler<SteamStatsManager>(_statsManager)
@@ -71,15 +76,16 @@ namespace SAM.Core.ViewModels
             return ViewModelSource.Create(() => new SteamGameViewModel(steamApp));
         }
 
-        public void SaveAchievements()
+        public int SaveAchievements()
         {
+            var saved = 0;
             try
             {
                 var modified = Achievements.Where(a => a.IsModified).ToList();
                 if (!modified.Any())
                 {
                     log.Info("User achievements have not been modified. Skipping save.");
-                    return;
+                    return 0;
                 }
 
                 var stats = SteamClientManager.Default.SteamUserStats;
@@ -97,9 +103,13 @@ namespace SAM.Core.ViewModels
                     log.Info($"Successfully saved achievement {achievement.Id}.");
 
                     achievement.CommitChanges();
+
+                    saved++;
                 }
 
                 stats.StoreStats();
+
+                return saved;
             }
             catch (Exception e)
             {
@@ -108,24 +118,27 @@ namespace SAM.Core.ViewModels
                 log.Error(message, e);
 
                 MessageBox.Show(message, "Error Updating Achievements", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                return -1;
             }
         }
 
-        public void SaveStats()
+        public int SaveStats()
         {
+            var saved = 0;
             try
             {
                 var modified = Statistics.Where(a => a.IsModified).ToList();
                 if (!modified.Any())
                 {
                     log.Info("User stats have not been modified. Skipping save...");
-                    return;
+                    return 0;
                 }
 
                 if (!ApplicationSettings.AllowStatsSave)
                 {
                     log.Warn("User stats have been modified but will not be saved.");
-                    return;
+                    return -1;
                 }
 
                 var stats = SteamClientManager.Default.SteamUserStats;
@@ -160,9 +173,13 @@ namespace SAM.Core.ViewModels
                     log.Info($"Successfully saved {stat.StatType} stat {stat.Id}.");
 
                     stat.CommitChanges();
+
+                    saved++;
                 }
 
                 stats.StoreStats();
+
+                return saved;
             }
             catch (Exception e)
             {
@@ -171,13 +188,50 @@ namespace SAM.Core.ViewModels
                 log.Error(message, e);
 
                 MessageBox.Show(message, "Error Updating Stats", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                return -1;
             }
         }
 
         public void Save()
         {
-            SaveAchievements();
-            SaveStats();
+            var achievementsSaved = SaveAchievements();
+            if (achievementsSaved == -1)
+            {
+                log.Warn($"{nameof(SaveAchievements)} encountered an error.");
+
+                return;
+            }
+
+            var statsSaved = SaveStats();
+            if (statsSaved == -1)
+            {
+                log.Warn($"{nameof(SaveStats)} encountered an error.");
+
+                return;
+            }
+
+            var message = new StringBuilder();
+
+            var achievementMessage = achievementsSaved switch
+            {
+                1 => $"{achievementsSaved} achievement",
+                _ => $"{achievementsSaved} achievements"
+            };
+
+            var statsMessage = statsSaved switch
+            {
+                1 => $"{statsSaved} stat",
+                _ => $"{statsSaved} stats"
+            };
+
+            message.Append("Successfully saved ");
+            message.Append(achievementMessage);
+            message.Append(" and ");
+            message.Append(statsMessage);
+            message.Append(".");
+
+            MessageBox.Show(message.ToString(), "Achievements and Stats Saved", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public void RefreshStats()
@@ -194,7 +248,7 @@ namespace SAM.Core.ViewModels
         {
             Statistics.ForEach(s => s.Reset());
         }
-        
+
         public void Reset()
         {
             ResetAchievements();
@@ -231,6 +285,9 @@ namespace SAM.Core.ViewModels
 
             AchievementsView = (CollectionView) CollectionViewSource.GetDefaultView(Achievements);
             AchievementsView.Filter = AchievementFilter;
+            AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.IsModified), ListSortDirection.Descending));
+            AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.IsAchieved), ListSortDirection.Ascending));
+            AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.Name), ListSortDirection.Ascending));
 
             _achievementsPropertyHandler = new ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement>(Achievements)
                 .Add(a => a.IsModified, OnAchievementModifiedHandler);
@@ -241,6 +298,11 @@ namespace SAM.Core.ViewModels
             Refresh();
         }
 
+        protected void OnSearchTextChanged()
+        {
+            AchievementsView.Refresh();
+        }
+
         private bool AchievementFilter(object obj)
         {
             if (obj is not SteamAchievement achievement)
@@ -248,7 +310,18 @@ namespace SAM.Core.ViewModels
                 throw new InvalidOperationException($"{nameof(obj)} must be of type {nameof(SteamAchievement)}.");
             }
 
-            return true;
+            if (string.IsNullOrEmpty(SearchText))
+            {
+                return true;
+            }
+
+            if (achievement.Name.ContainsIgnoreCase(SearchText)
+                || achievement.Description.ContainsIgnoreCase(SearchText))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void ManagerStatisticsChanged(SteamStatsManager obj)
