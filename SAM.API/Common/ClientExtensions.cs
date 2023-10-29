@@ -1,6 +1,4 @@
-﻿using SAM.API;
-
-namespace SAM.Core.Extensions;
+﻿namespace SAM.API;
 
 public static class ClientExtensions
 {

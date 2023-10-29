@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Windows.Win32;
+using Windows.Win32.Graphics.Gdi;
 using JetBrains.Annotations;
 using Size = System.Drawing.Size;
 
@@ -13,19 +14,15 @@ namespace SAM.Core.Extensions;
 
 public static class ImageExtensions
 {
-
-    [DllImport("gdi32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool DeleteObject(IntPtr value);
-
     public static ImageSource ToImageSource([NotNull] this Image value)
     {
         var bitmap = new Bitmap(value);
-        var bmpPtr = bitmap.GetHbitmap();
+        var hBmp = bitmap.GetHbitmap();
+        var bmpPtr = new HGDIOBJ(hBmp);
         var bmpSource = Imaging.CreateBitmapSourceFromHBitmap(bmpPtr, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
         bmpSource.Freeze();
 
-        DeleteObject(bmpPtr);
+        PInvoke.DeleteObject(bmpPtr);
 
         return bmpSource;
     }

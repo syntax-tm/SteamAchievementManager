@@ -1,6 +1,6 @@
 ﻿using SAM.API.Wrappers;
 
-namespace SAM.Core.Extensions;
+namespace SAM.API;
 
 public static class SteamApps001Extensions
 {

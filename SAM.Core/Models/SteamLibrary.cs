@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Data;
 using DevExpress.Mvvm;
 using log4net;
+using SAM.API;
 using SAM.Core.Extensions;
 using SAM.Core.Storage;
 

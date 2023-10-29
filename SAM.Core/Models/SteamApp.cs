@@ -10,6 +10,7 @@ using System.Threading;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
+using SAM.API;
 using SAM.Core.Extensions;
 using SAM.Core.Settings;
 using SAM.Core.Storage;

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.System.LibraryLoader;
 using Microsoft.Win32;
+using Microsoft.Win32.SafeHandles;
 
 namespace SAM.API
 {
@@ -18,7 +22,8 @@ namespace SAM.API
 
         private static Delegate GetExportDelegate<TDelegate>(nint module, string name)
         {
-            var address = Native.GetProcAddress(module, name);
+            var hModule = new SafeProcessHandle(module, false);
+            var address = PInvoke.GetProcAddress(hModule, name);
             return address == nint.Zero ? null : Marshal.GetDelegateForFunctionPointer(address, typeof(TDelegate));
         }
 
@@ -68,48 +73,32 @@ namespace SAM.API
         {
             if (_handle != nint.Zero)
             {
-                Native.FreeLibrary(_handle);
+                PInvoke.FreeLibrary(new (_handle));
                 _handle = nint.Zero;
             }
 
             var path = GetInstallPath();
             if (path == null) return false;
 
-            Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
+            PInvoke.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
             path = Path.Combine(path, SteamClientDll);
 
-            var module = Native.LoadLibraryEx(path, nint.Zero, Native.LoadWithAlteredSearchPath);
-            if (module == nint.Zero) return false;
+            var module = PInvoke.LoadLibraryEx(path, LOAD_LIBRARY_FLAGS.LOAD_WITH_ALTERED_SEARCH_PATH);
+            if (module == default) return false;
 
-            _callCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
+            var hModule = module.DangerousGetHandle();
+
+            _callCreateInterface = GetExportFunction<NativeCreateInterface>(hModule, "CreateInterface");
             if (_callCreateInterface == null) return false;
 
-            _callSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
+            _callSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(hModule, "Steam_BGetCallback");
             if (_callSteamBGetCallback == null) return false;
 
-            _callSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
+            _callSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(hModule, "Steam_FreeLastCallback");
             if (_callSteamFreeLastCallback == null) return false;
 
-            _handle = module;
+            _handle = hModule;
             return true;
-        }
-
-        private struct Native
-        {
-            [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]
-            internal static extern nint GetProcAddress(nint module, string name);
-
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            internal static extern nint LoadLibraryEx(string path, nint file, uint flags);
-
-            [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-            [return: MarshalAs(UnmanagedType.Bool)]
-            internal static extern bool SetDllDirectory(string path);
-            
-            [DllImport("kernel32.dll", SetLastError = true)]
-            public static extern bool FreeLibrary(nint hModule);
-
-            internal const uint LoadWithAlteredSearchPath = 8;
         }
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi)]

@@ -4,13 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:vm="clr-namespace:SAM.Core.ViewModels"
              xmlns:stats="clr-namespace:SAM.Core.Stats"
              xmlns:converters="clr-namespace:SAM.Core.Converters"
              xmlns:views="clr-namespace:SAM.Core.Views"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:system="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">

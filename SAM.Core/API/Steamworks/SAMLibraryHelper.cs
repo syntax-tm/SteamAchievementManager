@@ -15,7 +15,7 @@ namespace SAM.Core
         private const string SAM_GAME_LIST_URL = @"http://gib.me/sam/games.xml";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMLibraryHelper));
-        
+
         // TODO: Store this somewhere outside of the application so that it can be actively maintained separately
         private static readonly uint[] _ignoredApps =
         {
@@ -24,6 +24,8 @@ namespace SAM.Core
         // TODO: This will probably be better off as a ConcurrentBag (for thread safety during Library init) or other keyed collection
         private static List<SupportedApp> _gameList;
 
+        private static readonly HttpClient _client = new ();
+
         public static List<SupportedApp> GetSupportedGames()
         {
             if (_gameList != null) return _gameList;
@@ -31,13 +33,12 @@ namespace SAM.Core
             try
             {
                 var pairs = new List<SupportedApp>();
-                
-                using var wc = new HttpClient();
-                var bytes = wc.GetByteArrayAsync(new Uri(SAM_GAME_LIST_URL)).Result;
-                
-                using var stream = new MemoryStream(bytes, false);
 
-                var document = new XPathDocument(stream);
+                var request = new HttpRequestMessage(HttpMethod.Get, SAM_GAME_LIST_URL);
+                var response = _client.Send(request);
+                var responseStream = response.Content.ReadAsStream();
+
+                var document = new XPathDocument(responseStream);
                 var navigator = document.CreateNavigator();
 
                 Debug.Assert(navigator is not null, $"The {nameof(XPathNavigator)} cannot be null.");

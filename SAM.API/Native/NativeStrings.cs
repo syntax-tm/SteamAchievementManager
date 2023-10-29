@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
@@ -9,15 +8,17 @@ namespace SAM.API
     {
         public static unsafe StringHandle StringToStringHandle(string value)
         {
-            if (value == null) return new StringHandle(nint.Zero, true);
+            if (value == null) return new (nint.Zero, true);
 
             var bytes = Encoding.UTF8.GetBytes(value);
             var length = bytes.Length;
 
             var p = Marshal.AllocHGlobal(length + 1);
             Marshal.Copy(bytes, 0, p, bytes.Length);
+
             (((byte*)p)!)[length] = 0;
-            return new StringHandle(p, true);
+
+            return new (p, true);
         }
 
         public static unsafe string PointerToString(sbyte* bytes)
@@ -34,7 +35,7 @@ namespace SAM.API
                 running++;
             }
 
-            return new string(bytes, 0, running, Encoding.UTF8);
+            return new (bytes, 0, running, Encoding.UTF8);
         }
 
         public static unsafe string PointerToString(byte* bytes)
@@ -62,7 +63,7 @@ namespace SAM.API
                 running++;
             }
 
-            return new string(bytes, 0, running, Encoding.UTF8);
+            return new (bytes, 0, running, Encoding.UTF8);
         }
 
         public static unsafe string PointerToString(byte* bytes, int length)

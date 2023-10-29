@@ -27,7 +27,6 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Minimum" Value="0" />
         <Setter Property="SpinButtonPlacementMode" Value="Hidden" />
-        <Setter Property="IsEnabled" Value="{x:Static settings:ApplicationSettings.AllowStatsEdit}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ui:NumberBox}">

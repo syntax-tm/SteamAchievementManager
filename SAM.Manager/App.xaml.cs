@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using log4net;
+using SAM.API;
 using SAM.Core;
 using SAM.Core.Extensions;
 using SAM.Core.Settings;
@@ -47,18 +48,6 @@ namespace SAM.Manager
                 }
 
                 _appID = appId;
-
-                foreach (var arg in commandLineArgs.Skip(2))
-                {
-                    if (arg == nameof(ApplicationSettings.AllowStatsEdit))
-                    {
-                        ApplicationSettings.AllowStatsEdit = true;
-                    }
-                    else if (arg == nameof(ApplicationSettings.AllowStatsSave))
-                    {
-                        ApplicationSettings.AllowStatsSave = true;
-                    }
-                }
                 
                 //  handle any WPF dispatcher exceptions
                 Current.DispatcherUnhandledException += OnDispatcherException;
@@ -74,8 +63,14 @@ namespace SAM.Manager
 
                 SteamClientManager.Init(appId);
                 
+                if (!SteamClientManager.Default.OwnsGame(appId))
+                {
+                    throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
+                }
+
                 // TODO: move this to the MainWindowViewModel via passing the app id
                 var supportedApp = SAMLibraryHelper.GetApp(appId);
+
                 var appInfo = SteamApp.Create(supportedApp);
                 
                 appInfo.LoadClientInfo();

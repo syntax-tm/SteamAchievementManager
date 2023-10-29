@@ -122,7 +122,7 @@ namespace SAM.API
                     callback.Run(message.ParamPointer);
                 }
 
-                Steam.FreeLastCallback(_pipe);
+                _ = Steam.FreeLastCallback(_pipe);
             }
 
             _runningCallbacks = false;

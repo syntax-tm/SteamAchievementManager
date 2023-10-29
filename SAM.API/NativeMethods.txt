@@ -1,0 +1,11 @@
+﻿// macros
+HWND
+PCSTR
+// functions
+CloseHandle
+FreeLibrary
+GetProcAddress
+LoadLibraryEx
+SetDllDirectory
+SetForegroundWindow
+ShowWindowAsync

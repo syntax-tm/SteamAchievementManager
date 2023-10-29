@@ -135,12 +135,6 @@ namespace SAM.Core.ViewModels
                     return 0;
                 }
 
-                if (!ApplicationSettings.AllowStatsSave)
-                {
-                    log.Warn("User stats have been modified but will not be saved.");
-                    return -1;
-                }
-
                 var stats = SteamClientManager.Default.SteamUserStats;
 
                 foreach (var stat in modified)

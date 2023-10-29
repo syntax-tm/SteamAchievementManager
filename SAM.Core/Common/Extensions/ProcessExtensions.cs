@@ -1,17 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace SAM.Core.Extensions;
 
 public static class ProcessExtensions
 {
-
-    [DllImport("user32.dll")]
-    public static extern bool ShowWindowAsync(HandleRef hWnd, int nCmdShow);
-    [DllImport("User32.dll")]
-    private static extern bool SetForegroundWindow(IntPtr handle);
-
     public static bool SetActive(this Process process)
     {
         if (process == null) return false;
@@ -19,10 +14,10 @@ public static class ProcessExtensions
         if (!process.Responding) return false;
 
         var hwnd = process.MainWindowHandle;
-        var hwndRef = new HandleRef(null, hwnd);
+        var hwndRef = new HWND(hwnd);
             
-        ShowWindowAsync(hwndRef, (int) ShowWindowCommands.SW_RESTORE);
-        SetForegroundWindow(hwnd);
+        PInvoke.ShowWindowAsync(hwndRef, SHOW_WINDOW_CMD.SW_RESTORE);
+        PInvoke.SetForegroundWindow(hwndRef);
 
         return true;
     }

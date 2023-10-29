@@ -1,23 +1,23 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace SAM.Core.Extensions;
 
 public static class StringExtensions
 {
-    public static bool EqualsIgnoreCase([NotNull] this string a, string b)
+    public static bool EqualsIgnoreCase(this string a, string b)
     {
-        if (string.IsNullOrEmpty(b)) return false;
+        if (a == null) throw new ArgumentNullException(nameof(a));
+        if (b == null) return false;
 
         return a.Equals(b, StringComparison.CurrentCultureIgnoreCase);
     }
 
-    public static bool ContainsIgnoreCase([NotNull] this string a, string b)
+    public static bool ContainsIgnoreCase(this string a, string b)
     {
-        if (string.IsNullOrEmpty(b))
-        {
-            throw new ArgumentNullException(nameof(b));
-        }
+        if (a == null) throw new ArgumentNullException(nameof(a));
+        if (b == null) throw new ArgumentNullException(nameof(b));
+
+        if (a == string.Empty) return b == string.Empty;
 
         return a.Contains(b, StringComparison.CurrentCultureIgnoreCase);
     }
