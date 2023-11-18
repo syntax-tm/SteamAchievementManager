@@ -2,6 +2,7 @@
 HWND
 PCSTR
 // functions
+AddDllDirectory
 CloseHandle
 FreeLibrary
 GetProcAddress

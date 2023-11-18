@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -11,11 +10,8 @@ using DevExpress.Mvvm.Native;
 using DevExpress.Mvvm.POCO;
 using JetBrains.Annotations;
 using log4net;
-using SAM.Core.Converters;
 using SAM.Core.Extensions;
-using SAM.Core.Settings;
 using SAM.Core.Stats;
-using SAM.Core.Views;
 
 namespace SAM.Core.ViewModels
 {
