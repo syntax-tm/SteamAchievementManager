@@ -1,0 +1,30 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+
+  build:
+    uses: ./.github/workflows/build.yml
+  download:
+    runs-on: windows-latest
+    needs: build
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        path: artifacts
+  create-release:
+    runs-on: windows-latest
+    needs: [build, download]
+    permissions:
+      contents: write
+    steps:
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: artifacts/*
+        bodyFile: CHANGELOG.md
+        draft: true

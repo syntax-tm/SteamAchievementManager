@@ -1,19 +1,29 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: SAM
+name: Build
+
+env:
+  ARTIFACT: SAM
 
 on:
+  workflow_call:
+    outputs:
+      artifact:
+        description: "The name of the artifact"
+        value: ${{ jobs.build.outputs.artifact }}
   workflow_dispatch:
   push:
-    branches: [ "master" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main", "master" ]
 
 jobs:
   build:
 
     runs-on: windows-latest
+    outputs:
+      artifact: ${{ steps.write_output.outputs.artifact }}
 
     steps:
     - uses: actions/checkout@v3
@@ -24,12 +34,15 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Publish
-      run: dotnet publish .\SAM\SAM.csproj -c Debug -a x86 -o publish
+      run: dotnet publish .\src\SAM\SAM.csproj -c Debug -a x86 -o publish
     # - name: Test
     #   run: dotnet test --no-build --verbosity normal
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: SAM
+        name: ${{ env.ARTIFACT }}
         path: publish
         if-no-files-found: error
+    - id: write_output
+      name: Write Output
+      run: echo "artifact=${{ env.ARTIFACT }}.zip" >> $GITHUB_OUTPUT
