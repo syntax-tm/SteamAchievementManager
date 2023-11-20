@@ -26,5 +26,5 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: artifacts/*
-        bodyFile: CHANGELOG.md
+        bodyFile: ./CHANGELOG.md
         draft: true
