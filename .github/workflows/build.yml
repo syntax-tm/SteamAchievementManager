@@ -5,7 +5,7 @@ name: Build
 
 env:
   ARTIFACT: SAM
-  PACKAGES: ${{ github.workspace }}/.nuget/packages
+  PACKAGES: ${{ github.workspace }}\.nuget\packages
 
 on:
   workflow_call:
