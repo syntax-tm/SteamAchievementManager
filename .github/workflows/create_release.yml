@@ -20,8 +20,16 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         path: artifacts
+    - name: Create Archive
+      run: |
+        $items = Get-ChildItem artifacts
+        $items | % { Compress-Archive -Path "$($_.FullName)\*" -DestinationPath "$($_.FullName).zip" -Force }
+
+        Get-ChildItem -Path artifacts -Filter *.zip | Format-Table
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: artifacts/*
+        artifacts: artifacts/*.zip
         bodyFile: ./CHANGELOG.md
         draft: true
+        allowUpdates: true
+        artifactErrorsFailBuild: true
