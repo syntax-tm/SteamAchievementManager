@@ -8,21 +8,15 @@ on:
 
 jobs:
 
-  build:
-    uses: ./.github/workflows/build.yml
-  download:
-    runs-on: windows-latest
-    needs: build
-    steps:
-    - uses: actions/download-artifact@v3
-      with:
-        path: artifacts
   create-release:
     runs-on: windows-latest
-    needs: [build, download]
     permissions:
       contents: write
     steps:
+    - uses: ./.github/workflows/build.yml
+    - uses: actions/download-artifact@v3
+      with:
+        path: artifacts
     - uses: ncipollo/release-action@v1
       with:
         artifacts: artifacts/*
