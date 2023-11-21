@@ -19,6 +19,9 @@ on:
   pull_request:
     branches: [ "main", "master" ]
 
+concurrency:
+  group: ${{ github.workflow }}
+
 jobs:
   build:
     runs-on: windows-latest
