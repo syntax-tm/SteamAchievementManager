@@ -16,22 +16,14 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  checkout:
+  build:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
-  setup:
-    runs-on: windows-latest
-    needs: [checkout]
-    steps:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
-  restore:
-    runs-on: windows-latest
-    needs: [setup]
-    steps:
     - id: cache-restore
       uses: actions/cache/restore@v3
       with:
@@ -45,16 +37,8 @@ jobs:
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-  publish:
-    runs-on: windows-latest
-    needs: [restore]
-    steps:
     - name: Publish
       run: dotnet publish .\src\SAM\SAM.csproj -c Debug -a x86 -o publish --no-restore
-  upload:
-    runs-on: windows-latest
-    needs: [publish]
-    steps:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v3.1.2
       with:
