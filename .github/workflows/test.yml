@@ -1,0 +1,13 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: List Files
+      run: ls --group-directories-first -pNFlh
