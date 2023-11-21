@@ -14,7 +14,7 @@ jobs:
       contents: write
     steps:
     - uses: actions/checkout@v3
-    - uses: ./.github/workflows/build.yml
+    - uses: syntax-tm/SteamAchievementManager/.github/workflows/build.yml@main
     - uses: actions/download-artifact@v3
       with:
         path: artifacts
