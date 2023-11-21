@@ -8,13 +8,15 @@ on:
 
 jobs:
 
+  build:
+    uses: syntax-tm/SteamAchievementManager/.github/workflows/build.yml@main
   create-release:
     runs-on: windows-latest
+    needs: [build]
     permissions:
       contents: write
     steps:
     - uses: actions/checkout@v3
-    - uses: syntax-tm/SteamAchievementManager/.github/workflows/build.yml@main
     - uses: actions/download-artifact@v3
       with:
         path: artifacts
