@@ -14,6 +14,7 @@
              DataContext="{dxmvvm:ViewModelSource Type={x:Type vm:MainWindowViewModel}}"
              ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
              WindowStyle="None" WindowBackdropType="None"
+             ShowActivated="True"
              Icon="{svgc:SvgImage Source=/SAMCore;/Styles/Images/square-steam.svg}">
 
     <dxmvvm:Interaction.Behaviors>
@@ -22,7 +23,7 @@
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top" />
+            <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top" FontSize="13" />
             <views:StatusBarView DockPanel.Dock="Bottom" DataContext="{Binding HomeVm}" />
             <views:HomeView DataContext="{Binding HomeVm}" />
         </DockPanel>

@@ -84,7 +84,7 @@
                             </ui:Button.Style>
                         </ui:Button>
                         <ui:Button Command="{Binding ResetCommand}" Icon="ArrowUndo20" Content="Reset"
-                                   IsEnabled="{Binding IsModified}">
+                                   IsEnabled="{Binding IsModified, Mode=OneWay}">
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
                                     <Setter Property="Margin" Value="10,0" />
@@ -98,9 +98,8 @@
                                 </Style>
                             </ui:Button.Style>
                         </ui:Button>
-                        <ui:Button Command="{Binding SaveCommand}"
-                                   IsEnabled="{Binding IsModified, Mode=OneWay}"
-                                   Content="Save" Icon="Save20">
+                        <ui:Button Command="{Binding SaveCommand}" Icon="Save20" Content="Save"
+                                   IsEnabled="{Binding IsModified, Mode=OneWay}">
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
                                     <Setter Property="Margin" Value="10,0" />

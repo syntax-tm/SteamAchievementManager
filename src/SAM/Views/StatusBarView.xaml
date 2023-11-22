@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:fluent="urn:fluent-ribbon"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:sam="urn:sam"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -13,62 +12,80 @@
 
     <UserControl.Resources>
         <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
-        <Style TargetType="{x:Type StatusBarItem}">
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="FontWeight" Value="SemiBold" />
+        <Style x:Key="StatusBarItemStyle" TargetType="{x:Type StatusBarItem}">
+            <Setter Property="FontFamily" Value="{StaticResource FiraCode}" />
+            <Setter Property="FontWeight" Value="ExtraLight" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="Opacity" Value="0.7" />
-            <Setter Property="Margin" Value="10,0" />
+            <Setter Property="Margin" Value="3" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Opacity" Value="1" />
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="{x:Type StatusBarItem}" BasedOn="{StaticResource StatusBarItemStyle}">
+            
+        </Style>
     </UserControl.Resources>
 
     <Grid>
-        <StatusBar Style="{StaticResource StatusBarStyleBase}">
+        <StatusBar Style="{StaticResource StatusBarStyleBase}" Padding="10">
             <StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"
-                                  Visibility="{Binding Library.TotalCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           Visibility="{Binding Library.TotalCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=GamesStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="GamesStatusBarItem" Content="{Binding Library.GamesCount, Mode=OneWay}" ContentStringFormat="{}{0} Games"
-                                  Visibility="{Binding Library.GamesCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           Visibility="{Binding Library.GamesCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=ModsStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="ModsStatusBarItem"
                            Content="{Binding Library.ModCount, Mode=OneWay}"
-                                  ContentStringFormat="{}{0} Mods"
-                                  Visibility="{Binding Library.ModCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           ContentStringFormat="{}{0} Mods"
+                           Visibility="{Binding Library.ModCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=ToolsStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="ToolsStatusBarItem"
                            Content="{Binding Library.ToolCount, Mode=OneWay}"
-                                  ContentStringFormat="{}{0} Tools"
-                                  Visibility="{Binding Library.ToolCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           ContentStringFormat="{}{0} Tools"
+                           Visibility="{Binding Library.ToolCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=DemosStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="DemosStatusBarItem"
                            Content="{Binding Library.DemoCount, Mode=OneWay}"
-                                  ContentStringFormat="{}{0} Demos"
-                                  Visibility="{Binding Library.DemoCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           ContentStringFormat="{}{0} Demos"
+                           Visibility="{Binding Library.DemoCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
-            <Separator Visibility="{Binding Library.JunkCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
-            <StatusBarItem Content="{Binding Library.JunkCount, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
+            <Separator Visibility="{Binding ElementName=JunkStatusBarItem, Path=Visibility}" />
+            <StatusBarItem x:Name="JunkStatusBarItem"
+                           Content="{Binding Library.JunkCount, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
                            Visibility="{Binding Library.JunkCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
-            <StatusBarItem HorizontalAlignment="Right">
+
+            <Separator Visibility="{Binding ElementName=HiddenStatusBarItem, Path=Visibility}" />
+            <StatusBarItem x:Name="HiddenStatusBarItem" Content="{Binding Library.HiddenCount, Mode=OneWay}" ContentStringFormat="{}{0} Hidden">
+                <StatusBarItem.Visibility>
+                    <MultiBinding Converter="{sam:MultiBoolToVisibilityConverter Mode=All}">
+                        <Binding Path="Library.HiddenCount" Converter="{dxmvvm:NumericToBooleanConverter}" />
+                        <Binding Path="ShowHidden" Converter="{dxmvvm:BooleanNegationConverter}" />
+                    </MultiBinding>
+                </StatusBarItem.Visibility>
+            </StatusBarItem>
+
+            <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0">
                 <StackPanel Orientation="Horizontal">
-                    <StatusBarItem>
+                    <StatusBarItem Visibility="Collapsed">
                         <Slider Interval="10" Minimum="80" Maximum="200" Width="250"
                                 Value="{Binding TileWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Value}" />
                     </StatusBarItem>
 
                     <StatusBarItem Content="{Binding Library.PercentComplete, Mode=OneWay, Converter={StaticResource PercentFormatConverter}}"
-                                   ContentStringFormat="{}Loading... {0}" FontFamily="Consolas" FontWeight="Light"
+                                   ContentStringFormat="{}Loading... {0}" 
                                    Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
-                    <StatusBarItem Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}">
-                        <ui:Button Content="Refresh" Icon="ArrowReset20" Appearance="Primary"
+                    <StatusBarItem Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}"
+                                   Margin="0" Padding="0">
+                        <ui:Button Content="Refresh" Icon="ArrowReset24" Appearance="Info"
+                                   CornerRadius="1" Margin="0"
                                    Command="{Binding RefreshCommand}" IsEnabled="False" />
                     </StatusBarItem>
                 </StackPanel>

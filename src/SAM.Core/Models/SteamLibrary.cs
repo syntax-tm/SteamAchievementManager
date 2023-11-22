@@ -8,7 +8,6 @@ using System.Windows.Data;
 using DevExpress.Mvvm;
 using log4net;
 using SAM.API;
-using SAM.Core.Extensions;
 using SAM.Core.Storage;
 
 namespace SAM.Core
@@ -28,12 +27,12 @@ namespace SAM.Core
         private Queue<SupportedApp> _refreshQueue;
         private List<SupportedApp> _addedGames;
 
-        public int QueueCount 
+        public int QueueCount
         {
             get => GetProperty(() => QueueCount);
             set => SetProperty(() => QueueCount, value);
         }
-        public int CompletedCount 
+        public int CompletedCount
         {
             get => GetProperty(() => CompletedCount);
             set => SetProperty(() => CompletedCount, value);
@@ -48,30 +47,35 @@ namespace SAM.Core
             get => GetProperty(() => TotalCount);
             set => SetProperty(() => TotalCount, value);
         }
-        public int GamesCount 
+        public int GamesCount
         {
             get => GetProperty(() => GamesCount);
             set => SetProperty(() => GamesCount, value);
         }
-        public int JunkCount 
+        public int JunkCount
         {
             get => GetProperty(() => JunkCount);
             set => SetProperty(() => JunkCount, value);
         }
-        public int ToolCount 
+        public int ToolCount
         {
             get => GetProperty(() => ToolCount);
             set => SetProperty(() => ToolCount, value);
         }
-        public int ModCount 
+        public int ModCount
         {
             get => GetProperty(() => ModCount);
             set => SetProperty(() => ModCount, value);
         }
-        public int DemoCount 
+        public int DemoCount
         {
             get => GetProperty(() => DemoCount);
             set => SetProperty(() => DemoCount, value);
+        }
+        public int HiddenCount
+        {
+            get => GetProperty(() => HiddenCount);
+            set => SetProperty(() => HiddenCount, value);
         }
         public decimal PercentComplete
         {
@@ -299,6 +303,7 @@ namespace SAM.Core
             ToolCount = Items.Count(g => g.GameInfoType == GameInfoType.Tool);
             JunkCount = Items.Count(g => g.GameInfoType == GameInfoType.Junk);
             DemoCount = Items.Count(g => g.GameInfoType == GameInfoType.Demo);
+            HiddenCount = Items.Count(g => g.IsHidden);
         }
     }
 }

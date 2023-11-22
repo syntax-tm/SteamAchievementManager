@@ -262,4 +262,8 @@ paket-files/
 __pycache__/
 *.pyc
 
+# NuGet package lock
 **/packages.lock.json
+
+# dotnet sdk config
+**/global.json
