@@ -54,6 +54,11 @@
       "commandName": "Project",
       "nativeDebugging": false
     },
+    "Resident Evil 0": {
+      "commandLineArgs": "339340",
+      "commandName": "Project",
+      "nativeDebugging": false
+    },
     "Resident Evil 2": {
       "commandLineArgs": "883710",
       "commandName": "Project",

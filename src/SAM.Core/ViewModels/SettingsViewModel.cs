@@ -1,19 +1,13 @@
-﻿using DevExpress.Mvvm.POCO;
+﻿using DevExpress.Mvvm.CodeGenerators;
 
 namespace SAM.Core.ViewModels
 {
-    public class SettingsViewModel
+    [GenerateViewModel]
+    public partial class SettingsViewModel
     {
-
-        protected SettingsViewModel()
+        public SettingsViewModel()
         {
 
         }
-
-        public static SettingsViewModel Create()
-        {
-            return ViewModelSource.Create(() => new SettingsViewModel());
-        }
-
     }
 }

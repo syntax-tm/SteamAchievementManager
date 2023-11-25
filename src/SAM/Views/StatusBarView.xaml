@@ -65,8 +65,8 @@
             <StatusBarItem x:Name="HiddenStatusBarItem" Content="{Binding Library.HiddenCount, Mode=OneWay}" ContentStringFormat="{}{0} Hidden">
                 <StatusBarItem.Visibility>
                     <MultiBinding Converter="{sam:MultiBoolToVisibilityConverter Mode=All}">
-                        <Binding Path="Library.HiddenCount" Converter="{dxmvvm:NumericToBooleanConverter}" />
-                        <Binding Path="ShowHidden" Converter="{dxmvvm:BooleanNegationConverter}" />
+                        <Binding Path="DataContext.Library.HiddenCount" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Converter="{dxmvvm:NumericToBooleanConverter}" />
+                        <Binding Path="DataContext.ShowHidden" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Converter="{dxmvvm:BooleanNegationConverter}" />
                     </MultiBinding>
                 </StatusBarItem.Visibility>
             </StatusBarItem>
@@ -84,9 +84,12 @@
                                    Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
                     <StatusBarItem Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}"
                                    Margin="0" Padding="0">
-                        <ui:Button Content="Refresh" Icon="ArrowReset24" Appearance="Info"
-                                   CornerRadius="1" Margin="0"
-                                   Command="{Binding RefreshCommand}" IsEnabled="False" />
+                        <ui:Button Content="Refresh" Icon="ArrowSync20"
+                                   CornerRadius="1" Margin="2"
+                                   Style="{StaticResource DefaultUiButtonStyle}"
+                                   Appearance="Transparent"
+                                   Command="{Binding RefreshCommand}"
+                                   CommandParameter="True"/>
                     </StatusBarItem>
                 </StackPanel>
             </StatusBarItem>

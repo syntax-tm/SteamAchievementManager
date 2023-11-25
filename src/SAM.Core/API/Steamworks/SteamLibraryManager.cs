@@ -5,7 +5,6 @@ namespace SAM.Core
 {
     public class SteamLibraryManager
     {
-
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamLibraryManager));
 
         private static readonly object syncLock = new ();
@@ -54,6 +53,5 @@ namespace SAM.Core
                 throw new SAMInitializationException(message, e);
             }
         }
-
     }
 }

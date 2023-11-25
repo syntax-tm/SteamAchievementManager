@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 
 namespace SAM.Core
 {
+    // ReSharper disable InconsistentNaming
     public class ObservableHandler<T> : IWeakEventListener
         where T : class, INotifyPropertyChanged
     {
@@ -23,7 +24,7 @@ namespace SAM.Core
 
             _source = new (source);
         }
-        
+
         [NotNull]
         public ObservableHandler<T> Add([NotNull] Expression<Func<T, object>> expression, [NotNull] Action handler)
         {
@@ -32,11 +33,7 @@ namespace SAM.Core
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            var source = GetSource();
-            if (source == null)
-            {
-                throw new InvalidOperationException("Source has been garbage collected.");
-            }
+            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
@@ -54,11 +51,7 @@ namespace SAM.Core
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            var source = GetSource();
-            if (source == null)
-            {
-                throw new InvalidOperationException("Source has been garbage collected.");
-            }
+            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
@@ -67,7 +60,7 @@ namespace SAM.Core
 
             return this;
         }
-        
+
         [NotNull]
         public ObservableHandler<T> AddAndInvoke([NotNull] Expression<Func<T, object>> expression, [NotNull] Action handler)
         {
@@ -83,7 +76,7 @@ namespace SAM.Core
             handler(GetSource());
             return this;
         }
-        
+
         private T GetSource()
         {
             if (_source.TryGetTarget(out var source)) return source;
@@ -103,7 +96,7 @@ namespace SAM.Core
                 return false;
             }
 
-            var propertyName = ((PropertyChangedEventArgs)e).PropertyName;
+            var propertyName = ((PropertyChangedEventArgs) e).PropertyName;
             Notify(propertyName);
 
             return true;
@@ -111,11 +104,7 @@ namespace SAM.Core
 
         protected void Notify(string propertyName)
         {
-            var source = GetSource();
-            if (source == null)
-            {
-                throw new InvalidOperationException("Confused, received a PropertyChanged event from a source that has been garbage collected.");
-            }
+            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
             if (string.IsNullOrEmpty(propertyName))
             {
@@ -123,6 +112,7 @@ namespace SAM.Core
                 {
                     handler();
                 }
+
                 foreach (var handler in _handlersT.Values)
                 {
                     handler(source);
@@ -137,5 +127,6 @@ namespace SAM.Core
                     handlerT(source);
             }
         }
+
     }
 }

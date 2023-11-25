@@ -1,10 +1,9 @@
-﻿namespace SAM.Views
+﻿namespace SAM.Views;
+
+public partial class UserProfileView
 {
-    public partial class UserProfileView
+    public UserProfileView()
     {
-        public UserProfileView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -24,14 +24,14 @@ namespace SAM.Core.Converters
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var boolValues = values.Cast<bool>();
+            var boolValues = values.Where(v => v is bool).Cast<bool>();
 
             var result = Mode switch
             {
                 MultiBoolEvaluationMode.All  => boolValues.All(b => b),
                 MultiBoolEvaluationMode.Any  => boolValues.Any(b => b),
                 MultiBoolEvaluationMode.None => !boolValues.All(b => b),
-                _                            => throw new ArgumentOutOfRangeException()
+                _                            => throw new ArgumentOutOfRangeException(nameof(Mode))
             };
 
             if (Inverse)

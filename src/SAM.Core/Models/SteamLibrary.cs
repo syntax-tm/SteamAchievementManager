@@ -123,7 +123,10 @@ namespace SAM.Core
 
             CancelRefresh();
 
-            _libraryWorker.RunWorkerAsync();
+            if (!_libraryWorker.IsBusy)
+            {
+                _libraryWorker.RunWorkerAsync();
+            }
         }
         
         public void CancelRefresh()

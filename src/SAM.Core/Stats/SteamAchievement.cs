@@ -16,7 +16,11 @@ namespace SAM.Core.Stats
         public string IconLockedName => AchievementDefinition.IconLocked;
         public string IconNormalName => AchievementDefinition.IconNormal;
         public string Name => AchievementDefinition.Name;
-        public string Description => AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : AchievementDefinition.Description;
+        public string Description
+        {
+            get => GetProperty(() => Description);
+            set => SetProperty(() => Description, value);
+        }
         public string FullDescription => AchievementDefinition.Description;
         public int Permission => AchievementDefinition.Permission;
         public bool OriginalLockState
@@ -77,7 +81,20 @@ namespace SAM.Core.Stats
 
             DownloadIcons();
 
+            RefreshDescription();
+
             _isLoading = false;
+        }
+
+        public void RefreshDescription(bool forceShow = false)
+        {
+            if (forceShow)
+            {
+                Description = AchievementDefinition.Description;
+                return;
+            }
+
+            Description = AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : AchievementDefinition.Description;
         }
 
         public void Unlock()

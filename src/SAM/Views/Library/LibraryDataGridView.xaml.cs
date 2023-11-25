@@ -1,10 +1,9 @@
-﻿namespace SAM.Views
+﻿namespace SAM.Views;
+
+public partial class LibraryDataGridView
 {
-    public partial class LibraryDataGridView
+    public LibraryDataGridView()
     {
-        public LibraryDataGridView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

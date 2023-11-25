@@ -11,11 +11,14 @@
              xmlns:vm="clr-namespace:SAM.ViewModels"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
-             DataContext="{dxmvvm:ViewModelSource Type={x:Type vm:MainWindowViewModel}}"
              ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
              WindowStyle="None" WindowBackdropType="None"
              ShowActivated="True"
              Icon="{svgc:SvgImage Source=/SAMCore;/Styles/Images/square-steam.svg}">
+
+    <ui:UiWindow.DataContext>
+        <vm:MainWindowViewModel />
+    </ui:UiWindow.DataContext>
 
     <dxmvvm:Interaction.Behaviors>
         <sam:WindowAutoSaveBehavior />

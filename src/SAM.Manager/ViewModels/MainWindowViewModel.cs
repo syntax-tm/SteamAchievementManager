@@ -1,20 +1,15 @@
-﻿using DevExpress.Mvvm.POCO;
+﻿using DevExpress.Mvvm.CodeGenerators;
 using SAM.Core.ViewModels;
 
-namespace SAM.Manager.ViewModels
+namespace SAM.Manager.ViewModels;
+
+[GenerateViewModel]
+public partial class MainWindowViewModel : MainWindowViewModelBase
 {
-    public class MainWindowViewModel : MainWindowViewModelBase
+    [GenerateProperty] private SteamGameViewModel gameVm;
+
+    public MainWindowViewModel(SteamGameViewModel gameVm)
     {
-        public virtual SteamGameViewModel GameVm { get; set; }
-
-        protected MainWindowViewModel(SteamGameViewModel gameVm)
-        {
-            GameVm = gameVm;
-        }
-
-        public static MainWindowViewModel Create(SteamGameViewModel gameVm)
-        {
-            return ViewModelSource.Create(() => new MainWindowViewModel(gameVm));
-        }
+        GameVm = gameVm;
     }
 }

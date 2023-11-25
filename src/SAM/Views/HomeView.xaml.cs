@@ -1,10 +1,9 @@
-﻿namespace SAM.Views
+﻿namespace SAM.Views;
+
+public partial class HomeView
 {
-    public partial class HomeView
+    public HomeView()
     {
-        public HomeView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

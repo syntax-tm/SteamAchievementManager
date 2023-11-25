@@ -88,7 +88,8 @@
                                             <Style TargetType="{x:Type TextBlock}">
                                                 <Setter Property="Text" Value="{Binding Description}" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:AchievementsView}}, Path=DataContext.ShowHidden}"
+                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:AchievementsView}}, Path=DataContext.
+                                                        }"
                                                                  Value="True">
                                                         <Setter Property="Text" Value="{Binding FullDescription}" />
                                                     </DataTrigger>

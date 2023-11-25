@@ -1,46 +1,42 @@
 ﻿using System.Windows.Media;
 using System.Xml;
-using DevExpress.Mvvm.POCO;
+using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.Core.Extensions;
 
 namespace SAM.Core
 {
     // TODO: add support for any steam user (currently only supports the current steam user)
-    public class SteamUser
+    [GenerateViewModel]
+    public partial class SteamUser
     {
         private const string PROFILE_URL_FORMAT = @"https://steamcommunity.com/profiles/{0}";
         private const string PROFILE_XML_URL_FORMAT = @"https://steamcommunity.com/profiles/{0}?xml=1";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamUser));
 
-        public virtual ulong SteamId64 { get; set; }
-        public virtual string SteamId { get; set; }
-        public virtual int PlayerLevel { get; set; }
-        public virtual string CustomUrl { get; set; }
-        public virtual decimal RecentHoursPlayed { get; set; }
-        public virtual string Headline { get; set; }
-        public virtual string Location { get; set; }
-        public virtual string DisplayLocation { get; set; }
-        public virtual string MemberSince { get; set; }
-        public virtual string RealName { get; set; }
-        public virtual string ProfileUrl { get; set; }
-        public virtual string AvatarIcon { get; set; }
-        public virtual string AvatarMedium { get; set; }
-        public virtual string AvatarFull { get; set; }
-        public virtual bool VACBanned { get; set; }
-        public virtual bool IsLimitedAccount { get; set; }
+        [GenerateProperty] private ulong steamId64;
+        [GenerateProperty] private string steamId;
+        [GenerateProperty] private int playerLevel;
+        [GenerateProperty] private string customUrl;
+        [GenerateProperty] private decimal recentHoursPlayed;
+        [GenerateProperty] private string headline;
+        [GenerateProperty] private string location;
+        [GenerateProperty] private string displayLocation;
+        [GenerateProperty] private string memberSince;
+        [GenerateProperty] private string realName;
+        [GenerateProperty] private string profileUrl;
+        [GenerateProperty] private string avatarIcon;
+        [GenerateProperty] private string avatarMedium;
+        [GenerateProperty] private string avatarFull;
+        [GenerateProperty] private bool vacBanned;
+        [GenerateProperty] private bool isLimitedAccount;
 
-        public virtual ImageSource Avatar { get; set; }
+        [GenerateProperty] private ImageSource avatar;
 
-        protected SteamUser()
+        public SteamUser()
         {
             RefreshProfile();
-        }
-
-        public static SteamUser Create()
-        {
-            return ViewModelSource.Create(() => new SteamUser());
         }
 
         private void RefreshProfile()
@@ -80,7 +76,7 @@ namespace SAM.Core
             // TODO: no idea what this is for since mine and everyone i checked was empty
             //var steamRating = GetValue(doc, @"//steamRating");
             
-            VACBanned = doc.GetValueAsBool(@"//vacBanned");
+            VacBanned = doc.GetValueAsBool(@"//vacBanned");
             IsLimitedAccount = doc.GetValueAsBool(@"//isLimitedAccount");
             RecentHoursPlayed = doc.GetValueAsDecimal(@"//hoursPlayed2Wk");
 

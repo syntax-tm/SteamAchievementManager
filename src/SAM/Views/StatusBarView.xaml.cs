@@ -1,10 +1,9 @@
-﻿namespace SAM.Views
+﻿namespace SAM.Views;
+
+public partial class StatusBarView
 {
-    public partial class StatusBarView
+    public StatusBarView()
     {
-        public StatusBarView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

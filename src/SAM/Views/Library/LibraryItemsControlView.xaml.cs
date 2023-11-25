@@ -1,10 +1,9 @@
-﻿namespace SAM.Views
+﻿namespace SAM.Views;
+
+public partial class LibraryItemsControlView
 {
-    public partial class LibraryItemsControlView
+    public LibraryItemsControlView()
     {
-        public LibraryItemsControlView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

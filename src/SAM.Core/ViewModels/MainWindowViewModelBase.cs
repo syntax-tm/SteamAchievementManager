@@ -1,22 +1,23 @@
-﻿using System.Reflection;
+﻿using DevExpress.Mvvm.CodeGenerators;
 using SAM.Core.Behaviors;
 
 namespace SAM.Core.ViewModels
 {
-    public class MainWindowViewModelBase
+    [GenerateViewModel]
+    public partial class MainWindowViewModelBase
     {
         private const string TITLE_BASE = "Steam Achievement Manager";
 
-        public virtual string Title { get; protected set; } = TITLE_BASE;
-        public virtual string SubTitle { get; set; }
-        public virtual WindowSettings Config { get; set; }
+        [GenerateProperty] private string title = TITLE_BASE;
+        [GenerateProperty] private string subTitle;
+        [GenerateProperty] private WindowSettings config;
 
-        protected MainWindowViewModelBase()
+        public MainWindowViewModelBase()
         {
 
         }
         
-        protected void OnSubTitleChanged()
+        private void OnSubTitleChanged()
         {
             if (string.IsNullOrWhiteSpace(SubTitle))
             {

@@ -6,7 +6,6 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:sam="urn:sam"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:views="clr-namespace:SAM.Views"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -16,43 +15,18 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Assets/StaticColors.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <!--<sam:GroupStyleSelector x:Key="CustomGroupStyleSelector" 
-                                    NoGroupHeaderStyle="{StaticResource NoGroupHeaderStyle}" 
-                                    DefaultGroupStyle="{StaticResource DefaultGroupHeaderStyle}" />-->
-            <!--<Style TargetType="{x:Type Separator}">
-                <Setter Property="Opacity" Value="0.4" />
-                <Setter Property="Margin" Value="0,-2,0,-2" />
-            </Style>-->
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <ui:VirtualizingItemsControl x:Name="libraryItemsView" ItemsSource="{Binding ItemsView}"
-                                      HorizontalContentAlignment="Center">
+        <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView}" HorizontalContentAlignment="Center">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True" />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
-            <!--<ui:VirtualizingItemsControl.ItemContainerStyle>
-                <Style>
-                    <Setter Property="Control.Width" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:LibraryItemsControlView}}, Path=DataContext.TileWidth}" />
-                </Style>
-            </ui:VirtualizingItemsControl.ItemContainerStyle>-->
             <ui:VirtualizingItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type sam:SteamApp}">
-                    <DataTemplate.Resources>
-                        <!-- for the icon on borders -->
-                        <!--<Style TargetType="{x:Type ui:SymbolIcon}">
-                            <Setter Property="Foreground" Value="Black" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}, Path=IsMouseOver}"
-                                             Value="True">
-                                    <Setter Property="Filled" Value="True" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>-->
-                    </DataTemplate.Resources>
                     <Grid Margin="5" Width="300">
                         <ui:Button Padding="0">
                             <ui:Button.Resources>
@@ -180,44 +154,6 @@
                                 </TextBlock>
                             </Grid>
                         </ui:Button>
-                        <!--<Border BorderThickness="4" Margin="2">
-                            <Grid>
-                                <ui:Button HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                           Width="30" Height="30" Margin="0" Padding="0"
-                                           BorderThickness="0" CornerRadius="0"
-                                           Foreground="White" Icon="Heart24"
-                                           BorderBrush="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=BorderBrush}"
-                                           Background="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}, Path=BorderBrush}">
-                                    <ui:SymbolIcon Symbol="Toolbox24" Foreground="Black" Filled="True" Width="20" Height="20" />
-                                </ui:Button>
-                            </Grid>
-                            <Border.Style>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding IsFavorite}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource YellowBrush}" />
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsMod}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource PalettePurpleBrush}" />
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource ControlBackgroundDisabledBrush}" />
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}, TargetNullValue=False, FallbackValue=False}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource YellowBrush}" />
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                        </Border>-->
                     </Grid>
                 </DataTemplate>
             </ui:VirtualizingItemsControl.ItemTemplate>

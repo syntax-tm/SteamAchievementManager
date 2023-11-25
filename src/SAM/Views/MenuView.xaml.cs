@@ -1,10 +1,9 @@
-﻿namespace SAM.Views
+﻿namespace SAM.Views;
+
+public partial class MenuView
 {
-    public partial class MenuView
+    public MenuView()
     {
-        public MenuView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -1,49 +1,46 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Data;
-using DevExpress.Mvvm.POCO;
+using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.Core.Converters;
 using SAM.Core.Extensions;
 
 namespace SAM.Core.ViewModels
 {
-    public class HomeViewModel
+    [GenerateViewModel]
+    public partial class HomeViewModel
     {
+        // ReSharper disable once InconsistentNaming
         protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
         
         private CollectionViewSource _itemsViewSource;
         private bool _loading = true;
 
-        public virtual bool EnableGrouping { get; set; }
-        public virtual string FilterText { get; set; }
-        public virtual string FilterNormal { get; set; }
-        public virtual string FilterDemos { get; set; }
-        public virtual string FilterMods { get; set; }
-        public virtual bool FilterJunk { get; set; }
-        public virtual bool ShowHidden { get; set; }
-        public virtual bool FilterFavorites { get; set; }
-        public virtual string FilterTool { get; set; }
-        public virtual int TileWidth { get; set; } = 100;
-        public virtual ICollectionView ItemsView { get; set; }
+        [GenerateProperty] private bool enableGrouping;
+        [GenerateProperty] private string filterText;
+        [GenerateProperty] private string filterNormal;
+        [GenerateProperty] private string filterDemos;
+        [GenerateProperty] private string filterMods;
+        [GenerateProperty] private bool filterJunk;
+        [GenerateProperty] private bool showHidden;
+        [GenerateProperty] private bool filterFavorites;
+        [GenerateProperty] private string filterTool;
+        [GenerateProperty] private int tileWidth = 100;
+        [GenerateProperty] private ICollectionView itemsView;
 
         public SteamApp SelectedItem
         {
-            get => (SteamApp) ItemsView.CurrentItem;
-            set => ItemsView.MoveCurrentTo(value);
+            get => (SteamApp) ItemsView!.CurrentItem;
+            set => ItemsView!.MoveCurrentTo(value);
         }
-        public virtual SteamLibrary Library { get; set; }
+        [GenerateProperty] private SteamLibrary library;
 
-        protected HomeViewModel()
+        public HomeViewModel()
         {
             Refresh();
         }
         
-        public static HomeViewModel Create()
-        {
-            return ViewModelSource.Create(() => new HomeViewModel());
-        }
-
         private void ItemsViewSourceOnFilter(object sender, FilterEventArgs e)
         {
             if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
@@ -56,18 +53,20 @@ namespace SAM.Core.ViewModels
             
             e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
         }
-
+        
+        [GenerateCommand]
         public void Loaded()
         {
         }
 
-        public void Refresh(bool force = true)
+        [GenerateCommand]
+        public void Refresh(bool force = false)
         {
             _loading = true;
 
             if (force)
             {
-                //SteamLibraryManager.Refresh();
+                SteamLibraryManager.DefaultLibrary.Refresh();
             }
 
             Library = SteamLibraryManager.DefaultLibrary;
@@ -87,8 +86,6 @@ namespace SAM.Core.ViewModels
 
                 _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsHidden));
                 _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsFavorite));
-
-                //_itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
 
                 _itemsViewSource.IsLiveFilteringRequested = true;
                 _itemsViewSource.IsLiveSortingRequested = true;
@@ -119,7 +116,7 @@ namespace SAM.Core.ViewModels
 
                 if (EnableGrouping)
                 {
-                    ItemsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
+                    ItemsView!.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
                 }
             }
         }

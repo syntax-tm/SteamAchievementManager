@@ -6,8 +6,8 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 using DevExpress.Mvvm;
+using DevExpress.Mvvm.CodeGenerators;
 using DevExpress.Mvvm.Native;
-using DevExpress.Mvvm.POCO;
 using JetBrains.Annotations;
 using log4net;
 using SAM.Core.Extensions;
@@ -15,61 +15,54 @@ using SAM.Core.Stats;
 
 namespace SAM.Core.ViewModels
 {
-    public class SteamGameViewModel
+    [GenerateViewModel(ImplementISupportServices = true)]
+    public partial class SteamGameViewModel
     {
         protected readonly ILog log = LogManager.GetLogger(nameof(SteamGameViewModel));
 
-        public virtual ICurrentWindowService CurrentWindow { get { return null; } }
+        public virtual ICurrentWindowService CurrentWindow => GetService<ICurrentWindowService>();
 
         [UsedImplicitly]
-        private ObservableHandler<SteamStatsManager> _statsHandler;
+        private readonly ObservableHandler<SteamStatsManager> statsHandler;
         
         [UsedImplicitly]
         private ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement> _achievementsPropertyHandler;
         
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+        // ReSharper disable once InconsistentNaming
         private readonly SteamStatsManager _statsManager;
 
-        public virtual string SearchText { get; set; }
-        public virtual bool AllowUnlockAll { get; set; } = true;
-        public virtual bool AllowEdit { get; set; }
-        public virtual bool IsModified { get; set; }
-        public virtual bool ShowHidden { get; set; }
-        public virtual AchievementFilter SelectedAchievementFilter { get; set; }
+        [GenerateProperty] private string searchText;
+        [GenerateProperty] private bool allowUnlockAll;
+        [GenerateProperty] private bool allowEdit;
+        [GenerateProperty] private bool isModified;
+        [GenerateProperty] private bool showHidden;
+        [GenerateProperty] private AchievementFilter selectedAchievementFilter;
 
-        public virtual SteamApp SteamApp { get; set; }
+        [GenerateProperty] private SteamApp steamApp;
 
-        public virtual SteamAchievement SelectedAchievement { get; set; }
+        [GenerateProperty] private SteamAchievement selectedAchievement;
 
-        public virtual ObservableCollection<SteamStatisticBase> Statistics { get; set; }
-        public virtual ObservableCollection<SteamAchievement> Achievements { get; set; }
+        [GenerateProperty] private ObservableCollection<SteamStatisticBase> statistics;
+        [GenerateProperty] private ObservableCollection<SteamAchievement> achievements;
 
-        public virtual ICollectionView AchievementsView { get; set; }
+        [GenerateProperty] private ICollectionView achievementsView;
 
-        protected SteamGameViewModel()
+        public SteamGameViewModel()
         {
 
         }
 
-        protected SteamGameViewModel(SteamApp steamApp)
+        public SteamGameViewModel(SteamApp steamApp)
         {
             SteamApp = steamApp;
 
             _statsManager = new ();
 
-            _statsHandler = new ObservableHandler<SteamStatsManager>(_statsManager)
+            statsHandler = new ObservableHandler<SteamStatsManager>(_statsManager)
                 .AddAndInvoke(m => m.Achievements, ManagerAchievementsChanged)
                 .AddAndInvoke(m => m.Statistics, ManagerStatisticsChanged)
                 .AddAndInvoke(m => m.IsModified, OnManagerIsModifiedChanged);
-        }
-
-        public static SteamGameViewModel Create()
-        {
-            return ViewModelSource.Create(() => new SteamGameViewModel());
-        }
-
-        public static SteamGameViewModel Create(SteamApp steamApp)
-        {
-            return ViewModelSource.Create(() => new SteamGameViewModel(steamApp));
         }
 
         public int SaveAchievements()
@@ -77,7 +70,7 @@ namespace SAM.Core.ViewModels
             var saved = 0;
             try
             {
-                var modified = Achievements.Where(a => a.IsModified).ToList();
+                var modified = Achievements!.Where(a => a.IsModified).ToList();
                 if (!modified.Any())
                 {
                     log.Info("User achievements have not been modified. Skipping save.");
@@ -124,7 +117,7 @@ namespace SAM.Core.ViewModels
             var saved = 0;
             try
             {
-                var modified = Statistics.Where(a => a.IsModified).ToList();
+                var modified = Statistics!.Where(a => a.IsModified).ToList();
                 if (!modified.Any())
                 {
                     log.Info("User stats have not been modified. Skipping save...");
@@ -183,6 +176,7 @@ namespace SAM.Core.ViewModels
             }
         }
 
+        [GenerateCommand]
         public void Save()
         {
             var achievementsSaved = SaveAchievements();
@@ -238,18 +232,21 @@ namespace SAM.Core.ViewModels
         {
             Statistics.ForEach(s => s.Reset());
         }
-
+        
+        [GenerateCommand]
         public void Reset()
         {
             ResetAchievements();
             ResetStats();
         }
-
+        
+        [GenerateCommand]
         public void LockAllAchievements()
         {
             Achievements.ForEach(a => a.Lock());
         }
-
+        
+        [GenerateCommand]
         public void UnlockAllAchievements()
         {
             Achievements.ForEach(a => a.Unlock());
@@ -257,7 +254,7 @@ namespace SAM.Core.ViewModels
 
         protected void Refresh()
         {
-            if (!Achievements.Any()) return;
+            if (!Achievements!.Any()) return;
 
             AllowUnlockAll = Achievements.Any(a => !a.IsAchieved);
         }
@@ -274,7 +271,7 @@ namespace SAM.Core.ViewModels
             Achievements = new (obj.Achievements);
 
             AchievementsView = (CollectionView) CollectionViewSource.GetDefaultView(Achievements);
-            AchievementsView.Filter = AchievementFilter;
+            AchievementsView!.Filter = AchievementFilter;
             AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.IsModified), ListSortDirection.Descending));
             AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.IsAchieved), ListSortDirection.Ascending));
             AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.Name), ListSortDirection.Ascending));
@@ -290,7 +287,7 @@ namespace SAM.Core.ViewModels
 
         protected void OnSearchTextChanged()
         {
-            AchievementsView.Refresh();
+            AchievementsView!.Refresh();
         }
 
         private bool AchievementFilter(object obj)
@@ -312,6 +309,16 @@ namespace SAM.Core.ViewModels
             }
 
             return false;
+        }
+
+        private void OnShowHiddenChanged()
+        {
+            Achievements.ForEach(a => a.RefreshDescription(ShowHidden));
+        }
+
+        private void OnAchievementsChanged()
+        {
+            Refresh();
         }
 
         private void ManagerStatisticsChanged(SteamStatsManager obj)
