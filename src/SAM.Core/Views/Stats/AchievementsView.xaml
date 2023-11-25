@@ -3,24 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:SAM.Core.ViewModels"
              xmlns:stats="clr-namespace:SAM.Core.Stats"
              xmlns:converters="clr-namespace:SAM.Core.Converters"
-             xmlns:views="clr-namespace:SAM.Core.Views"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}, IsDesignTimeCreatable=False}">
+             d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}}">
 
     <UserControl.Resources>
-
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-
     </UserControl.Resources>
 
     <Grid>
@@ -83,20 +79,8 @@
                                 <Grid Grid.Row="1">
                                     <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
                                                TextWrapping="Wrap" FontSize="{StaticResource SmallFontSize}"
-                                               Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Setter Property="Text" Value="{Binding Description}" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:AchievementsView}}, Path=DataContext.
-                                                        }"
-                                                                 Value="True">
-                                                        <Setter Property="Text" Value="{Binding FullDescription}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                               Text="{Binding Description}"
+                                               Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
                                 </Grid>
                             </Grid>
                         </DataTemplate>

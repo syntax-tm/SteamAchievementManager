@@ -90,11 +90,11 @@ namespace SAM.Core.Stats
         {
             if (forceShow)
             {
-                Description = AchievementDefinition.Description;
+                Description = FullDescription;
                 return;
             }
 
-            Description = AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : AchievementDefinition.Description;
+            Description = AchievementDefinition.IsHidden && !IsAchieved ? @"Hidden" : FullDescription;
         }
 
         public void Unlock()
