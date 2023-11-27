@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Draft
+
 ## 0.2.0
 
 - Added new release workflow

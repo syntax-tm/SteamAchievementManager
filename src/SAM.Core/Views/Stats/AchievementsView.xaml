@@ -86,19 +86,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <!--<DataGridTemplateColumn Width="50">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type stats:SteamAchievement}">
-                            <Grid>
-                                <Viewbox Margin="15">
-                                    <ui:FontIcon Glyph="&#xE7BA;"
-                                                 Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}"
-                                                 Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}"/>
-                                </Viewbox>
-                            </Grid>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>-->
             </ui:DataGrid.Columns>
         </ui:DataGrid>
     </Grid>

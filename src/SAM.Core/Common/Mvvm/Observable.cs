@@ -18,8 +18,7 @@ namespace SAM.Core
 
             field = value;
 
-            var handler = PropertyChanged;
-            handler?.Invoke(this, new (propertyName));
+            RaisePropertyChanged(propertyName);
 
             return true;
         }
