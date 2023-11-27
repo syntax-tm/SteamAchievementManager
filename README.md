@@ -1,8 +1,8 @@
 <div align="center">
   <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/syntax-tm/SteamAchievementManager">
-  <a href="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/build.yml">
-    <img src="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/build.yml/badge.svg">
-  </a>
+  <img src="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/build.yml/badge.svg">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues/syntax-tm/SteamAchievementManager">
+  <img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/syntax-tm/SteamAchievementManager">
 </div>
 
 <p align="center">
