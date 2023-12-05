@@ -70,9 +70,7 @@ public partial class App
             var supportedApp = SAMLibraryHelper.GetApp(appId);
 
             var appInfo = SteamApp.Create(supportedApp);
-                
-            appInfo.LoadClientInfo();
-
+            
             SplashScreenHelper.SetStatus(appInfo.Name);
 
             var gameVm = new SteamGameViewModel(appInfo);

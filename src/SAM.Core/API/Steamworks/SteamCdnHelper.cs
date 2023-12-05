@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using log4net;
 using SAM.Core.Storage;
 
@@ -42,9 +43,9 @@ namespace SAM.Core
                 var fileName = Path.GetFileName(url);
                 var cacheKey = CacheKeys.CreateAppImageCacheKey(id, fileName);
                 
-                var img = WebManager.DownloadImage(url, cacheKey);
+                var img = Task.Run(() => WebManager.DownloadImageAsync(url, cacheKey));
                 
-                return img;
+                return img.Result;
             }
             catch (Exception e)
             {

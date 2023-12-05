@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -129,6 +130,78 @@ namespace SAM.Core
                 
                 // cache the app list
                 CacheManager.CacheObject(cacheKey, storeApp);
+
+                return storeApp;
+            }
+            catch (HttpRequestException) { throw; }
+            catch (Exception e)
+            {
+                var message = $"Failed to get app info for app id '{id}'. {e.Message}";
+
+                log.Error(message, e);
+
+                throw;
+            }
+        }
+
+        public static async Task<SteamStoreApp> GetAppInfoAsync(uint id, bool loadDlc = false)
+        {
+
+            try
+            {
+                if (ShouldSkip(id))
+                {
+                    log.Debug($"Skipping {nameof(GetAppInfo)} for app id '{id}'.");
+                    return null;
+                }
+
+                var cacheKey = CacheKeys.CreateAppCacheKey(id);
+
+                // if we have the file in the cache, then deserialize the cached json and
+                // return that
+                if (CacheManager.TryGetObject<SteamStoreApp>(cacheKey, out var cachedApp))
+                {
+                    return cachedApp;
+                }
+
+                var storeUrl = string.Format(APPDETAILS_URL, id);
+                
+                var appInfoText = await _client.GetStringAsync(storeUrl);
+                var jo = JObject.Parse(appInfoText);
+
+                var successElement = jo.SelectToken($"{id}.success");
+                var success = successElement != null && successElement.Value<bool>();
+                
+                if (!success)
+                {
+                    log.Warn($@"Steam Web API appdetails for app id '{id}' failed.");
+
+                    return null;
+                }
+                
+                var appData = jo.SelectToken($"{id}.data")?.ToString();
+
+                if (string.IsNullOrWhiteSpace(appData))
+                {
+                    log.Warn($@"Steam Web API appdetails for app id '{id}' returned no data.");
+
+                    return null;
+                }
+
+                var storeApp = JsonConvert.DeserializeObject<SteamStoreApp>(appData);
+
+                // TODO: Add caching for DLC items
+                //if (loadDlc && storeApp.Dlc.Any())
+                //{
+                //    foreach (var dlc in storeApp.Dlc)
+                //    {
+                //        var dlcApp = GetAppInfo(dlc);
+                //        storeApp.DlcInfo.Add(dlcApp);
+                //    }
+                //}
+                
+                // cache the app list
+                await CacheManager.CacheObjectAsync(cacheKey, storeApp);
 
                 return storeApp;
             }

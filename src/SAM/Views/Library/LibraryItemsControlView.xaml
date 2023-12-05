@@ -27,7 +27,7 @@
             </ui:VirtualizingItemsControl.ItemsPanel>
             <ui:VirtualizingItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type sam:SteamApp}">
-                    <Grid Margin="5" Width="300">
+                    <Grid Margin="5" Width="300" Height="143">
                         <ui:Button Padding="0">
                             <ui:Button.Resources>
                                 <sam:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
@@ -139,19 +139,23 @@
                                         </Style>
                                     </Image.Style>
                                 </Image>
-                                <TextBlock Text="{Binding Name}" 
-                                           FontSize="30" TextAlignment="Center" Margin="10" TextWrapping="Wrap">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+                                    <TextBlock Text="{Binding Name}" 
+                                               FontSize="30" TextAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               Margin="5" TextWrapping="Wrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Viewbox>
                             </Grid>
                         </ui:Button>
                     </Grid>

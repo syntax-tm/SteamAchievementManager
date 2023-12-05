@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using DevExpress.Mvvm;
+using DevExpress.Mvvm.Native;
 using log4net;
 using SAM.API;
 using SAM.Core.Storage;
@@ -118,7 +120,7 @@ namespace SAM.Core
             if (loadCache)
             {
                 LoadLibrary();
-                LoadRefreshProgress();
+                //LoadRefreshProgress();
             }
 
             CancelRefresh();
@@ -138,7 +140,7 @@ namespace SAM.Core
             _resetEvent?.WaitOne();
         }
         
-        private void LibraryWorkerOnDoWork(object sender, DoWorkEventArgs args)
+        private async void LibraryWorkerOnDoWork(object sender, DoWorkEventArgs args)
         {
             try
             {
@@ -155,11 +157,12 @@ namespace SAM.Core
                     
                     var added = AddGame(game);
                     
-                    var isCacheInterval = checkedCount % CACHE_INTERVAL == 0;
-                    if (added || isCacheInterval)
-                    {
-                        CacheRefreshProgress();
-                    }
+                    // TODO: remove after testing more since caching is likely not needed.
+                    //var isCacheInterval = checkedCount % CACHE_INTERVAL == 0;
+                    //if (added || isCacheInterval)
+                    //{
+                    //    // CacheRefreshProgress();
+                    //}
 
                     var isRefreshCountInterval = checkedCount % PROGRESS_INTERVAL == 0;
                     if (added || isRefreshCountInterval)
@@ -169,6 +172,13 @@ namespace SAM.Core
                     
                     checkedCount++;
                 }
+
+                var refreshTasks = Items.Select(async i =>
+                {
+                    await i.Load();
+                });
+
+                await Task.WhenAll(refreshTasks);
             }
             catch (Exception e)
             {
@@ -178,7 +188,7 @@ namespace SAM.Core
             finally
             {
                 CacheLibrary();
-                CacheRefreshProgress();
+                //CacheRefreshProgress();
                 RefreshCounts();
 
                 _resetEvent.Set();

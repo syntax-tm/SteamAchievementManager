@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace SAM.Core.Storage
@@ -30,6 +31,17 @@ namespace SAM.Core.Storage
             StorageManager.SaveText(filePath, targetObjectJson, overwrite);
         }
 
+        public static Task CacheObjectAsync(ICacheKey key, object target, bool overwrite = true)
+        {
+            var filePath = key?.GetFullPath();
+            
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+            var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
+
+            return StorageManager.SaveTextAsync(filePath, targetObjectJson, overwrite);
+        }
+
         public static void CacheText(ICacheKey key, string text, bool overwrite = true)
         {
             var filePath = key?.GetFullPath();
@@ -39,6 +51,15 @@ namespace SAM.Core.Storage
             StorageManager.SaveText(filePath, text, overwrite);
         }
 
+        public static Task CacheTextAsync(ICacheKey key, string text, bool overwrite = true)
+        {
+            var filePath = key?.GetFullPath();
+            
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            
+            return StorageManager.SaveTextAsync(filePath, text, overwrite);
+        }
+
         public static void CacheImage(ICacheKey key, Image img, bool overwrite = true)
         {
             var filePath = key?.GetFullPath();
@@ -46,6 +67,15 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
             StorageManager.SaveImage(filePath, img, overwrite);
+        }
+
+        public static Task CacheImageAsync(ICacheKey key, Image img, bool overwrite = true)
+        {
+            var filePath = key?.GetFullPath();
+            
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+            return StorageManager.SaveImageAsync(filePath, img, overwrite);
         }
         
         public static bool TryGetBytes(ICacheKey key, out byte[] bytes)
@@ -106,6 +136,18 @@ namespace SAM.Core.Storage
             }
 
             return StorageManager.GetImageFile(filePath);
+        }
+
+        public static Task<Image> GetImageFileAsync(ICacheKey key)
+        {
+            var filePath = key.GetFullPath();
+
+            if (!StorageManager.FileExists(filePath))
+            {
+                throw new FileNotFoundException(filePath);
+            }
+
+            return StorageManager.GetImageFileAsync(filePath);
         }
         
         public static bool TryPopulateObject<T>(ICacheKey key, T target)

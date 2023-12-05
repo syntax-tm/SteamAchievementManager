@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using log4net;
 using SAM.Core.Storage;
 
@@ -99,7 +100,7 @@ namespace SAM.Core
 
         // TODO: add support for async
         // TODO: add delayed automatic retry for status 429 (too many requests)
-        public static Image DownloadImage(string imageUrl, ICacheKey cacheKey = null)
+        public static async Task<Image> DownloadImageAsync(string imageUrl, ICacheKey cacheKey = null)
         {
             try
             {
@@ -110,7 +111,7 @@ namespace SAM.Core
                     if (loadedFromCache) return cachedImage;
                 }
 
-                var data = _wc.GetStreamAsync(imageUrl).Result;
+                var data = await _wc.GetStreamAsync(imageUrl);
 
                 var image = Image.FromStream(data);
                 

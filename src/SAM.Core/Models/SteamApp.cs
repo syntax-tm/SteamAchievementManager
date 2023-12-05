@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 using log4net;
@@ -51,7 +52,13 @@ namespace SAM.Core
             Id = id;
             GameInfoType = type;
             
-            Load();
+            Name = SteamClientManager.Default.GetAppName(Id);
+
+            if (string.IsNullOrEmpty(Name)) return;
+
+            Group = char.IsDigit(Name[0])
+                ? "#"
+                : (Name?.Substring(0, 1));
         }
         
         protected SteamApp(SupportedApp supportedApp) 
@@ -135,7 +142,7 @@ namespace SAM.Core
             SaveSettings();
         }
 
-        public void Load()
+        public async Task Load()
         {
             if (Loaded) return;
 
@@ -146,12 +153,14 @@ namespace SAM.Core
                 // TODO: SteamApp shouldn't need to configure its cache directory structure
                 CacheManager.StorageManager.CreateDirectory($@"apps\{Id}");
 
-                LoadClientInfo();
-                LoadStoreInfo();
-                LoadImages();
-
-                // load user preferences (hidden, favorite, etc) for app
-                LoadSettings();
+                await Task.WhenAll(new []
+                {
+                    Task.Run(LoadStoreInfo),
+                    // load user preferences (hidden, favorite, etc) for app
+                    Task.Run(LoadSettings)
+                });
+                
+                await LoadImages();
             }
             catch (Exception e)
             {
@@ -164,20 +173,9 @@ namespace SAM.Core
             }
         }
         
-        public void LoadClientInfo()
-        {
-            Name = SteamClientManager.Default.GetAppName(Id);
-
-            if (string.IsNullOrEmpty(Name)) return;
-
-            Group = char.IsDigit(Name[0])
-                ? "#"
-                : (Name?.Substring(0, 1));
-        }
-
         private void LoadStoreInfo()
         {
-            var retryTime = TimeSpan.FromSeconds(60);
+            var retryTime = TimeSpan.FromSeconds(30);
 
             while (StoreInfo == null)
             {
@@ -209,7 +207,7 @@ namespace SAM.Core
             }
         }
 
-        private void LoadImages()
+        public async Task LoadImages()
         {
             try
             {
@@ -223,7 +221,7 @@ namespace SAM.Core
                     var fileName = Path.GetFileName(uri.LocalPath);
                     var key = CacheKeys.CreateAppImageCacheKey(Id, fileName);
 
-                    var storeHeader = WebManager.DownloadImage(StoreInfo.HeaderImage, key);
+                    var storeHeader = await WebManager.DownloadImageAsync(StoreInfo.HeaderImage, key);
 
                     // this assumes that we'll get a header back that we can use
                     Header = storeHeader;
