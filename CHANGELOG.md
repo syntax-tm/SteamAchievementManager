@@ -1,6 +1,6 @@
-## 0.3.0
+## 0.3.0-alpha
 
-- Draft
+- Improved application startup time
 
 ## 0.2.0
 
