@@ -213,7 +213,7 @@ namespace SAM.Core
 
                 if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;
 
-                var steamGame = SteamApp.Create(app.Id, type);
+                var steamGame = new SteamApp(app.Id, type);
 
                 Items.Add(steamGame);
 

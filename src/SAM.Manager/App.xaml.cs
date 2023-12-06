@@ -69,7 +69,7 @@ public partial class App
             // TODO: move this to the MainWindowViewModel via passing the app id
             var supportedApp = SAMLibraryHelper.GetApp(appId);
 
-            var appInfo = SteamApp.Create(supportedApp);
+            var appInfo = new SteamApp(supportedApp);
             
             SplashScreenHelper.SetStatus(appInfo.Name);
 

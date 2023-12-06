@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:vm="clr-namespace:SAM.ViewModels"
-             xmlns:sam="urn:sam"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}">
@@ -15,6 +15,11 @@
     </UserControl.Resources>
 
     <Grid>
-        
+        <Grid Width="400" HorizontalAlignment="Right" Margin="15,0">
+            <ui:TextBox Text="{Binding FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged}"
+                        PlaceholderText="Search..." BorderBrush="Transparent"
+                        AutoWordSelection="True" Icon="Search24"
+                        MaxLines="1" />
+        </Grid>
     </Grid>
 </UserControl>

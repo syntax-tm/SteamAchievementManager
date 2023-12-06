@@ -15,6 +15,11 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <views:LibraryItemsControlView />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <views:MenuView />
+        <views:LibraryItemsControlView Grid.Row="1" />
     </Grid>
 </UserControl>

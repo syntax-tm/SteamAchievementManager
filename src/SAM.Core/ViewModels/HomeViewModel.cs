@@ -46,7 +46,7 @@ namespace SAM.Core.ViewModels
             if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
 
             var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
-            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText);
+            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText) || app.Id.ToString().Contains(FilterText);
             var isJunkFiltered = !FilterJunk || app.IsJunk;
             var isHiddenFiltered = ShowHidden || !app.IsHidden;
             var isNonFavoriteFiltered = !FilterFavorites || app.IsFavorite;
@@ -99,10 +99,7 @@ namespace SAM.Core.ViewModels
         {
             if (_loading) return;
 
-            using (_itemsViewSource.DeferRefresh())
-            {
-                _itemsViewSource.IsLiveFilteringRequested = !string.IsNullOrWhiteSpace(FilterText) || FilterJunk;
-            }
+            ItemsView!.Refresh();
         }
         
         protected void OnEnableGroupingChanged()
