@@ -209,9 +209,9 @@ namespace SAM.Core.Storage
 
         public void CreateDirectory(string path)
         {
-            if (path == null) throw new ArgumentNullException(nameof(path));
+			ArgumentNullException.ThrowIfNull(path);
 
-            using var isoStorage = GetStore();
+			using var isoStorage = GetStore();
             if (isoStorage.DirectoryExists(path)) return;
 
             isoStorage.CreateDirectory(path);

@@ -217,18 +217,18 @@ namespace SAM.Core.Storage
 
         public void CreateFileDirectory(string fullPath)
         {
-            if (fullPath == null) throw new ArgumentNullException(nameof(fullPath));
-            
-            var path = Directory.GetParent(fullPath);
+			ArgumentNullException.ThrowIfNull(fullPath);
+
+			var path = Directory.GetParent(fullPath);
             
             Directory.CreateDirectory(path.FullName);
         }
 
         public void CreateDirectory(string directory)
         {
-            if (directory == null) throw new ArgumentNullException(nameof(directory));
-            
-            var path = Path.Combine(ApplicationStoragePath, directory);
+			ArgumentNullException.ThrowIfNull(directory);
+
+			var path = Path.Combine(ApplicationStoragePath, directory);
             
             Directory.CreateDirectory(path);
         }

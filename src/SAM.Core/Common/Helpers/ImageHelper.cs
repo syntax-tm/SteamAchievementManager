@@ -22,9 +22,9 @@ namespace SAM.Core
         // TODO: cache images from urls locally
         public static ImageSource CreateSource(Uri uri)
         {
-            if (uri == null) throw new ArgumentNullException(nameof(uri));
+			ArgumentNullException.ThrowIfNull(uri);
 
-            var bmp = new BitmapImage();
+			var bmp = new BitmapImage();
             bmp.CacheOption = BitmapCacheOption.OnLoad;
             bmp.BeginInit();
             bmp.UriSource = uri;

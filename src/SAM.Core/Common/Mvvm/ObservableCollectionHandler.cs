@@ -18,10 +18,9 @@ namespace SAM.Core
 
         public ObservableCollectionHandler([NotNull] T source)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+			ArgumentNullException.ThrowIfNull(source);
 
-            m_source = new (source);
+			m_source = new (source);
         }
 
         bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
@@ -32,10 +31,9 @@ namespace SAM.Core
         [NotNull]
         public ObservableCollectionHandler<T, TU> SetAddItem([NotNull] Action<T, TU> handler)
         {
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
+			ArgumentNullException.ThrowIfNull(handler);
 
-            RegisterEventHandler();
+			RegisterEventHandler();
             m_addItemHandler = handler;
 
             return this;
@@ -62,10 +60,9 @@ namespace SAM.Core
         [NotNull]
         public ObservableCollectionHandler<T, TU> SetRemoveItem([NotNull] Action<T, TU> handler)
         {
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
+			ArgumentNullException.ThrowIfNull(handler);
 
-            RegisterEventHandler();
+			RegisterEventHandler();
             m_removeItemHandler = handler;
 
             return this;
@@ -74,10 +71,9 @@ namespace SAM.Core
         [NotNull]
         public ObservableCollectionHandler<T, TU> SetReset([NotNull] Action<T> handler)
         {
-            if (handler == null)
-                throw new ArgumentNullException(nameof(handler));
+			ArgumentNullException.ThrowIfNull(handler);
 
-            RegisterEventHandler();
+			RegisterEventHandler();
             m_resetHandler = handler;
 
             return this;

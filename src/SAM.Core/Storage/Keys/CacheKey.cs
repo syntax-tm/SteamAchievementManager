@@ -28,9 +28,9 @@ namespace SAM.Core.Storage
         
         public CacheKey(object key, CacheKeyType type)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+			ArgumentNullException.ThrowIfNull(key);
 
-            SetKey(key);
+			SetKey(key);
             
             if (type == CacheKeyType.App)
             {

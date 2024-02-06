@@ -17,23 +17,17 @@ namespace SAM.Core
 
         public ObservableHandler([NotNull] T source)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
+			ArgumentNullException.ThrowIfNull(source);
 
-            _source = new (source);
+			_source = new (source);
         }
 
         [NotNull]
         public ObservableHandler<T> Add([NotNull] Expression<Func<T, object>> expression, [NotNull] Action handler)
         {
-            if (handler == null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
+			ArgumentNullException.ThrowIfNull(handler);
 
-            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
+			var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
@@ -46,12 +40,9 @@ namespace SAM.Core
         [NotNull]
         public ObservableHandler<T> Add([NotNull] Expression<Func<T, object>> expression, [NotNull] Action<T> handler)
         {
-            if (handler == null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
+			ArgumentNullException.ThrowIfNull(handler);
 
-            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
+			var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 

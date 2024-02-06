@@ -22,9 +22,9 @@ namespace SAM.Core
 
         public ObservableCollectionPropertyHandler([NotNull] T source) : base(source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
+			ArgumentNullException.ThrowIfNull(source);
 
-            _source = new (source);
+			_source = new (source);
 
             SetAddItem(OnAddItem);
             SetRemoveItem(OnRemoveItem);
