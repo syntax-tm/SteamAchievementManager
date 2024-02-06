@@ -14,8 +14,8 @@ public abstract class StatInfoBase
         {
             var flags = StatFlags.None;
             flags |= IsIncrementOnly == false ? 0 : StatFlags.IncrementOnly;
-            flags |= ((Permission & 2) != 0) == false ? 0 : StatFlags.Protected;
-            flags |= ((Permission & ~2) != 0) == false ? 0 : StatFlags.UnknownPermission;
+            flags |= (Permission & 2) != 0 == false ? 0 : StatFlags.Protected;
+            flags |= (Permission & ~2) != 0 == false ? 0 : StatFlags.UnknownPermission;
             return flags.ToString();
         }
     }

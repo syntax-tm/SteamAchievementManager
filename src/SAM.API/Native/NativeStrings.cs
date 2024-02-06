@@ -16,7 +16,7 @@ namespace SAM.API
             var p = Marshal.AllocHGlobal(length + 1);
             Marshal.Copy(bytes, 0, p, bytes.Length);
 
-            (((byte*)p)!)[length] = 0;
+            ((byte*)p)![length] = 0;
 
             return new (p, true);
         }
