@@ -1,4 +1,11 @@
-﻿[*.cs]
+﻿[*]
+
+# Specify charset and end of line
+
+end_of_line = crlf
+charset = utf-8-bom
+
+[*.cs]
 
 # IDE0058: Expression value is never used
 dotnet_diagnostic.IDE0058.severity = none
