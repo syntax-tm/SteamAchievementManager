@@ -208,7 +208,7 @@ namespace SAM.Core
             {
                 var type = Enum.Parse<GameInfoType>(app.Type, true);
 
-                if (type != GameInfoType.Normal && type != GameInfoType.Mod) return false;
+                if (type is not GameInfoType.Normal and not GameInfoType.Mod) return false;
                 if (_addedGames.Contains(app)) return false;
 
                 if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;

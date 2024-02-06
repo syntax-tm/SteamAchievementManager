@@ -58,7 +58,7 @@ public partial class SteamApp : ViewModelBase
 
         Group = char.IsDigit(Name[0])
             ? "#"
-            : (Name?.Substring(0, 1));
+            : (Name?[..1]);
     }
         
     public SteamApp(SupportedApp supportedApp) 

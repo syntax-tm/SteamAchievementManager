@@ -18,9 +18,9 @@ namespace SAM.Core
 
         // TODO: Store this somewhere outside of the application so that it can be actively maintained separately
         private static readonly uint[] _ignoredApps =
-        {
+        [
             13260 // Unreal Development Kit
-        };
+        ];
         // TODO: This will probably be better off as a ConcurrentBag (for thread safety during Library init) or other keyed collection
         private static List<SupportedApp> _gameList;
 

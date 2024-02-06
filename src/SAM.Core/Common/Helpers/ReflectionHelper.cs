@@ -26,12 +26,9 @@ namespace SAM.Core
             if (memberExpression == null)
                 throw new ArgumentException("Property name lambda expression needs to be in the form: n = > n.PropertyName");
 
-            var propertyInfo = memberExpression.Member as PropertyInfo;
+            var propertyInfo = memberExpression.Member as PropertyInfo ?? throw new InvalidOperationException("Bug, memberExpression.Member as PropertyInfo cast failed.");
 
-            if (propertyInfo == null)
-                throw new InvalidOperationException("Bug, memberExpression.Member as PropertyInfo cast failed.");
-
-            return propertyInfo.Name;
+			return propertyInfo.Name;
         }
 
         [Pure]

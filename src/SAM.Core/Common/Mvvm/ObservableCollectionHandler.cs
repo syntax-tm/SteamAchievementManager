@@ -44,12 +44,9 @@ namespace SAM.Core
         {
             SetAddItem(handler);
 
-            var source = GetSource();
+            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
-            if (source == null)
-                throw new InvalidOperationException("Source has been garbage collected.");
-
-            foreach (var item in source)
+			foreach (var item in source)
             {
                 handler(GetSource(), item);
             }
@@ -92,12 +89,9 @@ namespace SAM.Core
             if (m_isRegistered)
                 return;
 
-            var source = GetSource();
+            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
-            if (source == null)
-                throw new InvalidOperationException("Source has been garbage collected.");
-
-            CollectionChangedEventManager.AddListener(source, this);
+			CollectionChangedEventManager.AddListener(source, this);
             m_isRegistered = true;
         }
 
@@ -109,12 +103,9 @@ namespace SAM.Core
             if (m_addItemHandler == null)
                 return false;
 
-            var source = GetSource();
+            var source = GetSource() ?? throw new InvalidOperationException("Confused, received a CollectionChanged event from a source that has been garbage collected.");
 
-            if (source == null)
-                throw new InvalidOperationException("Confused, received a CollectionChanged event from a source that has been garbage collected.");
-
-            var actualEventArgs = (NotifyCollectionChangedEventArgs) e;
+			var actualEventArgs = (NotifyCollectionChangedEventArgs) e;
 
             RaiseAddItem(actualEventArgs, source);
             RaiseRemoveItem(actualEventArgs, source);

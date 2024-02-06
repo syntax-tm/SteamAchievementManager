@@ -7,7 +7,7 @@ namespace SAM.API.Types
 {
     public class KeyValue
     {
-        private static readonly KeyValue _invalid = new();
+        private static readonly KeyValue invalid = new();
 
         public List<KeyValue> Children;
         public string Name = @"<root>";
@@ -21,7 +21,7 @@ namespace SAM.API.Types
             {
                 var child = Children?.SingleOrDefault(c => string.Compare(c.Name, key, StringComparison.InvariantCultureIgnoreCase) == 0);
 
-                return child ?? _invalid;
+                return child ?? invalid;
             }
         }
 

@@ -133,16 +133,10 @@ namespace SAM.Core
             }
         }
 
-        internal class SteamState
-        {
-            public string Code { get; }
-            public string Name { get; }
-
-            public SteamState(string code, string name)
-            {
-                Code = code;
-                Name = name;
-            }
-        }
+        internal class SteamState (string code, string name)
+		{
+			public string Code { get; } = code;
+			public string Name { get; } = name;
+		}
     }
 }

@@ -3,19 +3,13 @@ using System.Windows.Input;
 
 namespace SAM.Core
 {
-    public class SimpleCommand : ICommand
+    public class SimpleCommand (Func<object, bool> canExecute = null, Action<object> execute = null) : ICommand
     {
-        public SimpleCommand(Func<object, bool> canExecute = null, Action<object> execute = null)
-        {
-            CanExecuteDelegate = canExecute;
-            ExecuteDelegate = execute;
-        }
+		public Func<object, bool> CanExecuteDelegate { get; set; } = canExecute;
 
-        public Func<object, bool> CanExecuteDelegate { get; set; }
+		public Action<object> ExecuteDelegate { get; set; } = execute;
 
-        public Action<object> ExecuteDelegate { get; set; }
-
-        public bool CanExecute(object parameter)
+		public bool CanExecute(object parameter)
         {
             var canExecute = CanExecuteDelegate;
             return canExecute == null || canExecute(parameter);

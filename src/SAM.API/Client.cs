@@ -11,7 +11,7 @@ namespace SAM.API
     {
         private static readonly ILog log = LogManager.GetLogger(nameof(Client));
 
-        private readonly List<ICallback> _callbacks = new();
+        private readonly List<ICallback> callbacks = new();
 
         private bool _isDisposed;
         private int _pipe;
@@ -101,7 +101,7 @@ namespace SAM.API
             where TCallback : ICallback, new()
         {
             var callback = new TCallback();
-            _callbacks.Add(callback);
+            callbacks.Add(callback);
             return callback;
         }
 
@@ -114,7 +114,7 @@ namespace SAM.API
             while (Steam.GetCallback(_pipe, out var message, out _))
             {
                 var callbackId = message.Id;
-                var messageCallbacks = _callbacks.Where(candidate => candidate.Id == callbackId &&
+                var messageCallbacks = callbacks.Where(candidate => candidate.Id == callbackId &&
                                                             candidate.IsServer == server);
 
                 foreach (var callback in messageCallbacks)

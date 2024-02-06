@@ -225,7 +225,7 @@ namespace SAM.Core
         // these are all app ids that do not return successfully so we can skip them
         // and reduce calls to the store API
         private static readonly uint[] _skipStoreInfoAppIds =
-        {
+        [
             41010,  // Serious Sam HD: The Second Encounter
             42160,  // War of the Roses
             91310,  // Dead Island
@@ -238,6 +238,6 @@ namespace SAM.Core
             225140, // Duke Nukem 3D: Megaton Edition
             254270, // Dungeonland - All access pass
             321040  // DiRT 3 Complete Edition
-        };
+        ];
     }
 }
