@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <LangVersion>preview</LangVersion>
     <Platforms>x86</Platforms>
     <UseWPF>true</UseWPF>
@@ -11,17 +10,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <DefineConstants>TRACE;JETBRAINS_ANNOTATIONS;DEBUG</DefineConstants>
     <WarningsAsErrors>;NU1605;NU1702</WarningsAsErrors>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <RestoreLockedMode>true</RestoreLockedMode>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="NativeMethods.json" />
     <None Remove="NativeMethods.txt" />
@@ -29,12 +25,10 @@
     <None Remove="Styles\Images\steam-symbol.svg" />
     <None Remove="SAM.Core.csproj.DotSettings" />
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="NativeMethods.json" />
     <AdditionalFiles Include="NativeMethods.txt" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Styles\Images\square-steam.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -43,7 +37,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Autofac" Version="7.1.0" />
     <PackageReference Include="DevExpress.Mvvm.CodeGenerators" Version="22.1.1" />
@@ -55,13 +48,12 @@
       <PrivateAssets>all</PrivateAssets>
       <!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
-    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
     <PackageReference Include="WPF-UI" Version="2.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
   </ItemGroup>
-
   <ItemGroup>
     <Page Update="Common\SplashScreen\SplashScreenView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
@@ -100,7 +92,6 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Common\SplashScreen\SplashScreenView.xaml.cs">
       <SubType>Code</SubType>
@@ -120,16 +111,13 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\SAM.API\SAM.API.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
 </Project>
