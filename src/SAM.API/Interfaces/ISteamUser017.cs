@@ -7,6 +7,7 @@ namespace SAM.API;
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 [SuppressMessage("ReSharper", "UnassignedField.Global", Justification = "Steam API interface")]
 [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Steam API interface")]
+#pragma warning disable IDE1006
 public struct ISteamUser017
 {
     public nint GetHSteamUser;
