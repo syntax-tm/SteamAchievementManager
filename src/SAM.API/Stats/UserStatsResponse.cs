@@ -8,6 +8,6 @@ namespace SAM.API.Stats
         public ulong GameId;
         public int Result;
 
-        public bool IsSuccess => Result == 1;
+        public readonly bool IsSuccess => Result == 1;
     }
 }

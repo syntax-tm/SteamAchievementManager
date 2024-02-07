@@ -1,19 +1,14 @@
-using SAM.Core;
+﻿using SAM.Core;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace SAM.UnitTests
 {
-    public class SteamworksManagerTests
-    {
-        private readonly ITestOutputHelper _output;
+    public class SteamworksManagerTests (ITestOutputHelper testOutputHelper)
+	{
+        private readonly ITestOutputHelper _output = testOutputHelper;
 
-        public SteamworksManagerTests(ITestOutputHelper testOutputHelper)
-        {
-            _output = testOutputHelper;
-        }
-
-        [Theory(DisplayName = "Steamworks App")]
+		[Theory(DisplayName = "Steamworks App")]
         [InlineData(287290)]
         [InlineData(254700)]
         [InlineData(952060)]

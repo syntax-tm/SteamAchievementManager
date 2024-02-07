@@ -30,7 +30,7 @@ namespace SAM.Core
         public static bool IsSteamRunning()
         {
             var processes = Process.GetProcessesByName(STEAM_PROCESS_NAME);
-            return processes.Any();
+            return processes.Length != 0;
         }
 
         public static bool IsPickerRunning()

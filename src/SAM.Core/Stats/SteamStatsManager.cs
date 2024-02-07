@@ -82,10 +82,10 @@ namespace SAM.Core.Stats
         {
             AppId = SteamClientManager.AppId;
 
-            Statistics = new ();
-            Achievements = new ();
-            StatDefinitions = new ();
-            AchievementDefinitions = new ();
+            Statistics = [];
+            Achievements = [];
+            StatDefinitions = [];
+            AchievementDefinitions = [];
 
             _userStatsReceivedCallback = _client.CreateAndRegisterCallback<UserStatsReceived>();
             _userStatsReceivedCallback.OnRun += OnUserStatsReceived;
@@ -270,8 +270,7 @@ namespace SAM.Core.Stats
             
             var handlers = Achievements.Select(achievement => new ObservableHandler<SteamAchievement>(achievement).Add(a => a.IsModified, OnAchievementChanged));
 
-            _achievementHandlers = new ();
-            _achievementHandlers.AddRange(handlers);
+            _achievementHandlers = [.. handlers];
         }
 
         private void GetStatistics()
@@ -289,8 +288,7 @@ namespace SAM.Core.Stats
             
             var handlers = Statistics.Select(stat => new ObservableHandler<SteamStatisticBase>(stat).Add(s => s.IsModified, OnStatChanged));
 
-            _statHandlers = new ();
-            _statHandlers.AddRange(handlers);
+            _statHandlers = [.. handlers];
         }
         
         private void OnItemChanged()

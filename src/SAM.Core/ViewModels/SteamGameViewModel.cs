@@ -71,7 +71,7 @@ namespace SAM.Core.ViewModels
             try
             {
                 var modified = Achievements!.Where(a => a.IsModified).ToList();
-                if (!modified.Any())
+                if (modified.Count == 0)
                 {
                     log.Info("User achievements have not been modified. Skipping save.");
                     return 0;
@@ -118,7 +118,7 @@ namespace SAM.Core.ViewModels
             try
             {
                 var modified = Statistics!.Where(a => a.IsModified).ToList();
-                if (!modified.Any())
+                if (modified.Count == 0)
                 {
                     log.Info("User stats have not been modified. Skipping save...");
                     return 0;

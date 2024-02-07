@@ -15,10 +15,10 @@ namespace SAM.Core
         where T : class, INotifyCollectionChanged, ICollection<TU>
         where TU : class, INotifyPropertyChanged
     {
-        private readonly Dictionary<string, Action> _genericHandlers = new ();
-        private readonly Dictionary<string, Action<T, TU>> _handlers = new ();
+        private readonly Dictionary<string, Action> _genericHandlers = [];
+        private readonly Dictionary<string, Action<T, TU>> _handlers = [];
         private readonly WeakReference<T> _source;
-        private readonly List<WeakReference<T>> _sourceList = new ();
+        private readonly List<WeakReference<T>> _sourceList = [];
 
         public ObservableCollectionPropertyHandler([NotNull] T source) : base(source)
         {

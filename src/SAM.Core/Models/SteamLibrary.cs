@@ -98,7 +98,7 @@ namespace SAM.Core
 
             SupportedGamesCount = _supportedGames.Count;
             
-            Items = new();
+            Items = [];
             BindingOperations.EnableCollectionSynchronization(Items, _lock);
             
             _libraryWorker = new();
@@ -113,7 +113,7 @@ namespace SAM.Core
             _resetEvent ??= new(false);
 
             _refreshQueue = new(_supportedGames);
-            _addedGames = new();
+            _addedGames = [];
 
             Items.Clear();
 

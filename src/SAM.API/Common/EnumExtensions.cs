@@ -31,15 +31,10 @@ namespace SAM.API
             }
             
             var description = fi.GetAttribute<DescriptionAttribute>()?.Description;
-            if (!string.IsNullOrEmpty(description))
-            {
-                return description;
-            }
+			return !string.IsNullOrEmpty(description) ? description : value.ToString();
+		}
 
-            return value.ToString();
-        }
-
-        internal static string GetDescription(this Enum value)
+		internal static string GetDescription(this Enum value)
         {
             var fi = value.GetType().GetField(value.ToString());
             if (fi is null)
@@ -62,15 +57,10 @@ namespace SAM.API
             }
             
             var displayName = fi.GetAttribute<DisplayNameAttribute>()?.DisplayName;
-            if (!string.IsNullOrEmpty(displayName))
-            {
-                return displayName;
-            }
+			return !string.IsNullOrEmpty(displayName) ? displayName : value.ToString();
+		}
 
-            return value.ToString();
-        }
-        
-        private static T GetAttribute<T>(this ICustomAttributeProvider fi)
+		private static T GetAttribute<T>(this ICustomAttributeProvider fi)
             where T : Attribute
         {
             var attributes = fi.GetAttributes<T>();

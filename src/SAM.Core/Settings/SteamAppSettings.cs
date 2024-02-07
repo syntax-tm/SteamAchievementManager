@@ -22,7 +22,7 @@ namespace SAM.Core.Settings
             if (IsFavorite) attributes.Add("Favorite");
             if (IsHidden) attributes.Add("Hidden");
 
-            if (!attributes.Any()) return sb.ToString();
+            if (attributes.Count == 0) return sb.ToString();
 
             sb.Append(" (");
             sb.Append(string.Join(", ", attributes));

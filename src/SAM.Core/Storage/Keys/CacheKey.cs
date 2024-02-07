@@ -81,9 +81,7 @@ namespace SAM.Core.Storage
 
         public virtual string GetFullPath()
         {
-            if (_fullPath != null) return _fullPath;
-
-            return _fullPath = Path.Combine(FilePath, Key);
-        }
-    }
+			return _fullPath ??= Path.Combine(FilePath, Key);
+		}
+	}
 }

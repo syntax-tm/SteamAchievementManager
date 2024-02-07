@@ -31,7 +31,7 @@ namespace SAM.Core
 
         public EnumBindingSourceExtension(Type enumType)
         {
-            this.EnumType = enumType;
+            EnumType = enumType;
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)

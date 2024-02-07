@@ -11,7 +11,7 @@ namespace SAM.API
     {
         private static readonly ILog log = LogManager.GetLogger(nameof(Client));
 
-        private readonly List<ICallback> callbacks = new();
+        private readonly List<ICallback> callbacks = [];
 
         private bool _isDisposed;
         private int _pipe;

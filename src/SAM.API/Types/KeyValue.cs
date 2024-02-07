@@ -27,57 +27,55 @@ namespace SAM.API.Types
 
         public string AsString(string defaultValue = "")
         {
-            if (!Valid) return defaultValue;
+			return !Valid ? defaultValue : Value == null ? defaultValue : Value.ToString();
+		}
 
-            return Value == null ? defaultValue : Value.ToString();
-        }
-
-        public int AsInteger(int defaultValue = default)
+		public int AsInteger(int defaultValue = default)
         {
-            if (!Valid) return defaultValue;
+			return !Valid
+				? defaultValue
+				: Type switch
+			{
+				KeyValueType.String     => int.TryParse((string) Value, out var value) == false ? defaultValue : value,
+				KeyValueType.WideString => int.TryParse((string) Value, out var value) == false ? defaultValue : value,
+				KeyValueType.Int32      => (int) Value,
+				KeyValueType.Float32    => (int) (float) Value,
+				KeyValueType.UInt64     => (int) ((ulong) Value & 0xFFFFFFFF),
+				_                       => defaultValue
+			};
+		}
 
-            return Type switch
-            {
-                KeyValueType.String     => int.TryParse((string) Value, out var value) == false ? defaultValue : value,
-                KeyValueType.WideString => int.TryParse((string) Value, out var value) == false ? defaultValue : value,
-                KeyValueType.Int32      => (int) Value,
-                KeyValueType.Float32    => (int) (float) Value,
-                KeyValueType.UInt64     => (int) ((ulong) Value & 0xFFFFFFFF),
-                _                       => defaultValue
-            };
-        }
-
-        public float AsFloat(float defaultValue = default)
+		public float AsFloat(float defaultValue = default)
         {
-            if (!Valid) return defaultValue;
+			return !Valid
+				? defaultValue
+				: Type switch
+			{
+				KeyValueType.String     => float.TryParse((string) Value, out var value) == false ? defaultValue : value,
+				KeyValueType.WideString => float.TryParse((string) Value, out var value) == false ? defaultValue : value,
+				KeyValueType.Int32      => (int) Value,
+				KeyValueType.Float32    => (float) Value,
+				KeyValueType.UInt64     => (ulong) Value & 0xFFFFFFFF,
+				_                       => defaultValue
+			};
+		}
 
-            return Type switch
-            {
-                KeyValueType.String     => float.TryParse((string) Value, out var value) == false ? defaultValue : value,
-                KeyValueType.WideString => float.TryParse((string) Value, out var value) == false ? defaultValue : value,
-                KeyValueType.Int32      => (int) Value,
-                KeyValueType.Float32    => (float) Value,
-                KeyValueType.UInt64     => (ulong) Value & 0xFFFFFFFF,
-                _                       => defaultValue
-            };
-        }
-
-        public bool AsBoolean(bool defaultValue = default)
+		public bool AsBoolean(bool defaultValue = default)
         {
-            if (!Valid) return defaultValue;
+			return !Valid
+				? defaultValue
+				: Type switch
+			{
+				KeyValueType.String     => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
+				KeyValueType.WideString => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
+				KeyValueType.Int32      => (int) Value != 0,
+				KeyValueType.Float32    => (float) Value != 0,
+				KeyValueType.UInt64     => (ulong) Value != 0,
+				_                       => defaultValue
+			};
+		}
 
-            return Type switch
-            {
-                KeyValueType.String     => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
-                KeyValueType.WideString => int.TryParse((string) Value, out var value) == false ? defaultValue : value != 0,
-                KeyValueType.Int32      => (int) Value != 0,
-                KeyValueType.Float32    => (float) Value != 0,
-                KeyValueType.UInt64     => (ulong) Value != 0,
-                _                       => defaultValue
-            };
-        }
-
-        public string GetLocalizedString(string language, string defaultValue)
+		public string GetLocalizedString(string language, string defaultValue)
         {
             var name = this[language].AsString();
             if (!string.IsNullOrEmpty(name)) return name;
@@ -95,14 +93,14 @@ namespace SAM.API.Types
 
         public override string ToString()
         {
-            if (!Valid) return @"<invalid>";
+			return !Valid
+				? @"<invalid>"
+				: Type == KeyValueType.None
+				? Name
+				: $"{Name} = {Value}";
+		}
 
-            return Type == KeyValueType.None
-                ? Name
-                : $"{Name} = {Value}";
-        }
-
-        public static KeyValue LoadAsBinary(string path)
+		public static KeyValue LoadAsBinary(string path)
         {
             if (!File.Exists(path)) return null;
 
@@ -120,7 +118,7 @@ namespace SAM.API.Types
 
         public bool ReadAsBinary(Stream input)
         {
-            Children = new ();
+            Children = [];
 
             try
             {

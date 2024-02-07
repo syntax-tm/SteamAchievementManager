@@ -89,7 +89,7 @@ namespace SAM.Core
 
         public PackageGroup()
         {
-            Subs = new ();
+            Subs = [];
         }
     }
 
@@ -190,7 +190,7 @@ namespace SAM.Core
 
         public Achievements()
         {
-            Highlighted = new ();
+            Highlighted = [];
         }
     }
 
@@ -222,7 +222,7 @@ namespace SAM.Core
 
         public ContentDescriptors()
         {
-            Ids = new ();
+            Ids = [];
         }
     }
 
@@ -249,7 +249,7 @@ namespace SAM.Core
         [JsonProperty("dlc", NullValueHandling = NullValueHandling.Ignore)]
         public List<uint> Dlc { get; set; }
         
-        public List<SteamStoreApp> DlcInfo { get; set; } = new ();
+        public List<SteamStoreApp> DlcInfo { get; set; } = [];
         
         [JsonProperty("detailed_description")]
         public string DetailedDescription { get; set; }
@@ -294,7 +294,7 @@ namespace SAM.Core
         public PriceOverview PriceOverview { get; set; }
 
         [JsonProperty("packages", NullValueHandling = NullValueHandling.Ignore)]
-        public List<int> Packages { get; set; } = new ();
+        public List<int> Packages { get; set; } = [];
 
         [JsonProperty("package_groups", NullValueHandling = NullValueHandling.Ignore)]
         public List<PackageGroup> PackageGroups { get; set; }
@@ -335,13 +335,13 @@ namespace SAM.Core
         public SteamStoreApp()
         {
             Dlc = new (0);
-            Developers = new ();
-            Publishers = new();
-            PackageGroups = new ();
-            Categories = new ();
-            Screenshots = new ();
-            Genres = new ();
-            Movies = new ();
+            Developers = [];
+            Publishers = [];
+            PackageGroups = [];
+            Categories = [];
+            Screenshots = [];
+            Genres = [];
+            Movies = [];
         }
     }
 }

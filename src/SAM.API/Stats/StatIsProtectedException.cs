@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace SAM.API.Stats
 {
-    [Serializable]
+	[Serializable]
     public class StatIsProtectedException : Exception
     {
         public StatIsProtectedException()

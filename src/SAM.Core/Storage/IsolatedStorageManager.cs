@@ -72,7 +72,7 @@ namespace SAM.Core.Storage
 
             await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
 
-            await file.WriteAsync(bytes, 0, bytes.Length);
+            await file.WriteAsync(bytes);
         }
 
         public void SaveImage(string fileName, Image img, bool overwrite = true)
@@ -144,7 +144,7 @@ namespace SAM.Core.Storage
             await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
 
             var buffer = new byte[file.Length];
-            _ = await file.ReadAsync(buffer, 0, buffer.Length);
+            _ = await file.ReadAsync(buffer);
             
             return buffer;
         }

@@ -119,26 +119,26 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathAddConverter))]
     public sealed class MathAddConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Add };
+        private static readonly MathConverter mathConverter = new () { Operation = MathOperation.Add };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(values, targetType, parameter, culture);
+            return mathConverter.Convert(values, targetType, parameter, culture);
         }
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(value, targetType, parameter, culture);
+            return mathConverter.Convert(value, targetType, parameter, culture);
         }
 
         public override object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetTypes, parameter, culture);
+            return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetType, parameter, culture);
+            return mathConverter.ConvertBack(value, targetType, parameter, culture);
         }
     }
 
@@ -149,26 +149,26 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathSubtractConverter))]
     public sealed class MathSubtractConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Subtract };
+        private static readonly MathConverter mathConverter = new () { Operation = MathOperation.Subtract };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(values, targetType, parameter, culture);
+            return mathConverter.Convert(values, targetType, parameter, culture);
         }
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(value, targetType, parameter, culture);
+            return mathConverter.Convert(value, targetType, parameter, culture);
         }
 
         public override object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetTypes, parameter, culture);
+            return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetType, parameter, culture);
+            return mathConverter.ConvertBack(value, targetType, parameter, culture);
         }
     }
 
@@ -179,26 +179,26 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathMultiplyConverter))]
     public sealed class MathMultiplyConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Multiply };
+        private static readonly MathConverter mathConverter = new () { Operation = MathOperation.Multiply };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(values, targetType, parameter, culture);
+            return mathConverter.Convert(values, targetType, parameter, culture);
         }
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(value, targetType, parameter, culture);
+            return mathConverter.Convert(value, targetType, parameter, culture);
         }
 
         public override object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetTypes, parameter, culture);
+            return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetType, parameter, culture);
+            return mathConverter.ConvertBack(value, targetType, parameter, culture);
         }
     }
 
@@ -209,26 +209,26 @@ namespace SAM.Core.Converters
     [MarkupExtensionReturnType(typeof(MathDivideConverter))]
     public sealed class MathDivideConverter : MarkupMultiConverter
     {
-        private static readonly MathConverter MathConverter = new () { Operation = MathOperation.Divide };
+        private static readonly MathConverter mathConverter = new () { Operation = MathOperation.Divide };
 
         public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(values, targetType, parameter, culture);
+            return mathConverter.Convert(values, targetType, parameter, culture);
         }
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.Convert(value, targetType, parameter, culture);
+            return mathConverter.Convert(value, targetType, parameter, culture);
         }
 
         public override object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetTypes, parameter, culture);
+            return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return MathConverter.ConvertBack(value, targetType, parameter, culture);
+            return mathConverter.ConvertBack(value, targetType, parameter, culture);
         }
     }
 }

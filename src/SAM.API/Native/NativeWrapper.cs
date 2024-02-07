@@ -7,7 +7,7 @@ namespace SAM.API
 {
     public abstract class NativeWrapper<TNativeFunctions> : INativeWrapper
     {
-        private readonly Dictionary<nint, Delegate> _FunctionCache = new();
+        private readonly Dictionary<nint, Delegate> _FunctionCache = [];
         protected TNativeFunctions Functions;
         protected nint ObjectAddress;
 
