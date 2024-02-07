@@ -14,7 +14,7 @@ namespace SAM.Core.Storage
     {
         private const string DEFAULT_EXTENSION = ".json";
 
-        protected readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()?.ReflectedType ?? typeof(CacheKey));
+        protected readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()?.ReflectedType ?? typeof(CacheKey));
 
         private string _fullPath;
 

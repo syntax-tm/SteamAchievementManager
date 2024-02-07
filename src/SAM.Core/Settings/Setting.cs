@@ -52,9 +52,9 @@ namespace SAM.Core.Settings
 
         protected void OnValueChanged()
         {
-            if (ReferenceEquals(Value, null))
+            if (Value is null)
             {
-                IsModified = ReferenceEquals(PreviousValue, null);
+                IsModified = PreviousValue is null;
                 return;
             }
 

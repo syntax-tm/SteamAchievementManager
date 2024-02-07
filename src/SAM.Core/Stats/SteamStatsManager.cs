@@ -23,7 +23,7 @@ namespace SAM.Core.Stats
 
         private readonly ILog log = LogManager.GetLogger(nameof(SteamStatsManager));
 
-        private Client _client => SteamClientManager.Default;
+        private static Client _client => SteamClientManager.Default;
         private readonly UserStatsReceived _userStatsReceivedCallback;
         private readonly Timer _callbackTimer;
         private AutoResetEvent _resetEvent;
@@ -99,7 +99,7 @@ namespace SAM.Core.Stats
         private void CallbackTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             _callbackTimer.Enabled = false;
-            _client.RunCallbacks(false);
+			_client.RunCallbacks(false);
             _callbackTimer.Enabled = true;
         }
 

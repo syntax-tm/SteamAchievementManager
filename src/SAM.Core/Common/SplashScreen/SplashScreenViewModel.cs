@@ -33,7 +33,7 @@ namespace SAM.Core
             CurrentWindow.Hide();
         }
         
-        public void Exit()
+        public static void Exit()
         {
             Environment.Exit(0);
         }

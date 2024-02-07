@@ -173,10 +173,7 @@ namespace SAM.Core
                     checkedCount++;
                 }
 
-                var refreshTasks = Items.Select(async i =>
-                {
-                    await i.Load();
-                });
+                var refreshTasks = Items.Select(async i => await i.Load());
 
                 await Task.WhenAll(refreshTasks);
             }

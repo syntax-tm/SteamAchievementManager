@@ -10,7 +10,7 @@ namespace SAM.Core.Behaviors
         public int Min { get; set; }
         public int Max { get; set; }
  
-        public override object ProvideValue(IServiceProvider _)
+        public override object ProvideValue(IServiceProvider serviceProvider)
         {
             return CreateRange();
         }

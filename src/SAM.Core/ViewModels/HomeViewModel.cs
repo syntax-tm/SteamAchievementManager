@@ -12,7 +12,7 @@ namespace SAM.Core.ViewModels
     public partial class HomeViewModel
     {
         // ReSharper disable once InconsistentNaming
-        protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
+        protected readonly ILog Log = LogManager.GetLogger(nameof(HomeViewModel));
         
         private CollectionViewSource _itemsViewSource;
         private bool _loading = true;
@@ -55,7 +55,7 @@ namespace SAM.Core.ViewModels
         }
         
         [GenerateCommand]
-        public void Loaded()
+        public static void Loaded()
         {
         }
 

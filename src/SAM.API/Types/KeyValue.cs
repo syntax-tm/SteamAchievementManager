@@ -19,7 +19,7 @@ namespace SAM.API.Types
         {
             get
             {
-                var child = Children?.SingleOrDefault(c => string.Compare(c.Name, key, StringComparison.InvariantCultureIgnoreCase) == 0);
+                var child = Children?.SingleOrDefault(c => string.Equals(c.Name, key, StringComparison.OrdinalIgnoreCase));
 
                 return child ?? invalid;
             }

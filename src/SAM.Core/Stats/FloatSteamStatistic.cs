@@ -55,7 +55,7 @@ namespace SAM.Core.Stats
 
             if (!success)
             {
-                log.Warn($"Failed to get {StatType} stat '{Id}' value.");
+                Log.Warn($"Failed to get {StatType} stat '{Id}' value.");
             }
 
             OriginalValue = Value;

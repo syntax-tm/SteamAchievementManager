@@ -22,7 +22,7 @@ namespace SAM.Core;
 [DebuggerDisplay("{Name} ({Id})")]
 public partial class SteamApp : ViewModelBase
 {
-    protected readonly ILog log = LogManager.GetLogger(nameof(SteamApp));
+    protected readonly ILog Log = LogManager.GetLogger(nameof(SteamApp));
 
     private Process _managerProcess;
 
@@ -166,7 +166,7 @@ public partial class SteamApp : ViewModelBase
         }
         catch (Exception e)
         {
-            log.Error($"An error occurred attempting to load app info for '{Name}' ({Id}). {e.Message}", e);
+            Log.Error($"An error occurred attempting to load app info for '{Name}' ({Id}). {e.Message}", e);
         }
         finally
         {
@@ -201,13 +201,13 @@ public partial class SteamApp : ViewModelBase
                 retrySb.Append($"Request for store info on app '{Id}' returned {nameof(HttpStatusCode)} {HttpStatusCode.TooManyRequests} for {nameof(HttpStatusCode.TooManyRequests)}. ");
                 retrySb.Append($"Waiting {retryTime.TotalSeconds} second(s) and then retrying...");
 
-                log.Warn(retrySb);
+                Log.Warn(retrySb);
 
                 Thread.Sleep(retryTime);
             }
             catch (Exception e)
             {
-                log.Error($"An error occurred attempting to load the store info for app {Id}. {e.Message}", e);
+                Log.Error($"An error occurred attempting to load the store info for app {Id}. {e.Message}", e);
                 break;
             }
             finally
@@ -257,7 +257,7 @@ public partial class SteamApp : ViewModelBase
         catch (Exception e)
         {
             var message = $"An error occurred loading images for {Name} ({Id}). {e.Message}";
-            log.Error(message, e);
+            Log.Error(message, e);
         }
     }
 
@@ -273,7 +273,7 @@ public partial class SteamApp : ViewModelBase
         IsFavorite = settings.IsFavorite;
         IsHidden = settings.IsHidden;
 
-        log.Debug($"Loaded {nameof(SteamAppSettings)} {settings}.");
+        Log.Debug($"Loaded {nameof(SteamAppSettings)} {settings}.");
     }
 
     private void SaveSettings()
@@ -288,6 +288,6 @@ public partial class SteamApp : ViewModelBase
 
         CacheManager.CacheObject(key, settings);
             
-        log.Debug($"Saving {nameof(SteamAppSettings)} {settings}.");
+        Log.Debug($"Saving {nameof(SteamAppSettings)} {settings}.");
     }
 }

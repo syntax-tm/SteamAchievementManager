@@ -26,9 +26,9 @@ namespace SAM.API
         public abstract int Id { get; }
         public abstract bool IsServer { get; }
 
-        public void Run(nint pvParam)
+        public void Run(nint param)
         {
-            var data = Marshal.PtrToStructure<TParameter>(pvParam)!;
+            var data = Marshal.PtrToStructure<TParameter>(param)!;
             OnRun!(data);
         }
 

@@ -11,7 +11,7 @@ namespace SAM.Core.Behaviors
         public Type EnumType { get; set; }
         public bool UseEnumValue { get; set; }
  
-        public override object ProvideValue(IServiceProvider _)
+        public override object ProvideValue(IServiceProvider serviceProvider)
         {
             return EnumType is null ?  default(object) : CreateEnumValueList(EnumType);
         }

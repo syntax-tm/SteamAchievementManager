@@ -10,7 +10,7 @@ namespace SAM.Core.Stats
     [DebuggerDisplay("{DisplayName} ({Id})")]
     public abstract class SteamStatisticBase : BindableBase
     {
-        protected static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+        protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
         protected bool _loading = true;
 

@@ -120,7 +120,7 @@ namespace SAM.Core
             }
         }
 
-        internal class SteamCountry
+        internal sealed class SteamCountry
         {
             public string Code { get; set; }
             public string Name { get; set; }
@@ -133,7 +133,7 @@ namespace SAM.Core
             }
         }
 
-        internal class SteamState (string code, string name)
+        internal sealed class SteamState (string code, string name)
 		{
 			public string Code { get; } = code;
 			public string Name { get; } = name;
