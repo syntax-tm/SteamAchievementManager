@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <LangVersion>preview</LangVersion>
     <Platforms>x86</Platforms>
     <Title>SAM API</Title>
     <Description>Steamworks wrapper used by the Steam Achievement Manager.</Description>

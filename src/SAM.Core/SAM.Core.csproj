@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <LangVersion>preview</LangVersion>
     <Platforms>x86</Platforms>
     <UseWPF>true</UseWPF>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
