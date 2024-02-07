@@ -5,28 +5,28 @@ using System.Runtime.CompilerServices;
 
 namespace SAM.Core
 {
-    public abstract class Observable : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+	public abstract class Observable : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        protected bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            Debug.Assert(!string.IsNullOrEmpty(propertyName));
+		protected bool SetField<T> (ref T field, T value, [CallerMemberName] string propertyName = null)
+		{
+			Debug.Assert(!string.IsNullOrEmpty(propertyName));
 
-            if (EqualityComparer<T>.Default.Equals(field,value))
-                return false;
+			if (EqualityComparer<T>.Default.Equals(field, value))
+				return false;
 
-            field = value;
+			field = value;
 
-            RaisePropertyChanged(propertyName);
+			RaisePropertyChanged(propertyName);
 
-            return true;
-        }
+			return true;
+		}
 
-        public void RaisePropertyChanged(string propertyName)
-        {
-            var handler = PropertyChanged;
-            handler?.Invoke(this, new (propertyName));
-        }
-    }
+		public void RaisePropertyChanged (string propertyName)
+		{
+			var handler = PropertyChanged;
+			handler?.Invoke(this, new(propertyName));
+		}
+	}
 }

@@ -7,19 +7,22 @@ namespace SAM.Core.Extensions;
 
 public static class ProcessExtensions
 {
-    public static bool SetActive(this Process process)
-    {
-        if (process == null) return false;
-        if (process.HasExited) return false;
-        if (!process.Responding) return false;
+	public static bool SetActive (this Process process)
+	{
+		if (process == null)
+			return false;
+		if (process.HasExited)
+			return false;
+		if (!process.Responding)
+			return false;
 
-        var hwnd = process.MainWindowHandle;
-        var hwndRef = new HWND(hwnd);
-            
-        PInvoke.ShowWindowAsync(hwndRef, SHOW_WINDOW_CMD.SW_RESTORE);
-        PInvoke.SetForegroundWindow(hwndRef);
+		var hwnd = process.MainWindowHandle;
+		var hwndRef = new HWND(hwnd);
 
-        return true;
-    }
+		PInvoke.ShowWindowAsync(hwndRef, SHOW_WINDOW_CMD.SW_RESTORE);
+		PInvoke.SetForegroundWindow(hwndRef);
+
+		return true;
+	}
 
 }

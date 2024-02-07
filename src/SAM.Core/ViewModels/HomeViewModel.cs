@@ -8,114 +8,117 @@ using SAM.Core.Extensions;
 
 namespace SAM.Core.ViewModels
 {
-    [GenerateViewModel]
-    public partial class HomeViewModel
-    {
-        // ReSharper disable once InconsistentNaming
-        protected readonly ILog Log = LogManager.GetLogger(nameof(HomeViewModel));
-        
-        private CollectionViewSource _itemsViewSource;
-        private bool _loading = true;
+	[GenerateViewModel]
+	public partial class HomeViewModel
+	{
+		// ReSharper disable once InconsistentNaming
+		protected readonly ILog Log = LogManager.GetLogger(nameof(HomeViewModel));
 
-        [GenerateProperty] private bool enableGrouping;
-        [GenerateProperty] private string filterText;
-        [GenerateProperty] private string filterNormal;
-        [GenerateProperty] private string filterDemos;
-        [GenerateProperty] private string filterMods;
-        [GenerateProperty] private bool filterJunk;
-        [GenerateProperty] private bool showHidden;
-        [GenerateProperty] private bool filterFavorites;
-        [GenerateProperty] private string filterTool;
-        [GenerateProperty] private int tileWidth = 100;
-        [GenerateProperty] private ICollectionView itemsView;
+		private CollectionViewSource _itemsViewSource;
+		private bool _loading = true;
 
-        public SteamApp SelectedItem
-        {
-            get => (SteamApp) ItemsView!.CurrentItem;
-            set => ItemsView!.MoveCurrentTo(value);
-        }
-        [GenerateProperty] private SteamLibrary library;
+		[GenerateProperty] private bool enableGrouping;
+		[GenerateProperty] private string filterText;
+		[GenerateProperty] private string filterNormal;
+		[GenerateProperty] private string filterDemos;
+		[GenerateProperty] private string filterMods;
+		[GenerateProperty] private bool filterJunk;
+		[GenerateProperty] private bool showHidden;
+		[GenerateProperty] private bool filterFavorites;
+		[GenerateProperty] private string filterTool;
+		[GenerateProperty] private int tileWidth = 100;
+		[GenerateProperty] private ICollectionView itemsView;
 
-        public HomeViewModel()
-        {
-            Refresh();
-        }
-        
-        private void ItemsViewSourceOnFilter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
+		public SteamApp SelectedItem
+		{
+			get => (SteamApp) ItemsView!.CurrentItem;
+			set => ItemsView!.MoveCurrentTo(value);
+		}
+		[GenerateProperty] private SteamLibrary library;
 
-            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
-            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText) || app.Id.ToString().Contains(FilterText);
-            var isJunkFiltered = !FilterJunk || app.IsJunk;
-            var isHiddenFiltered = ShowHidden || !app.IsHidden;
-            var isNonFavoriteFiltered = !FilterFavorites || app.IsFavorite;
-            
-            e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
-        }
-        
-        [GenerateCommand]
-        public static void Loaded()
-        {
-        }
+		public HomeViewModel ()
+		{
+			Refresh();
+		}
 
-        [GenerateCommand]
-        public void Refresh(bool force = false)
-        {
-            _loading = true;
+		private void ItemsViewSourceOnFilter (object sender, FilterEventArgs e)
+		{
+			if (e.Item is not SteamApp app)
+				throw new ArgumentException(nameof(e.Item));
 
-            if (force)
-            {
-                SteamLibraryManager.DefaultLibrary.Refresh();
-            }
+			var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
+			var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText) || app.Id.ToString().Contains(FilterText);
+			var isJunkFiltered = !FilterJunk || app.IsJunk;
+			var isHiddenFiltered = ShowHidden || !app.IsHidden;
+			var isNonFavoriteFiltered = !FilterFavorites || app.IsFavorite;
 
-            Library = SteamLibraryManager.DefaultLibrary;
-            
-            _itemsViewSource = new ()
-            {
-                Source = Library.Items
-            };
-            ItemsView = _itemsViewSource.View;
+			e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
+		}
 
-            using (_itemsViewSource.DeferRefresh())
-            {
-                _itemsViewSource.Filter += ItemsViewSourceOnFilter;
+		[GenerateCommand]
+		public static void Loaded ()
+		{
+		}
 
-                _itemsViewSource.SortDescriptions.Clear();
-                _itemsViewSource.SortDescriptions.Add(new (nameof(SteamApp.Name), ListSortDirection.Ascending));
+		[GenerateCommand]
+		public void Refresh (bool force = false)
+		{
+			_loading = true;
 
-                _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsHidden));
-                _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsFavorite));
+			if (force)
+			{
+				SteamLibraryManager.DefaultLibrary.Refresh();
+			}
 
-                _itemsViewSource.IsLiveFilteringRequested = true;
-                _itemsViewSource.IsLiveSortingRequested = true;
-                _itemsViewSource.IsLiveGroupingRequested = false;
-            }
+			Library = SteamLibraryManager.DefaultLibrary;
 
-            _loading = false;
-        }
+			_itemsViewSource = new()
+			{
+				Source = Library.Items
+			};
+			ItemsView = _itemsViewSource.View;
 
-        protected void OnFilterTextChanged()
-        {
-            if (_loading) return;
+			using (_itemsViewSource.DeferRefresh())
+			{
+				_itemsViewSource.Filter += ItemsViewSourceOnFilter;
 
-            ItemsView!.Refresh();
-        }
-        
-        protected void OnEnableGroupingChanged()
-        {
-            if (_loading) return;
-            
-            using (_itemsViewSource.DeferRefresh())
-            {
-                _itemsViewSource.GroupDescriptions.Clear();
-                _itemsViewSource.IsLiveGroupingRequested = EnableGrouping;
+				_itemsViewSource.SortDescriptions.Clear();
+				_itemsViewSource.SortDescriptions.Add(new(nameof(SteamApp.Name), ListSortDirection.Ascending));
 
-                if (EnableGrouping)
-                {
-                    ItemsView!.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
-                }
-            }
-        }
-    }
+				_itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsHidden));
+				_itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsFavorite));
+
+				_itemsViewSource.IsLiveFilteringRequested = true;
+				_itemsViewSource.IsLiveSortingRequested = true;
+				_itemsViewSource.IsLiveGroupingRequested = false;
+			}
+
+			_loading = false;
+		}
+
+		protected void OnFilterTextChanged ()
+		{
+			if (_loading)
+				return;
+
+			ItemsView!.Refresh();
+		}
+
+		protected void OnEnableGroupingChanged ()
+		{
+			if (_loading)
+				return;
+
+			using (_itemsViewSource.DeferRefresh())
+			{
+				_itemsViewSource.GroupDescriptions.Clear();
+				_itemsViewSource.IsLiveGroupingRequested = EnableGrouping;
+
+				if (EnableGrouping)
+				{
+					ItemsView!.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
+				}
+			}
+		}
+	}
 }

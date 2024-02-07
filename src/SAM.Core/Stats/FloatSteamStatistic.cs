@@ -4,74 +4,75 @@ using SAM.API.Stats;
 
 namespace SAM.Core.Stats
 {
-    [DebuggerDisplay("{DisplayName} ({Id})")]
-    public class FloatSteamStatistic : SteamStatisticBase
-    {
-        public override StatType StatType => StatType.Float;
-        
-        public float OriginalValue
-        {
-            get => GetProperty(() => OriginalValue);
-            set => SetProperty(() => OriginalValue, value);
-        }
-        public float Value
-        {
-            get => GetProperty(() => Value);
-            set => SetProperty(() => Value, value, OnValueChanged);
-        }
+	[DebuggerDisplay("{DisplayName} ({Id})")]
+	public class FloatSteamStatistic : SteamStatisticBase
+	{
+		public override StatType StatType => StatType.Float;
 
-        public FloatSteamStatistic()
-        {
+		public float OriginalValue
+		{
+			get => GetProperty(() => OriginalValue);
+			set => SetProperty(() => OriginalValue, value);
+		}
+		public float Value
+		{
+			get => GetProperty(() => Value);
+			set => SetProperty(() => Value, value, OnValueChanged);
+		}
 
-        }
+		public FloatSteamStatistic ()
+		{
 
-        public FloatSteamStatistic(StatInfoBase stat) : base(stat)
-        {
-            Refresh();
+		}
 
-            _loading = false;
-        }
+		public FloatSteamStatistic (StatInfoBase stat) : base(stat)
+		{
+			Refresh();
 
-        public override object GetValue()
-        {
-            return Value;
-        }
+			_loading = false;
+		}
 
-        public override void Reset()
-        {
-            Value = OriginalValue;
-            IsModified = false;
-        }
+		public override object GetValue ()
+		{
+			return Value;
+		}
 
-        public override void Refresh()
-        {
-            _loading = true;
+		public override void Reset ()
+		{
+			Value = OriginalValue;
+			IsModified = false;
+		}
 
-            var success = SteamClientManager.Default.SteamUserStats.GetStatValue(Id, out float floatValue);
-            if (success)
-            {
-                Value = floatValue;
-            }
+		public override void Refresh ()
+		{
+			_loading = true;
 
-            if (!success)
-            {
-                Log.Warn($"Failed to get {StatType} stat '{Id}' value.");
-            }
+			var success = SteamClientManager.Default.SteamUserStats.GetStatValue(Id, out float floatValue);
+			if (success)
+			{
+				Value = floatValue;
+			}
 
-            OriginalValue = Value;
+			if (!success)
+			{
+				Log.Warn($"Failed to get {StatType} stat '{Id}' value.");
+			}
 
-            IsModified = false;
+			OriginalValue = Value;
 
-            _loading = false;
-        }
+			IsModified = false;
 
-        protected void OnValueChanged()
-        {
-            if (_loading) return;
+			_loading = false;
+		}
 
-            const double TOLERANCE = 0.000000001;
+		protected void OnValueChanged ()
+		{
+			if (_loading)
+				return;
 
-            IsModified = Math.Abs(Value - OriginalValue) > TOLERANCE;
-        }
-    }
+			const double TOLERANCE = 0.000000001;
+
+			IsModified = Math.Abs(Value - OriginalValue) > TOLERANCE;
+		}
+	}
 }

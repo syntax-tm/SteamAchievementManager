@@ -6,10 +6,10 @@ namespace SAM.Manager.ViewModels;
 [GenerateViewModel]
 public partial class MainWindowViewModel : MainWindowViewModelBase
 {
-    [GenerateProperty] private SteamGameViewModel gameVm;
+	[GenerateProperty] private SteamGameViewModel gameVm;
 
-    public MainWindowViewModel(SteamGameViewModel gameVm)
-    {
-        GameVm = gameVm;
-    }
+	public MainWindowViewModel (SteamGameViewModel gameVm)
+	{
+		GameVm = gameVm;
+	}
 }

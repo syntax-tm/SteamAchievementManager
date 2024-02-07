@@ -10,83 +10,95 @@ using log4net;
 namespace SAM.Core.Converters
 {
 
-    [ValueConversion(typeof(string), typeof(Image))]
-    public class StringToImageConverter : IValueConverter
-    {
-        private readonly ILog log = LogManager.GetLogger(typeof(StringToImageConverter));
+	[ValueConversion(typeof(string), typeof(Image))]
+	public class StringToImageConverter : IValueConverter
+	{
+		private readonly ILog log = LogManager.GetLogger(typeof(StringToImageConverter));
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is not string filePath) return null;
+		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value is not string filePath)
+				return null;
 
-            try
-            {
-                return Image.FromFile(filePath);
-            }
-            catch (Exception e)
-            {
-                var message = $"An error occurred attempting to convert '{filePath}' to {nameof(Image)}. {e.Message}";
-                log.Error(message, e);
-                return null;
-            }
-        }
- 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
+			try
+			{
+				return Image.FromFile(filePath);
+			}
+			catch (Exception e)
+			{
+				var message = $"An error occurred attempting to convert '{filePath}' to {nameof(Image)}. {e.Message}";
+				log.Error(message, e);
+				return null;
+			}
+		}
 
-    public class StringToImageConverterExtension : MarkupExtension
-    {
-        public IValueConverter ItemConverter { get; set; }
+		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
 
-        public StringToImageConverterExtension() { }
-        public StringToImageConverterExtension(IValueConverter itemConverter) => ItemConverter = itemConverter;
+	public class StringToImageConverterExtension : MarkupExtension
+	{
+		public IValueConverter ItemConverter
+		{
+			get; set;
+		}
 
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return new StringToImageConverter();
-        }
-    }
+		public StringToImageConverterExtension ()
+		{
+		}
+		public StringToImageConverterExtension (IValueConverter itemConverter) => ItemConverter = itemConverter;
 
-    [ValueConversion(typeof(string), typeof(ImageSource))]
-    public class StringToImageSourceConverter : IValueConverter
-    {
-        private readonly ILog log = LogManager.GetLogger(typeof(StringToImageSourceConverter));
+		public override object ProvideValue (IServiceProvider serviceProvider)
+		{
+			return new StringToImageConverter();
+		}
+	}
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is not string filePath) return null;
+	[ValueConversion(typeof(string), typeof(ImageSource))]
+	public class StringToImageSourceConverter : IValueConverter
+	{
+		private readonly ILog log = LogManager.GetLogger(typeof(StringToImageSourceConverter));
 
-            try
-            {
-                return new BitmapImage(new (filePath));
-            }
-            catch (Exception e)
-            {
-                var message = $"An error occurred attempting to convert '{filePath}' to {nameof(ImageSource)}. {e.Message}";
-                log.Error(message, e);
-                return null;
-            }
-        }
- 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value is not string filePath)
+				return null;
 
-    public class StringToImageSourceConverterExtension : MarkupExtension
-    {
-        public IValueConverter ItemConverter { get; set; }
+			try
+			{
+				return new BitmapImage(new(filePath));
+			}
+			catch (Exception e)
+			{
+				var message = $"An error occurred attempting to convert '{filePath}' to {nameof(ImageSource)}. {e.Message}";
+				log.Error(message, e);
+				return null;
+			}
+		}
 
-        public StringToImageSourceConverterExtension() { }
-        public StringToImageSourceConverterExtension(IValueConverter itemConverter) => ItemConverter = itemConverter;
+		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
 
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return new StringToImageSourceConverter();
-        }
-    }
+	public class StringToImageSourceConverterExtension : MarkupExtension
+	{
+		public IValueConverter ItemConverter
+		{
+			get; set;
+		}
+
+		public StringToImageSourceConverterExtension ()
+		{
+		}
+		public StringToImageSourceConverterExtension (IValueConverter itemConverter) => ItemConverter = itemConverter;
+
+		public override object ProvideValue (IServiceProvider serviceProvider)
+		{
+			return new StringToImageSourceConverter();
+		}
+	}
 }

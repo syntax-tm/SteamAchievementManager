@@ -11,127 +11,132 @@ using JetBrains.Annotations;
 
 namespace SAM.Core
 {
-    public class ObservableCollectionPropertyHandler<T, TU> : ObservableCollectionHandler<T, TU>
-        where T : class, INotifyCollectionChanged, ICollection<TU>
-        where TU : class, INotifyPropertyChanged
-    {
-        private readonly Dictionary<string, Action> _genericHandlers = [];
-        private readonly Dictionary<string, Action<T, TU>> _handlers = [];
-        private readonly WeakReference<T> _source;
-        private readonly List<WeakReference<T>> _sourceList = [];
+	public class ObservableCollectionPropertyHandler<T, TU> : ObservableCollectionHandler<T, TU>
+		where T : class, INotifyCollectionChanged, ICollection<TU>
+		where TU : class, INotifyPropertyChanged
+	{
+		private readonly Dictionary<string, Action> _genericHandlers = [];
+		private readonly Dictionary<string, Action<T, TU>> _handlers = [];
+		private readonly WeakReference<T> _source;
+		private readonly List<WeakReference<T>> _sourceList = [];
 
-        public ObservableCollectionPropertyHandler([NotNull] T source) : base(source)
-        {
+		public ObservableCollectionPropertyHandler ([NotNull] T source) : base(source)
+		{
 			ArgumentNullException.ThrowIfNull(source);
 
-			_source = new (source);
+			_source = new(source);
 
-            SetAddItem(OnAddItem);
-            SetRemoveItem(OnRemoveItem);
-            SetReset(OnReset);
-        }
-        
-        public ObservableCollectionPropertyHandler<T, TU> Add([NotNull] Expression<Func<TU, object>> expression,
-            [NotNull] Action handler)
-        {
-            var source = GetSource();
-            if (source == null) throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
+			SetAddItem(OnAddItem);
+			SetRemoveItem(OnRemoveItem);
+			SetReset(OnReset);
+		}
 
-            var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
+		public ObservableCollectionPropertyHandler<T, TU> Add ([NotNull] Expression<Func<TU, object>> expression,
+			[NotNull] Action handler)
+		{
+			var source = GetSource();
+			if (source == null)
+				throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
 
-            _handlers[propertyName] = (_, _) => handler();
+			var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
-            foreach (var item in source)
-            {
-                PropertyChangedEventManager.AddListener(item, this, propertyName);
-            }
+			_handlers [propertyName] = (_, _) => handler();
 
-            return this;
-        }
+			foreach (var item in source)
+			{
+				PropertyChangedEventManager.AddListener(item, this, propertyName);
+			}
 
-        public ObservableCollectionPropertyHandler<T, TU> Add([NotNull] Expression<Func<TU, object>> expression,
-            [NotNull] Action<T, TU> handler)
-        {
-            var source = GetSource();
-            if (source == null) throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
+			return this;
+		}
 
-            var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
+		public ObservableCollectionPropertyHandler<T, TU> Add ([NotNull] Expression<Func<TU, object>> expression,
+			[NotNull] Action<T, TU> handler)
+		{
+			var source = GetSource();
+			if (source == null)
+				throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
 
-            _handlers[propertyName] = handler;
+			var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
-            foreach (var item in source)
-            {
-                PropertyChangedEventManager.AddListener(item, this, propertyName);
-            }
+			_handlers [propertyName] = handler;
 
-            return this;
-        }
-        
-        public ObservableCollectionPropertyHandler<T, TU> AddAndInvoke([NotNull] Expression<Func<TU, object>> expression,
-                                                                       [NotNull] Action handler)
-        {
-            var source = GetSource();
-            if (source == null) throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
+			foreach (var item in source)
+			{
+				PropertyChangedEventManager.AddListener(item, this, propertyName);
+			}
 
-            var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
+			return this;
+		}
 
-            _handlers[propertyName] = (_, _) => handler();
+		public ObservableCollectionPropertyHandler<T, TU> AddAndInvoke ([NotNull] Expression<Func<TU, object>> expression,
+																	   [NotNull] Action handler)
+		{
+			var source = GetSource();
+			if (source == null)
+				throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
 
-            foreach (var item in source)
-            {
-                PropertyChangedEventManager.AddListener(item, this, propertyName);
-            }
+			var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
-            handler();
+			_handlers [propertyName] = (_, _) => handler();
 
-            return this;
-        }
+			foreach (var item in source)
+			{
+				PropertyChangedEventManager.AddListener(item, this, propertyName);
+			}
 
-        protected override bool OnCollectionReceiveWeakEvent([NotNull] Type managerType, [CanBeNull] object sender, [CanBeNull] EventArgs e)
-        {
-            if (base.OnCollectionReceiveWeakEvent(managerType, sender, e)) return true;
-            if (managerType != typeof(PropertyChangedEventManager)) return false;
+			handler();
 
-            var source = GetSource();
-            if (source == null)
-            {
-                var sourceNullMessage = @"Confused, received a PropertyChanged event from a source that has been garbage collected.";
-                throw new InvalidOperationException(sourceNullMessage);
-            }
+			return this;
+		}
 
-            var item = sender as TU;
-            var propertyName = ((PropertyChangedEventArgs) e)?.PropertyName;
+		protected override bool OnCollectionReceiveWeakEvent ([NotNull] Type managerType, [CanBeNull] object sender, [CanBeNull] EventArgs e)
+		{
+			if (base.OnCollectionReceiveWeakEvent(managerType, sender, e))
+				return true;
+			if (managerType != typeof(PropertyChangedEventManager))
+				return false;
 
-            Debug.Assert(propertyName != null, nameof(propertyName) + " != null");
+			var source = GetSource();
+			if (source == null)
+			{
+				var sourceNullMessage = @"Confused, received a PropertyChanged event from a source that has been garbage collected.";
+				throw new InvalidOperationException(sourceNullMessage);
+			}
 
-            if (_handlers.TryGetValue(propertyName, out var handler))
-            {
-                handler?.Invoke(source, item);
-            }
+			var item = sender as TU;
+			var propertyName = ((PropertyChangedEventArgs) e)?.PropertyName;
 
-            return true;
-        }
-        
-        private void OnReset([NotNull] T collection)
-        {
+			Debug.Assert(propertyName != null, nameof(propertyName) + " != null");
 
-        }
+			if (_handlers.TryGetValue(propertyName, out var handler))
+			{
+				handler?.Invoke(source, item);
+			}
 
-        private void OnRemoveItem([NotNull] T collection, [NotNull] TU item)
-        {
-            foreach (var handler in _handlers)
-            {
-                PropertyChangedEventManager.RemoveListener(item, this, handler.Key);
-            }
-        }
+			return true;
+		}
 
-        private void OnAddItem([NotNull] T collection, [NotNull] TU item)
-        {
-            foreach (var handler in _handlers)
-            {
-                PropertyChangedEventManager.AddListener(item, this, handler.Key);
-            }
-        }
+		private void OnReset ([NotNull] T collection)
+		{
 
-    }
+		}
+
+		private void OnRemoveItem ([NotNull] T collection, [NotNull] TU item)
+		{
+			foreach (var handler in _handlers)
+			{
+				PropertyChangedEventManager.RemoveListener(item, this, handler.Key);
+			}
+		}
+
+		private void OnAddItem ([NotNull] T collection, [NotNull] TU item)
+		{
+			foreach (var handler in _handlers)
+			{
+				PropertyChangedEventManager.AddListener(item, this, handler.Key);
+			}
+		}
+
+	}
 }

@@ -5,57 +5,58 @@ using SAM.Core.Storage;
 
 namespace SAM.Core.Settings
 {
-    [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
-    public class UserSettings : BindableBase
-    {
-        private static UserSettings _instance;
-        private static readonly object syncLock = new ();
-        
-        public ManagerSettings ManagerSettings
-        {
-            get => GetProperty(() => ManagerSettings);
-            set => SetProperty(() => ManagerSettings, value);
-        }
-        
-        public LibrarySettings LibrarySettings
-        {
-            get => GetProperty(() => LibrarySettings);
-            set => SetProperty(() => LibrarySettings, value);
-        }
+	[JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
+	public class UserSettings : BindableBase
+	{
+		private static UserSettings _instance;
+		private static readonly object syncLock = new();
 
-        public static UserSettings Default
-        {
-            get
-            {
-                if (_instance != null) return _instance;
-                lock (syncLock)
-                {
-                    _instance = new ();
-                }
-                return _instance;
-            }
-        }
-        
-        protected UserSettings()
-        {
-            ManagerSettings = new ();
+		public ManagerSettings ManagerSettings
+		{
+			get => GetProperty(() => ManagerSettings);
+			set => SetProperty(() => ManagerSettings, value);
+		}
 
-            Load();
-        }
-        
-        private void Load()
-        {
-            if (CacheManager.TryPopulateObject(CacheKeys.UserSettings, this))
-            {
-                return;
-            }
+		public LibrarySettings LibrarySettings
+		{
+			get => GetProperty(() => LibrarySettings);
+			set => SetProperty(() => LibrarySettings, value);
+		}
 
-            CacheManager.CacheObject(CacheKeys.UserSettings, this);
-        }
+		public static UserSettings Default
+		{
+			get
+			{
+				if (_instance != null)
+					return _instance;
+				lock (syncLock)
+				{
+					_instance = new();
+				}
+				return _instance;
+			}
+		}
 
-        public void Save()
-        {
-            CacheManager.CacheObject(CacheKeys.UserSettings, this);
-        }
-    }
+		protected UserSettings ()
+		{
+			ManagerSettings = new();
+
+			Load();
+		}
+
+		private void Load ()
+		{
+			if (CacheManager.TryPopulateObject(CacheKeys.UserSettings, this))
+			{
+				return;
+			}
+
+			CacheManager.CacheObject(CacheKeys.UserSettings, this);
+		}
+
+		public void Save ()
+		{
+			CacheManager.CacheObject(CacheKeys.UserSettings, this);
+		}
+	}
 }

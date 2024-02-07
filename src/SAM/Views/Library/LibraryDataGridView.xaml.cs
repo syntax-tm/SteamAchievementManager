@@ -2,8 +2,8 @@
 
 public partial class LibraryDataGridView
 {
-    public LibraryDataGridView()
-    {
-        InitializeComponent();
-    }
+	public LibraryDataGridView ()
+	{
+		InitializeComponent();
+	}
 }

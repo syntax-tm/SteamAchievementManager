@@ -2,12 +2,12 @@
 
 namespace SAM.Core.ViewModels
 {
-    [GenerateViewModel]
-    public partial class SettingsViewModel
-    {
-        public SettingsViewModel()
-        {
+	[GenerateViewModel]
+	public partial class SettingsViewModel
+	{
+		public SettingsViewModel ()
+		{
 
-        }
-    }
+		}
+	}
 }

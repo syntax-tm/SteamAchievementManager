@@ -1,10 +1,16 @@
 ﻿namespace SAM.Core.Storage
 {
-    public interface ICacheKey
-    {
-        string Key { get; }
-        string FilePath { get; }
+	public interface ICacheKey
+	{
+		string Key
+		{
+			get;
+		}
+		string FilePath
+		{
+			get;
+		}
 
-        string GetFullPath();
-    }
+		string GetFullPath ();
+	}
 }

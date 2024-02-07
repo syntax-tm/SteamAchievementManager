@@ -22,272 +22,277 @@ namespace SAM.Core;
 [DebuggerDisplay("{Name} ({Id})")]
 public partial class SteamApp : ViewModelBase
 {
-    protected readonly ILog Log = LogManager.GetLogger(nameof(SteamApp));
+	protected readonly ILog Log = LogManager.GetLogger(nameof(SteamApp));
 
-    private Process _managerProcess;
+	private Process _managerProcess;
 
-    [GenerateProperty] private uint id;
-    [GenerateProperty] private string name;
-    [GenerateProperty] private GameInfoType gameInfoType;
-    public bool IsJunk => GameInfoType == GameInfoType.Junk;
-    public bool IsDemo => GameInfoType == GameInfoType.Demo;
-    public bool IsNormal => GameInfoType == GameInfoType.Normal;
-    public bool IsTool => GameInfoType == GameInfoType.Tool;
-    public bool IsMod => GameInfoType == GameInfoType.Mod;
-    [GenerateProperty] private bool isLoading;
-    [GenerateProperty] private bool loaded;
-    [GenerateProperty] private string publisher;
-    [GenerateProperty] private string developer;
-    [GenerateProperty] private SteamStoreApp storeInfo;
-    [GenerateProperty] private Image icon;
-    [GenerateProperty] private Image header;
-    [GenerateProperty] private Image capsule;
-    [GenerateProperty] private string group;
-    [GenerateProperty] private bool isHidden;
-    [GenerateProperty] private bool isFavorite;
-    [GenerateProperty] private bool isMenuOpen;
+	[GenerateProperty] private uint id;
+	[GenerateProperty] private string name;
+	[GenerateProperty] private GameInfoType gameInfoType;
+	public bool IsJunk => GameInfoType == GameInfoType.Junk;
+	public bool IsDemo => GameInfoType == GameInfoType.Demo;
+	public bool IsNormal => GameInfoType == GameInfoType.Normal;
+	public bool IsTool => GameInfoType == GameInfoType.Tool;
+	public bool IsMod => GameInfoType == GameInfoType.Mod;
+	[GenerateProperty] private bool isLoading;
+	[GenerateProperty] private bool loaded;
+	[GenerateProperty] private string publisher;
+	[GenerateProperty] private string developer;
+	[GenerateProperty] private SteamStoreApp storeInfo;
+	[GenerateProperty] private Image icon;
+	[GenerateProperty] private Image header;
+	[GenerateProperty] private Image capsule;
+	[GenerateProperty] private string group;
+	[GenerateProperty] private bool isHidden;
+	[GenerateProperty] private bool isFavorite;
+	[GenerateProperty] private bool isMenuOpen;
 
-    public SteamApp(uint id, GameInfoType type)
-    {
-        Id = id;
-        GameInfoType = type;
-            
-        Name = SteamClientManager.Default.GetAppName(Id);
+	public SteamApp (uint id, GameInfoType type)
+	{
+		Id = id;
+		GameInfoType = type;
 
-        if (string.IsNullOrEmpty(Name)) return;
+		Name = SteamClientManager.Default.GetAppName(Id);
 
-        Group = char.IsDigit(Name[0])
-            ? "#"
-            : (Name?[..1]);
-    }
-        
-    public SteamApp(SupportedApp supportedApp) 
-        : this(supportedApp.Id, supportedApp.GameInfoType)
-    {
-    }
+		if (string.IsNullOrEmpty(Name))
+			return;
 
-    [GenerateCommand]
-    public void ManageApp()
-    {
-        // TODO: Add a visual indication that the manager is running (handle Exited event)
-        if (_managerProcess != null && _managerProcess.SetActive()) return;
-        _managerProcess = SAMHelper.OpenManager(Id);
-    }
-        
-    [GenerateCommand]
-    public void LaunchApp()
-    {
-        BrowserHelper.StartApp(Id);
-    }
-        
-    [GenerateCommand]
-    public void InstallApp()
-    {
-        BrowserHelper.InstallApp(Id);
-    }
-        
-    [GenerateCommand]
-    public void ViewAchievements()
-    {
-        BrowserHelper.ViewAchievements(Id);
-    }
-        
-    [GenerateCommand]
-    public void ViewSteamWorkshop()
-    {
-        BrowserHelper.ViewSteamWorkshop(Id);
-    }
-        
-    [GenerateCommand]
-    public void ViewOnSteamDB()
-    {
-        BrowserHelper.ViewOnSteamDB(Id);
-    }
-        
-    [GenerateCommand]
-    public void ViewOnSteam()
-    {
-        BrowserHelper.ViewOnSteamStore(Id);
-    }
-        
-    [GenerateCommand]
-    public void ViewOnSteamCardExchange()
-    {
-        BrowserHelper.ViewOnSteamCardExchange(Id);
-    }
-        
-    [GenerateCommand]
-    public void ViewOnPCGW()
-    {
-        BrowserHelper.ViewOnPCGW(Id);
-    }
-        
-    [GenerateCommand]
-    public void CopySteamID()
-    {
-        TextCopy.ClipboardService.SetText(Id.ToString());
-    }
-        
-    [GenerateCommand]
-    public void ToggleVisibility()
-    {
-        IsHidden = !IsHidden;
+		Group = char.IsDigit(Name [0])
+			? "#"
+			: (Name? [..1]);
+	}
 
-        SaveSettings();
-    }
-        
-    [GenerateCommand]
-    public void ToggleFavorite()
-    {
-        IsFavorite = !IsFavorite;
+	public SteamApp (SupportedApp supportedApp)
+		: this(supportedApp.Id, supportedApp.GameInfoType)
+	{
+	}
 
-        SaveSettings();
-    }
+	[GenerateCommand]
+	public void ManageApp ()
+	{
+		// TODO: Add a visual indication that the manager is running (handle Exited event)
+		if (_managerProcess != null && _managerProcess.SetActive())
+			return;
+		_managerProcess = SAMHelper.OpenManager(Id);
+	}
 
-    public async Task Load()
-    {
-        if (Loaded) return;
+	[GenerateCommand]
+	public void LaunchApp ()
+	{
+		BrowserHelper.StartApp(Id);
+	}
 
-        try
-        {
-            IsLoading = true;
+	[GenerateCommand]
+	public void InstallApp ()
+	{
+		BrowserHelper.InstallApp(Id);
+	}
 
-            // TODO: SteamApp shouldn't need to configure its cache directory structure
-            CacheManager.StorageManager.CreateDirectory($@"apps\{Id}");
+	[GenerateCommand]
+	public void ViewAchievements ()
+	{
+		BrowserHelper.ViewAchievements(Id);
+	}
 
-            await Task.WhenAll(new []
-            {
-                Task.Run(LoadStoreInfo),
+	[GenerateCommand]
+	public void ViewSteamWorkshop ()
+	{
+		BrowserHelper.ViewSteamWorkshop(Id);
+	}
+
+	[GenerateCommand]
+	public void ViewOnSteamDB ()
+	{
+		BrowserHelper.ViewOnSteamDB(Id);
+	}
+
+	[GenerateCommand]
+	public void ViewOnSteam ()
+	{
+		BrowserHelper.ViewOnSteamStore(Id);
+	}
+
+	[GenerateCommand]
+	public void ViewOnSteamCardExchange ()
+	{
+		BrowserHelper.ViewOnSteamCardExchange(Id);
+	}
+
+	[GenerateCommand]
+	public void ViewOnPCGW ()
+	{
+		BrowserHelper.ViewOnPCGW(Id);
+	}
+
+	[GenerateCommand]
+	public void CopySteamID ()
+	{
+		TextCopy.ClipboardService.SetText(Id.ToString());
+	}
+
+	[GenerateCommand]
+	public void ToggleVisibility ()
+	{
+		IsHidden = !IsHidden;
+
+		SaveSettings();
+	}
+
+	[GenerateCommand]
+	public void ToggleFavorite ()
+	{
+		IsFavorite = !IsFavorite;
+
+		SaveSettings();
+	}
+
+	public async Task Load ()
+	{
+		if (Loaded)
+			return;
+
+		try
+		{
+			IsLoading = true;
+
+			// TODO: SteamApp shouldn't need to configure its cache directory structure
+			CacheManager.StorageManager.CreateDirectory($@"apps\{Id}");
+
+			await Task.WhenAll(new []
+			{
+				Task.Run(LoadStoreInfo),
                 // load user preferences (hidden, favorite, etc) for app
                 Task.Run(LoadSettings)
-            });
-                
-            await LoadImages();
-        }
-        catch (Exception e)
-        {
-            Log.Error($"An error occurred attempting to load app info for '{Name}' ({Id}). {e.Message}", e);
-        }
-        finally
-        {
-            Loaded = true;
-            IsLoading = false;
-        }
-    }
-        
-    private void LoadStoreInfo()
-    {
-        const int MAX_RETRIES = 3;
-        var retryTime = TimeSpan.FromSeconds(30);
-        var retries = 0;
+			});
 
-        while (StoreInfo == null)
-        {
-            if (retries > MAX_RETRIES) break;
+			await LoadImages();
+		}
+		catch (Exception e)
+		{
+			Log.Error($"An error occurred attempting to load app info for '{Name}' ({Id}). {e.Message}", e);
+		}
+		finally
+		{
+			Loaded = true;
+			IsLoading = false;
+		}
+	}
 
-            try
-            {
-                StoreInfo = SteamworksManager.GetAppInfo(Id);
+	private void LoadStoreInfo ()
+	{
+		const int MAX_RETRIES = 3;
+		var retryTime = TimeSpan.FromSeconds(30);
+		var retries = 0;
 
-                if (StoreInfo == null) return;
+		while (StoreInfo == null)
+		{
+			if (retries > MAX_RETRIES)
+				break;
 
-                Publisher = StoreInfo.Publishers.FirstOrDefault();
-                Developer = StoreInfo.Developers.FirstOrDefault();
-            }
-            catch (HttpRequestException hre) when (hre.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                var retrySb = new StringBuilder();
+			try
+			{
+				StoreInfo = SteamworksManager.GetAppInfo(Id);
 
-                retrySb.Append($"Request for store info on app '{Id}' returned {nameof(HttpStatusCode)} {HttpStatusCode.TooManyRequests} for {nameof(HttpStatusCode.TooManyRequests)}. ");
-                retrySb.Append($"Waiting {retryTime.TotalSeconds} second(s) and then retrying...");
+				if (StoreInfo == null)
+					return;
 
-                Log.Warn(retrySb);
+				Publisher = StoreInfo.Publishers.FirstOrDefault();
+				Developer = StoreInfo.Developers.FirstOrDefault();
+			}
+			catch (HttpRequestException hre) when (hre.StatusCode == HttpStatusCode.TooManyRequests)
+			{
+				var retrySb = new StringBuilder();
 
-                Thread.Sleep(retryTime);
-            }
-            catch (Exception e)
-            {
-                Log.Error($"An error occurred attempting to load the store info for app {Id}. {e.Message}", e);
-                break;
-            }
-            finally
-            {
-                retries++;
-            }
-        }
-    }
+				retrySb.Append($"Request for store info on app '{Id}' returned {nameof(HttpStatusCode)} {HttpStatusCode.TooManyRequests} for {nameof(HttpStatusCode.TooManyRequests)}. ");
+				retrySb.Append($"Waiting {retryTime.TotalSeconds} second(s) and then retrying...");
 
-    public async Task LoadImages()
-    {
-        try
-        {
-            // TODO: Verify that the preferred HeaderImage method is consistent
-            // TODO: For each type, loop through sources until one is successful
-            if (!string.IsNullOrEmpty(StoreInfo?.HeaderImage))
-            {
-                // TODO: The Uri file name parsing should be moved to the WebManager
-                // TODO: Move image cache key creation to WebManager
-                var uri = new Uri(StoreInfo.HeaderImage);
-                var fileName = Path.GetFileName(uri.LocalPath);
-                var key = CacheKeys.CreateAppImageCacheKey(Id, fileName);
+				Log.Warn(retrySb);
 
-                var storeHeader = await WebManager.DownloadImageAsync(StoreInfo.HeaderImage, key);
+				Thread.Sleep(retryTime);
+			}
+			catch (Exception e)
+			{
+				Log.Error($"An error occurred attempting to load the store info for app {Id}. {e.Message}", e);
+				break;
+			}
+			finally
+			{
+				retries++;
+			}
+		}
+	}
 
-                // this assumes that we'll get a header back that we can use
-                Header = storeHeader;
-            }
-            else
-            {
-                // this should run when Header is null regardless of whether or not
-                // the StoreInfo.HeaderImage is null
-                var appLogo = SteamClientManager.Default.GetAppLogo(Id);
-                if (!string.IsNullOrEmpty(appLogo))
-                {
-                    Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);
-                }
-            }
+	public async Task LoadImages ()
+	{
+		try
+		{
+			// TODO: Verify that the preferred HeaderImage method is consistent
+			// TODO: For each type, loop through sources until one is successful
+			if (!string.IsNullOrEmpty(StoreInfo?.HeaderImage))
+			{
+				// TODO: The Uri file name parsing should be moved to the WebManager
+				// TODO: Move image cache key creation to WebManager
+				var uri = new Uri(StoreInfo.HeaderImage);
+				var fileName = Path.GetFileName(uri.LocalPath);
+				var key = CacheKeys.CreateAppImageCacheKey(Id, fileName);
 
-            // TODO: Change to be lazy loaded when needed
-            var iconName = SteamClientManager.Default.GetAppIcon(Id);
-            if (!string.IsNullOrEmpty(iconName))
-            {
-                Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
-            }
-        }
-        catch (Exception e)
-        {
-            var message = $"An error occurred loading images for {Name} ({Id}). {e.Message}";
-            Log.Error(message, e);
-        }
-    }
+				var storeHeader = await WebManager.DownloadImageAsync(StoreInfo.HeaderImage, key);
 
-    private void LoadSettings()
-    {
-        var key = CacheKeys.CreateAppSettingsCacheKey(Id);
+				// this assumes that we'll get a header back that we can use
+				Header = storeHeader;
+			}
+			else
+			{
+				// this should run when Header is null regardless of whether or not
+				// the StoreInfo.HeaderImage is null
+				var appLogo = SteamClientManager.Default.GetAppLogo(Id);
+				if (!string.IsNullOrEmpty(appLogo))
+				{
+					Header = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogo);
+				}
+			}
 
-        if (!CacheManager.TryGetObject<SteamAppSettings>(key, out var settings))
-        {
-            return;
-        }
+			// TODO: Change to be lazy loaded when needed
+			var iconName = SteamClientManager.Default.GetAppIcon(Id);
+			if (!string.IsNullOrEmpty(iconName))
+			{
+				Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
+			}
+		}
+		catch (Exception e)
+		{
+			var message = $"An error occurred loading images for {Name} ({Id}). {e.Message}";
+			Log.Error(message, e);
+		}
+	}
 
-        IsFavorite = settings.IsFavorite;
-        IsHidden = settings.IsHidden;
+	private void LoadSettings ()
+	{
+		var key = CacheKeys.CreateAppSettingsCacheKey(Id);
 
-        Log.Debug($"Loaded {nameof(SteamAppSettings)} {settings}.");
-    }
+		if (!CacheManager.TryGetObject<SteamAppSettings>(key, out var settings))
+		{
+			return;
+		}
 
-    private void SaveSettings()
-    {
-        var key = CacheKeys.CreateAppSettingsCacheKey(Id);
-        var settings = new SteamAppSettings
-        {
-            AppId = Id,
-            IsFavorite = IsFavorite,
-            IsHidden = IsHidden
-        };
+		IsFavorite = settings.IsFavorite;
+		IsHidden = settings.IsHidden;
 
-        CacheManager.CacheObject(key, settings);
-            
-        Log.Debug($"Saving {nameof(SteamAppSettings)} {settings}.");
-    }
+		Log.Debug($"Loaded {nameof(SteamAppSettings)} {settings}.");
+	}
+
+	private void SaveSettings ()
+	{
+		var key = CacheKeys.CreateAppSettingsCacheKey(Id);
+		var settings = new SteamAppSettings
+		{
+			AppId = Id,
+			IsFavorite = IsFavorite,
+			IsHidden = IsHidden
+		};
+
+		CacheManager.CacheObject(key, settings);
+
+		Log.Debug($"Saving {nameof(SteamAppSettings)} {settings}.");
+	}
 }

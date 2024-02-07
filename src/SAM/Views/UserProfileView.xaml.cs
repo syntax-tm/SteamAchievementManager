@@ -2,8 +2,8 @@
 
 public partial class UserProfileView
 {
-    public UserProfileView()
-    {
-        InitializeComponent();
-    }
+	public UserProfileView ()
+	{
+		InitializeComponent();
+	}
 }

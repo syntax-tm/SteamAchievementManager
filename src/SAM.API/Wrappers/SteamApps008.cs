@@ -6,32 +6,32 @@ using System.Runtime.InteropServices;
 
 namespace SAM.API.Wrappers
 {
-    public class SteamApps008 : NativeWrapper<ISteamApps008>
-    {
-#region IsSubscribed
+	public class SteamApps008 : NativeWrapper<ISteamApps008>
+	{
+		#region IsSubscribed
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeIsSubscribedApp(nint self, uint gameId);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeIsSubscribedApp (nint self, uint gameId);
 
-        public bool IsSubscribedApp(uint gameId)
-        {
-            return Call<bool, NativeIsSubscribedApp>(Functions.IsSubscribedApp, ObjectAddress, gameId);
-        }
+		public bool IsSubscribedApp (uint gameId)
+		{
+			return Call<bool, NativeIsSubscribedApp>(Functions.IsSubscribedApp, ObjectAddress, gameId);
+		}
 
-#endregion
+		#endregion
 
-#region GetCurrentGameLanguage
+		#region GetCurrentGameLanguage
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate nint NativeGetCurrentGameLanguage(nint self);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		private delegate nint NativeGetCurrentGameLanguage (nint self);
 
-        public string GetCurrentGameLanguage()
-        {
-            var languagePointer = Call<nint, NativeGetCurrentGameLanguage>(Functions.GetCurrentGameLanguage, ObjectAddress);
-            return NativeStrings.PointerToString(languagePointer);
-        }
+		public string GetCurrentGameLanguage ()
+		{
+			var languagePointer = Call<nint, NativeGetCurrentGameLanguage>(Functions.GetCurrentGameLanguage, ObjectAddress);
+			return NativeStrings.PointerToString(languagePointer);
+		}
 
-#endregion
-    }
+		#endregion
+	}
 }

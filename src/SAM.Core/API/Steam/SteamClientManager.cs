@@ -5,38 +5,48 @@ using SAM.API;
 
 namespace SAM.Core
 {
-    public static class SteamClientManager
-    {
-        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
-        
-        private static bool _isInitialized;
-        
-        public static uint AppId { get; private set; }
-        public static string CurrentLanguage { get; private set; }
-        public static Client Default { get; private set; }
+	public static class SteamClientManager
+	{
+		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
 
-        public static void Init(uint appId)
-        {
-            if (_isInitialized) throw new SAMInitializationException($"The Steam {nameof(Client)} has already been initialized.");
+		private static bool _isInitialized;
 
-            try
-            {
-                Default = new ();
-                Default.Initialize(appId);
+		public static uint AppId
+		{
+			get; private set;
+		}
+		public static string CurrentLanguage
+		{
+			get; private set;
+		}
+		public static Client Default
+		{
+			get; private set;
+		}
 
-                AppId = appId;
-                CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
+		public static void Init (uint appId)
+		{
+			if (_isInitialized)
+				throw new SAMInitializationException($"The Steam {nameof(Client)} has already been initialized.");
 
-                _isInitialized = true;
-            }
-            catch (Exception e)
-            {
-                var message = $"An error occurred attempting to initialize the Steam client with app ID '{appId}'. {e.Message}";
-                log.Error(message, e);
+			try
+			{
+				Default = new();
+				Default.Initialize(appId);
 
-                throw new SAMInitializationException(message, e);
-            }
-        }
+				AppId = appId;
+				CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
 
-    }
+				_isInitialized = true;
+			}
+			catch (Exception e)
+			{
+				var message = $"An error occurred attempting to initialize the Steam client with app ID '{appId}'. {e.Message}";
+				log.Error(message, e);
+
+				throw new SAMInitializationException(message, e);
+			}
+		}
+
+	}
 }

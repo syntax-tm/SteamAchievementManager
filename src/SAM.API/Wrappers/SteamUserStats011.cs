@@ -4,211 +4,211 @@ using System.Runtime.InteropServices;
 
 namespace SAM.API.Wrappers
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class SteamUserStats011 : NativeWrapper<ISteamUserStats011>
-    {
-#region RequestCurrentStats
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
+	public class SteamUserStats011 : NativeWrapper<ISteamUserStats011>
+	{
+		#region RequestCurrentStats
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeRequestCurrentStats(nint self);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeRequestCurrentStats (nint self);
 
-        public bool RequestCurrentStats()
-        {
-            return Call<bool, NativeRequestCurrentStats>(Functions.RequestCurrentStats, ObjectAddress);
-        }
+		public bool RequestCurrentStats ()
+		{
+			return Call<bool, NativeRequestCurrentStats>(Functions.RequestCurrentStats, ObjectAddress);
+		}
 
-#endregion
+		#endregion
 
-#region GetStatValue (int)
+		#region GetStatValue (int)
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetStatInt(nint self, nint name, out int data);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeGetStatInt (nint self, nint name, out int data);
 
-        public bool GetStatValue(string name, out int value)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public bool GetStatValue (string name, out int value)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            var call = GetFunction<NativeGetStatInt>(Functions.GetStatInteger);
-            return call(ObjectAddress, nativeName.Handle, out value);
-        }
+			var call = GetFunction<NativeGetStatInt>(Functions.GetStatInteger);
+			return call(ObjectAddress, nativeName.Handle, out value);
+		}
 
-#endregion
+		#endregion
 
-#region GetStatValue (float)
+		#region GetStatValue (float)
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetStatFloat(nint self, nint name, out float data);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeGetStatFloat (nint self, nint name, out float data);
 
-        public bool GetStatValue(string name, out float value)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public bool GetStatValue (string name, out float value)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            var call = GetFunction<NativeGetStatFloat>(Functions.GetStatFloat);
-            return call(ObjectAddress, nativeName.Handle, out value);
-        }
+			var call = GetFunction<NativeGetStatFloat>(Functions.GetStatFloat);
+			return call(ObjectAddress, nativeName.Handle, out value);
+		}
 
-#endregion
+		#endregion
 
-#region SetStatValue (int)
+		#region SetStatValue (int)
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeSetStatInt(nint self, nint name, int data);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeSetStatInt (nint self, nint name, int data);
 
-        public bool SetStatValue(string name, int value)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public bool SetStatValue (string name, int value)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return Call<bool, NativeSetStatInt>(
-                                                Functions.SetStatInteger,
-                                                ObjectAddress,
-                                                nativeName.Handle,
-                                                value);
-        }
+			return Call<bool, NativeSetStatInt>(
+												Functions.SetStatInteger,
+												ObjectAddress,
+												nativeName.Handle,
+												value);
+		}
 
-#endregion
+		#endregion
 
-#region SetStatValue (float)
+		#region SetStatValue (float)
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeSetStatFloat(nint self, nint name, float data);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeSetStatFloat (nint self, nint name, float data);
 
-        public bool SetStatValue(string name, float value)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public bool SetStatValue (string name, float value)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return Call<bool, NativeSetStatFloat>(Functions.SetStatFloat, ObjectAddress,
-                                                  nativeName.Handle, value);
-        }
+			return Call<bool, NativeSetStatFloat>(Functions.SetStatFloat, ObjectAddress,
+												  nativeName.Handle, value);
+		}
 
-#endregion
+		#endregion
 
-#region UpdateAvgRateStat
+		#region UpdateAvgRateStat
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeUpdateAvgRateStat(nint self, nint name, float flCountThisSession, double dSessionLength);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeUpdateAvgRateStat (nint self, nint name, float flCountThisSession, double dSessionLength);
 
-        public bool UpdateAvgRateStat(string name, float flCountThisSession, double dSessionLength)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public bool UpdateAvgRateStat (string name, float flCountThisSession, double dSessionLength)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return Call<bool, NativeUpdateAvgRateStat>(Functions.UpdateAvgRateStat, ObjectAddress,
-                                                       nativeName.Handle, flCountThisSession, dSessionLength);
-        }
+			return Call<bool, NativeUpdateAvgRateStat>(Functions.UpdateAvgRateStat, ObjectAddress,
+													   nativeName.Handle, flCountThisSession, dSessionLength);
+		}
 
-#endregion
+		#endregion
 
-#region GetAchievement
+		#region GetAchievement
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetAchievement(
-            nint self,
-            nint name,
-            [MarshalAs(UnmanagedType.I1)] out bool isAchieved);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeGetAchievement (
+			nint self,
+			nint name,
+			[MarshalAs(UnmanagedType.I1)] out bool isAchieved);
 
-        public bool GetAchievementState(string name, out bool isAchieved)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public bool GetAchievementState (string name, out bool isAchieved)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            var call = GetFunction<NativeGetAchievement>(Functions.GetAchievement);
-            return call(ObjectAddress, nativeName.Handle, out isAchieved);
-        }
+			var call = GetFunction<NativeGetAchievement>(Functions.GetAchievement);
+			return call(ObjectAddress, nativeName.Handle, out isAchieved);
+		}
 
-#endregion
+		#endregion
 
-#region SetAchievementState
+		#region SetAchievementState
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeSetAchievement(nint self, nint name);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeSetAchievement (nint self, nint name);
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeClearAchievement(nint self, nint name);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeClearAchievement (nint self, nint name);
 
-        public bool SetAchievement(string name, bool state)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public bool SetAchievement (string name, bool state)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return state == false
-                ? Call<bool, NativeClearAchievement>(Functions.ClearAchievement,
-                                                     ObjectAddress,
-                                                     nativeName.Handle)
-                : Call<bool, NativeSetAchievement>(Functions.SetAchievement,
-                                                   ObjectAddress,
-                                                   nativeName.Handle);
-        }
+			return state == false
+				? Call<bool, NativeClearAchievement>(Functions.ClearAchievement,
+													 ObjectAddress,
+													 nativeName.Handle)
+				: Call<bool, NativeSetAchievement>(Functions.SetAchievement,
+												   ObjectAddress,
+												   nativeName.Handle);
+		}
 
-#endregion
+		#endregion
 
-#region StoreStats
+		#region StoreStats
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeStoreStats(nint self);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeStoreStats (nint self);
 
-        public bool StoreStats()
-        {
-            return Call<bool, NativeStoreStats>(Functions.StoreStats, ObjectAddress);
-        }
+		public bool StoreStats ()
+		{
+			return Call<bool, NativeStoreStats>(Functions.StoreStats, ObjectAddress);
+		}
 
-#endregion
+		#endregion
 
-#region GetAchievementIcon
+		#region GetAchievementIcon
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeGetAchievementIcon(nint self, nint name);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		private delegate int NativeGetAchievementIcon (nint self, nint name);
 
-        public int GetAchievementIcon(string name)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
+		public int GetAchievementIcon (string name)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
 
-            return Call<int, NativeGetAchievementIcon>(Functions.GetAchievementIcon,
-                                                       ObjectAddress,
-                                                       nativeName.Handle);
-        }
+			return Call<int, NativeGetAchievementIcon>(Functions.GetAchievementIcon,
+													   ObjectAddress,
+													   nativeName.Handle);
+		}
 
-#endregion
+		#endregion
 
-#region GetAchievementDisplayAttribute
+		#region GetAchievementDisplayAttribute
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate nint NativeGetAchievementDisplayAttribute(nint self, nint name, nint key);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		private delegate nint NativeGetAchievementDisplayAttribute (nint self, nint name, nint key);
 
-        public string GetAchievementDisplayAttribute(string name, string key)
-        {
-            using var nativeName = NativeStrings.StringToStringHandle(name);
-            using var nativeKey = NativeStrings.StringToStringHandle(key);
+		public string GetAchievementDisplayAttribute (string name, string key)
+		{
+			using var nativeName = NativeStrings.StringToStringHandle(name);
+			using var nativeKey = NativeStrings.StringToStringHandle(key);
 
-            var result = Call<nint, NativeGetAchievementDisplayAttribute>(Functions.GetAchievementDisplayAttribute, 
-                                                                            ObjectAddress,
-                                                                            nativeName.Handle,
-                                                                            nativeKey.Handle);
-            return NativeStrings.PointerToString(result);
-        }
+			var result = Call<nint, NativeGetAchievementDisplayAttribute>(Functions.GetAchievementDisplayAttribute,
+																			ObjectAddress,
+																			nativeName.Handle,
+																			nativeKey.Handle);
+			return NativeStrings.PointerToString(result);
+		}
 
-#endregion
+		#endregion
 
-#region ResetAllStats
+		#region ResetAllStats
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeResetAllStats(nint self, [MarshalAs(UnmanagedType.I1)] bool achievementsToo);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeResetAllStats (nint self, [MarshalAs(UnmanagedType.I1)] bool achievementsToo);
 
-        public bool ResetAllStats(bool achievementsToo)
-        {
-            return Call<bool, NativeResetAllStats>(
-                Functions.ResetAllStats,
-                ObjectAddress,
-                achievementsToo);
-        }
+		public bool ResetAllStats (bool achievementsToo)
+		{
+			return Call<bool, NativeResetAllStats>(
+				Functions.ResetAllStats,
+				ObjectAddress,
+				achievementsToo);
+		}
 
-#endregion
-    }
+		#endregion
+	}
 }

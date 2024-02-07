@@ -6,73 +6,73 @@ using System.Runtime.InteropServices;
 
 namespace SAM.API.Wrappers
 {
-    public class SteamUtils005 : NativeWrapper<ISteamUtils005>
-    {
-#region GetConnectedUniverse
+	public class SteamUtils005 : NativeWrapper<ISteamUtils005>
+	{
+		#region GetConnectedUniverse
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate int NativeGetConnectedUniverse(nint self);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		private delegate int NativeGetConnectedUniverse (nint self);
 
-        public int GetConnectedUniverse()
-        {
-            return Call<int, NativeGetConnectedUniverse>(Functions.GetConnectedUniverse, ObjectAddress);
-        }
+		public int GetConnectedUniverse ()
+		{
+			return Call<int, NativeGetConnectedUniverse>(Functions.GetConnectedUniverse, ObjectAddress);
+		}
 
-#endregion
+		#endregion
 
-#region GetIPCountry
+		#region GetIPCountry
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate nint NativeGetIPCountry(nint self);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		private delegate nint NativeGetIPCountry (nint self);
 
-        public string GetIPCountry()
-        {
-            var result = Call<nint, NativeGetIPCountry>(Functions.GetIPCountry, ObjectAddress);
-            return NativeStrings.PointerToString(result);
-        }
+		public string GetIPCountry ()
+		{
+			var result = Call<nint, NativeGetIPCountry>(Functions.GetIPCountry, ObjectAddress);
+			return NativeStrings.PointerToString(result);
+		}
 
-#endregion
+		#endregion
 
-#region GetImageSize
+		#region GetImageSize
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetImageSize(nint self, int index, out int width, out int height);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeGetImageSize (nint self, int index, out int width, out int height);
 
-        public bool GetImageSize(int index, out int width, out int height)
-        {
-            var call = GetFunction<NativeGetImageSize>(Functions.GetImageSize);
-            return call(ObjectAddress, index, out width, out height);
-        }
+		public bool GetImageSize (int index, out int width, out int height)
+		{
+			var call = GetFunction<NativeGetImageSize>(Functions.GetImageSize);
+			return call(ObjectAddress, index, out width, out height);
+		}
 
-#endregion
+		#endregion
 
-#region GetImageRGBA
+		#region GetImageRGBA
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        [return: MarshalAs(UnmanagedType.I1)]
-        private delegate bool NativeGetImageRGBA(nint self, int index, byte[] buffer, int length);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool NativeGetImageRGBA (nint self, int index, byte [] buffer, int length);
 
-        public bool GetImageRGBA(int index, byte[] data)
-        {
+		public bool GetImageRGBA (int index, byte [] data)
+		{
 			ArgumentNullException.ThrowIfNull(data);
 
 			var call = GetFunction<NativeGetImageRGBA>(Functions.GetImageRGBA);
-            return call(ObjectAddress, index, data, data.Length);
-        }
+			return call(ObjectAddress, index, data, data.Length);
+		}
 
-#endregion
+		#endregion
 
-#region GetAppID
+		#region GetAppID
 
-        [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
-        private delegate uint NativeGetAppId(nint self);
+		[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+		private delegate uint NativeGetAppId (nint self);
 
-        public uint GetAppId()
-        {
-            return Call<uint, NativeGetAppId>(Functions.GetAppID, ObjectAddress);
-        }
+		public uint GetAppId ()
+		{
+			return Call<uint, NativeGetAppId>(Functions.GetAppID, ObjectAddress);
+		}
 
-#endregion
-    }
+		#endregion
+	}
 }

@@ -2,8 +2,8 @@
 
 namespace SAM.API
 {
-    public interface INativeWrapper
-    {
-        void SetupFunctions(nint objectAddress);
-    }
+	public interface INativeWrapper
+	{
+		void SetupFunctions (nint objectAddress);
+	}
 }

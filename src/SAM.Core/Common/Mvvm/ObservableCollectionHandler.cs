@@ -7,150 +7,150 @@ using JetBrains.Annotations;
 
 namespace SAM.Core
 {
-    public class ObservableCollectionHandler<T, TU> : IWeakEventListener
-        where T : class, INotifyCollectionChanged, ICollection<TU>
-    {
-        private readonly WeakReference m_source;
-        private Action<T, TU> m_addItemHandler;
-        private bool m_isRegistered;
-        private Action<T, TU> m_removeItemHandler;
-        private Action<T> m_resetHandler;
+	public class ObservableCollectionHandler<T, TU> : IWeakEventListener
+		where T : class, INotifyCollectionChanged, ICollection<TU>
+	{
+		private readonly WeakReference m_source;
+		private Action<T, TU> m_addItemHandler;
+		private bool m_isRegistered;
+		private Action<T, TU> m_removeItemHandler;
+		private Action<T> m_resetHandler;
 
-        public ObservableCollectionHandler([NotNull] T source)
-        {
+		public ObservableCollectionHandler ([NotNull] T source)
+		{
 			ArgumentNullException.ThrowIfNull(source);
 
-			m_source = new (source);
-        }
+			m_source = new(source);
+		}
 
-        bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
-        {
-            return OnCollectionReceiveWeakEvent(managerType, sender, e);
-        }
+		bool IWeakEventListener.ReceiveWeakEvent (Type managerType, object sender, EventArgs e)
+		{
+			return OnCollectionReceiveWeakEvent(managerType, sender, e);
+		}
 
-        [NotNull]
-        public ObservableCollectionHandler<T, TU> SetAddItem([NotNull] Action<T, TU> handler)
-        {
+		[NotNull]
+		public ObservableCollectionHandler<T, TU> SetAddItem ([NotNull] Action<T, TU> handler)
+		{
 			ArgumentNullException.ThrowIfNull(handler);
 
 			RegisterEventHandler();
-            m_addItemHandler = handler;
+			m_addItemHandler = handler;
 
-            return this;
-        }
+			return this;
+		}
 
-        [NotNull]
-        public ObservableCollectionHandler<T, TU> SetAddItemAndInvoke([NotNull] Action<T, TU> handler)
-        {
-            SetAddItem(handler);
+		[NotNull]
+		public ObservableCollectionHandler<T, TU> SetAddItemAndInvoke ([NotNull] Action<T, TU> handler)
+		{
+			SetAddItem(handler);
 
-            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
+			var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
 			foreach (var item in source)
-            {
-                handler(GetSource(), item);
-            }
+			{
+				handler(GetSource(), item);
+			}
 
-            return this;
-        }
+			return this;
+		}
 
-        [NotNull]
-        public ObservableCollectionHandler<T, TU> SetRemoveItem([NotNull] Action<T, TU> handler)
-        {
+		[NotNull]
+		public ObservableCollectionHandler<T, TU> SetRemoveItem ([NotNull] Action<T, TU> handler)
+		{
 			ArgumentNullException.ThrowIfNull(handler);
 
 			RegisterEventHandler();
-            m_removeItemHandler = handler;
+			m_removeItemHandler = handler;
 
-            return this;
-        }
+			return this;
+		}
 
-        [NotNull]
-        public ObservableCollectionHandler<T, TU> SetReset([NotNull] Action<T> handler)
-        {
+		[NotNull]
+		public ObservableCollectionHandler<T, TU> SetReset ([NotNull] Action<T> handler)
+		{
 			ArgumentNullException.ThrowIfNull(handler);
 
 			RegisterEventHandler();
-            m_resetHandler = handler;
+			m_resetHandler = handler;
 
-            return this;
-        }
+			return this;
+		}
 
-        [CanBeNull]
-        protected T GetSource()
-        {
-            var source = m_source.Target as T;
+		[CanBeNull]
+		protected T GetSource ()
+		{
+			var source = m_source.Target as T;
 
-            return source;
-        }
+			return source;
+		}
 
-        private void RegisterEventHandler()
-        {
-            if (m_isRegistered)
-                return;
+		private void RegisterEventHandler ()
+		{
+			if (m_isRegistered)
+				return;
 
-            var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
+			var source = GetSource() ?? throw new InvalidOperationException("Source has been garbage collected.");
 
 			CollectionChangedEventManager.AddListener(source, this);
-            m_isRegistered = true;
-        }
+			m_isRegistered = true;
+		}
 
-        protected virtual bool OnCollectionReceiveWeakEvent(Type managerType, object sender, EventArgs e)
-        {
-            if (managerType != typeof(CollectionChangedEventManager))
-                return false;
+		protected virtual bool OnCollectionReceiveWeakEvent (Type managerType, object sender, EventArgs e)
+		{
+			if (managerType != typeof(CollectionChangedEventManager))
+				return false;
 
-            if (m_addItemHandler == null)
-                return false;
+			if (m_addItemHandler == null)
+				return false;
 
-            var source = GetSource() ?? throw new InvalidOperationException("Confused, received a CollectionChanged event from a source that has been garbage collected.");
+			var source = GetSource() ?? throw new InvalidOperationException("Confused, received a CollectionChanged event from a source that has been garbage collected.");
 
 			var actualEventArgs = (NotifyCollectionChangedEventArgs) e;
 
-            RaiseAddItem(actualEventArgs, source);
-            RaiseRemoveItem(actualEventArgs, source);
-            RaiseReset(actualEventArgs, source);
+			RaiseAddItem(actualEventArgs, source);
+			RaiseRemoveItem(actualEventArgs, source);
+			RaiseReset(actualEventArgs, source);
 
-            return true;
-        }
+			return true;
+		}
 
-        private void RaiseReset(NotifyCollectionChangedEventArgs e, T source)
-        {
-            if (m_resetHandler == null)
-                return;
+		private void RaiseReset (NotifyCollectionChangedEventArgs e, T source)
+		{
+			if (m_resetHandler == null)
+				return;
 
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-                return;
+			if (e.Action != NotifyCollectionChangedAction.Reset)
+				return;
 
-            m_resetHandler(source);
-        }
+			m_resetHandler(source);
+		}
 
-        private void RaiseRemoveItem(NotifyCollectionChangedEventArgs e, T source)
-        {
-            if (m_removeItemHandler == null)
-                return;
+		private void RaiseRemoveItem (NotifyCollectionChangedEventArgs e, T source)
+		{
+			if (m_removeItemHandler == null)
+				return;
 
-            if (e.OldItems == null)
-                return;
+			if (e.OldItems == null)
+				return;
 
-            foreach (var item in e.OldItems.Cast<TU>())
-            {
-                m_removeItemHandler(source, item);
-            }
-        }
+			foreach (var item in e.OldItems.Cast<TU>())
+			{
+				m_removeItemHandler(source, item);
+			}
+		}
 
-        private void RaiseAddItem(NotifyCollectionChangedEventArgs e, T source)
-        {
-            if (m_addItemHandler == null)
-                return;
+		private void RaiseAddItem (NotifyCollectionChangedEventArgs e, T source)
+		{
+			if (m_addItemHandler == null)
+				return;
 
-            if (e.NewItems == null)
-                return;
+			if (e.NewItems == null)
+				return;
 
-            foreach (var item in e.NewItems.Cast<TU>())
-            {
-                m_addItemHandler(source, item);
-            }
-        }
-    }
+			foreach (var item in e.NewItems.Cast<TU>())
+			{
+				m_addItemHandler(source, item);
+			}
+		}
+	}
 }

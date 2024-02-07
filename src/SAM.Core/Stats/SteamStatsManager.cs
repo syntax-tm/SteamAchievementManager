@@ -18,292 +18,300 @@ using Timer = System.Timers.Timer;
 
 namespace SAM.Core.Stats
 {
-    public class SteamStatsManager : BindableBase
-    {
+	public class SteamStatsManager : BindableBase
+	{
 
-        private readonly ILog log = LogManager.GetLogger(nameof(SteamStatsManager));
+		private readonly ILog log = LogManager.GetLogger(nameof(SteamStatsManager));
 
-        private static Client _client => SteamClientManager.Default;
-        private readonly UserStatsReceived _userStatsReceivedCallback;
-        private readonly Timer _callbackTimer;
-        private AutoResetEvent _resetEvent;
+		private static Client _client => SteamClientManager.Default;
+		private readonly UserStatsReceived _userStatsReceivedCallback;
+		private readonly Timer _callbackTimer;
+		private AutoResetEvent _resetEvent;
 
-        private List<ObservableHandler<SteamAchievement>> _achievementHandlers;
-        private List<ObservableHandler<SteamStatisticBase>> _statHandlers;
+		private List<ObservableHandler<SteamAchievement>> _achievementHandlers;
+		private List<ObservableHandler<SteamStatisticBase>> _statHandlers;
 
-        public uint AppId { get; }
-        public bool IsLoading 
-        {
-            get => GetProperty(() => IsLoading);
-            set => SetProperty(() => IsLoading, value);
-        }
-        public bool Loaded 
-        {
-            get => GetProperty(() => Loaded);
-            set => SetProperty(() => Loaded, value);
-        }
-        public bool IsModified 
-        {
-            get => GetProperty(() => IsModified);
-            set => SetProperty(() => IsModified, value);
-        }
-        public bool IsAchievementsModified 
-        {
-            get => GetProperty(() => IsAchievementsModified);
-            set => SetProperty(() => IsAchievementsModified, value, OnItemChanged);
-        }
-        public bool IsStatsModified 
-        {
-            get => GetProperty(() => IsStatsModified);
-            set => SetProperty(() => IsStatsModified, value, OnItemChanged);
-        }
-        public List<SteamStatisticBase> Statistics
-        {
-            get => GetProperty(() => Statistics);
-            set => SetProperty(() => Statistics, value);
-        }
-        public List<SteamAchievement> Achievements 
-        {
-            get => GetProperty(() => Achievements);
-            set => SetProperty(() => Achievements, value);
-        }
-        public List<StatInfoBase> StatDefinitions 
-        {
-            get => GetProperty(() => StatDefinitions);
-            set => SetProperty(() => StatDefinitions, value);
-        }
-        public List<AchievementInfo> AchievementDefinitions 
-        {
-            get => GetProperty(() => AchievementDefinitions);
-            set => SetProperty(() => AchievementDefinitions, value);
-        }
+		public uint AppId
+		{
+			get;
+		}
+		public bool IsLoading
+		{
+			get => GetProperty(() => IsLoading);
+			set => SetProperty(() => IsLoading, value);
+		}
+		public bool Loaded
+		{
+			get => GetProperty(() => Loaded);
+			set => SetProperty(() => Loaded, value);
+		}
+		public bool IsModified
+		{
+			get => GetProperty(() => IsModified);
+			set => SetProperty(() => IsModified, value);
+		}
+		public bool IsAchievementsModified
+		{
+			get => GetProperty(() => IsAchievementsModified);
+			set => SetProperty(() => IsAchievementsModified, value, OnItemChanged);
+		}
+		public bool IsStatsModified
+		{
+			get => GetProperty(() => IsStatsModified);
+			set => SetProperty(() => IsStatsModified, value, OnItemChanged);
+		}
+		public List<SteamStatisticBase> Statistics
+		{
+			get => GetProperty(() => Statistics);
+			set => SetProperty(() => Statistics, value);
+		}
+		public List<SteamAchievement> Achievements
+		{
+			get => GetProperty(() => Achievements);
+			set => SetProperty(() => Achievements, value);
+		}
+		public List<StatInfoBase> StatDefinitions
+		{
+			get => GetProperty(() => StatDefinitions);
+			set => SetProperty(() => StatDefinitions, value);
+		}
+		public List<AchievementInfo> AchievementDefinitions
+		{
+			get => GetProperty(() => AchievementDefinitions);
+			set => SetProperty(() => AchievementDefinitions, value);
+		}
 
-        public SteamStatsManager()
-        {
-            AppId = SteamClientManager.AppId;
+		public SteamStatsManager ()
+		{
+			AppId = SteamClientManager.AppId;
 
-            Statistics = [];
-            Achievements = [];
-            StatDefinitions = [];
-            AchievementDefinitions = [];
+			Statistics = [];
+			Achievements = [];
+			StatDefinitions = [];
+			AchievementDefinitions = [];
 
-            _userStatsReceivedCallback = _client.CreateAndRegisterCallback<UserStatsReceived>();
-            _userStatsReceivedCallback.OnRun += OnUserStatsReceived;
+			_userStatsReceivedCallback = _client.CreateAndRegisterCallback<UserStatsReceived>();
+			_userStatsReceivedCallback.OnRun += OnUserStatsReceived;
 
-            _callbackTimer = new ();
-            _callbackTimer.Elapsed += CallbackTimerOnElapsed;
-            _callbackTimer.Interval = 100;
-            _callbackTimer.Enabled = true;
-        }
+			_callbackTimer = new();
+			_callbackTimer.Elapsed += CallbackTimerOnElapsed;
+			_callbackTimer.Interval = 100;
+			_callbackTimer.Enabled = true;
+		}
 
-        private void CallbackTimerOnElapsed(object sender, ElapsedEventArgs e)
-        {
-            _callbackTimer.Enabled = false;
+		private void CallbackTimerOnElapsed (object sender, ElapsedEventArgs e)
+		{
+			_callbackTimer.Enabled = false;
 			_client.RunCallbacks(false);
-            _callbackTimer.Enabled = true;
-        }
+			_callbackTimer.Enabled = true;
+		}
 
-        public void RefreshStats()
-        {
-            _resetEvent ??= new(false);
+		public void RefreshStats ()
+		{
+			_resetEvent ??= new(false);
 
-            Statistics.Clear();
-            Achievements.Clear();
-            
-            Loaded = false;
-            IsLoading = true;
+			Statistics.Clear();
+			Achievements.Clear();
 
-            if (_client.SteamUserStats.RequestCurrentStats())
-            {
-                _resetEvent?.WaitOne();
+			Loaded = false;
+			IsLoading = true;
 
-                return;
-            }
+			if (_client.SteamUserStats.RequestCurrentStats())
+			{
+				_resetEvent?.WaitOne();
 
-            MessageBox.Show("Failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+				return;
+			}
 
-        private void OnUserStatsReceived(UserStatsResponse param)
-        {
-            try
-            {
-                if (!param.IsSuccess)
-                {
-                    IsLoading = false;
-                    return;
-                }
+			MessageBox.Show("Failed.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+		}
 
-                if (!LoadSchema())
-                {
-                    IsLoading = false;
-                    return;
-                }
+		private void OnUserStatsReceived (UserStatsResponse param)
+		{
+			try
+			{
+				if (!param.IsSuccess)
+				{
+					IsLoading = false;
+					return;
+				}
 
-                GetAchievements();
-                GetStatistics();
-            }
-            catch (Exception e)
-            {
-                IsLoading = false;
+				if (!LoadSchema())
+				{
+					IsLoading = false;
+					return;
+				}
 
-                var message = $"An error occurred handling stats retrieval. {e.Message}";
-                log.Error(message, e);
+				GetAchievements();
+				GetStatistics();
+			}
+			catch (Exception e)
+			{
+				IsLoading = false;
 
-                MessageBox.Show(message, "Steam Stats Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                Loaded = true;
-                IsLoading = false;
+				var message = $"An error occurred handling stats retrieval. {e.Message}";
+				log.Error(message, e);
 
-                _resetEvent.Set();
-            }
-        }
+				MessageBox.Show(message, "Steam Stats Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			finally
+			{
+				Loaded = true;
+				IsLoading = false;
 
-        public bool LoadSchema()
-        {
-            string path;
+				_resetEvent.Set();
+			}
+		}
 
-            try
-            {
-                path = Steam.GetInstallPath();
-                path = Path.Combine(path, @"appcache");
-                path = Path.Combine(path, @"stats");
-                path = Path.Combine(path, $@"UserGameStatsSchema_{AppId}.bin");
+		public bool LoadSchema ()
+		{
+			string path;
 
-                if (!File.Exists(path)) return false;
-            }
-            catch
-            {
-                return false;
-            }
+			try
+			{
+				path = Steam.GetInstallPath();
+				path = Path.Combine(path, @"appcache");
+				path = Path.Combine(path, @"stats");
+				path = Path.Combine(path, $@"UserGameStatsSchema_{AppId}.bin");
 
-            var kv = KeyValue.LoadAsBinary(path);
+				if (!File.Exists(path))
+					return false;
+			}
+			catch
+			{
+				return false;
+			}
 
-            if (kv == null) return false;
+			var kv = KeyValue.LoadAsBinary(path);
 
-            var currentLanguage = _client.SteamApps008.GetCurrentGameLanguage();
+			if (kv == null)
+				return false;
 
-            AchievementDefinitions.Clear();
-            StatDefinitions.Clear();
+			var currentLanguage = _client.SteamApps008.GetCurrentGameLanguage();
 
-            var stats = kv[AppId.ToString()][@"stats"];
+			AchievementDefinitions.Clear();
+			StatDefinitions.Clear();
 
-            if (!stats.Valid || stats.Children == null) return false;
+			var stats = kv [AppId.ToString()] [@"stats"];
 
-            foreach (var stat in stats.Children.Where(s => s.Valid))
-            {
-                var rawType = stat[@"type_int"].Valid
-                            ? stat[@"type_int"].AsInteger()
-                            : stat[@"type"].AsInteger();
-                var type = (UserStatType) rawType;
-                switch (type)
-                {
-                    case UserStatType.Invalid:
-                    {
-                        break;
-                    }
-                    case UserStatType.Integer:
-                    {
-                        StatDefinitions.Add(new IntegerStatInfo(stat, currentLanguage));
-                        break;
-                    }
-                    case UserStatType.AverageRate:
-                    case UserStatType.Float:
-                    {
-                        StatDefinitions.Add(new FloatStatInfo(stat, currentLanguage));
-                        break;
-                    }
-                    //case UserStatType.AverageRate:
-                    //{
-                    //    StatDefinitions.Add(new FloatStatInfo(stat, currentLanguage));
-                    //    break;
-                    //}
-                    case UserStatType.Achievements:
-                    case UserStatType.GroupAchievements:
-                    {
-                        if (stat.Children != null)
-                        {
-                            foreach (var bits in stat.Children.Where(b => b.Name.EqualsIgnoreCase(@"bits")))
-                            {
-                                if (!bits.Valid || bits.Children == null)
-                                {
-                                    continue;
-                                }
+			if (!stats.Valid || stats.Children == null)
+				return false;
 
-                                foreach (var bit in bits.Children)
-                                {
-                                    var achievement = UserStatsFactory.Create(bit, currentLanguage);
-                                    AchievementDefinitions.Add(achievement);
-                                }
-                            }
-                        }
-                        break;
-                    }
-                    default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(rawType), @$"Invalid stat type '{rawType}'.");
-                    }
-                }
-            }
+			foreach (var stat in stats.Children.Where(s => s.Valid))
+			{
+				var rawType = stat [@"type_int"].Valid
+							? stat [@"type_int"].AsInteger()
+							: stat [@"type"].AsInteger();
+				var type = (UserStatType) rawType;
+				switch (type)
+				{
+					case UserStatType.Invalid:
+					{
+						break;
+					}
+					case UserStatType.Integer:
+					{
+						StatDefinitions.Add(new IntegerStatInfo(stat, currentLanguage));
+						break;
+					}
+					case UserStatType.AverageRate:
+					case UserStatType.Float:
+					{
+						StatDefinitions.Add(new FloatStatInfo(stat, currentLanguage));
+						break;
+					}
+					//case UserStatType.AverageRate:
+					//{
+					//    StatDefinitions.Add(new FloatStatInfo(stat, currentLanguage));
+					//    break;
+					//}
+					case UserStatType.Achievements:
+					case UserStatType.GroupAchievements:
+					{
+						if (stat.Children != null)
+						{
+							foreach (var bits in stat.Children.Where(b => b.Name.EqualsIgnoreCase(@"bits")))
+							{
+								if (!bits.Valid || bits.Children == null)
+								{
+									continue;
+								}
 
-            return true;
-        }
+								foreach (var bit in bits.Children)
+								{
+									var achievement = UserStatsFactory.Create(bit, currentLanguage);
+									AchievementDefinitions.Add(achievement);
+								}
+							}
+						}
+						break;
+					}
+					default:
+					{
+						throw new ArgumentOutOfRangeException(nameof(rawType), @$"Invalid stat type '{rawType}'.");
+					}
+				}
+			}
 
-        private void GetAchievements()
-        {
-            var achievements = new List<SteamAchievement>();
+			return true;
+		}
 
-            foreach (var def in AchievementDefinitions)
-            {
-                if (string.IsNullOrEmpty(def.Id)) continue;
-                if (!_client.SteamUserStats.GetAchievementState(def.Id, out var isAchieved)) continue;
-                
-                def.IsAchieved = isAchieved;
-                
-                var achievement = new SteamAchievement(AppId, def);
+		private void GetAchievements ()
+		{
+			var achievements = new List<SteamAchievement>();
 
-                achievements.Add(achievement);
-            }
+			foreach (var def in AchievementDefinitions)
+			{
+				if (string.IsNullOrEmpty(def.Id))
+					continue;
+				if (!_client.SteamUserStats.GetAchievementState(def.Id, out var isAchieved))
+					continue;
 
-            Achievements = new (achievements);
-            
-            var handlers = Achievements.Select(achievement => new ObservableHandler<SteamAchievement>(achievement).Add(a => a.IsModified, OnAchievementChanged));
+				def.IsAchieved = isAchieved;
 
-            _achievementHandlers = [.. handlers];
-        }
+				var achievement = new SteamAchievement(AppId, def);
 
-        private void GetStatistics()
-        {
-            var stats = new List<SteamStatisticBase>();
-            var validDefinitions = StatDefinitions.Where(statDef => !string.IsNullOrEmpty(statDef?.Id));
+				achievements.Add(achievement);
+			}
 
-            foreach (var statDef in validDefinitions)
-            {
-                var stat = SteamStatisticFactory.CreateStat(_client, statDef);
-                stats.Add(stat);
-            }
+			Achievements = new(achievements);
 
-            Statistics = new (stats);
-            
-            var handlers = Statistics.Select(stat => new ObservableHandler<SteamStatisticBase>(stat).Add(s => s.IsModified, OnStatChanged));
+			var handlers = Achievements.Select(achievement => new ObservableHandler<SteamAchievement>(achievement).Add(a => a.IsModified, OnAchievementChanged));
 
-            _statHandlers = [.. handlers];
-        }
-        
-        private void OnItemChanged()
-        {
-            IsModified = IsAchievementsModified || IsStatsModified;
-        }
+			_achievementHandlers = [.. handlers];
+		}
 
-        private void OnAchievementChanged()
-        {
-            IsAchievementsModified = Achievements.Any(a => a.IsModified);
-        }
+		private void GetStatistics ()
+		{
+			var stats = new List<SteamStatisticBase>();
+			var validDefinitions = StatDefinitions.Where(statDef => !string.IsNullOrEmpty(statDef?.Id));
 
-        private void OnStatChanged()
-        {
-            IsStatsModified = Statistics.Any(s => s.IsModified);
-        }
-    }
+			foreach (var statDef in validDefinitions)
+			{
+				var stat = SteamStatisticFactory.CreateStat(_client, statDef);
+				stats.Add(stat);
+			}
+
+			Statistics = new(stats);
+
+			var handlers = Statistics.Select(stat => new ObservableHandler<SteamStatisticBase>(stat).Add(s => s.IsModified, OnStatChanged));
+
+			_statHandlers = [.. handlers];
+		}
+
+		private void OnItemChanged ()
+		{
+			IsModified = IsAchievementsModified || IsStatsModified;
+		}
+
+		private void OnAchievementChanged ()
+		{
+			IsAchievementsModified = Achievements.Any(a => a.IsModified);
+		}
+
+		private void OnStatChanged ()
+		{
+			IsStatsModified = Statistics.Any(s => s.IsModified);
+		}
+	}
 }

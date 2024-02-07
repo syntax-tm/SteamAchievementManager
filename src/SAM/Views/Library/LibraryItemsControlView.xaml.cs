@@ -2,8 +2,8 @@
 
 public partial class LibraryItemsControlView
 {
-    public LibraryItemsControlView()
-    {
-        InitializeComponent();
-    }
+	public LibraryItemsControlView ()
+	{
+		InitializeComponent();
+	}
 }

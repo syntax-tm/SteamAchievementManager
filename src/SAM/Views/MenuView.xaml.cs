@@ -2,8 +2,8 @@
 
 public partial class MenuView
 {
-    public MenuView()
-    {
-        InitializeComponent();
-    }
+	public MenuView ()
+	{
+		InitializeComponent();
+	}
 }

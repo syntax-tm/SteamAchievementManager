@@ -5,7 +5,7 @@ namespace SAM.Core;
 [DefaultValue(None)]
 public enum CacheKeySubType
 {
-    None = 0,
-    [Description("img")]
-    Image
+	None = 0,
+	[Description("img")]
+	Image
 }

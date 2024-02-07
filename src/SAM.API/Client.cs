@@ -7,125 +7,152 @@ using SAM.API.Wrappers;
 
 namespace SAM.API
 {
-    public class Client : IDisposable
-    {
-        private static readonly ILog log = LogManager.GetLogger(nameof(Client));
+	public class Client : IDisposable
+	{
+		private static readonly ILog log = LogManager.GetLogger(nameof(Client));
 
-        private readonly List<ICallback> callbacks = [];
+		private readonly List<ICallback> callbacks = [];
 
-        private bool _isDisposed;
-        private int _pipe;
+		private bool _isDisposed;
+		private int _pipe;
 
-        private volatile bool _runningCallbacks;
-        private int _user;
+		private volatile bool _runningCallbacks;
+		private int _user;
 
-        public SteamApps001 SteamApps001 { get; private set; }
-        public SteamApps008 SteamApps008 { get; private set; }
-        public SteamClient019 SteamClient { get; private set; }
-        public SteamUser017 SteamUser { get; private set; }
-        public SteamUserStats007 SteamUserStats { get; private set; }
-        public SteamUtils005 SteamUtils { get; private set; }
+		public SteamApps001 SteamApps001
+		{
+			get; private set;
+		}
+		public SteamApps008 SteamApps008
+		{
+			get; private set;
+		}
+		public SteamClient019 SteamClient
+		{
+			get; private set;
+		}
+		public SteamUser017 SteamUser
+		{
+			get; private set;
+		}
+		public SteamUserStats007 SteamUserStats
+		{
+			get; private set;
+		}
+		public SteamUtils005 SteamUtils
+		{
+			get; private set;
+		}
 
-        public void Initialize(long appId)
-        {
-            if (string.IsNullOrEmpty(Steam.GetInstallPath())) throw new ClientInitializeException(ClientInitFailure.GetInstallPath);
+		public void Initialize (long appId)
+		{
+			if (string.IsNullOrEmpty(Steam.GetInstallPath()))
+				throw new ClientInitializeException(ClientInitFailure.GetInstallPath);
 
-            if (appId != 0) Environment.SetEnvironmentVariable(@"SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
+			if (appId != 0)
+				Environment.SetEnvironmentVariable(@"SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
 
-            if (Steam.Load() == false) throw new ClientInitializeException(ClientInitFailure.Load);
+			if (Steam.Load() == false)
+				throw new ClientInitializeException(ClientInitFailure.Load);
 
-            SteamClient = Steam.CreateInterface<SteamClient019>(nameof(SteamClient019));
-            if (SteamClient == null) throw new ClientInitializeException(ClientInitFailure.CreateSteamClient);
-            
-            _pipe = SteamClient.CreateSteamPipe();
-            if (_pipe == 0) throw new ClientInitializeException(ClientInitFailure.CreateSteamPipe);
+			SteamClient = Steam.CreateInterface<SteamClient019>(nameof(SteamClient019));
+			if (SteamClient == null)
+				throw new ClientInitializeException(ClientInitFailure.CreateSteamClient);
 
-            _user = SteamClient.ConnectToGlobalUser(_pipe);
-            if (_user == 0) throw new ClientInitializeException(ClientInitFailure.ConnectToGlobalUser);
+			_pipe = SteamClient.CreateSteamPipe();
+			if (_pipe == 0)
+				throw new ClientInitializeException(ClientInitFailure.CreateSteamPipe);
 
-            SteamUtils = SteamClient.GetSteamUtils004(_pipe);
-            if (appId > 0 && SteamUtils.GetAppId() != (uint)appId) throw new ClientInitializeException(ClientInitFailure.AppIdMismatch);
+			_user = SteamClient.ConnectToGlobalUser(_pipe);
+			if (_user == 0)
+				throw new ClientInitializeException(ClientInitFailure.ConnectToGlobalUser);
 
-            SteamUser = SteamClient.GetSteamUser017(_user, _pipe);
-            SteamUserStats = SteamClient.GetSteamUserStats006(_user, _pipe);
-            SteamApps001 = SteamClient.GetSteamApps001(_user, _pipe);
-            SteamApps008 = SteamClient.GetSteamApps008(_user, _pipe);
-        }
+			SteamUtils = SteamClient.GetSteamUtils004(_pipe);
+			if (appId > 0 && SteamUtils.GetAppId() != (uint) appId)
+				throw new ClientInitializeException(ClientInitFailure.AppIdMismatch);
 
-        ~Client()
-        {
-            Dispose(false);
-        }
-        
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+			SteamUser = SteamClient.GetSteamUser017(_user, _pipe);
+			SteamUserStats = SteamClient.GetSteamUserStats006(_user, _pipe);
+			SteamApps001 = SteamClient.GetSteamApps001(_user, _pipe);
+			SteamApps008 = SteamClient.GetSteamApps008(_user, _pipe);
+		}
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed) return;
+		~Client ()
+		{
+			Dispose(false);
+		}
 
-            if (disposing)
-            {
-                // dispose of managed resources
-            }
+		public void Dispose ()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-            // dispose of unmanaged resources
-            if (SteamClient != null && _pipe > 0)
-            {
-                if (_user > 0)
-                {
-                    SteamClient.ReleaseUser(_pipe, _user);
-                    _user = 0;
-                }
+		protected virtual void Dispose (bool disposing)
+		{
+			if (_isDisposed)
+				return;
 
-                SteamClient.ReleaseSteamPipe(_pipe);
-                _pipe = 0;
+			if (disposing)
+			{
+				// dispose of managed resources
+			}
 
-                SteamClient.ShutdownIfAllPipesClosed();
-            }
+			// dispose of unmanaged resources
+			if (SteamClient != null && _pipe > 0)
+			{
+				if (_user > 0)
+				{
+					SteamClient.ReleaseUser(_pipe, _user);
+					_user = 0;
+				}
 
-            SteamClient = null;
-            SteamUser = null;
-            SteamApps001 = null;
-            SteamApps008 = null;
-            SteamUserStats = null;
-            SteamUtils = null;
+				SteamClient.ReleaseSteamPipe(_pipe);
+				_pipe = 0;
 
-            _isDisposed = true;
-        }
+				SteamClient.ShutdownIfAllPipesClosed();
+			}
 
-        public TCallback CreateAndRegisterCallback<TCallback>()
-            where TCallback : ICallback, new()
-        {
-            var callback = new TCallback();
-            callbacks.Add(callback);
-            return callback;
-        }
+			SteamClient = null;
+			SteamUser = null;
+			SteamApps001 = null;
+			SteamApps008 = null;
+			SteamUserStats = null;
+			SteamUtils = null;
 
-        public void RunCallbacks(bool server)
-        {
-            if (_runningCallbacks) return;
+			_isDisposed = true;
+		}
 
-            _runningCallbacks = true;
+		public TCallback CreateAndRegisterCallback<TCallback> ()
+			where TCallback : ICallback, new()
+		{
+			var callback = new TCallback();
+			callbacks.Add(callback);
+			return callback;
+		}
 
-            while (Steam.GetCallback(_pipe, out var message, out _))
-            {
-                var callbackId = message.Id;
-                var messageCallbacks = callbacks.Where(candidate => candidate.Id == callbackId &&
-                                                            candidate.IsServer == server);
+		public void RunCallbacks (bool server)
+		{
+			if (_runningCallbacks)
+				return;
 
-                foreach (var callback in messageCallbacks)
-                {
-                    callback.Run(message.ParamPointer);
-                }
+			_runningCallbacks = true;
 
-                _ = Steam.FreeLastCallback(_pipe);
-            }
+			while (Steam.GetCallback(_pipe, out var message, out _))
+			{
+				var callbackId = message.Id;
+				var messageCallbacks = callbacks.Where(candidate => candidate.Id == callbackId &&
+															candidate.IsServer == server);
 
-            _runningCallbacks = false;
-        }
-    }
+				foreach (var callback in messageCallbacks)
+				{
+					callback.Run(message.ParamPointer);
+				}
+
+				_ = Steam.FreeLastCallback(_pipe);
+			}
+
+			_runningCallbacks = false;
+		}
+	}
 }

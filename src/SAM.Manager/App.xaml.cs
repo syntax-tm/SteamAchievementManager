@@ -13,170 +13,170 @@ namespace SAM.Manager;
 
 public partial class App
 {
-    private readonly ILog log = LogManager.GetLogger(nameof(App));
+	private readonly ILog log = LogManager.GetLogger(nameof(App));
 
-    private static uint? _appID;
+	private static uint? _appID;
 
-    [STAThread]
-    protected override void OnStartup(StartupEventArgs args)
-    {
-        base.OnStartup(args);
-            
-        try
-        {
-            var commandLineArgs = Environment.GetCommandLineArgs();
-            if (commandLineArgs.Length < 2)
-            {
-                if (!SAMHelper.IsPickerRunning())
-                {
-                    log.Warn(@"The SAM picker process is not running. Starting picker application...");
+	[STAThread]
+	protected override void OnStartup (StartupEventArgs args)
+	{
+		base.OnStartup(args);
 
-                    SAMHelper.OpenPicker();
-                }
-                    
-                log.Fatal(@"No app ID argument was supplied. Application will now exit...");
+		try
+		{
+			var commandLineArgs = Environment.GetCommandLineArgs();
+			if (commandLineArgs.Length < 2)
+			{
+				if (!SAMHelper.IsPickerRunning())
+				{
+					log.Warn(@"The SAM picker process is not running. Starting picker application...");
 
-                Environment.Exit(SAMExitCode.NoAppIdArgument);
-            }
+					SAMHelper.OpenPicker();
+				}
 
-            if (!uint.TryParse(commandLineArgs[1], out var appId))
-            {
-                var message = $"Failed to parse the {nameof(appId)} from command line argument {commandLineArgs[1]}.";
-                throw new ArgumentException(message, nameof(args));
-            }
+				log.Fatal(@"No app ID argument was supplied. Application will now exit...");
 
-            _appID = appId;
-                
-            //  handle any WPF dispatcher exceptions
-            Current.DispatcherUnhandledException += OnDispatcherException;
+				Environment.Exit(SAMExitCode.NoAppIdArgument);
+			}
 
-            //  handle any AppDomain exceptions
-            var current = AppDomain.CurrentDomain;
-            current.UnhandledException += OnAppDomainException;
-                
-            //  handle any TaskScheduler exceptions
-            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-                
-            SplashScreenHelper.Show("Loading game info...");
+			if (!uint.TryParse(commandLineArgs [1], out var appId))
+			{
+				var message = $"Failed to parse the {nameof(appId)} from command line argument {commandLineArgs [1]}.";
+				throw new ArgumentException(message, nameof(args));
+			}
 
-            SteamClientManager.Init(appId);
-                
-            if (!SteamClientManager.Default.OwnsGame(appId))
-            {
-                throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
-            }
+			_appID = appId;
 
-            // TODO: move this to the MainWindowViewModel via passing the app id
-            var supportedApp = SAMLibraryHelper.GetApp(appId);
+			//  handle any WPF dispatcher exceptions
+			Current.DispatcherUnhandledException += OnDispatcherException;
 
-            var appInfo = new SteamApp(supportedApp);
-            
-            SplashScreenHelper.SetStatus(appInfo.Name);
+			//  handle any AppDomain exceptions
+			var current = AppDomain.CurrentDomain;
+			current.UnhandledException += OnAppDomainException;
 
-            var gameVm = new SteamGameViewModel(appInfo);
-            gameVm.RefreshStats();
+			//  handle any TaskScheduler exceptions
+			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
-            var mainWindowVm = new MainWindowViewModel(gameVm)
-            {
-                SubTitle = appInfo.Name
-            };
+			SplashScreenHelper.Show("Loading game info...");
 
-            MainWindow = new MainWindow
-            {
-                DataContext = mainWindowVm,
-                Title = $"Steam Achievement Manager | {appInfo.Name}",
-                Icon = appInfo.Icon?.ToImageSource()
-            };
+			SteamClientManager.Init(appId);
 
-            MainWindow.Show();
+			if (!SteamClientManager.Default.OwnsGame(appId))
+			{
+				throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
+			}
 
-            ShutdownMode = ShutdownMode.OnMainWindowClose;
-        }
-        catch (Exception e)
-        {
-            var message = $"An error occurred during SAM Manager application startup. {e.Message}";
+			// TODO: move this to the MainWindowViewModel via passing the app id
+			var supportedApp = SAMLibraryHelper.GetApp(appId);
 
-            log.Fatal(message, e);
+			var appInfo = new SteamApp(supportedApp);
 
-            MessageBox.Show(message, "Application Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			SplashScreenHelper.SetStatus(appInfo.Name);
 
-            Environment.Exit(SAMExitCode.UnhandledException);
-        }
-        finally
-        {
-            SplashScreenHelper.Close();
-        }
-    }
+			var gameVm = new SteamGameViewModel(appInfo);
+			gameVm.RefreshStats();
 
-    protected override void OnExit(ExitEventArgs args)
-    {
-        base.OnExit(args);
+			var mainWindowVm = new MainWindowViewModel(gameVm)
+			{
+				SubTitle = appInfo.Name
+			};
 
-        log.Info(@$"SAM manager for app {_appID} is exiting.");
-    }
-        
-    private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
-    {
-        try
-        {
-            var exception = args.Exception;
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
+			MainWindow = new MainWindow
+			{
+				DataContext = mainWindowVm,
+				Title = $"Steam Achievement Manager | {appInfo.Name}",
+				Icon = appInfo.Icon?.ToImageSource()
+			};
 
-            var message = $"An unobserved task exception occurred. {exception.Message}";
+			MainWindow.Show();
 
-            log.Error(message, args.Exception);
+			ShutdownMode = ShutdownMode.OnMainWindowClose;
+		}
+		catch (Exception e)
+		{
+			var message = $"An error occurred during SAM Manager application startup. {e.Message}";
 
-            MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
-                    
-            args.SetObserved();
-        }
-        catch (Exception e)
-        {
-            log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
+			log.Fatal(message, e);
 
-            Environment.Exit((int) SAMExitCode.UnhandledException);
-        }
-    }
+			MessageBox.Show(message, "Application Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-    private void OnAppDomainException(object sender, UnhandledExceptionEventArgs args)
-    {
-        try
-        {
-            var exception = (Exception) args.ExceptionObject;
-            var message = $"Dispatcher unhandled exception occurred. {exception.Message}";
+			Environment.Exit(SAMExitCode.UnhandledException);
+		}
+		finally
+		{
+			SplashScreenHelper.Close();
+		}
+	}
 
-            log.Fatal(message, exception);
+	protected override void OnExit (ExitEventArgs args)
+	{
+		base.OnExit(args);
 
-            MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-        catch (Exception e)
-        {
-            log.Fatal($"An error occurred in {nameof(OnAppDomainException)}. {e.Message}", e);
-        }
-        finally
-        {
-            Environment.Exit(SAMExitCode.AppDomainException);
-        }
-    }
+		log.Info(@$"SAM manager for app {_appID} is exiting.");
+	}
 
-    private void OnDispatcherException(object sender, DispatcherUnhandledExceptionEventArgs args)
-    {
-        try
-        {
-            var message = $"Dispatcher unhandled exception occurred. {args.Exception.Message}";
+	private void OnUnobservedTaskException (object sender, UnobservedTaskExceptionEventArgs args)
+	{
+		try
+		{
+			var exception = args.Exception;
+			if (exception == null)
+			{
+				throw new ArgumentNullException(nameof(exception));
+			}
 
-            log.Fatal(message, args.Exception);
+			var message = $"An unobserved task exception occurred. {exception.Message}";
 
-            Environment.Exit(SAMExitCode.DispatcherException);
-        }
-        catch (Exception e)
-        {
-            var message = $"An error occurred in {nameof(OnDispatcherException)}. {e.Message}";
+			log.Error(message, args.Exception);
 
-            Environment.FailFast(message);
-        }
-    }
+			MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
+
+			args.SetObserved();
+		}
+		catch (Exception e)
+		{
+			log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
+
+			Environment.Exit((int) SAMExitCode.UnhandledException);
+		}
+	}
+
+	private void OnAppDomainException (object sender, UnhandledExceptionEventArgs args)
+	{
+		try
+		{
+			var exception = (Exception) args.ExceptionObject;
+			var message = $"Dispatcher unhandled exception occurred. {exception.Message}";
+
+			log.Fatal(message, exception);
+
+			MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
+		}
+		catch (Exception e)
+		{
+			log.Fatal($"An error occurred in {nameof(OnAppDomainException)}. {e.Message}", e);
+		}
+		finally
+		{
+			Environment.Exit(SAMExitCode.AppDomainException);
+		}
+	}
+
+	private void OnDispatcherException (object sender, DispatcherUnhandledExceptionEventArgs args)
+	{
+		try
+		{
+			var message = $"Dispatcher unhandled exception occurred. {args.Exception.Message}";
+
+			log.Fatal(message, args.Exception);
+
+			Environment.Exit(SAMExitCode.DispatcherException);
+		}
+		catch (Exception e)
+		{
+			var message = $"An error occurred in {nameof(OnDispatcherException)}. {e.Message}";
+
+			Environment.FailFast(message);
+		}
+	}
 }

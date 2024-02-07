@@ -2,8 +2,8 @@
 
 public partial class HomeView
 {
-    public HomeView()
-    {
-        InitializeComponent();
-    }
+	public HomeView ()
+	{
+		InitializeComponent();
+	}
 }

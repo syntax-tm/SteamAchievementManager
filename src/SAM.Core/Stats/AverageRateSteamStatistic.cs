@@ -3,78 +3,79 @@ using SAM.API.Stats;
 
 namespace SAM.Core.Stats
 {
-    [DebuggerDisplay("{DisplayName} ({Id})")]
-    public class AverageRateSteamStatistic : SteamStatisticBase
-    {
-        public override StatType StatType => StatType.AvgRate;
-        
-        public float Value
-        {
-            get => GetProperty(() => Value);
-            set => SetProperty(() => Value, value);
-        }
-        public float AvgRateNumerator
-        {
-            get => GetProperty(() => AvgRateNumerator);
-            set => SetProperty(() => AvgRateNumerator, value, OnAvgRateValueChanged);
-        }
-        public double AvgRateDenominator
-        {
-            get => GetProperty(() => AvgRateDenominator);
-            set => SetProperty(() => AvgRateDenominator, value, OnAvgRateValueChanged);
-        }
+	[DebuggerDisplay("{DisplayName} ({Id})")]
+	public class AverageRateSteamStatistic : SteamStatisticBase
+	{
+		public override StatType StatType => StatType.AvgRate;
 
-        public AverageRateSteamStatistic()
-        {
+		public float Value
+		{
+			get => GetProperty(() => Value);
+			set => SetProperty(() => Value, value);
+		}
+		public float AvgRateNumerator
+		{
+			get => GetProperty(() => AvgRateNumerator);
+			set => SetProperty(() => AvgRateNumerator, value, OnAvgRateValueChanged);
+		}
+		public double AvgRateDenominator
+		{
+			get => GetProperty(() => AvgRateDenominator);
+			set => SetProperty(() => AvgRateDenominator, value, OnAvgRateValueChanged);
+		}
 
-        }
+		public AverageRateSteamStatistic ()
+		{
 
-        public AverageRateSteamStatistic(StatInfoBase stat) : base(stat)
-        {
-            Refresh();
+		}
 
-            _loading = false;
-        }
+		public AverageRateSteamStatistic (StatInfoBase stat) : base(stat)
+		{
+			Refresh();
 
-        public override object GetValue()
-        {
-            return Value;
-        }
+			_loading = false;
+		}
 
-        public override void Reset()
-        {
-            AvgRateNumerator = 0;
-            AvgRateDenominator = 0;
-            IsModified = false;
-        }
+		public override object GetValue ()
+		{
+			return Value;
+		}
 
-        public override void Refresh()
-        {
-            _loading = true;
+		public override void Reset ()
+		{
+			AvgRateNumerator = 0;
+			AvgRateDenominator = 0;
+			IsModified = false;
+		}
 
-            var success = SteamClientManager.Default.SteamUserStats.GetStatValue(Id, out float floatValue);
-            if (success)
-            {
-                Value = floatValue;
-            }
+		public override void Refresh ()
+		{
+			_loading = true;
 
-            if (!success)
-            {
-                Log.Warn($"Failed to get {StatType} stat '{Id}' value.");
-            }
+			var success = SteamClientManager.Default.SteamUserStats.GetStatValue(Id, out float floatValue);
+			if (success)
+			{
+				Value = floatValue;
+			}
 
-            AvgRateNumerator = 0;
-            AvgRateDenominator = 0;
-            IsModified = false;
+			if (!success)
+			{
+				Log.Warn($"Failed to get {StatType} stat '{Id}' value.");
+			}
 
-            _loading = false;
-        }
+			AvgRateNumerator = 0;
+			AvgRateDenominator = 0;
+			IsModified = false;
 
-        protected void OnAvgRateValueChanged()
-        {
-            if (_loading) return;
+			_loading = false;
+		}
 
-            IsModified = AvgRateDenominator > 0 || AvgRateNumerator > 0;
-        }
-    }
+		protected void OnAvgRateValueChanged ()
+		{
+			if (_loading)
+				return;
+
+			IsModified = AvgRateDenominator > 0 || AvgRateNumerator > 0;
+		}
+	}
 }
