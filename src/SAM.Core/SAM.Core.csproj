@@ -8,14 +8,19 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <Nullable>annotations</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <DefineConstants>TRACE;JETBRAINS_ANNOTATIONS;DEBUG</DefineConstants>
     <WarningsAsErrors>;NU1605;NU1702</WarningsAsErrors>
+    <WarningLevel>7</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <RestoreLockedMode>true</RestoreLockedMode>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <WarningLevel>7</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="NativeMethods.json" />
