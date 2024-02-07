@@ -14,6 +14,7 @@
     <DefineConstants>TRACE;JETBRAINS_ANNOTATIONS;DEBUG</DefineConstants>
     <WarningsAsErrors>;NU1605;NU1702</WarningsAsErrors>
     <WarningLevel>7</WarningLevel>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -21,6 +22,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <WarningLevel>7</WarningLevel>
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="NativeMethods.json" />
