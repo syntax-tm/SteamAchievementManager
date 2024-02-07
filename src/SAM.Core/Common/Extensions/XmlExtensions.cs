@@ -50,7 +50,7 @@ public static class XmlExtensions
     {
         // if they didn't start with a slash, prepend two so the xpath can be
         // relative from any node
-        if (!path.StartsWith("/"))
+        if (!path.StartsWith('/'))
         {
             path = $"//{path}";
         }

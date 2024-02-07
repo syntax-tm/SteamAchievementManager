@@ -70,12 +70,12 @@ namespace SAM.Core
 
         private T GetSource()
         {
-            if (_source.TryGetTarget(out var source)) return source;
+			return _source.TryGetTarget(out var source)
+				? source
+				: throw new InvalidOperationException($"{nameof(source)} has been garbage collected.");
+		}
 
-            throw new InvalidOperationException($"{nameof(source)} has been garbage collected.");
-        }
-
-        bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
+		bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
         {
             return OnReceiveWeakEvent(managerType, sender, e);
         }

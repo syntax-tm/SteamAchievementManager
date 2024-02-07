@@ -12,11 +12,7 @@ namespace SAM.Core.Resources
         public override Style SelectStyle(object item, DependencyObject container)
         {
             var group = item as CollectionViewGroup;
-            if (group?.Name == null /* or any other condition */)
-            {
-                return NoGroupHeaderStyle;
-            }
-            return DefaultGroupStyle;
-        }
-    }
+			return group?.Name == null ? NoGroupHeaderStyle : DefaultGroupStyle;
+		}
+	}
 }

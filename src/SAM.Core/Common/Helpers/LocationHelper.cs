@@ -125,7 +125,7 @@ namespace SAM.Core
             public string Code { get; set; }
             public string Name { get; set; }
             public bool HasStates => States != null && States.Count != 0;
-            public List<SteamState> States { get; set; } = new ();
+            public List<SteamState> States { get; set; } = [];
 
             public SteamState GetStateByName(string name)
             {

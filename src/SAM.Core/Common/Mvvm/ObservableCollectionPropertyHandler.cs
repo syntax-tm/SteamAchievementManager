@@ -39,10 +39,7 @@ namespace SAM.Core
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
-            _handlers[propertyName] = (_, _) =>
-            {
-                handler();
-            };
+            _handlers[propertyName] = (_, _) => handler();
 
             foreach (var item in source)
             {
@@ -78,10 +75,7 @@ namespace SAM.Core
 
             var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
-            _handlers[propertyName] = (_, _) =>
-            {
-                handler();
-            };
+            _handlers[propertyName] = (_, _) => handler();
 
             foreach (var item in source)
             {
