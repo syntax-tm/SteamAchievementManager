@@ -9,7 +9,7 @@ namespace SAM;
 
 public partial class App
 {
-    protected readonly ILog log = LogManager.GetLogger(nameof(App));
+    protected readonly ILog Log = LogManager.GetLogger(nameof(App));
 
     protected override void OnStartup(StartupEventArgs args)
     {
@@ -17,7 +17,7 @@ public partial class App
 
         try
         {
-            log.Info("Application startup.");
+            Log.Info("Application startup.");
 
             SplashScreenHelper.Show("Starting up...");
 
@@ -47,7 +47,7 @@ public partial class App
         {
             var message = $"An error occurred on application startup. {e.Message}";
 
-            log.Error(message, e);
+            Log.Error(message, e);
 
             MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -65,13 +65,13 @@ public partial class App
 
         try
         {
-            log.Info(@"Application exiting. Ending any running manager processes...");
+            Log.Info(@"Application exiting. Ending any running manager processes...");
 
             SAMHelper.CloseAllManagers();
         }
         catch (Exception e)
         {
-            log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
+            Log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
         }
     }
         
@@ -83,7 +83,7 @@ public partial class App
 
 			var message = $"An unobserved task exception occurred. {exception.Message}";
 
-            log.Error(message, args.Exception);
+            Log.Error(message, args.Exception);
 
             MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
                     
@@ -91,7 +91,7 @@ public partial class App
         }
         catch (Exception e)
         {
-            log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
+            Log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
 
             Environment.Exit(SAMExitCode.TaskException);
         }
@@ -104,13 +104,13 @@ public partial class App
             var exception = (Exception) args.ExceptionObject;
             var message = $"Dispatcher unhandled exception occurred. {exception.Message}";
 
-            log.Fatal(message, exception);
+            Log.Fatal(message, exception);
 
             MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
         }
         catch (Exception e)
         {
-            log.Fatal($"An error occurred in {nameof(OnAppDomainException)}. {e.Message}", e);
+            Log.Fatal($"An error occurred in {nameof(OnAppDomainException)}. {e.Message}", e);
         }
         finally
         {
@@ -124,7 +124,7 @@ public partial class App
         {
             var message = $"Dispatcher unhandled exception occurred. {args.Exception.Message}";
 
-            log.Fatal(message, args.Exception);
+            Log.Fatal(message, args.Exception);
 
             Environment.Exit(SAMExitCode.DispatcherException);
         }

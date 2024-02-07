@@ -18,7 +18,7 @@ namespace SAM.Core.ViewModels
     [GenerateViewModel(ImplementISupportServices = true)]
     public partial class SteamGameViewModel
     {
-        protected readonly ILog log = LogManager.GetLogger(nameof(SteamGameViewModel));
+        protected readonly ILog Log = LogManager.GetLogger(nameof(SteamGameViewModel));
 
         public virtual ICurrentWindowService CurrentWindow => GetService<ICurrentWindowService>();
 
@@ -73,7 +73,7 @@ namespace SAM.Core.ViewModels
                 var modified = Achievements!.Where(a => a.IsModified).ToList();
                 if (modified.Count == 0)
                 {
-                    log.Info("User achievements have not been modified. Skipping save.");
+                    Log.Info("User achievements have not been modified. Skipping save.");
                     return 0;
                 }
 
@@ -89,7 +89,7 @@ namespace SAM.Core.ViewModels
                         throw new SAMException(message);
                     }
 
-                    log.Info($"Successfully saved achievement {achievement.Id}.");
+                    Log.Info($"Successfully saved achievement {achievement.Id}.");
 
                     achievement.CommitChanges();
 
@@ -104,7 +104,7 @@ namespace SAM.Core.ViewModels
             {
                 var message = $"An error occurred attempting to save achievements. {e.Message}";
 
-                log.Error(message, e);
+                Log.Error(message, e);
 
                 MessageBox.Show(message, "Error Updating Achievements", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -120,7 +120,7 @@ namespace SAM.Core.ViewModels
                 var modified = Statistics!.Where(a => a.IsModified).ToList();
                 if (modified.Count == 0)
                 {
-                    log.Info("User stats have not been modified. Skipping save...");
+                    Log.Info("User stats have not been modified. Skipping save...");
                     return 0;
                 }
 
@@ -153,7 +153,7 @@ namespace SAM.Core.ViewModels
                         throw new SAMException(message);
                     }
 
-                    log.Info($"Successfully saved {stat.StatType} stat {stat.Id}.");
+                    Log.Info($"Successfully saved {stat.StatType} stat {stat.Id}.");
 
                     stat.CommitChanges();
 
@@ -168,7 +168,7 @@ namespace SAM.Core.ViewModels
             {
                 var message = $"An error occurred attempting to save stats. {e.Message}";
 
-                log.Error(message, e);
+                Log.Error(message, e);
 
                 MessageBox.Show(message, "Error Updating Stats", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -182,7 +182,7 @@ namespace SAM.Core.ViewModels
             var achievementsSaved = SaveAchievements();
             if (achievementsSaved == -1)
             {
-                log.Warn($"{nameof(SaveAchievements)} encountered an error.");
+                Log.Warn($"{nameof(SaveAchievements)} encountered an error.");
 
                 return;
             }
@@ -190,7 +190,7 @@ namespace SAM.Core.ViewModels
             var statsSaved = SaveStats();
             if (statsSaved == -1)
             {
-                log.Warn($"{nameof(SaveStats)} encountered an error.");
+                Log.Warn($"{nameof(SaveStats)} encountered an error.");
 
                 return;
             }
