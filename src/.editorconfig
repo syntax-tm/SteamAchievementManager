@@ -17,7 +17,7 @@ dotnet_diagnostic.IDE0058.severity = none
 # Private readonly fields are camelCase
 dotnet_naming_rule.private_readonly_fields_rule.severity = suggestion
 dotnet_naming_rule.private_readonly_fields_rule.symbols = private_readonly_fields_group
-dotnet_naming_rule.private_readonly_fields_rule.style = private_readonly_field_style
+dotnet_naming_rule.private_readonly_fields_rule.style = locals_and_parameters_style
 
 dotnet_naming_symbols.private_readonly_fields_group.applicable_kinds = field
 dotnet_naming_symbols.private_readonly_fields_group.applicable_accessibilities = private
@@ -58,7 +58,7 @@ dotnet_naming_style.locals_and_parameters_style.capitalization = camel_case
 # Non-private constants are PascalCase
 dotnet_naming_rule.constants_rule.severity = suggestion
 dotnet_naming_rule.constants_rule.symbols = constants_group
-dotnet_naming_rule.constants_rule.style = constants_style
+dotnet_naming_rule.constants_rule.style = non_private_readonly_field_style
 
 dotnet_naming_symbols.constants_group.applicable_kinds = field
 dotnet_naming_symbols.constants_group.applicable_accessibilities = public, protected, internal, protected_internal, private_protected
@@ -80,7 +80,7 @@ dotnet_naming_style.local_consts_style.word_separator = _
 # Private constants are ALL_UPPER
 dotnet_naming_rule.private_constants_rule.severity = suggestion
 dotnet_naming_rule.private_constants_rule.symbols = private_constants_group
-dotnet_naming_rule.private_constants_rule.style = private_constant_style
+dotnet_naming_rule.private_constants_rule.style = local_consts_style
 
 dotnet_naming_symbols.private_constants_group.applicable_kinds = field, local
 dotnet_naming_symbols.private_constants_group.applicable_accessibilities = private
@@ -112,7 +112,7 @@ dotnet_naming_style.type_parameters_style.required_prefix = T
 # By default, name items with PascalCase
 dotnet_naming_rule.default_members_rule.severity = suggestion
 dotnet_naming_rule.default_members_rule.symbols = default_members_group
-dotnet_naming_rule.default_members_rule.style = default_members_style
+dotnet_naming_rule.default_members_rule.style = non_private_readonly_field_style
 
 dotnet_naming_symbols.default_members_group.applicable_kinds = *
 
@@ -122,7 +122,7 @@ csharp_indent_labels = flush_left
 csharp_using_directive_placement = outside_namespace:suggestion
 csharp_prefer_simple_using_statement = true:suggestion
 csharp_prefer_braces = true:suggestion
-csharp_style_namespace_declarations = block_scoped:suggestion
+csharp_style_namespace_declarations = file_scoped:suggestion
 csharp_style_prefer_method_group_conversion = true:suggestion
 csharp_style_prefer_top_level_statements = true:suggestion
 csharp_style_expression_bodied_methods = false:suggestion
