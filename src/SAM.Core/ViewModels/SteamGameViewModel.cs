@@ -209,11 +209,7 @@ public partial class SteamGameViewModel
 			_ => $"{statsSaved} stats"
 		};
 
-		message.Append("Successfully saved ");
-		message.Append(achievementMessage);
-		message.Append(" and ");
-		message.Append(statsMessage);
-		message.Append(".");
+		message.Append($"Successfully saved {achievementMessage} and {statsMessage}.");
 
 		MessageBox.Show(message.ToString(), "Achievements and Stats Saved", MessageBoxButton.OK, MessageBoxImage.Information);
 	}

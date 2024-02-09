@@ -50,7 +50,7 @@ public static class LocationHelper
 		_isInitialized = true;
 	}
 
-	internal sealed class SteamLocation
+	internal class SteamLocation
 	{
 		private readonly string _location;
 
