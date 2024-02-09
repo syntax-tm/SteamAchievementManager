@@ -106,7 +106,9 @@ public class SteamAchievement : BindableBase
 	public void Unlock ()
 	{
 		if (IsAchieved)
+			{
 			return;
+		}
 
 		IsAchieved = true;
 		IsModified = true;
@@ -115,7 +117,9 @@ public class SteamAchievement : BindableBase
 	public void Lock ()
 	{
 		if (!IsAchieved)
+			{
 			return;
+		}
 
 		IsAchieved = false;
 		IsModified = true;
@@ -135,7 +139,9 @@ public class SteamAchievement : BindableBase
 	public void CommitChanges ()
 	{
 		if (!IsModified)
+			{
 			return;
+		}
 
 		OriginalLockState = IsAchieved;
 		IsModified = false;
@@ -162,11 +168,12 @@ public class SteamAchievement : BindableBase
 	private void OnIsAchievedChanged ()
 	{
 		if (_isLoading)
+			{
 			return;
+		}
 
 		RefreshImage();
 
 		IsModified = IsAchieved != OriginalLockState;
 	}
-
 }

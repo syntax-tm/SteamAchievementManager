@@ -112,11 +112,14 @@ public class ObservableHandler<T> : IWeakEventListener
 		else
 		{
 			if (_handlers.TryGetValue(propertyName, out var handler))
+			{
 				handler();
+			}
 
 			if (_handlersT.TryGetValue(propertyName, out var handlerT))
+			{
 				handlerT(source);
+			}
 		}
 	}
-
 }

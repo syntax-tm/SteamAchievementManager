@@ -34,7 +34,9 @@ public class WindowAutoSaveBehavior : Behavior<Window>
 		base.OnDetaching();
 
 		if (AssociatedObject == null)
+			{
 			return;
+		}
 
 		AssociatedObject.StateChanged -= WindowStateChanged;
 		AssociatedObject.Closing -= WindowClosing;
@@ -45,7 +47,9 @@ public class WindowAutoSaveBehavior : Behavior<Window>
 	private void LoadSettings ()
 	{
 		if (AssociatedObject == null)
+		{
 			return;
+		}
 
 		_config = new(AssociatedObject.GetType().Name);
 
@@ -62,7 +66,9 @@ public class WindowAutoSaveBehavior : Behavior<Window>
 	private void SaveSettings ()
 	{
 		if (_config == null || !_initialized)
+		{
 			return;
+		}
 
 		var state = AssociatedObject.WindowState;
 
@@ -154,7 +160,9 @@ public class WindowSettings
 		get
 		{
 			if (_default is not null)
+			{
 				return _default;
+			}
 
 			_default = new();
 

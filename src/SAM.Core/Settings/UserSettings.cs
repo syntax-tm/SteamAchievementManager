@@ -28,11 +28,15 @@ public class UserSettings : BindableBase
 		get
 		{
 			if (_instance != null)
+			{
 				return _instance;
+			}
+
 			lock (syncLock)
 			{
 				_instance = new();
 			}
+
 			return _instance;
 		}
 	}

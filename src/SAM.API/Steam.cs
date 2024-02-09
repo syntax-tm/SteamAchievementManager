@@ -31,7 +31,9 @@ public static class Steam
 	public static string GetInstallPath ()
 	{
 		if (!string.IsNullOrEmpty(_installPath))
+			{
 			return _installPath;
+		}
 
 		// TODO: consider switching this to HKCU:\SOFTWARE\Valve\Steam\ActiveProcess\SteamClientDll
 		using var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
@@ -49,7 +51,9 @@ public static class Steam
 		var address = _callCreateInterface(version, nint.Zero);
 
 		if (address == nint.Zero)
+			{
 			return default;
+		}
 
 		var rez = new TClass();
 		rez.SetupFunctions(address);
@@ -76,26 +80,36 @@ public static class Steam
 
 		var path = GetInstallPath();
 		if (path == null)
+			{
 			return false;
+		}
 
 		Native.SetDllDirectory(path + ";" + Path.Combine(path, "bin"));
 		path = Path.Combine(path, SteamClientDll);
 
 		var module = Native.LoadLibraryEx(path, nint.Zero, Native.LoadWithAlteredSearchPath);
 		if (module == nint.Zero)
+			{
 			return false;
+		}
 
 		_callCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
 		if (_callCreateInterface == null)
+			{
 			return false;
+		}
 
 		_callSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
 		if (_callSteamBGetCallback == null)
+			{
 			return false;
+		}
 
 		_callSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
 		if (_callSteamFreeLastCallback == null)
+			{
 			return false;
+		}
 
 		_handle = module;
 		return true;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1305
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -49,7 +51,9 @@ public static class SteamworksManager
 				var appid = item.GetProperty(@"appid").GetUInt32();
 
 				if (apps.ContainsKey(appid))
+				{
 					continue;
+				}
 
 				var name = item.GetProperty(@"name").GetString();
 

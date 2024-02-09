@@ -29,7 +29,9 @@ public static class SAMLibraryHelper
 	public static List<SupportedApp> GetSupportedGames ()
 	{
 		if (_gameList != null)
+		{
 			return _gameList;
+		}
 
 		try
 		{
@@ -103,7 +105,9 @@ public static class SAMLibraryHelper
 	public static SupportedApp GetApp (uint id)
 	{
 		if (TryGetApp(id, out var app))
+		{
 			return app;
+		}
 
 		var message = $"App '{id}' is not currently supported.";
 		throw new SAMException(message);

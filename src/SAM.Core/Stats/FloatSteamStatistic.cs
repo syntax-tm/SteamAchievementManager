@@ -68,7 +68,9 @@ public class FloatSteamStatistic : SteamStatisticBase
 	protected void OnValueChanged ()
 	{
 		if (_loading)
+		{
 			return;
+		}
 
 		const double TOLERANCE = 0.000000001;
 

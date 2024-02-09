@@ -9,7 +9,9 @@ internal static class NativeStrings
 	public static unsafe StringHandle StringToStringHandle (string value)
 	{
 		if (value == null)
+		{
 			return new(nint.Zero, true);
+		}
 
 		var bytes = Encoding.UTF8.GetBytes(value);
 		var length = bytes.Length;
@@ -25,13 +27,17 @@ internal static class NativeStrings
 	public static unsafe string PointerToString (sbyte* bytes)
 	{
 		if (bytes == null)
+		{
 			return null;
+		}
 
 		var running = 0;
 
 		var b = bytes;
 		if (*b == 0)
+		{
 			return string.Empty;
+		}
 
 		while (*b++ != 0)
 		{
@@ -54,13 +60,17 @@ internal static class NativeStrings
 	public static unsafe string PointerToString (sbyte* bytes, int length)
 	{
 		if (bytes == null)
+		{
 			return null;
+		}
 
 		var running = 0;
 
 		var b = bytes;
 		if (length == 0 || *b == 0)
+		{
 			return string.Empty;
+		}
 
 		while (*b++ != 0 &&
 			running < length)
@@ -94,7 +104,9 @@ internal static class NativeStrings
 		protected override bool ReleaseHandle ()
 		{
 			if (handle == nint.Zero)
+			{
 				return false;
+			}
 
 			Marshal.FreeHGlobal(handle);
 			handle = nint.Zero;

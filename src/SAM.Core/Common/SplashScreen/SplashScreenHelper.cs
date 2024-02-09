@@ -11,7 +11,9 @@ public static class SplashScreenHelper
 	public static void Init ()
 	{
 		if (_isInitialized)
+			{
 			throw new SAMException();
+		}
 
 		_splashScreenVm = SplashScreenViewModel.Create();
 
@@ -36,7 +38,9 @@ public static class SplashScreenHelper
 		_splashScreenVm.Status = status;
 
 		if (_splashWindow.IsVisible)
+			{
 			return;
+		}
 
 		_splashWindow.Show();
 	}

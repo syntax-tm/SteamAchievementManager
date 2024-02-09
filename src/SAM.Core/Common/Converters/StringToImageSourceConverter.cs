@@ -17,7 +17,9 @@ public class StringToImageConverter : IValueConverter
 	public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is not string filePath)
+			{
 			return null;
+		}
 
 		try
 		{
@@ -47,10 +49,12 @@ public class StringToImageConverterExtension : MarkupExtension
 	public StringToImageConverterExtension ()
 	{
 	}
-	public StringToImageConverterExtension (IValueConverter itemConverter) => ItemConverter = itemConverter;
-
-	public override object ProvideValue (IServiceProvider serviceProvider)
+	public StringToImageConverterExtension (IValueConverter itemConverter)
 	{
+		ItemConverter = itemConverter;
+	}
+
+	public override object ProvideValue (IServiceProvider serviceProvider) {
 		return new StringToImageConverter();
 	}
 }
@@ -63,7 +67,9 @@ public class StringToImageSourceConverter : IValueConverter
 	public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is not string filePath)
+		{
 			return null;
+		}
 
 		try
 		{
@@ -93,10 +99,12 @@ public class StringToImageSourceConverterExtension : MarkupExtension
 	public StringToImageSourceConverterExtension ()
 	{
 	}
-	public StringToImageSourceConverterExtension (IValueConverter itemConverter) => ItemConverter = itemConverter;
-
-	public override object ProvideValue (IServiceProvider serviceProvider)
+	public StringToImageSourceConverterExtension (IValueConverter itemConverter)
 	{
+		ItemConverter = itemConverter;
+	}
+
+	public override object ProvideValue (IServiceProvider serviceProvider) {
 		return new StringToImageSourceConverter();
 	}
 }

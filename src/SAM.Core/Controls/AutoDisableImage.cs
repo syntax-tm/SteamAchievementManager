@@ -18,7 +18,9 @@ public class AutoDisableImage : Image
 	private static void OnAutoDisableImagePropertyChanged (DependencyObject source, DependencyPropertyChangedEventArgs args)
 	{
 		if (source is not AutoDisableImage img || img.IsEnabled != img.IsGrayscaled)
+			{
 			return;
+		}
 
 		img.UpdateImage();
 	}
@@ -26,12 +28,16 @@ public class AutoDisableImage : Image
 	protected void UpdateImage ()
 	{
 		if (Source == null)
+			{
 			return;
+		}
 
 		if (IsEnabled)
 		{
 			if (!IsGrayscaled)
+				{
 				return;
+			}
 
 			Source = ((FormatConvertedBitmap) Source).Source;
 			OpacityMask = null;
@@ -39,9 +45,14 @@ public class AutoDisableImage : Image
 		else
 		{
 			if (IsGrayscaled)
+				{
 				return;
+			}
+
 			if (Source is not BitmapSource bitmapImage)
+				{
 				return;
+			}
 
 			Source = new FormatConvertedBitmap(bitmapImage, PixelFormats.Gray8, null, 0);
 			OpacityMask = new ImageBrush(bitmapImage);

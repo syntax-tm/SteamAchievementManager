@@ -24,7 +24,9 @@ public static class ReflectionHelper
 		}
 
 		if (memberExpression == null)
+		{
 			throw new ArgumentException("Property name lambda expression needs to be in the form: n = > n.PropertyName");
+		}
 
 		var propertyInfo = memberExpression.Member as PropertyInfo ?? throw new InvalidOperationException("Bug, memberExpression.Member as PropertyInfo cast failed.");
 
@@ -39,7 +41,9 @@ public static class ReflectionHelper
 			var appCacheType = Type.GetType($"{type}, {assembly.GetName().Name}");
 
 			if (appCacheType != null)
+				{
 				return appCacheType;
+			}
 		}
 
 		throw new($"Couldn't find {type}");

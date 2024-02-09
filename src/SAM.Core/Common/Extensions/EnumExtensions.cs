@@ -26,13 +26,16 @@ public static class EnumExtensions
 			var displayAttr = displayAttributes [0];
 
 			if (!string.IsNullOrWhiteSpace(displayAttr.Description))
+			{
 				return displayAttr.Description;
-			if (!string.IsNullOrWhiteSpace(displayAttr.Name))
-				return displayAttr.Name;
-			if (!string.IsNullOrWhiteSpace(displayAttr.ShortName))
-				return displayAttr.ShortName;
+			}
 
-			return string.Empty;
+			if (!string.IsNullOrWhiteSpace(displayAttr.Name))
+			{
+				return displayAttr.Name;
+			}
+
+			return !string.IsNullOrWhiteSpace(displayAttr.ShortName) ? displayAttr.ShortName : string.Empty;
 		}
 
 		return value.ToString();

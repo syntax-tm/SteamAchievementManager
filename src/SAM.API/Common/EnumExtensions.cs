@@ -26,11 +26,19 @@ public static class EnumExtensions
 		if (display != null)
 		{
 			if (!string.IsNullOrEmpty(display.Name))
+			{
 				return display.Name;
+			}
+
 			if (!string.IsNullOrEmpty(display.ShortName))
+			{
 				return display.ShortName;
+			}
+
 			if (!string.IsNullOrEmpty(display.Description))
+			{
 				return display.Description;
+			}
 		}
 
 		var description = fi.GetAttribute<DescriptionAttribute>()?.Description;
@@ -55,11 +63,19 @@ public static class EnumExtensions
 		if (display != null)
 		{
 			if (!string.IsNullOrEmpty(display.Description))
+			{
 				return display.Description;
+			}
+
 			if (!string.IsNullOrEmpty(display.Name))
+			{
 				return display.Name;
+			}
+
 			if (!string.IsNullOrEmpty(display.ShortName))
+			{
 				return display.ShortName;
+			}
 		}
 
 		var displayName = fi.GetAttribute<DisplayNameAttribute>()?.DisplayName;

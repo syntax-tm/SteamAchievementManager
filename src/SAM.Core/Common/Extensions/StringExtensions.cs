@@ -8,7 +8,9 @@ public static class StringExtensions
 	{
 		ArgumentNullException.ThrowIfNull(a);
 		if (b == null)
+		{
 			return false;
+		}
 
 		return a.Equals(b, StringComparison.CurrentCultureIgnoreCase);
 	}
@@ -19,7 +21,9 @@ public static class StringExtensions
 		ArgumentNullException.ThrowIfNull(b);
 
 		if (a == string.Empty)
+		{
 			return b == string.Empty;
+		}
 
 		return a.Contains(b, StringComparison.CurrentCultureIgnoreCase);
 	}

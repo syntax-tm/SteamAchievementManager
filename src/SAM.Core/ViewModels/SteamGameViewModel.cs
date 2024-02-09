@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1305
+
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -251,7 +253,9 @@ public partial class SteamGameViewModel
 	protected void Refresh ()
 	{
 		if (!Achievements!.Any())
+		{
 			return;
+		}
 
 		AllowUnlockAll = Achievements.Any(a => !a.IsAchieved);
 	}

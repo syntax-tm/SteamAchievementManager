@@ -25,11 +25,15 @@ public class SteamLibraryManager
 		get
 		{
 			if (_instance != null)
+				{
 				return _instance;
+			}
+
 			lock (syncLock)
 			{
 				_instance = new();
 			}
+
 			return _instance;
 		}
 	}

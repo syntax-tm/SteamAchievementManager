@@ -18,7 +18,9 @@ public class BitmapToImageSourceConverter : IValueConverter
 	public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is not Bitmap bmp)
+		{
 			return null;
+		}
 
 		var handle = bmp.GetHbitmap();
 		var hBmp = new HGDIOBJ(handle);
@@ -49,5 +51,8 @@ public class BitmapToImageSourceConverterExtension : MarkupExtension
 	public BitmapToImageSourceConverterExtension (IValueConverter itemConverter) => ItemConverter = itemConverter;
 #pragma warning restore IDE0021 // Use block body for constructors
 
-	public override object ProvideValue (IServiceProvider serviceProvider) => new BitmapToImageSourceConverter();
+	public override object ProvideValue (IServiceProvider serviceProvider)
+	{
+		return new BitmapToImageSourceConverter();
+	}
 }

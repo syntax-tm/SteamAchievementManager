@@ -47,29 +47,47 @@ public class Client : IDisposable
 	public void Initialize (long appId)
 	{
 		if (string.IsNullOrEmpty(Steam.GetInstallPath()))
+		{
 			throw new ClientInitializeException(ClientInitFailure.GetInstallPath);
+		}
 
 		if (appId != 0)
+		{
 			Environment.SetEnvironmentVariable(@"SteamAppId", appId.ToString(CultureInfo.InvariantCulture));
+		}
 
 		if (Steam.Load() == false)
+		{
 			throw new ClientInitializeException(ClientInitFailure.Load);
+		}
 
 		SteamClient = Steam.CreateInterface<SteamClient019>(nameof(SteamClient019));
+
 		if (SteamClient == null)
+		{
 			throw new ClientInitializeException(ClientInitFailure.CreateSteamClient);
+		}
 
 		_pipe = SteamClient.CreateSteamPipe();
+
 		if (_pipe == 0)
+		{
 			throw new ClientInitializeException(ClientInitFailure.CreateSteamPipe);
+		}
 
 		_user = SteamClient.ConnectToGlobalUser(_pipe);
+
 		if (_user == 0)
+		{
 			throw new ClientInitializeException(ClientInitFailure.ConnectToGlobalUser);
+		}
 
 		SteamUtils = SteamClient.GetSteamUtils004(_pipe);
+
 		if (appId > 0 && SteamUtils.GetAppId() != (uint) appId)
+		{
 			throw new ClientInitializeException(ClientInitFailure.AppIdMismatch);
+		}
 
 		SteamUser = SteamClient.GetSteamUser017(_user, _pipe);
 		SteamUserStats = SteamClient.GetSteamUserStats006(_user, _pipe);
@@ -91,7 +109,9 @@ public class Client : IDisposable
 	protected virtual void Dispose (bool disposing)
 	{
 		if (_isDisposed)
+		{
 			return;
+		}
 
 		if (disposing)
 		{
@@ -134,7 +154,9 @@ public class Client : IDisposable
 	public void RunCallbacks (bool server)
 	{
 		if (_runningCallbacks)
+		{
 			return;
+		}
 
 		_runningCallbacks = true;
 

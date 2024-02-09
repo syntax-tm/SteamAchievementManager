@@ -34,11 +34,15 @@ public class LocalStorageManager : IStorageManager
 		get
 		{
 			if (_instance != null)
+			{
 				return _instance;
+			}
+
 			lock (syncLock)
 			{
 				_instance = new();
 			}
+
 			return _instance;
 		}
 	}
@@ -46,7 +50,9 @@ public class LocalStorageManager : IStorageManager
 	public void SaveImage (string fileName, Image img, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
@@ -66,7 +72,9 @@ public class LocalStorageManager : IStorageManager
 	public Task SaveImageAsync (string fileName, Image img, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		return Task.Run(() => SaveImage(fileName, img, overwrite));
 	}
@@ -74,7 +82,9 @@ public class LocalStorageManager : IStorageManager
 	public void SaveText (string fileName, string text, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
@@ -94,7 +104,9 @@ public class LocalStorageManager : IStorageManager
 	public Task SaveTextAsync (string fileName, string text, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
@@ -114,7 +126,9 @@ public class LocalStorageManager : IStorageManager
 	public void SaveBytes (string fileName, byte [] bytes, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
@@ -135,7 +149,9 @@ public class LocalStorageManager : IStorageManager
 	public Task SaveBytesAsync (string fileName, byte [] bytes, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
@@ -155,12 +171,16 @@ public class LocalStorageManager : IStorageManager
 	public Image GetImageFile (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
 		if (!File.Exists(path))
+		{
 			throw new FileNotFoundException(nameof(fileName));
+		}
 
 		var img = Image.FromFile(path);
 
@@ -170,7 +190,9 @@ public class LocalStorageManager : IStorageManager
 	public async Task<Image> GetImageFileAsync (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var bytes = await GetBytesAsync(fileName);
 		using var ms = new MemoryStream(bytes);
@@ -182,12 +204,16 @@ public class LocalStorageManager : IStorageManager
 	public string GetTextFile (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
 		if (!File.Exists(path))
+		{
 			throw new FileNotFoundException(nameof(fileName));
+		}
 
 		var fileText = File.ReadAllText(path);
 
@@ -197,12 +223,16 @@ public class LocalStorageManager : IStorageManager
 	public async Task<string> GetTextFileAsync (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
 		if (!File.Exists(path))
+		{
 			throw new FileNotFoundException(nameof(fileName));
+		}
 
 		var fileText = await File.ReadAllTextAsync(path);
 
@@ -212,12 +242,16 @@ public class LocalStorageManager : IStorageManager
 	public byte [] GetBytes (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
 		if (!File.Exists(path))
+		{
 			throw new FileNotFoundException(nameof(fileName));
+		}
 
 		var bytes = File.ReadAllBytes(path);
 
@@ -227,12 +261,16 @@ public class LocalStorageManager : IStorageManager
 	public async Task<byte []> GetBytesAsync (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 
 		if (!File.Exists(path))
+		{
 			throw new FileNotFoundException(nameof(fileName));
+		}
 
 		var bytes = await File.ReadAllBytesAsync(path);
 
@@ -260,7 +298,9 @@ public class LocalStorageManager : IStorageManager
 	public bool FileExists (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
+		{
 			throw new ArgumentNullException(fileName);
+		}
 
 		var path = Path.Combine(ApplicationStoragePath, fileName);
 		var exists = File.Exists(path);

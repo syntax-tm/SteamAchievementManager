@@ -16,7 +16,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+		{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		StorageManager.SaveBytes(filePath, bytes, overwrite);
 	}
@@ -26,7 +28,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
 
@@ -38,7 +42,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
 
@@ -50,7 +56,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		StorageManager.SaveText(filePath, text, overwrite);
 	}
@@ -60,7 +68,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		return StorageManager.SaveTextAsync(filePath, text, overwrite);
 	}
@@ -70,7 +80,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		StorageManager.SaveImage(filePath, img, overwrite);
 	}
@@ -80,7 +92,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		return StorageManager.SaveImageAsync(filePath, img, overwrite);
 	}
@@ -90,7 +104,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+		{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		if (!StorageManager.FileExists(filePath))
 		{
@@ -115,7 +131,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		if (!StorageManager.FileExists(filePath))
 		{
@@ -164,9 +182,14 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			return false;
+		}
+
 		if (target == null)
+			{
 			return false;
+		}
 
 		if (!StorageManager.FileExists(filePath))
 		{
@@ -192,7 +215,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		if (!StorageManager.FileExists(filePath))
 		{
@@ -221,7 +246,9 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
+			{
 			throw new ArgumentNullException(nameof(key));
+		}
 
 		if (!StorageManager.FileExists(filePath))
 		{

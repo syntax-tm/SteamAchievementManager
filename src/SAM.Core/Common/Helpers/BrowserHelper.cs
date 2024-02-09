@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿#pragma warning disable CA1305
+
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace SAM.Core;
@@ -28,6 +30,7 @@ public static class BrowserHelper
 	private const string CARD_EXCHANGE_URI_FORMAT = @"https://www.steamcardexchange.net/index.php?gamepage-appid-{0}";
 	private const string PCGW_URI_FORMAT = @"https://www.pcgamingwiki.com/api/appid.php?appid={0}";
 
+#pragma warning disable IDE0022
 	public static void ViewAppNews (uint id) => OpenSteamUrl(APP_NEWS_URI_FORMAT, id);
 	public static void ViewUpdateNews (uint id) => OpenSteamUrl(UPDATE_NEWS_URI_FORMAT, id);
 	public static void ViewFriends () => OpenUrl(FRIENDS_URI);
@@ -38,6 +41,7 @@ public static class BrowserHelper
 	public static void ViewSteamWorkshop (uint id) => OpenSteamUrl(APP_WORKSHOP_URI_FORMAT, id);
 	public static void ValidateApp (uint id) => OpenSteamUrl(VALIDATE_APP_URI_FORMAT, id);
 	public static void ViewAchievements (uint id) => OpenSteamUrl(ACHIEVEMENTS_URI_FORMAT, id);
+#pragma warning restore IDE0022
 
 	public static void ViewOnSteamStore (uint id)
 	{

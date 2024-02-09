@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1305
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -176,7 +178,9 @@ public class SteamStatsManager : BindableBase
 			path = Path.Combine(path, $@"UserGameStatsSchema_{AppId}.bin");
 
 			if (!File.Exists(path))
+			{
 				return false;
+			}
 		}
 		catch
 		{
@@ -186,7 +190,9 @@ public class SteamStatsManager : BindableBase
 		var kv = KeyValue.LoadAsBinary(path);
 
 		if (kv == null)
+		{
 			return false;
+		}
 
 		var currentLanguage = _client.SteamApps008.GetCurrentGameLanguage();
 
@@ -196,7 +202,9 @@ public class SteamStatsManager : BindableBase
 		var stats = kv [AppId.ToString()] [@"stats"];
 
 		if (!stats.Valid || stats.Children == null)
+		{
 			return false;
+		}
 
 		foreach (var stat in stats.Children.Where(s => s.Valid))
 		{
@@ -245,6 +253,7 @@ public class SteamStatsManager : BindableBase
 							}
 						}
 					}
+
 					break;
 				}
 				default:
@@ -264,9 +273,14 @@ public class SteamStatsManager : BindableBase
 		foreach (var def in AchievementDefinitions)
 		{
 			if (string.IsNullOrEmpty(def.Id))
+			{
 				continue;
+			}
+
 			if (!_client.SteamUserStats.GetAchievementState(def.Id, out var isAchieved))
+			{
 				continue;
+			}
 
 			def.IsAchieved = isAchieved;
 

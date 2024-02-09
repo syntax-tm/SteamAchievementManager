@@ -49,7 +49,9 @@ public class CacheKey : ICacheKey
 	public CacheKey (string fileName, object id, CacheKeyType type = CacheKeyType.Default, CacheKeySubType subType = CacheKeySubType.None)
 	{
 		if (string.IsNullOrWhiteSpace(fileName))
+			{
 			throw new ArgumentNullException(nameof(fileName));
+		}
 
 		SetKey(fileName);
 

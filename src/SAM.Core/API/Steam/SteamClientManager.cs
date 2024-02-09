@@ -27,7 +27,9 @@ public static class SteamClientManager
 	public static void Init (uint appId)
 	{
 		if (_isInitialized)
+		{
 			throw new SAMInitializationException($"The Steam {nameof(Client)} has already been initialized.");
+		}
 
 		try
 		{

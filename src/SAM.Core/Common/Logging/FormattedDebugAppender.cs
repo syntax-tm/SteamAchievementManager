@@ -9,12 +9,16 @@ public class FormattedDebugAppender : log4net.Appender.DebugAppender
 	{
 		var message = RenderLoggingEvent(loggingEvent);
 		if (string.IsNullOrWhiteSpace(message))
+		{
 			return;
+		}
 
 		Debug.Write(message);
 
 		if (!ImmediateFlush)
+		{
 			return;
+		}
 
 		Debug.Flush();
 	}

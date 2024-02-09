@@ -9,14 +9,8 @@ public class BindingProxy : Freezable
 
 	public object Data
 	{
-		get
-		{
-			return GetValue(DataProperty);
-		}
-		set
-		{
-			SetValue(DataProperty, value);
-		}
+		get => GetValue(DataProperty);
+		set => SetValue(DataProperty, value);
 	}
 
 	protected override Freezable CreateInstanceCore ()

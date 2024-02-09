@@ -137,7 +137,9 @@ public class SteamLibrary : BindableBase
 	public void CancelRefresh ()
 	{
 		if (!_libraryWorker.IsBusy)
+		{
 			return;
+		}
 
 		_libraryWorker.CancelAsync();
 
@@ -210,12 +212,19 @@ public class SteamLibrary : BindableBase
 			var type = Enum.Parse<GameInfoType>(app.Type, true);
 
 			if (type is not GameInfoType.Normal and not GameInfoType.Mod)
+			{
 				return false;
+			}
+
 			if (_addedGames.Contains(app))
+			{
 				return false;
+			}
 
 			if (!SteamClientManager.Default.OwnsGame(app.Id))
+			{
 				return false;
+			}
 
 			var steamGame = new SteamApp(app.Id, type);
 
@@ -241,7 +250,9 @@ public class SteamLibrary : BindableBase
 		try
 		{
 			if (!CacheManager.TryGetObject<List<SupportedApp>>(CacheKeys.CheckedAppList, out var refreshQueue))
+			{
 				return;
+			}
 
 			_refreshQueue = new(refreshQueue);
 		}
@@ -272,7 +283,9 @@ public class SteamLibrary : BindableBase
 		try
 		{
 			if (!CacheManager.TryGetObject<List<SupportedApp>>(CacheKeys.UserLibrary, out var ownedApps))
+			{
 				return;
+			}
 
 			foreach (var app in ownedApps)
 			{

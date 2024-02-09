@@ -22,7 +22,9 @@ public static class LocationHelper
 	public static string GetShortLocation (string original)
 	{
 		if (string.IsNullOrEmpty(original))
+		{
 			throw new ArgumentNullException(nameof(original));
+		}
 
 		Init();
 
@@ -34,7 +36,9 @@ public static class LocationHelper
 	private static void Init ()
 	{
 		if (_isInitialized)
+		{
 			return;
+		}
 
 		var fileName = Path.GetFileName(COUNTRIES_STATES_JSON_URL);
 		var cacheKey = new CacheKey(fileName, CacheKeyType.Data);
@@ -116,7 +120,9 @@ public static class LocationHelper
 		public string GetShortDisplayText ()
 		{
 			if (!IsValid)
+			{
 				return _location;
+			}
 
 			var country = _countries.FirstOrDefault(c => c.Name.EqualsIgnoreCase(Country));
 			if (country == null)

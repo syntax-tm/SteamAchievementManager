@@ -52,7 +52,7 @@ public class Setting<T> : ViewModelBase, ISetting<T>
 		Default = defaultValue;
 	}
 
-	public static Setting<T> Create (string name, T defaultValue)
+	public Setting<T> Create (string name, T defaultValue)
 	{
 		return ViewModelSource.Create(() => new Setting<T>(name, defaultValue));
 	}

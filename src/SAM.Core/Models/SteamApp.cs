@@ -1,4 +1,7 @@
-﻿using System;
+﻿#pragma warning disable CA1305
+#pragma warning disable IDE1006
+
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -55,7 +58,9 @@ public partial class SteamApp : ViewModelBase
 		Name = SteamClientManager.Default.GetAppName(Id);
 
 		if (string.IsNullOrEmpty(Name))
+			{
 			return;
+		}
 
 		Group = char.IsDigit(Name [0])
 			? "#"
@@ -72,7 +77,10 @@ public partial class SteamApp : ViewModelBase
 	{
 		// TODO: Add a visual indication that the manager is running (handle Exited event)
 		if (_managerProcess != null && _managerProcess.SetActive())
+			{
 			return;
+		}
+
 		_managerProcess = SAMHelper.OpenManager(Id);
 	}
 
@@ -149,7 +157,9 @@ public partial class SteamApp : ViewModelBase
 	public async Task Load ()
 	{
 		if (Loaded)
+			{
 			return;
+		}
 
 		try
 		{
@@ -187,14 +197,18 @@ public partial class SteamApp : ViewModelBase
 		while (StoreInfo == null)
 		{
 			if (retries > MAX_RETRIES)
+				{
 				break;
+			}
 
 			try
 			{
 				StoreInfo = SteamworksManager.GetAppInfo(Id);
 
 				if (StoreInfo == null)
+					{
 					return;
+				}
 
 				Publisher = StoreInfo.Publishers.FirstOrDefault();
 				Developer = StoreInfo.Developers.FirstOrDefault();

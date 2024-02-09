@@ -10,11 +10,19 @@ public static class ProcessExtensions
 	public static bool SetActive (this Process process)
 	{
 		if (process == null)
+			{
 			return false;
+		}
+
 		if (process.HasExited)
+			{
 			return false;
+		}
+
 		if (!process.Responding)
+			{
 			return false;
+		}
 
 		var hwnd = process.MainWindowHandle;
 		var hwndRef = new HWND(hwnd);

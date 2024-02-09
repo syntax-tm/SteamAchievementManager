@@ -64,7 +64,9 @@ public abstract class SteamStatisticBase : BindableBase
 	public virtual void CommitChanges ()
 	{
 		if (!IsModified)
+		{
 			return;
+		}
 
 		Refresh();
 	}

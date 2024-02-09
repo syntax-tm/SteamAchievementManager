@@ -13,7 +13,9 @@ public static class ImageHelper
 	public static ImageSource CreateSource (string url)
 	{
 		if (string.IsNullOrEmpty(url))
+		{
 			throw new ArgumentNullException(nameof(url));
+		}
 
 		var uri = new Uri(url);
 

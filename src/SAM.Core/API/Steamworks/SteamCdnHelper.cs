@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1305
+
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;

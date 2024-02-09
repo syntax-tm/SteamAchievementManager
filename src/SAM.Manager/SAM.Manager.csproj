@@ -16,6 +16,7 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <Nullable>annotations</Nullable>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
     <DefineConstants>TRACE;BUILD_X86;DEBUG</DefineConstants>

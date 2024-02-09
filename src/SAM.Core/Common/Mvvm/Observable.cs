@@ -14,7 +14,9 @@ public abstract class Observable : INotifyPropertyChanged
 		Debug.Assert(!string.IsNullOrEmpty(propertyName));
 
 		if (EqualityComparer<T>.Default.Equals(field, value))
+			{
 			return false;
+		}
 
 		field = value;
 

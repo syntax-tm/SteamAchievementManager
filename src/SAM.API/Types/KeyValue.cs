@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable IDE1006
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -79,14 +81,18 @@ public class KeyValue
 	{
 		var name = this [language].AsString();
 		if (!string.IsNullOrEmpty(name))
+		{
 			return name;
+		}
 
 		if (language != @"english")
 		{
 			name = this [@"english"].AsString();
 
 			if (!string.IsNullOrEmpty(name))
+			{
 				return name;
+			}
 		}
 
 		name = AsString();
@@ -105,7 +111,9 @@ public class KeyValue
 	public static KeyValue LoadAsBinary (string path)
 	{
 		if (!File.Exists(path))
+		{
 			return null;
+		}
 
 		try
 		{
@@ -172,7 +180,9 @@ public class KeyValue
 				}
 
 				if (input.Position >= input.Length)
+				{
 					throw new FormatException();
+				}
 
 				Children.Add(current);
 

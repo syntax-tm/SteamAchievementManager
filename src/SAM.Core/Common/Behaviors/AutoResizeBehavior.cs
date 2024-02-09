@@ -32,7 +32,9 @@ public class AutoResizeBehavior : Behavior<UniformGrid>
 	private void OnSizeChanged (object sender, SizeChangedEventArgs e)
 	{
 		if (!e.WidthChanged)
+		{
 			return;
+		}
 
 		Update();
 	}

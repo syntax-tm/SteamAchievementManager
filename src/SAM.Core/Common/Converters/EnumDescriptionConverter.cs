@@ -12,11 +12,15 @@ public class EnumDescriptionConverter : IValueConverter
 	public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value == null)
+			{
 			return null;
+		}
+
 		if (value is not Enum valueEnum)
 		{
 			return value.ToString();
 		}
+
 		return valueEnum.GetDescription();
 	}
 
@@ -36,6 +40,7 @@ public class EnumDescriptionConverterExtension : MarkupExtension
 	public EnumDescriptionConverterExtension ()
 	{
 	}
+
 	public EnumDescriptionConverterExtension (IValueConverter itemConverter)
 	{
 		ItemConverter = itemConverter;

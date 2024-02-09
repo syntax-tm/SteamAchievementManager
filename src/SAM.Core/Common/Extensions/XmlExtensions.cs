@@ -13,7 +13,9 @@ public static class XmlExtensions
 		var nodeText = GetValue(node, path);
 
 		if (string.IsNullOrWhiteSpace(nodeText))
+			{
 			return default;
+		}
 
 		if (!decimal.TryParse(nodeText, NumberStyles.Any, CultureInfo.CurrentCulture, out var result) &&
 			!decimal.TryParse(nodeText, NumberStyles.Any, _enUsCulture, out result) &&
@@ -30,7 +32,9 @@ public static class XmlExtensions
 		var nodeText = GetValue(node, path);
 
 		if (string.IsNullOrWhiteSpace(nodeText))
+			{
 			return default;
+		}
 
 		// only parses strings "true" and "false"
 		if (bool.TryParse(nodeText, out var boolResult))

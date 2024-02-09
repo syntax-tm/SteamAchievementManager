@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1305
+
+using System;
 using System.ComponentModel;
 using System.Windows.Data;
 using DevExpress.Mvvm.CodeGenerators;
@@ -44,7 +46,9 @@ public partial class HomeViewModel
 	private void ItemsViewSourceOnFilter (object sender, FilterEventArgs e)
 	{
 		if (e.Item is not SteamApp app)
+			{
 			throw new ArgumentException(nameof(e.Item));
+		}
 
 		var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
 		var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText) || app.Id.ToString().Contains(FilterText);
@@ -99,7 +103,9 @@ public partial class HomeViewModel
 	protected void OnFilterTextChanged ()
 	{
 		if (_loading)
+			{
 			return;
+		}
 
 		ItemsView!.Refresh();
 	}
@@ -107,7 +113,9 @@ public partial class HomeViewModel
 	protected void OnEnableGroupingChanged ()
 	{
 		if (_loading)
+			{
 			return;
+		}
 
 		using (_itemsViewSource.DeferRefresh())
 		{

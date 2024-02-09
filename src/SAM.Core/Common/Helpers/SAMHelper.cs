@@ -1,4 +1,6 @@
-﻿using System;
+﻿#pragma warning disable CA1305
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,7 +24,9 @@ public static class SAMHelper
 	public static void VerifySteamProcess ()
 	{
 		if (IsSteamRunning())
+		{
 			return;
+		}
 
 		//  TODO: Change the error message to indicate that Steam needs to be started
 		throw new SAMInitializationException(@"Steam process is not currently running.");
@@ -57,7 +61,9 @@ public static class SAMHelper
 	public static Process OpenManager (uint appId)
 	{
 		if (appId == default)
+		{
 			throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
+		}
 
 		if (!File.Exists(SAM_MANAGER_EXE))
 		{
@@ -78,7 +84,9 @@ public static class SAMHelper
 			foreach (var proc in Process.GetProcesses())
 			{
 				if (!Regex.IsMatch(proc.ProcessName, MANAGER_PROCESS_REGEX))
+					{
 					continue;
+				}
 
 				log.Info($"Found SAM Manager process with process ID {proc.Id}.");
 

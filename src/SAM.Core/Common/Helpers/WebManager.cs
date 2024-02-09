@@ -23,7 +23,9 @@ public static class WebManager
 			{
 				var loadedFromCache = CacheManager.TryGetBytes(cacheKey, out var cachedBytes);
 				if (loadedFromCache)
+					{
 					return cachedBytes;
+				}
 			}
 
 			var bytes = _wc.GetByteArrayAsync(url).Result;
@@ -66,7 +68,9 @@ public static class WebManager
 			{
 				var loadedFromCache = CacheManager.TryGetTextFile(cacheKey, out var cachedImage);
 				if (loadedFromCache)
+					{
 					return cachedImage;
+				}
 			}
 
 			var data = _wc.GetStringAsync(url).Result;
@@ -111,7 +115,9 @@ public static class WebManager
 			{
 				var loadedFromCache = CacheManager.TryGetImageFile(cacheKey, out var cachedImage);
 				if (loadedFromCache)
+					{
 					return cachedImage;
+				}
 			}
 
 			var data = await _wc.GetStreamAsync(imageUrl);
@@ -146,5 +152,4 @@ public static class WebManager
 			throw new(message, e);
 		}
 	}
-
 }

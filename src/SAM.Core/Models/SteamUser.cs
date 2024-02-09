@@ -1,4 +1,6 @@
-﻿using System.Windows.Media;
+﻿#pragma warning disable CA1305
+
+using System.Windows.Media;
 using System.Xml;
 using DevExpress.Mvvm.CodeGenerators;
 using log4net;

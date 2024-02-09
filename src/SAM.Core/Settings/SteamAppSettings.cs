@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#pragma warning disable CA1305
+
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -29,16 +31,21 @@ public class SteamAppSettings
 		var attributes = new List<string>();
 
 		if (IsFavorite)
+		{
 			attributes.Add("Favorite");
+		}
+
 		if (IsHidden)
+		{
 			attributes.Add("Hidden");
+		}
 
 		if (attributes.Count == 0)
+		{
 			return sb.ToString();
+		}
 
-		sb.Append(" (");
-		sb.Append(string.Join(", ", attributes));
-		sb.Append(")");
+		sb.Append($" ({string.Join(", ", attributes)})");
 
 		return sb.ToString();
 	}

@@ -36,7 +36,9 @@ public class ObservableCollectionPropertyHandler<T, TU> : ObservableCollectionHa
 	{
 		var source = GetSource();
 		if (source == null)
+		{
 			throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
+		}
 
 		var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
@@ -55,7 +57,9 @@ public class ObservableCollectionPropertyHandler<T, TU> : ObservableCollectionHa
 	{
 		var source = GetSource();
 		if (source == null)
+		{
 			throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
+		}
 
 		var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
@@ -74,7 +78,9 @@ public class ObservableCollectionPropertyHandler<T, TU> : ObservableCollectionHa
 	{
 		var source = GetSource();
 		if (source == null)
+		{
 			throw new InvalidOperationException($"The {nameof(source)} has been garbage collected.");
+		}
 
 		var propertyName = ReflectionHelper.GetPropertyNameFromLambda(expression);
 
@@ -93,9 +99,14 @@ public class ObservableCollectionPropertyHandler<T, TU> : ObservableCollectionHa
 	protected override bool OnCollectionReceiveWeakEvent ([NotNull] Type managerType, [CanBeNull] object sender, [CanBeNull] EventArgs e)
 	{
 		if (base.OnCollectionReceiveWeakEvent(managerType, sender, e))
+		{
 			return true;
+		}
+
 		if (managerType != typeof(PropertyChangedEventManager))
+		{
 			return false;
+		}
 
 		var source = GetSource();
 		if (source == null)
@@ -137,5 +148,4 @@ public class ObservableCollectionPropertyHandler<T, TU> : ObservableCollectionHa
 			PropertyChangedEventManager.AddListener(item, this, handler.Key);
 		}
 	}
-
 }

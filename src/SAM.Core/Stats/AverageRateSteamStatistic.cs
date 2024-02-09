@@ -73,7 +73,9 @@ public class AverageRateSteamStatistic : SteamStatisticBase
 	protected void OnAvgRateValueChanged ()
 	{
 		if (_loading)
+			{
 			return;
+		}
 
 		IsModified = AvgRateDenominator > 0 || AvgRateNumerator > 0;
 	}
