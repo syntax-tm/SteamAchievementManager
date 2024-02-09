@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 
+#pragma warning disable CA1707
 // ReSharper disable UnusedMember.Global
 // ReSharper disable InconsistentNaming
 

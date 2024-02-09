@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CA1069
+#pragma warning disable CA1707
 
 namespace SAM.Core;
 
