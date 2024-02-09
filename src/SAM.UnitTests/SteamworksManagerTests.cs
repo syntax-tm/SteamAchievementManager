@@ -1,4 +1,6 @@
-﻿using SAM.Core;
+﻿#pragma warning disable CA1707
+
+using SAM.Core;
 using Xunit;
 using Xunit.Abstractions;
 
