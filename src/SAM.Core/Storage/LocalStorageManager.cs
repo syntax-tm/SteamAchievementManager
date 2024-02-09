@@ -5,267 +5,266 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using log4net;
 
-namespace SAM.Core.Storage
+namespace SAM.Core.Storage;
+
+public class LocalStorageManager : IStorageManager
 {
-	public class LocalStorageManager : IStorageManager
+	private static readonly ILog log = LogManager.GetLogger(typeof(LocalStorageManager));
+
+	private static readonly object syncLock = new();
+	private static LocalStorageManager _instance;
+
+	public string LocalAppDataPath
 	{
-		private static readonly ILog log = LogManager.GetLogger(typeof(LocalStorageManager));
+		get;
+	}
+	public string ApplicationStoragePath
+	{
+		get;
+	}
 
-		private static readonly object syncLock = new();
-		private static LocalStorageManager _instance;
+	protected LocalStorageManager ()
+	{
+		LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		ApplicationStoragePath = Path.Combine(LocalAppDataPath, nameof(SAM));
+	}
 
-		public string LocalAppDataPath
+	public static LocalStorageManager Default
+	{
+		get
 		{
-			get;
-		}
-		public string ApplicationStoragePath
-		{
-			get;
-		}
-
-		protected LocalStorageManager ()
-		{
-			LocalAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-			ApplicationStoragePath = Path.Combine(LocalAppDataPath, nameof(SAM));
-		}
-
-		public static LocalStorageManager Default
-		{
-			get
-			{
-				if (_instance != null)
-					return _instance;
-				lock (syncLock)
-				{
-					_instance = new();
-				}
+			if (_instance != null)
 				return _instance;
-			}
-		}
-
-		public void SaveImage (string fileName, Image img, bool overwrite = true)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			var path = Path.Combine(ApplicationStoragePath, fileName);
-
-			CreateFileDirectory(path);
-
-			if (!overwrite)
+			lock (syncLock)
 			{
-				if (File.Exists(path))
-				{
-					throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-				}
+				_instance = new();
 			}
-
-			img.Save(path, img.RawFormat);
+			return _instance;
 		}
+	}
 
-		public Task SaveImageAsync (string fileName, Image img, bool overwrite = true)
+	public void SaveImage (string fileName, Image img, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		var path = Path.Combine(ApplicationStoragePath, fileName);
+
+		CreateFileDirectory(path);
+
+		if (!overwrite)
 		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			return Task.Run(() => SaveImage(fileName, img, overwrite));
-		}
-
-		public void SaveText (string fileName, string text, bool overwrite = true)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			var path = Path.Combine(ApplicationStoragePath, fileName);
-
-			CreateFileDirectory(path);
-
-			if (!overwrite)
+			if (File.Exists(path))
 			{
-				if (File.Exists(path))
-				{
-					throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-				}
+				throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
 			}
-
-			File.WriteAllText(path, text);
 		}
 
-		public Task SaveTextAsync (string fileName, string text, bool overwrite = true)
+		img.Save(path, img.RawFormat);
+	}
+
+	public Task SaveImageAsync (string fileName, Image img, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		return Task.Run(() => SaveImage(fileName, img, overwrite));
+	}
+
+	public void SaveText (string fileName, string text, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		var path = Path.Combine(ApplicationStoragePath, fileName);
+
+		CreateFileDirectory(path);
+
+		if (!overwrite)
 		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			var path = Path.Combine(ApplicationStoragePath, fileName);
-
-			CreateFileDirectory(path);
-
-			if (!overwrite)
+			if (File.Exists(path))
 			{
-				if (File.Exists(path))
-				{
-					throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-				}
+				throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
 			}
-
-			return File.WriteAllTextAsync(path, text);
 		}
 
-		public void SaveBytes (string fileName, byte [] bytes, bool overwrite = true)
+		File.WriteAllText(path, text);
+	}
+
+	public Task SaveTextAsync (string fileName, string text, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		var path = Path.Combine(ApplicationStoragePath, fileName);
+
+		CreateFileDirectory(path);
+
+		if (!overwrite)
 		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			var path = Path.Combine(ApplicationStoragePath, fileName);
-
-			CreateFileDirectory(path);
-
-			if (!overwrite)
+			if (File.Exists(path))
 			{
-				if (File.Exists(path))
-				{
-					throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-				}
+				throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
 			}
-
-			File.WriteAllBytes(path, bytes);
 		}
 
-		[NotNull]
-		public Task SaveBytesAsync (string fileName, byte [] bytes, bool overwrite = true)
+		return File.WriteAllTextAsync(path, text);
+	}
+
+	public void SaveBytes (string fileName, byte [] bytes, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		var path = Path.Combine(ApplicationStoragePath, fileName);
+
+		CreateFileDirectory(path);
+
+		if (!overwrite)
 		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			var path = Path.Combine(ApplicationStoragePath, fileName);
-
-			CreateFileDirectory(path);
-
-			if (!overwrite)
+			if (File.Exists(path))
 			{
-				if (File.Exists(path))
-				{
-					throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-				}
+				throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
 			}
-
-			return File.WriteAllBytesAsync(path, bytes);
 		}
 
-		public Image GetImageFile (string fileName)
+		File.WriteAllBytes(path, bytes);
+	}
+
+	[NotNull]
+	public Task SaveBytesAsync (string fileName, byte [] bytes, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		var path = Path.Combine(ApplicationStoragePath, fileName);
+
+		CreateFileDirectory(path);
+
+		if (!overwrite)
 		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			var path = Path.Combine(ApplicationStoragePath, fileName);
-
-			if (!File.Exists(path))
-				throw new FileNotFoundException(nameof(fileName));
-
-			var img = Image.FromFile(path);
-
-			return img;
+			if (File.Exists(path))
+			{
+				throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
+			}
 		}
 
-		public async Task<Image> GetImageFileAsync (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		return File.WriteAllBytesAsync(path, bytes);
+	}
 
-			var bytes = await GetBytesAsync(fileName);
-			using var ms = new MemoryStream(bytes);
-			var img = Image.FromStream(ms);
+	public Image GetImageFile (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			return img;
-		}
+		var path = Path.Combine(ApplicationStoragePath, fileName);
 
-		public string GetTextFile (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		if (!File.Exists(path))
+			throw new FileNotFoundException(nameof(fileName));
 
-			var path = Path.Combine(ApplicationStoragePath, fileName);
+		var img = Image.FromFile(path);
 
-			if (!File.Exists(path))
-				throw new FileNotFoundException(nameof(fileName));
+		return img;
+	}
 
-			var fileText = File.ReadAllText(path);
+	public async Task<Image> GetImageFileAsync (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			return fileText;
-		}
+		var bytes = await GetBytesAsync(fileName);
+		using var ms = new MemoryStream(bytes);
+		var img = Image.FromStream(ms);
 
-		public async Task<string> GetTextFileAsync (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		return img;
+	}
 
-			var path = Path.Combine(ApplicationStoragePath, fileName);
+	public string GetTextFile (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			if (!File.Exists(path))
-				throw new FileNotFoundException(nameof(fileName));
+		var path = Path.Combine(ApplicationStoragePath, fileName);
 
-			var fileText = await File.ReadAllTextAsync(path);
+		if (!File.Exists(path))
+			throw new FileNotFoundException(nameof(fileName));
 
-			return fileText;
-		}
+		var fileText = File.ReadAllText(path);
 
-		public byte [] GetBytes (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		return fileText;
+	}
 
-			var path = Path.Combine(ApplicationStoragePath, fileName);
+	public async Task<string> GetTextFileAsync (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			if (!File.Exists(path))
-				throw new FileNotFoundException(nameof(fileName));
+		var path = Path.Combine(ApplicationStoragePath, fileName);
 
-			var bytes = File.ReadAllBytes(path);
+		if (!File.Exists(path))
+			throw new FileNotFoundException(nameof(fileName));
 
-			return bytes;
-		}
+		var fileText = await File.ReadAllTextAsync(path);
 
-		public async Task<byte []> GetBytesAsync (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		return fileText;
+	}
 
-			var path = Path.Combine(ApplicationStoragePath, fileName);
+	public byte [] GetBytes (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			if (!File.Exists(path))
-				throw new FileNotFoundException(nameof(fileName));
+		var path = Path.Combine(ApplicationStoragePath, fileName);
 
-			var bytes = await File.ReadAllBytesAsync(path);
+		if (!File.Exists(path))
+			throw new FileNotFoundException(nameof(fileName));
 
-			return bytes;
-		}
+		var bytes = File.ReadAllBytes(path);
 
-		public static void CreateFileDirectory (string fullPath)
-		{
-			ArgumentNullException.ThrowIfNull(fullPath);
+		return bytes;
+	}
 
-			var path = Directory.GetParent(fullPath);
+	public async Task<byte []> GetBytesAsync (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			Directory.CreateDirectory(path.FullName);
-		}
+		var path = Path.Combine(ApplicationStoragePath, fileName);
 
-		public void CreateDirectory (string directory)
-		{
-			ArgumentNullException.ThrowIfNull(directory);
+		if (!File.Exists(path))
+			throw new FileNotFoundException(nameof(fileName));
 
-			var path = Path.Combine(ApplicationStoragePath, directory);
+		var bytes = await File.ReadAllBytesAsync(path);
 
-			Directory.CreateDirectory(path);
-		}
+		return bytes;
+	}
 
-		public bool FileExists (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+	public static void CreateFileDirectory (string fullPath)
+	{
+		ArgumentNullException.ThrowIfNull(fullPath);
 
-			var path = Path.Combine(ApplicationStoragePath, fileName);
-			var exists = File.Exists(path);
+		var path = Directory.GetParent(fullPath);
 
-			return exists;
-		}
+		Directory.CreateDirectory(path.FullName);
+	}
+
+	public void CreateDirectory (string directory)
+	{
+		ArgumentNullException.ThrowIfNull(directory);
+
+		var path = Path.Combine(ApplicationStoragePath, directory);
+
+		Directory.CreateDirectory(path);
+	}
+
+	public bool FileExists (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		var path = Path.Combine(ApplicationStoragePath, fileName);
+		var exists = File.Exists(path);
+
+		return exists;
 	}
 }

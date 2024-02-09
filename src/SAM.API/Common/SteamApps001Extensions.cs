@@ -19,5 +19,4 @@ public static class SteamApps001Extensions
 	{
 		return clientApps.GetAppData(id, @"logo");
 	}
-
 }

@@ -1,10 +1,9 @@
-﻿namespace SAM.Core
+﻿namespace SAM.Core;
+
+public partial class SplashScreenView
 {
-	public partial class SplashScreenView
+	public SplashScreenView ()
 	{
-		public SplashScreenView ()
-		{
-			InitializeComponent();
-		}
+		InitializeComponent();
 	}
 }

@@ -3,44 +3,43 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace SAM.Core.Settings
+namespace SAM.Core.Settings;
+
+[DebuggerDisplay("{AppId}")]
+public class SteamAppSettings
 {
-	[DebuggerDisplay("{AppId}")]
-	public class SteamAppSettings
+	public uint AppId
 	{
-		public uint AppId
-		{
-			get; set;
-		}
-		public bool IsFavorite
-		{
-			get; set;
-		}
-		public bool IsHidden
-		{
-			get; set;
-		}
+		get; set;
+	}
+	public bool IsFavorite
+	{
+		get; set;
+	}
+	public bool IsHidden
+	{
+		get; set;
+	}
 
-		public override string ToString ()
-		{
-			var sb = new StringBuilder();
-			sb.Append($"{AppId}");
+	public override string ToString ()
+	{
+		var sb = new StringBuilder();
+		sb.Append($"{AppId}");
 
-			var attributes = new List<string>();
+		var attributes = new List<string>();
 
-			if (IsFavorite)
-				attributes.Add("Favorite");
-			if (IsHidden)
-				attributes.Add("Hidden");
+		if (IsFavorite)
+			attributes.Add("Favorite");
+		if (IsHidden)
+			attributes.Add("Hidden");
 
-			if (attributes.Count == 0)
-				return sb.ToString();
-
-			sb.Append(" (");
-			sb.Append(string.Join(", ", attributes));
-			sb.Append(")");
-
+		if (attributes.Count == 0)
 			return sb.ToString();
-		}
+
+		sb.Append(" (");
+		sb.Append(string.Join(", ", attributes));
+		sb.Append(")");
+
+		return sb.ToString();
 	}
 }

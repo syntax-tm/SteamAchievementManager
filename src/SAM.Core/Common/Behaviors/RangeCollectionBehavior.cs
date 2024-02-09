@@ -3,33 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Markup;
 
-namespace SAM.Core.Behaviors
+namespace SAM.Core.Behaviors;
+
+public class RangeCollectionBehavior : MarkupExtension
 {
-	public class RangeCollectionBehavior : MarkupExtension
+	public int Min
 	{
-		public int Min
-		{
-			get; set;
-		}
-		public int Max
-		{
-			get; set;
-		}
+		get; set;
+	}
+	public int Max
+	{
+		get; set;
+	}
 
-		public override object ProvideValue (IServiceProvider serviceProvider)
-		{
-			return CreateRange();
-		}
+	public override object ProvideValue (IServiceProvider serviceProvider)
+	{
+		return CreateRange();
+	}
 
-		private List<object> CreateRange ()
-		{
-			if (Min > Max)
-				throw new ArgumentException($"{nameof(Min)} cannot be greater than {nameof(Max)}.", nameof(Min));
+	private List<object> CreateRange ()
+	{
+		if (Min > Max)
+			throw new ArgumentException($"{nameof(Min)} cannot be greater than {nameof(Max)}.", nameof(Min));
 
-			var count = Max - Min;
-			var collection = Enumerable.Range(Min, count);
+		var count = Max - Min;
+		var collection = Enumerable.Range(Min, count);
 
-			return collection.Cast<object>().ToList();
-		}
+		return collection.Cast<object>().ToList();
 	}
 }

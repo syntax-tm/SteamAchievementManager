@@ -2,48 +2,47 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+[DebuggerDisplay("{Id} ({Type})")]
+public record SupportedApp
 {
-	[DebuggerDisplay("{Id} ({Type})")]
-	public record SupportedApp
+	private GameInfoType? _gameInfoType;
+
+	public uint Id
 	{
-		private GameInfoType? _gameInfoType;
+		get; init;
+	}
+	public string Type
+	{
+		get; init;
+	}
 
-		public uint Id
+	public GameInfoType GameInfoType
+	{
+		get
 		{
-			get; init;
+			_gameInfoType ??= Enum.Parse<GameInfoType>(Type, true);
+
+			return _gameInfoType.Value;
 		}
-		public string Type
-		{
-			get; init;
-		}
+	}
 
-		public GameInfoType GameInfoType
-		{
-			get
-			{
-				_gameInfoType ??= Enum.Parse<GameInfoType>(Type, true);
+	protected SupportedApp ()
+	{
 
-				return _gameInfoType.Value;
-			}
-		}
+	}
 
-		protected SupportedApp ()
-		{
+	public SupportedApp (uint id, string type)
+	{
+		Id = id;
+		Type = type;
+	}
 
-		}
+	public SupportedApp (KeyValuePair<uint, string> kvPair) => (Id, Type) = kvPair;
 
-		public SupportedApp (uint id, string type)
-		{
-			Id = id;
-			Type = type;
-		}
-
-		public SupportedApp (KeyValuePair<uint, string> kvPair) => (Id, Type) = kvPair;
-
-		public override string ToString ()
-		{
-			return $"{Id} ({Type})";
-		}
+	public override string ToString ()
+	{
+		return $"{Id} ({Type})";
 	}
 }

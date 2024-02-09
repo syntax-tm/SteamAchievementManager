@@ -1,10 +1,9 @@
-﻿namespace SAM.Core.Views
+﻿namespace SAM.Core.Views;
+
+public partial class StatEditView
 {
-	public partial class StatEditView
+	public StatEditView ()
 	{
-		public StatEditView ()
-		{
-			InitializeComponent();
-		}
+		InitializeComponent();
 	}
 }

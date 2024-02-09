@@ -1,10 +1,9 @@
-﻿namespace SAM.Core.Views
+﻿namespace SAM.Core.Views;
+
+public partial class AchievementsView
 {
-	public partial class AchievementsView
+	public AchievementsView ()
 	{
-		public AchievementsView ()
-		{
-			InitializeComponent();
-		}
+		InitializeComponent();
 	}
 }

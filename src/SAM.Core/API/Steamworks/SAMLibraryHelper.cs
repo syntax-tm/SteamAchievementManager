@@ -7,106 +7,105 @@ using System.Net.Http;
 using System.Xml.XPath;
 using log4net;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+public static class SAMLibraryHelper
 {
-	public static class SAMLibraryHelper
+	// TODO: Make this a configurable setting
+	private const string SAM_GAME_LIST_URL = @"http://gib.me/sam/games.xml";
+
+	private static readonly ILog log = LogManager.GetLogger(nameof(SAMLibraryHelper));
+
+	// TODO: Store this somewhere outside of the application so that it can be actively maintained separately
+	private static readonly uint [] _ignoredApps =
+	[
+		13260 // Unreal Development Kit
+	];
+	// TODO: This will probably be better off as a ConcurrentBag (for thread safety during Library init) or other keyed collection
+	private static List<SupportedApp> _gameList;
+
+	private static readonly HttpClient _client = new();
+
+	public static List<SupportedApp> GetSupportedGames ()
 	{
-		// TODO: Make this a configurable setting
-		private const string SAM_GAME_LIST_URL = @"http://gib.me/sam/games.xml";
+		if (_gameList != null)
+			return _gameList;
 
-		private static readonly ILog log = LogManager.GetLogger(nameof(SAMLibraryHelper));
-
-		// TODO: Store this somewhere outside of the application so that it can be actively maintained separately
-		private static readonly uint [] _ignoredApps =
-		[
-			13260 // Unreal Development Kit
-		];
-		// TODO: This will probably be better off as a ConcurrentBag (for thread safety during Library init) or other keyed collection
-		private static List<SupportedApp> _gameList;
-
-		private static readonly HttpClient _client = new();
-
-		public static List<SupportedApp> GetSupportedGames ()
+		try
 		{
-			if (_gameList != null)
-				return _gameList;
+			var pairs = new List<SupportedApp>();
 
-			try
+			var request = new HttpRequestMessage(HttpMethod.Get, SAM_GAME_LIST_URL);
+			var response = _client.Send(request);
+			var responseStream = response.Content.ReadAsStream();
+
+			var document = new XPathDocument(responseStream);
+			var navigator = document.CreateNavigator();
+
+			Debug.Assert(navigator is not null, $"The {nameof(XPathNavigator)} cannot be null.");
+
+			var nodes = navigator.Select("/games/game");
+
+			while (nodes.MoveNext())
 			{
-				var pairs = new List<SupportedApp>();
+				var gameId = (uint) nodes.Current!.ValueAsLong;
 
-				var request = new HttpRequestMessage(HttpMethod.Get, SAM_GAME_LIST_URL);
-				var response = _client.Send(request);
-				var responseStream = response.Content.ReadAsStream();
-
-				var document = new XPathDocument(responseStream);
-				var navigator = document.CreateNavigator();
-
-				Debug.Assert(navigator is not null, $"The {nameof(XPathNavigator)} cannot be null.");
-
-				var nodes = navigator.Select("/games/game");
-
-				while (nodes.MoveNext())
+				if (_ignoredApps.Contains(gameId))
 				{
-					var gameId = (uint) nodes.Current!.ValueAsLong;
-
-					if (_ignoredApps.Contains(gameId))
-					{
-						log.Debug($"Skipping app id '{gameId}'.");
-						continue;
-					}
-
-					var type = nodes.Current.GetAttribute("type", string.Empty);
-					if (string.IsNullOrEmpty(type))
-					{
-						type = "normal";
-					}
-
-					pairs.Add(new((uint) nodes.Current.ValueAsLong, type));
+					log.Debug($"Skipping app id '{gameId}'.");
+					continue;
 				}
 
-				_gameList = pairs;
+				var type = nodes.Current.GetAttribute("type", string.Empty);
+				if (string.IsNullOrEmpty(type))
+				{
+					type = "normal";
+				}
 
-				return pairs;
+				pairs.Add(new((uint) nodes.Current.ValueAsLong, type));
 			}
-			catch (Exception e)
-			{
-				log.Error($"An error occurred getting the list of supported apps. {e.Message}", e);
 
-				throw;
-			}
+			_gameList = pairs;
+
+			return pairs;
 		}
-
-		public static bool TryGetApp (uint id, out SupportedApp app)
+		catch (Exception e)
 		{
-			app = null;
+			log.Error($"An error occurred getting the list of supported apps. {e.Message}", e);
 
-			try
-			{
-				var apps = GetSupportedGames();
-
-				app = apps.FirstOrDefault(a => a.Id == id);
-
-				return app != null;
-			}
-			catch (Exception e)
-			{
-				var message = $"An error occurred getting the app id '{id}'. {e.Message}";
-
-				log.Warn(message, e);
-
-				return false;
-			}
+			throw;
 		}
+	}
 
-		// TODO: Add a way to check and see if an app is supported instead of just trying it
-		public static SupportedApp GetApp (uint id)
+	public static bool TryGetApp (uint id, out SupportedApp app)
+	{
+		app = null;
+
+		try
 		{
-			if (TryGetApp(id, out var app))
-				return app;
+			var apps = GetSupportedGames();
 
-			var message = $"App '{id}' is not currently supported.";
-			throw new SAMException(message);
+			app = apps.FirstOrDefault(a => a.Id == id);
+
+			return app != null;
 		}
+		catch (Exception e)
+		{
+			var message = $"An error occurred getting the app id '{id}'. {e.Message}";
+
+			log.Warn(message, e);
+
+			return false;
+		}
+	}
+
+	// TODO: Add a way to check and see if an app is supported instead of just trying it
+	public static SupportedApp GetApp (uint id)
+	{
+		if (TryGetApp(id, out var app))
+			return app;
+
+		var message = $"App '{id}' is not currently supported.";
+		throw new SAMException(message);
 	}
 }

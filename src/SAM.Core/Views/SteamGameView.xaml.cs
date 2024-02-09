@@ -1,10 +1,9 @@
-﻿namespace SAM.Core.Views
+﻿namespace SAM.Core.Views;
+
+public partial class SteamGameView
 {
-	public partial class SteamGameView
+	public SteamGameView ()
 	{
-		public SteamGameView ()
-		{
-			InitializeComponent();
-		}
+		InitializeComponent();
 	}
 }

@@ -24,5 +24,4 @@ public static class ProcessExtensions
 
 		return true;
 	}
-
 }

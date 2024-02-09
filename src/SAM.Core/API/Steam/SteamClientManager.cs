@@ -3,50 +3,48 @@ using System.Reflection;
 using log4net;
 using SAM.API;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+public static class SteamClientManager
 {
-	public static class SteamClientManager
+	private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+
+	private static bool _isInitialized;
+
+	public static uint AppId
 	{
-		private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+		get; private set;
+	}
+	public static string CurrentLanguage
+	{
+		get; private set;
+	}
+	public static Client Default
+	{
+		get; private set;
+	}
 
-		private static bool _isInitialized;
+	public static void Init (uint appId)
+	{
+		if (_isInitialized)
+			throw new SAMInitializationException($"The Steam {nameof(Client)} has already been initialized.");
 
-		public static uint AppId
+		try
 		{
-			get; private set;
+			Default = new();
+			Default.Initialize(appId);
+
+			AppId = appId;
+			CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
+
+			_isInitialized = true;
 		}
-		public static string CurrentLanguage
+		catch (Exception e)
 		{
-			get; private set;
+			var message = $"An error occurred attempting to initialize the Steam client with app ID '{appId}'. {e.Message}";
+			log.Error(message, e);
+
+			throw new SAMInitializationException(message, e);
 		}
-		public static Client Default
-		{
-			get; private set;
-		}
-
-		public static void Init (uint appId)
-		{
-			if (_isInitialized)
-				throw new SAMInitializationException($"The Steam {nameof(Client)} has already been initialized.");
-
-			try
-			{
-				Default = new();
-				Default.Initialize(appId);
-
-				AppId = appId;
-				CurrentLanguage = Default.SteamApps008.GetCurrentGameLanguage();
-
-				_isInitialized = true;
-			}
-			catch (Exception e)
-			{
-				var message = $"An error occurred attempting to initialize the Steam client with app ID '{appId}'. {e.Message}";
-				log.Error(message, e);
-
-				throw new SAMInitializationException(message, e);
-			}
-		}
-
 	}
 }

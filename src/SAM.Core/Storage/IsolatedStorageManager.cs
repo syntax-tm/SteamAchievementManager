@@ -6,254 +6,253 @@ using System.Reflection;
 using System.Threading.Tasks;
 using log4net;
 
-namespace SAM.Core.Storage
+namespace SAM.Core.Storage;
+
+public class IsolatedStorageManager : IStorageManager
 {
-	public class IsolatedStorageManager : IStorageManager
+	private static readonly ILog log = LogManager.GetLogger(nameof(IsolatedStorageManager));
+	private static readonly object syncLock = new();
+	private static IsolatedStorageManager _instance;
+
+	public string Path
 	{
-		private static readonly ILog log = LogManager.GetLogger(nameof(IsolatedStorageManager));
-		private static readonly object syncLock = new();
-		private static IsolatedStorageManager _instance;
+		get;
+	}
 
-		public string Path
+	protected IsolatedStorageManager ()
+	{
+		using var store = IsolatedStorageFile.GetMachineStoreForAssembly();
+
+		var fi = store.GetType().GetField(@"_rootDirectory", BindingFlags.NonPublic | BindingFlags.Instance);
+		var path = (string) fi!.GetValue(store);
+
+		log.Debug($"IsolatedStorageFile Path: '{path}'");
+
+		Path = path;
+
+		if (!store.DirectoryExists(@"apps"))
+			store.CreateDirectory(@"apps");
+	}
+
+	public static IsolatedStorageManager Default
+	{
+		get
 		{
-			get;
-		}
-
-		protected IsolatedStorageManager ()
-		{
-			using var store = IsolatedStorageFile.GetMachineStoreForAssembly();
-
-			var fi = store.GetType().GetField(@"_rootDirectory", BindingFlags.NonPublic | BindingFlags.Instance);
-			var path = (string) fi!.GetValue(store);
-
-			log.Debug($"IsolatedStorageFile Path: '{path}'");
-
-			Path = path;
-
-			if (!store.DirectoryExists(@"apps"))
-				store.CreateDirectory(@"apps");
-		}
-
-		public static IsolatedStorageManager Default
-		{
-			get
-			{
-				if (_instance != null)
-					return _instance;
-				lock (syncLock)
-				{
-					_instance = new();
-				}
+			if (_instance != null)
 				return _instance;
-			}
-		}
-
-		public void SaveBytes (string fileName, byte [] bytes, bool overwrite = true)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			using var isoStorage = GetStore();
-
-			if (isoStorage.FileExists(fileName))
+			lock (syncLock)
 			{
-				isoStorage.DeleteFile(fileName);
+				_instance = new();
 			}
-
-			using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
-
-			file.Write(bytes, 0, bytes.Length);
+			return _instance;
 		}
+	}
 
-		public async Task SaveBytesAsync (string fileName, byte [] bytes, bool overwrite = true)
+	public void SaveBytes (string fileName, byte [] bytes, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		using var isoStorage = GetStore();
+
+		if (isoStorage.FileExists(fileName))
 		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			using var isoStorage = GetStore();
-
-			if (isoStorage.FileExists(fileName))
-			{
-				isoStorage.DeleteFile(fileName);
-			}
-
-			await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
-
-			await file.WriteAsync(bytes);
+			isoStorage.DeleteFile(fileName);
 		}
 
-		public void SaveImage (string fileName, Image img, bool overwrite = true)
+		using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+
+		file.Write(bytes, 0, bytes.Length);
+	}
+
+	public async Task SaveBytesAsync (string fileName, byte [] bytes, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		using var isoStorage = GetStore();
+
+		if (isoStorage.FileExists(fileName))
 		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
-
-			using var isoStorage = GetStore();
-			using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
-
-			img.Save(file, img.RawFormat);
+			isoStorage.DeleteFile(fileName);
 		}
 
-		public async Task SaveImageAsync (string fileName, Image img, bool overwrite = true)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
 
-			using var isoStorage = GetStore();
-			await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+		await file.WriteAsync(bytes);
+	}
 
-			img.Save(file, img.RawFormat);
-		}
+	public void SaveImage (string fileName, Image img, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-		public void SaveText (string fileName, string text, bool overwrite = true)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		using var isoStorage = GetStore();
+		using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
 
-			using var isoStorage = GetStore();
-			using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
-			using var writer = new StreamWriter(file);
+		img.Save(file, img.RawFormat);
+	}
 
-			writer.WriteLine(text);
-		}
+	public async Task SaveImageAsync (string fileName, Image img, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-		public async Task SaveTextAsync (string fileName, string text, bool overwrite = true)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		using var isoStorage = GetStore();
+		await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
 
-			using var isoStorage = GetStore();
-			await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
-			await using var writer = new StreamWriter(file);
+		img.Save(file, img.RawFormat);
+	}
 
-			await writer.WriteLineAsync(text);
-		}
+	public void SaveText (string fileName, string text, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-		public byte [] GetBytes (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		using var isoStorage = GetStore();
+		using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+		using var writer = new StreamWriter(file);
 
-			if (!FileExists(fileName))
-				throw new FileNotFoundException(nameof(fileName));
+		writer.WriteLine(text);
+	}
 
-			using var isoStorage = GetStore();
+	public async Task SaveTextAsync (string fileName, string text, bool overwrite = true)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+		using var isoStorage = GetStore();
+		await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, isoStorage);
+		await using var writer = new StreamWriter(file);
 
-			var buffer = new byte [file.Length];
-			_ = file.Read(buffer, 0, buffer.Length);
+		await writer.WriteLineAsync(text);
+	}
 
-			return buffer;
-		}
+	public byte [] GetBytes (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-		public async Task<byte []> GetBytesAsync (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		if (!FileExists(fileName))
+			throw new FileNotFoundException(nameof(fileName));
 
-			if (!FileExists(fileName))
-				throw new FileNotFoundException(nameof(fileName));
+		using var isoStorage = GetStore();
 
-			using var isoStorage = GetStore();
+		using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
 
-			await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+		var buffer = new byte [file.Length];
+		_ = file.Read(buffer, 0, buffer.Length);
 
-			var buffer = new byte [file.Length];
-			_ = await file.ReadAsync(buffer);
+		return buffer;
+	}
 
-			return buffer;
-		}
+	public async Task<byte []> GetBytesAsync (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-		public Image GetImageFile (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		if (!FileExists(fileName))
+			throw new FileNotFoundException(nameof(fileName));
 
-			using var isoStorage = GetStore();
+		using var isoStorage = GetStore();
 
-			if (!isoStorage.FileExists(fileName))
-				throw new FileNotFoundException(nameof(fileName));
+		await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
 
-			using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+		var buffer = new byte [file.Length];
+		_ = await file.ReadAsync(buffer);
 
-			var img = Image.FromStream(file);
+		return buffer;
+	}
 
-			return img;
-		}
+	public Image GetImageFile (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-		public async Task<Image> GetImageFileAsync (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		using var isoStorage = GetStore();
 
-			using var isoStorage = GetStore();
+		if (!isoStorage.FileExists(fileName))
+			throw new FileNotFoundException(nameof(fileName));
 
-			if (!isoStorage.FileExists(fileName))
-				throw new FileNotFoundException(nameof(fileName));
+		using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
 
-			await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+		var img = Image.FromStream(file);
 
-			var img = Image.FromStream(file);
+		return img;
+	}
 
-			return img;
-		}
+	public async Task<Image> GetImageFileAsync (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-		public string GetTextFile (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		using var isoStorage = GetStore();
 
-			using var isoStorage = GetStore();
-			if (!isoStorage.FileExists(fileName))
-				throw new FileNotFoundException(nameof(fileName));
+		if (!isoStorage.FileExists(fileName))
+			throw new FileNotFoundException(nameof(fileName));
 
-			using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
-			using var reader = new StreamReader(file);
-			var fileText = reader.ReadToEnd();
+		await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
 
-			return fileText;
-		}
+		var img = Image.FromStream(file);
 
-		public async Task<string> GetTextFileAsync (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		return img;
+	}
 
-			using var isoStorage = GetStore();
-			if (!isoStorage.FileExists(fileName))
-				throw new FileNotFoundException(nameof(fileName));
+	public string GetTextFile (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
-			using var reader = new StreamReader(file);
-			var fileText = await reader.ReadToEndAsync();
+		using var isoStorage = GetStore();
+		if (!isoStorage.FileExists(fileName))
+			throw new FileNotFoundException(nameof(fileName));
 
-			return fileText;
-		}
+		using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+		using var reader = new StreamReader(file);
+		var fileText = reader.ReadToEnd();
 
-		public void CreateDirectory (string path)
-		{
-			ArgumentNullException.ThrowIfNull(path);
+		return fileText;
+	}
 
-			using var isoStorage = GetStore();
-			if (isoStorage.DirectoryExists(path))
-				return;
+	public async Task<string> GetTextFileAsync (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
 
-			isoStorage.CreateDirectory(path);
-		}
+		using var isoStorage = GetStore();
+		if (!isoStorage.FileExists(fileName))
+			throw new FileNotFoundException(nameof(fileName));
 
-		public bool FileExists (string fileName)
-		{
-			if (string.IsNullOrEmpty(fileName))
-				throw new ArgumentNullException(fileName);
+		await using var file = new IsolatedStorageFileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read, FileShare.None, isoStorage);
+		using var reader = new StreamReader(file);
+		var fileText = await reader.ReadToEndAsync();
 
-			using var isoStorage = GetStore();
+		return fileText;
+	}
 
-			return isoStorage.FileExists(fileName);
-		}
+	public void CreateDirectory (string path)
+	{
+		ArgumentNullException.ThrowIfNull(path);
 
-		public static IsolatedStorageFile GetStore ()
-		{
-			return IsolatedStorageFile.GetMachineStoreForAssembly();
-		}
+		using var isoStorage = GetStore();
+		if (isoStorage.DirectoryExists(path))
+			return;
+
+		isoStorage.CreateDirectory(path);
+	}
+
+	public bool FileExists (string fileName)
+	{
+		if (string.IsNullOrEmpty(fileName))
+			throw new ArgumentNullException(fileName);
+
+		using var isoStorage = GetStore();
+
+		return isoStorage.FileExists(fileName);
+	}
+
+	public static IsolatedStorageFile GetStore ()
+	{
+		return IsolatedStorageFile.GetMachineStoreForAssembly();
 	}
 }

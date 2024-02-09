@@ -1,10 +1,9 @@
-﻿namespace SAM.Core.Views
+﻿namespace SAM.Core.Views;
+
+public partial class StatsView
 {
-	public partial class StatsView
+	public StatsView ()
 	{
-		public StatsView ()
-		{
-			InitializeComponent();
-		}
+		InitializeComponent();
 	}
 }

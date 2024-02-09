@@ -1,10 +1,9 @@
 using SAM.API.Stats;
 
-namespace SAM.API
+namespace SAM.API;
+
+public class UserStatsReceived : Callback<UserStatsResponse>
 {
-	public class UserStatsReceived : Callback<UserStatsResponse>
-	{
-		public override int Id => 1101;
-		public override bool IsServer => false;
-	}
+	public override int Id => 1101;
+	public override bool IsServer => false;
 }

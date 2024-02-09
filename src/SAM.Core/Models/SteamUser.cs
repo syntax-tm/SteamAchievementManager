@@ -4,83 +4,82 @@ using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.Core.Extensions;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+// TODO: add support for any steam user (currently only supports the current steam user)
+[GenerateViewModel]
+public partial class SteamUser
 {
-	// TODO: add support for any steam user (currently only supports the current steam user)
-	[GenerateViewModel]
-	public partial class SteamUser
+	private const string PROFILE_URL_FORMAT = @"https://steamcommunity.com/profiles/{0}";
+	private const string PROFILE_XML_URL_FORMAT = @"https://steamcommunity.com/profiles/{0}?xml=1";
+
+	private static readonly ILog log = LogManager.GetLogger(nameof(SteamUser));
+
+	[GenerateProperty] private ulong steamId64;
+	[GenerateProperty] private string steamId;
+	[GenerateProperty] private int playerLevel;
+	[GenerateProperty] private string customUrl;
+	[GenerateProperty] private decimal recentHoursPlayed;
+	[GenerateProperty] private string headline;
+	[GenerateProperty] private string location;
+	[GenerateProperty] private string displayLocation;
+	[GenerateProperty] private string memberSince;
+	[GenerateProperty] private string realName;
+	[GenerateProperty] private string profileUrl;
+	[GenerateProperty] private string avatarIcon;
+	[GenerateProperty] private string avatarMedium;
+	[GenerateProperty] private string avatarFull;
+	[GenerateProperty] private bool vacBanned;
+	[GenerateProperty] private bool isLimitedAccount;
+
+	[GenerateProperty] private ImageSource avatar;
+
+	public SteamUser ()
 	{
-		private const string PROFILE_URL_FORMAT = @"https://steamcommunity.com/profiles/{0}";
-		private const string PROFILE_XML_URL_FORMAT = @"https://steamcommunity.com/profiles/{0}?xml=1";
+		RefreshProfile();
+	}
 
-		private static readonly ILog log = LogManager.GetLogger(nameof(SteamUser));
+	private void RefreshProfile ()
+	{
+		var client = SteamClientManager.Default;
 
-		[GenerateProperty] private ulong steamId64;
-		[GenerateProperty] private string steamId;
-		[GenerateProperty] private int playerLevel;
-		[GenerateProperty] private string customUrl;
-		[GenerateProperty] private decimal recentHoursPlayed;
-		[GenerateProperty] private string headline;
-		[GenerateProperty] private string location;
-		[GenerateProperty] private string displayLocation;
-		[GenerateProperty] private string memberSince;
-		[GenerateProperty] private string realName;
-		[GenerateProperty] private string profileUrl;
-		[GenerateProperty] private string avatarIcon;
-		[GenerateProperty] private string avatarMedium;
-		[GenerateProperty] private string avatarFull;
-		[GenerateProperty] private bool vacBanned;
-		[GenerateProperty] private bool isLimitedAccount;
+		SteamId64 = client.SteamUser.GetSteamId();
 
-		[GenerateProperty] private ImageSource avatar;
+		// TODO: need a way to get player level for friends
+		PlayerLevel = client.SteamUser.GetPlayerSteamLevel();
 
-		public SteamUser ()
-		{
-			RefreshProfile();
-		}
+		ProfileUrl = string.Format(PROFILE_URL_FORMAT, SteamId64);
 
-		private void RefreshProfile ()
-		{
-			var client = SteamClientManager.Default;
+		var xmlFeedUrl = string.Format(PROFILE_XML_URL_FORMAT, SteamId64);
 
-			SteamId64 = client.SteamUser.GetSteamId();
+		using var reader = new XmlTextReader(xmlFeedUrl);
+		var doc = new XmlDocument();
+		doc.Load(reader);
 
-			// TODO: need a way to get player level for friends
-			PlayerLevel = client.SteamUser.GetPlayerSteamLevel();
+		SteamId = doc.GetValue(@"//steamID");
 
-			ProfileUrl = string.Format(PROFILE_URL_FORMAT, SteamId64);
+		AvatarIcon = doc.GetValue(@"//avatarIcon");
+		AvatarMedium = doc.GetValue(@"//avatarMedium");
+		AvatarFull = doc.GetValue(@"//avatarFull");
 
-			var xmlFeedUrl = string.Format(PROFILE_XML_URL_FORMAT, SteamId64);
+		Avatar = ImageHelper.CreateSource(AvatarFull);
 
-			using var reader = new XmlTextReader(xmlFeedUrl);
-			var doc = new XmlDocument();
-			doc.Load(reader);
+		CustomUrl = doc.GetValue(@"//customUrl");
+		MemberSince = doc.GetValue(@"//memberSince");
+		Headline = doc.GetValue(@"//Headline");
+		Location = doc.GetValue(@"//location");
 
-			SteamId = doc.GetValue(@"//steamID");
+		DisplayLocation = !string.IsNullOrEmpty(Location) ? LocationHelper.GetShortLocation(Location) : string.Empty;
 
-			AvatarIcon = doc.GetValue(@"//avatarIcon");
-			AvatarMedium = doc.GetValue(@"//avatarMedium");
-			AvatarFull = doc.GetValue(@"//avatarFull");
+		RealName = doc.GetValue(@"//realname");
 
-			Avatar = ImageHelper.CreateSource(AvatarFull);
+		// TODO: no idea what this is for since mine and everyone i checked was empty
+		//var steamRating = GetValue(doc, @"//steamRating");
 
-			CustomUrl = doc.GetValue(@"//customUrl");
-			MemberSince = doc.GetValue(@"//memberSince");
-			Headline = doc.GetValue(@"//Headline");
-			Location = doc.GetValue(@"//location");
+		VacBanned = doc.GetValueAsBool(@"//vacBanned");
+		IsLimitedAccount = doc.GetValueAsBool(@"//isLimitedAccount");
+		RecentHoursPlayed = doc.GetValueAsDecimal(@"//hoursPlayed2Wk");
 
-			DisplayLocation = !string.IsNullOrEmpty(Location) ? LocationHelper.GetShortLocation(Location) : string.Empty;
-
-			RealName = doc.GetValue(@"//realname");
-
-			// TODO: no idea what this is for since mine and everyone i checked was empty
-			//var steamRating = GetValue(doc, @"//steamRating");
-
-			VacBanned = doc.GetValueAsBool(@"//vacBanned");
-			IsLimitedAccount = doc.GetValueAsBool(@"//isLimitedAccount");
-			RecentHoursPlayed = doc.GetValueAsDecimal(@"//hoursPlayed2Wk");
-
-			log.Debug($"Finished loading steam user {SteamId} ({SteamId64}) user profile.");
-		}
+		log.Debug($"Finished loading steam user {SteamId} ({SteamId64}) user profile.");
 	}
 }

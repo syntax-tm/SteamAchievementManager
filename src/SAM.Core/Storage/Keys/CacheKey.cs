@@ -6,89 +6,88 @@ using System.Reflection;
 using log4net;
 using SAM.Core.Extensions;
 
-namespace SAM.Core.Storage
+namespace SAM.Core.Storage;
+
+// TODO: Add configurable cache expiration
+[DebuggerDisplay("{GetFullPath()}")]
+public class CacheKey : ICacheKey
 {
-	// TODO: Add configurable cache expiration
-	[DebuggerDisplay("{GetFullPath()}")]
-	public class CacheKey : ICacheKey
+	private const string DEFAULT_EXTENSION = ".json";
+
+	protected readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()?.ReflectedType ?? typeof(CacheKey));
+
+	private string _fullPath;
+
+	public string Key
 	{
-		private const string DEFAULT_EXTENSION = ".json";
+		get; protected set;
+	}
+	public string FilePath
+	{
+		get; protected set;
+	}
 
-		protected readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()?.ReflectedType ?? typeof(CacheKey));
+	protected CacheKey ()
+	{
 
-		private string _fullPath;
+	}
 
-		public string Key
+	public CacheKey (object key, CacheKeyType type)
+	{
+		ArgumentNullException.ThrowIfNull(key);
+
+		SetKey(key);
+
+		if (type == CacheKeyType.App)
 		{
-			get; protected set;
-		}
-		public string FilePath
-		{
-			get; protected set;
-		}
-
-		protected CacheKey ()
-		{
-
-		}
-
-		public CacheKey (object key, CacheKeyType type)
-		{
-			ArgumentNullException.ThrowIfNull(key);
-
-			SetKey(key);
-
-			if (type == CacheKeyType.App)
-			{
-				throw new NotSupportedException(@$"{CacheKeyType.App} cache keys require an additional id parameter.");
-			}
-
-			FilePath = type.GetDescription();
+			throw new NotSupportedException(@$"{CacheKeyType.App} cache keys require an additional id parameter.");
 		}
 
-		public CacheKey (string fileName, object id, CacheKeyType type = CacheKeyType.Default, CacheKeySubType subType = CacheKeySubType.None)
+		FilePath = type.GetDescription();
+	}
+
+	public CacheKey (string fileName, object id, CacheKeyType type = CacheKeyType.Default, CacheKeySubType subType = CacheKeySubType.None)
+	{
+		if (string.IsNullOrWhiteSpace(fileName))
+			throw new ArgumentNullException(nameof(fileName));
+
+		SetKey(fileName);
+
+		if (type != CacheKeyType.App)
 		{
-			if (string.IsNullOrWhiteSpace(fileName))
-				throw new ArgumentNullException(nameof(fileName));
-
-			SetKey(fileName);
-
-			if (type != CacheKeyType.App)
-			{
-				throw new NotSupportedException(@$"Only {CacheKeyType.App} cache keys support {nameof(id)}.");
-			}
-
-			var path = new List<object>
-			{
-				type.GetDescription(),
-				id
-			};
-
-			// add subtype to path if set (currently only for app images)
-			if (subType != CacheKeySubType.None)
-			{
-				path.Add(subType.GetDescription());
-			}
-
-			FilePath = string.Join('\\', path);
+			throw new NotSupportedException(@$"Only {CacheKeyType.App} cache keys support {nameof(id)}.");
 		}
 
-		protected void SetKey (object key)
+		var path = new List<object>
 		{
-			var fileName = key.ToString();
+			type.GetDescription(),
+			id
+		};
 
-			var hasExtension = Path.HasExtension(fileName);
-			if (!hasExtension)
-			{
-				fileName = Path.ChangeExtension(fileName, DEFAULT_EXTENSION);
-			}
-
-			Key = fileName;
+		// add subtype to path if set (currently only for app images)
+		if (subType != CacheKeySubType.None)
+		{
+			path.Add(subType.GetDescription());
 		}
 
-		public virtual string GetFullPath ()
+		FilePath = string.Join('\\', path);
+	}
+
+	protected void SetKey (object key)
+	{
+		var fileName = key.ToString();
+
+		var hasExtension = Path.HasExtension(fileName);
+		if (!hasExtension)
 		{
-			return _fullPath ??= Path.Combine(FilePath, Key);
+			fileName = Path.ChangeExtension(fileName, DEFAULT_EXTENSION);
 		}
+
+		Key = fileName;
+	}
+
+	public virtual string GetFullPath ()
+	{
+		return _fullPath ??= Path.Combine(FilePath, Key);
 	}
 }

@@ -3,35 +3,34 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using log4net;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+public static class ImageHelper
 {
-	public static class ImageHelper
+	private static readonly ILog log = LogManager.GetLogger(nameof(ImageHelper));
+
+	// TODO: cache images from urls locally
+	public static ImageSource CreateSource (string url)
 	{
-		private static readonly ILog log = LogManager.GetLogger(nameof(ImageHelper));
+		if (string.IsNullOrEmpty(url))
+			throw new ArgumentNullException(nameof(url));
 
-		// TODO: cache images from urls locally
-		public static ImageSource CreateSource (string url)
-		{
-			if (string.IsNullOrEmpty(url))
-				throw new ArgumentNullException(nameof(url));
+		var uri = new Uri(url);
 
-			var uri = new Uri(url);
+		return CreateSource(uri);
+	}
 
-			return CreateSource(uri);
-		}
+	// TODO: cache images from urls locally
+	public static ImageSource CreateSource (Uri uri)
+	{
+		ArgumentNullException.ThrowIfNull(uri);
 
-		// TODO: cache images from urls locally
-		public static ImageSource CreateSource (Uri uri)
-		{
-			ArgumentNullException.ThrowIfNull(uri);
+		var bmp = new BitmapImage();
+		bmp.CacheOption = BitmapCacheOption.OnLoad;
+		bmp.BeginInit();
+		bmp.UriSource = uri;
+		bmp.EndInit();
 
-			var bmp = new BitmapImage();
-			bmp.CacheOption = BitmapCacheOption.OnLoad;
-			bmp.BeginInit();
-			bmp.UriSource = uri;
-			bmp.EndInit();
-
-			return bmp;
-		}
+		return bmp;
 	}
 }

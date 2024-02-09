@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace SAM.API.Stats
+namespace SAM.API.Stats;
+
+[Flags]
+public enum StatFlags
 {
-	[Flags]
-	public enum StatFlags
-	{
-		None = 0,
-		IncrementOnly = 1 << 0,
-		Protected = 1 << 1,
-		UnknownPermission = 1 << 2
-	}
+	None = 0,
+	IncrementOnly = 1 << 0,
+	Protected = 1 << 1,
+	UnknownPermission = 1 << 2
 }

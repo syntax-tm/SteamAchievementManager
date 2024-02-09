@@ -1,27 +1,26 @@
 ﻿using System.Windows;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+public class BindingProxy : Freezable
 {
-	public class BindingProxy : Freezable
+	public static readonly DependencyProperty DataProperty =
+		DependencyProperty.Register(nameof(Data), typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
+
+	public object Data
 	{
-		public static readonly DependencyProperty DataProperty =
-			DependencyProperty.Register(nameof(Data), typeof(object), typeof(BindingProxy), new UIPropertyMetadata(null));
-
-		public object Data
+		get
 		{
-			get
-			{
-				return GetValue(DataProperty);
-			}
-			set
-			{
-				SetValue(DataProperty, value);
-			}
+			return GetValue(DataProperty);
 		}
-
-		protected override Freezable CreateInstanceCore ()
+		set
 		{
-			return new BindingProxy();
+			SetValue(DataProperty, value);
 		}
+	}
+
+	protected override Freezable CreateInstanceCore ()
+	{
+		return new BindingProxy();
 	}
 }

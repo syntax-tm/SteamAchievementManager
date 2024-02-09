@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SAM.API
+namespace SAM.API;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public struct ISteamApps001
 {
-	[StructLayout(LayoutKind.Sequential, Pack = 1)]
-	public struct ISteamApps001
-	{
-		public nint GetAppData;
-	}
+	public nint GetAppData;
 }

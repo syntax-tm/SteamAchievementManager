@@ -1,11 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SAM.API.Stats
+namespace SAM.API.Stats;
+
+[StructLayout(LayoutKind.Sequential, Pack = 1)]
+public readonly struct UserStatsStored
 {
-	[StructLayout(LayoutKind.Sequential, Pack = 1)]
-	public readonly struct UserStatsStored
-	{
-		public readonly ulong GameId;
-		public readonly int Result;
-	}
+	public readonly ulong GameId;
+	public readonly int Result;
 }

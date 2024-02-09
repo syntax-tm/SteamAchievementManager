@@ -1,19 +1,18 @@
 ﻿using System;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+[Serializable]
+public class SAMStatUpdateException : SAMException
 {
-	[Serializable]
-	public class SAMStatUpdateException : SAMException
+	public SAMStatUpdateException ()
 	{
-		public SAMStatUpdateException ()
-		{
 
-		}
+	}
 
-		public SAMStatUpdateException (string message, Exception innerException = null)
-			: base(message, innerException)
-		{
+	public SAMStatUpdateException (string message, Exception innerException = null)
+		: base(message, innerException)
+	{
 
-		}
 	}
 }
