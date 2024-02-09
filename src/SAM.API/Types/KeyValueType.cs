@@ -1,4 +1,6 @@
-﻿namespace SAM.API.Types;
+﻿#pragma warning disable CA1720
+
+namespace SAM.API.Types;
 
 public enum KeyValueType : byte
 {

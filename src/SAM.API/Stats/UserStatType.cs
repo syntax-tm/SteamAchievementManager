@@ -1,4 +1,6 @@
-﻿namespace SAM.API.Stats;
+﻿#pragma warning disable CA1720
+
+namespace SAM.API.Stats;
 
 public enum UserStatType
 {

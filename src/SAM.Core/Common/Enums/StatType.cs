@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿#pragma warning disable CA1720
+
+using System.ComponentModel;
 
 namespace SAM.Core;
 
