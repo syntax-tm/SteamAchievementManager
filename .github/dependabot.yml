@@ -5,32 +5,45 @@
 
 version: 2
 updates:
-  - package-ecosystem: "nuget"
-    directory: "/src/SAM.API"
-    schedule:
-      interval: "daily"
-      
-  - package-ecosystem: "nuget"
-    directory: "/src/SAM.Core"
-    schedule:
-      interval: "daily"
-      
-  - package-ecosystem: "nuget"
-    directory: "/src/SAM.Manager"
-    schedule:
-      interval: "daily"
-      
-  - package-ecosystem: "nuget"
-    directory: "/src/SAM.UnitTests"
-    schedule:
-      interval: "daily"
-
-  - package-ecosystem: "nuget"
-    directory: "/src/SAM"
-    schedule:
-      interval: "daily"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    allow:
+      - dependency-type: "all"
+      
+  - package-ecosystem: "nuget"
+    directory: "/src/SAM.API"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "all"
+      
+  - package-ecosystem: "nuget"
+    directory: "/src/SAM.Core"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "all"
+      
+  - package-ecosystem: "nuget"
+    directory: "/src/SAM.Manager"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "all"
+      
+  - package-ecosystem: "nuget"
+    directory: "/src/SAM.UnitTests"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "all"
+
+  - package-ecosystem: "nuget"
+    directory: "/src/SAM"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "all"
