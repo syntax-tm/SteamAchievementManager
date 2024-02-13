@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Xml;
 using System.Xml.XPath;
 using log4net;
 
@@ -41,7 +42,15 @@ public static class SAMLibraryHelper
 			var response = _client.Send(request);
 			var responseStream = response.Content.ReadAsStream();
 
-			var document = new XPathDocument(responseStream);
+			// CA5372
+			// var document = new XPathDocument(responseStream);
+			// var navigator = document.CreateNavigator();
+
+			var settings = new XmlReaderSettings();
+			settings.DtdProcessing = DtdProcessing.Ignore;
+			settings.XmlResolver = null;
+			var reader = XmlReader.Create(responseStream, settings);
+			var document = new XPathDocument(reader);
 			var navigator = document.CreateNavigator();
 
 			Debug.Assert(navigator is not null, $"The {nameof(XPathNavigator)} cannot be null.");
