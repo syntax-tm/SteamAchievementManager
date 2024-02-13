@@ -119,11 +119,7 @@ public partial class App
 	{
 		try
 		{
-			var exception = args.Exception;
-			if (exception == null)
-			{
-				throw new ArgumentNullException(nameof(exception));
-			}
+			var exception = args.Exception ?? throw new ArgumentNullException(nameof(args));
 
 			var message = $"An unobserved task exception occurred. {exception.Message}";
 
