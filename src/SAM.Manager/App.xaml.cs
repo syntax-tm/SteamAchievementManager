@@ -131,7 +131,7 @@ public partial class App
 		{
 			log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
 
-			Environment.Exit((int) SAMExitCode.UnhandledException);
+			Environment.Exit(SAMExitCode.UnhandledException);
 		}
 	}
 
