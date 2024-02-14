@@ -99,9 +99,11 @@ public class SteamLibrary : BindableBase
 		Items = [];
 		BindingOperations.EnableCollectionSynchronization(Items, _lock);
 
-		_libraryWorker = new();
-		_libraryWorker.WorkerSupportsCancellation = true;
-		_libraryWorker.WorkerReportsProgress = true;
+		_libraryWorker = new()
+		{
+			WorkerSupportsCancellation = true,
+			WorkerReportsProgress = true
+		};
 		_libraryWorker.DoWork += LibraryWorkerOnDoWork;
 		_libraryWorker.RunWorkerCompleted += LibraryWorkerOnRunWorkerCompleted;
 	}

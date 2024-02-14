@@ -17,8 +17,10 @@ public static class SplashScreenHelper
 
 		_splashScreenVm = SplashScreenViewModel.Create();
 
-		_splashWindow = new SplashScreenView();
-		_splashWindow.DataContext = _splashScreenVm;
+		_splashWindow = new SplashScreenView
+		{
+			DataContext = _splashScreenVm
+		};
 
 		_isInitialized = true;
 	}

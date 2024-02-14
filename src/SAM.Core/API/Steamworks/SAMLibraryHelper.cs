@@ -42,9 +42,11 @@ public static class SAMLibraryHelper
 			// var document = new XPathDocument(responseStream);
 			// var navigator = document.CreateNavigator();
 
-			var settings = new XmlReaderSettings();
-			settings.DtdProcessing = DtdProcessing.Ignore;
-			settings.XmlResolver = null;
+			var settings = new XmlReaderSettings
+			{
+				DtdProcessing = DtdProcessing.Ignore,
+				XmlResolver = null
+			};
 			var reader = XmlReader.Create(responseStream, settings);
 			var document = new XPathDocument(reader);
 			var navigator = document.CreateNavigator();

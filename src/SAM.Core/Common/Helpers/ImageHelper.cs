@@ -26,8 +26,10 @@ public static class ImageHelper
 	{
 		ArgumentNullException.ThrowIfNull(uri);
 
-		var bmp = new BitmapImage();
-		bmp.CacheOption = BitmapCacheOption.OnLoad;
+		var bmp = new BitmapImage
+		{
+			CacheOption = BitmapCacheOption.OnLoad
+		};
 		bmp.BeginInit();
 		bmp.UriSource = uri;
 		bmp.EndInit();
