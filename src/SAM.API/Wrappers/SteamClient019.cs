@@ -11,7 +11,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 {
 	#region GetSteamUser012
 
-	public SteamUser012 GetSteamUser012 (int user, int pipe) {
+	public SteamUser012 GetSteamUser012 (int user, int pipe)
+	{
 		return GetISteamUser<SteamUser012>(user, pipe, "SteamUser012");
 	}
 
@@ -19,7 +20,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 
 	#region GetSteamUser017
 
-	public SteamUser017 GetSteamUser017 (int user, int pipe) {
+	public SteamUser017 GetSteamUser017 (int user, int pipe)
+	{
 		return GetISteamUser<SteamUser017>(user, pipe, nameof(SteamUser017));
 	}
 
@@ -27,7 +29,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 
 	#region GetSteamUserStats007
 
-	public SteamUserStats007 GetSteamUserStats006 (int user, int pipe) {
+	public SteamUserStats007 GetSteamUserStats006 (int user, int pipe)
+	{
 		return GetISteamUserStats<SteamUserStats007>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION007");
 	}
 
@@ -44,7 +47,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 
 	#region GetSteamUtils004
 
-	public SteamUtils005 GetSteamUtils004 (int pipe) {
+	public SteamUtils005 GetSteamUtils004 (int pipe)
+	{
 		return GetISteamUtils<SteamUtils005>(pipe, "SteamUtils005");
 	}
 
@@ -52,7 +56,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 
 	#region GetSteamApps001
 
-	public SteamApps001 GetSteamApps001 (int user, int pipe) {
+	public SteamApps001 GetSteamApps001 (int user, int pipe)
+	{
 		return GetISteamApps<SteamApps001>(user, pipe, "STEAMAPPS_INTERFACE_VERSION001");
 	}
 
@@ -60,7 +65,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 
 	#region GetSteamApps008
 
-	public SteamApps008 GetSteamApps008 (int user, int pipe) {
+	public SteamApps008 GetSteamApps008 (int user, int pipe)
+	{
 		return GetISteamApps<SteamApps008>(user, pipe, "STEAMAPPS_INTERFACE_VERSION008");
 	}
 
@@ -71,7 +77,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 	[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
 	private delegate int NativeCreateSteamPipe (nint self);
 
-	public int CreateSteamPipe () {
+	public int CreateSteamPipe ()
+	{
 		return Call<int, NativeCreateSteamPipe>(Functions.CreateSteamPipe, ObjectAddress);
 	}
 
@@ -83,7 +90,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 	[return: MarshalAs(UnmanagedType.I1)]
 	private delegate bool NativeReleaseSteamPipe (nint self, int pipe);
 
-	public bool ReleaseSteamPipe (int pipe) {
+	public bool ReleaseSteamPipe (int pipe)
+	{
 		return Call<bool, NativeReleaseSteamPipe>(Functions.ReleaseSteamPipe, ObjectAddress, pipe);
 	}
 
@@ -95,7 +103,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 	[return: MarshalAs(UnmanagedType.I1)]
 	private delegate bool NativeShutdownIfAllPipesClosed (nint self);
 
-	public bool ShutdownIfAllPipesClosed () {
+	public bool ShutdownIfAllPipesClosed ()
+	{
 		return Call<bool, NativeShutdownIfAllPipesClosed>(Functions.ShutdownIfAllPipesClosed, ObjectAddress);
 	}
 
@@ -134,7 +143,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 	[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
 	private delegate void NativeReleaseUser (nint self, int pipe, int user);
 
-	public void ReleaseUser (int pipe, int user) {
+	public void ReleaseUser (int pipe, int user)
+	{
 		Call<NativeReleaseUser>(Functions.ReleaseUser, ObjectAddress, pipe, user);
 	}
 
@@ -145,7 +155,8 @@ public class SteamClient019 : NativeWrapper<ISteamClient019>
 	[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
 	private delegate void NativeSetLocalIPBinding (nint self, uint host, ushort port);
 
-	public void SetLocalIPBinding (uint host, ushort port) {
+	public void SetLocalIPBinding (uint host, ushort port)
+	{
 		Call<NativeSetLocalIPBinding>(Functions.SetLocalIPBinding, ObjectAddress, host, port);
 	}
 

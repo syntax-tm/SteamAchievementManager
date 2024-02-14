@@ -66,7 +66,7 @@ public class IntegerSteamStatistic : SteamStatisticBase
 	protected void OnValueChanged ()
 	{
 		if (_loading)
-			{
+		{
 			return;
 		}
 

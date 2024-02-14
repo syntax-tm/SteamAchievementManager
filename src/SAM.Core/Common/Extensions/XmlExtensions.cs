@@ -13,7 +13,7 @@ public static class XmlExtensions
 		var nodeText = GetValue(node, path);
 
 		if (string.IsNullOrWhiteSpace(nodeText))
-			{
+		{
 			return default;
 		}
 
@@ -32,7 +32,7 @@ public static class XmlExtensions
 		var nodeText = GetValue(node, path);
 
 		if (string.IsNullOrWhiteSpace(nodeText))
-			{
+		{
 			return default;
 		}
 

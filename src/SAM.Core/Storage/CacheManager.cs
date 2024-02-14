@@ -28,7 +28,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -42,7 +42,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -56,7 +56,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -68,7 +68,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -80,7 +80,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -92,7 +92,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -131,7 +131,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -182,12 +182,12 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			return false;
 		}
 
 		if (target == null)
-			{
+		{
 			return false;
 		}
 
@@ -215,7 +215,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 
@@ -246,7 +246,7 @@ public static class CacheManager
 		var filePath = key?.GetFullPath();
 
 		if (string.IsNullOrEmpty(filePath))
-			{
+		{
 			throw new ArgumentNullException(nameof(key));
 		}
 

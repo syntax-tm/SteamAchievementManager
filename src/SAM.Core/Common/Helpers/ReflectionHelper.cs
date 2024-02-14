@@ -41,7 +41,7 @@ public static class ReflectionHelper
 			var appCacheType = Type.GetType($"{type}, {assembly.GetName().Name}");
 
 			if (appCacheType != null)
-				{
+			{
 				return appCacheType;
 			}
 		}

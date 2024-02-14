@@ -41,7 +41,7 @@ public class EnumBindingSourceExtension : MarkupExtension
 	public override object ProvideValue (IServiceProvider serviceProvider)
 	{
 		if (_enumType is null)
-			{
+		{
 			throw new InvalidOperationException($"{nameof(_enumType)} cannot be null.");
 		}
 
@@ -49,7 +49,7 @@ public class EnumBindingSourceExtension : MarkupExtension
 		var enumValues = Enum.GetValues(actualEnumType);
 
 		if (actualEnumType == _enumType)
-			{
+		{
 			return enumValues;
 		}
 

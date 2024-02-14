@@ -10,7 +10,7 @@ public static class SteamStatisticFactory
 	public static SteamStatisticBase CreateStat (Client client, StatInfoBase infoBase)
 	{
 		if (string.IsNullOrEmpty(infoBase?.Id))
-			{
+		{
 			throw new ArgumentNullException(nameof(infoBase));
 		}
 
@@ -20,7 +20,7 @@ public static class SteamStatisticFactory
 			case IntegerStatInfo intDefinition:
 			{
 				if (!client.SteamUserStats.GetStatValue(infoBase.Id, out int value))
-					{
+				{
 					break;
 				}
 
@@ -32,7 +32,7 @@ public static class SteamStatisticFactory
 			case AvgRateStatInfo avgRateDefinition:
 			{
 				if (!client.SteamUserStats.GetStatValue(avgRateDefinition.Id, out float value))
-					{
+				{
 					break;
 				}
 
@@ -44,7 +44,7 @@ public static class SteamStatisticFactory
 			case FloatStatInfo floatDefinition:
 			{
 				if (!client.SteamUserStats.GetStatValue(floatDefinition.Id, out float value))
-					{
+				{
 					break;
 				}
 

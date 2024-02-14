@@ -106,7 +106,7 @@ public class SteamAchievement : BindableBase
 	public void Unlock ()
 	{
 		if (IsAchieved)
-			{
+		{
 			return;
 		}
 
@@ -117,7 +117,7 @@ public class SteamAchievement : BindableBase
 	public void Lock ()
 	{
 		if (!IsAchieved)
-			{
+		{
 			return;
 		}
 
@@ -139,7 +139,7 @@ public class SteamAchievement : BindableBase
 	public void CommitChanges ()
 	{
 		if (!IsModified)
-			{
+		{
 			return;
 		}
 
@@ -168,7 +168,7 @@ public class SteamAchievement : BindableBase
 	private void OnIsAchievedChanged ()
 	{
 		if (_isLoading)
-			{
+		{
 			return;
 		}
 

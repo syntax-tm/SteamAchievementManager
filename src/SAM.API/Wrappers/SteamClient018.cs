@@ -20,7 +20,8 @@ public class SteamClient018 : NativeWrapper<ISteamClient018>
 
 	#region GetSteamUserStats007
 
-	public SteamUserStats007 GetSteamUserStats006 (int user, int pipe) {
+	public SteamUserStats007 GetSteamUserStats006 (int user, int pipe)
+	{
 		return GetISteamUserStats<SteamUserStats007>(user, pipe, "STEAMUSERSTATS_INTERFACE_VERSION007");
 	}
 
@@ -46,7 +47,8 @@ public class SteamClient018 : NativeWrapper<ISteamClient018>
 
 	#region GetSteamApps008
 
-	public SteamApps008 GetSteamApps008 (int user, int pipe) {
+	public SteamApps008 GetSteamApps008 (int user, int pipe)
+	{
 		return GetISteamApps<SteamApps008>(user, pipe, "STEAMAPPS_INTERFACE_VERSION008");
 	}
 
@@ -83,7 +85,8 @@ public class SteamClient018 : NativeWrapper<ISteamClient018>
 	[return: MarshalAs(UnmanagedType.I1)]
 	private delegate bool NativeShutdownIfAllPipesClosed (nint self);
 
-	public bool ShutdownIfAllPipesClosed () {
+	public bool ShutdownIfAllPipesClosed ()
+	{
 		return Call<bool, NativeShutdownIfAllPipesClosed>(Functions.ShutdownIfAllPipesClosed, ObjectAddress);
 	}
 

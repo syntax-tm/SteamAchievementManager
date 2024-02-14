@@ -137,11 +137,13 @@ public sealed class MathAddConverter : MarkupMultiConverter
 		return mathConverter.Convert(value, targetType, parameter, culture);
 	}
 
-	public override object [] ConvertBack (object value, Type [] targetTypes, object parameter, CultureInfo culture) {
+	public override object [] ConvertBack (object value, Type [] targetTypes, object parameter, CultureInfo culture)
+	{
 		return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
 	}
 
-	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) {
+	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.ConvertBack(value, targetType, parameter, culture);
 	}
 }
@@ -170,7 +172,8 @@ public sealed class MathSubtractConverter : MarkupMultiConverter
 		return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
 	}
 
-	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) {
+	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.ConvertBack(value, targetType, parameter, culture);
 	}
 }
@@ -184,11 +187,13 @@ public sealed class MathMultiplyConverter : MarkupMultiConverter
 {
 	private static readonly MathConverter mathConverter = new() { Operation = MathOperation.Multiply };
 
-	public override object Convert (object [] values, Type targetType, object parameter, CultureInfo culture) {
+	public override object Convert (object [] values, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.Convert(values, targetType, parameter, culture);
 	}
 
-	public override object Convert (object value, Type targetType, object parameter, CultureInfo culture) {
+	public override object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.Convert(value, targetType, parameter, culture);
 	}
 
@@ -197,7 +202,8 @@ public sealed class MathMultiplyConverter : MarkupMultiConverter
 		return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
 	}
 
-	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) {
+	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.ConvertBack(value, targetType, parameter, culture);
 	}
 }
@@ -211,19 +217,23 @@ public sealed class MathDivideConverter : MarkupMultiConverter
 {
 	private static readonly MathConverter mathConverter = new() { Operation = MathOperation.Divide };
 
-	public override object Convert (object [] values, Type targetType, object parameter, CultureInfo culture) {
+	public override object Convert (object [] values, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.Convert(values, targetType, parameter, culture);
 	}
 
-	public override object Convert (object value, Type targetType, object parameter, CultureInfo culture) {
+	public override object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.Convert(value, targetType, parameter, culture);
 	}
 
-	public override object [] ConvertBack (object value, Type [] targetTypes, object parameter, CultureInfo culture) {
+	public override object [] ConvertBack (object value, Type [] targetTypes, object parameter, CultureInfo culture)
+	{
 		return mathConverter.ConvertBack(value, targetTypes, parameter, culture);
 	}
 
-	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) {
+	public override object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+	{
 		return mathConverter.ConvertBack(value, targetType, parameter, culture);
 	}
 }

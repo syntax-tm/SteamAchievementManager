@@ -34,7 +34,7 @@ public class WindowAutoSaveBehavior : Behavior<Window>
 		base.OnDetaching();
 
 		if (AssociatedObject == null)
-			{
+		{
 			return;
 		}
 

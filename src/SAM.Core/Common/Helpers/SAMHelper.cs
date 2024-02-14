@@ -84,7 +84,7 @@ public static class SAMHelper
 			foreach (var proc in Process.GetProcesses())
 			{
 				if (!Regex.IsMatch(proc.ProcessName, MANAGER_PROCESS_REGEX))
-					{
+				{
 					continue;
 				}
 

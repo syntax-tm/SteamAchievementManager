@@ -31,7 +31,7 @@ public class IsolatedStorageManager : IStorageManager
 		Path = path;
 
 		if (!store.DirectoryExists(@"apps"))
-			{
+		{
 			store.CreateDirectory(@"apps");
 		}
 	}
@@ -41,7 +41,7 @@ public class IsolatedStorageManager : IStorageManager
 		get
 		{
 			if (_instance != null)
-				{
+			{
 				return _instance;
 			}
 
@@ -57,7 +57,7 @@ public class IsolatedStorageManager : IStorageManager
 	public void SaveBytes (string fileName, byte [] bytes, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
@@ -76,7 +76,7 @@ public class IsolatedStorageManager : IStorageManager
 	public async Task SaveBytesAsync (string fileName, byte [] bytes, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
@@ -95,7 +95,7 @@ public class IsolatedStorageManager : IStorageManager
 	public void SaveImage (string fileName, Image img, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
@@ -108,7 +108,7 @@ public class IsolatedStorageManager : IStorageManager
 	public async Task SaveImageAsync (string fileName, Image img, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
@@ -121,7 +121,7 @@ public class IsolatedStorageManager : IStorageManager
 	public void SaveText (string fileName, string text, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
@@ -135,7 +135,7 @@ public class IsolatedStorageManager : IStorageManager
 	public async Task SaveTextAsync (string fileName, string text, bool overwrite = true)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
@@ -149,12 +149,12 @@ public class IsolatedStorageManager : IStorageManager
 	public byte [] GetBytes (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
 		if (!FileExists(fileName))
-			{
+		{
 			throw new FileNotFoundException(nameof(fileName));
 		}
 
@@ -171,12 +171,12 @@ public class IsolatedStorageManager : IStorageManager
 	public async Task<byte []> GetBytesAsync (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
 		if (!FileExists(fileName))
-			{
+		{
 			throw new FileNotFoundException(nameof(fileName));
 		}
 
@@ -193,14 +193,14 @@ public class IsolatedStorageManager : IStorageManager
 	public Image GetImageFile (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
 		using var isoStorage = GetStore();
 
 		if (!isoStorage.FileExists(fileName))
-			{
+		{
 			throw new FileNotFoundException(nameof(fileName));
 		}
 
@@ -214,14 +214,14 @@ public class IsolatedStorageManager : IStorageManager
 	public async Task<Image> GetImageFileAsync (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
 		using var isoStorage = GetStore();
 
 		if (!isoStorage.FileExists(fileName))
-			{
+		{
 			throw new FileNotFoundException(nameof(fileName));
 		}
 
@@ -235,13 +235,13 @@ public class IsolatedStorageManager : IStorageManager
 	public string GetTextFile (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
 		using var isoStorage = GetStore();
 		if (!isoStorage.FileExists(fileName))
-			{
+		{
 			throw new FileNotFoundException(nameof(fileName));
 		}
 
@@ -255,13 +255,13 @@ public class IsolatedStorageManager : IStorageManager
 	public async Task<string> GetTextFileAsync (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 
 		using var isoStorage = GetStore();
 		if (!isoStorage.FileExists(fileName))
-			{
+		{
 			throw new FileNotFoundException(nameof(fileName));
 		}
 
@@ -278,7 +278,7 @@ public class IsolatedStorageManager : IStorageManager
 
 		using var isoStorage = GetStore();
 		if (isoStorage.DirectoryExists(directory))
-			{
+		{
 			return;
 		}
 
@@ -288,7 +288,7 @@ public class IsolatedStorageManager : IStorageManager
 	public bool FileExists (string fileName)
 	{
 		if (string.IsNullOrEmpty(fileName))
-			{
+		{
 			throw new ArgumentNullException(fileName);
 		}
 

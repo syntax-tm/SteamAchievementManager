@@ -23,7 +23,7 @@ public static class WebManager
 			{
 				var loadedFromCache = CacheManager.TryGetBytes(cacheKey, out var cachedBytes);
 				if (loadedFromCache)
-					{
+				{
 					return cachedBytes;
 				}
 			}
@@ -68,7 +68,7 @@ public static class WebManager
 			{
 				var loadedFromCache = CacheManager.TryGetTextFile(cacheKey, out var cachedImage);
 				if (loadedFromCache)
-					{
+				{
 					return cachedImage;
 				}
 			}
@@ -115,7 +115,7 @@ public static class WebManager
 			{
 				var loadedFromCache = CacheManager.TryGetImageFile(cacheKey, out var cachedImage);
 				if (loadedFromCache)
-					{
+				{
 					return cachedImage;
 				}
 			}

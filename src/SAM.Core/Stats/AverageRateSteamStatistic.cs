@@ -73,7 +73,7 @@ public class AverageRateSteamStatistic : SteamStatisticBase
 	protected void OnAvgRateValueChanged ()
 	{
 		if (_loading)
-			{
+		{
 			return;
 		}
 

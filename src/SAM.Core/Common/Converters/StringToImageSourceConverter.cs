@@ -17,7 +17,7 @@ public class StringToImageConverter : IValueConverter
 	public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
 	{
 		if (value is not string filePath)
-			{
+		{
 			return null;
 		}
 
@@ -54,7 +54,8 @@ public class StringToImageConverterExtension : MarkupExtension
 		ItemConverter = itemConverter;
 	}
 
-	public override object ProvideValue (IServiceProvider serviceProvider) {
+	public override object ProvideValue (IServiceProvider serviceProvider)
+	{
 		return new StringToImageConverter();
 	}
 }
@@ -104,7 +105,8 @@ public class StringToImageSourceConverterExtension : MarkupExtension
 		ItemConverter = itemConverter;
 	}
 
-	public override object ProvideValue (IServiceProvider serviceProvider) {
+	public override object ProvideValue (IServiceProvider serviceProvider)
+	{
 		return new StringToImageSourceConverter();
 	}
 }

@@ -25,7 +25,7 @@ public class SteamLibraryManager
 		get
 		{
 			if (_instance != null)
-				{
+			{
 				return _instance;
 			}
 

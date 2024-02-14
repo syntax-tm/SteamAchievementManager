@@ -87,7 +87,7 @@ public class ObservableCollectionHandler<T, TU> : IWeakEventListener
 	private void RegisterEventHandler ()
 	{
 		if (m_isRegistered)
-			{
+		{
 			return;
 		}
 
@@ -100,12 +100,12 @@ public class ObservableCollectionHandler<T, TU> : IWeakEventListener
 	protected virtual bool OnCollectionReceiveWeakEvent (Type managerType, object sender, EventArgs e)
 	{
 		if (managerType != typeof(CollectionChangedEventManager))
-			{
+		{
 			return false;
 		}
 
 		if (m_addItemHandler == null)
-			{
+		{
 			return false;
 		}
 
@@ -123,12 +123,12 @@ public class ObservableCollectionHandler<T, TU> : IWeakEventListener
 	private void RaiseReset (NotifyCollectionChangedEventArgs e, T source)
 	{
 		if (m_resetHandler == null)
-			{
+		{
 			return;
 		}
 
 		if (e.Action != NotifyCollectionChangedAction.Reset)
-			{
+		{
 			return;
 		}
 
@@ -138,12 +138,12 @@ public class ObservableCollectionHandler<T, TU> : IWeakEventListener
 	private void RaiseRemoveItem (NotifyCollectionChangedEventArgs e, T source)
 	{
 		if (m_removeItemHandler == null)
-			{
+		{
 			return;
 		}
 
 		if (e.OldItems == null)
-			{
+		{
 			return;
 		}
 
@@ -156,12 +156,12 @@ public class ObservableCollectionHandler<T, TU> : IWeakEventListener
 	private void RaiseAddItem (NotifyCollectionChangedEventArgs e, T source)
 	{
 		if (m_addItemHandler == null)
-			{
+		{
 			return;
 		}
 
 		if (e.NewItems == null)
-			{
+		{
 			return;
 		}
 

@@ -46,7 +46,7 @@ public partial class HomeViewModel
 	private void ItemsViewSourceOnFilter (object sender, FilterEventArgs e)
 	{
 		if (e.Item is not SteamApp app)
-			{
+		{
 			throw new ArgumentException(nameof(e.Item));
 		}
 
@@ -103,7 +103,7 @@ public partial class HomeViewModel
 	protected void OnFilterTextChanged ()
 	{
 		if (_loading)
-			{
+		{
 			return;
 		}
 
@@ -113,7 +113,7 @@ public partial class HomeViewModel
 	protected void OnEnableGroupingChanged ()
 	{
 		if (_loading)
-			{
+		{
 			return;
 		}
 

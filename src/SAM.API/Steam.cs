@@ -31,7 +31,7 @@ public static class Steam
 	public static string GetInstallPath ()
 	{
 		if (!string.IsNullOrEmpty(_installPath))
-			{
+		{
 			return _installPath;
 		}
 
@@ -51,7 +51,7 @@ public static class Steam
 		var address = _callCreateInterface(version, nint.Zero);
 
 		if (address == nint.Zero)
-			{
+		{
 			return default;
 		}
 
@@ -80,7 +80,7 @@ public static class Steam
 
 		var path = GetInstallPath();
 		if (path == null)
-			{
+		{
 			return false;
 		}
 
@@ -89,25 +89,25 @@ public static class Steam
 
 		var module = Native.LoadLibraryEx(path, nint.Zero, Native.LoadWithAlteredSearchPath);
 		if (module == nint.Zero)
-			{
+		{
 			return false;
 		}
 
 		_callCreateInterface = GetExportFunction<NativeCreateInterface>(module, "CreateInterface");
 		if (_callCreateInterface == null)
-			{
+		{
 			return false;
 		}
 
 		_callSteamBGetCallback = GetExportFunction<NativeSteamGetCallback>(module, "Steam_BGetCallback");
 		if (_callSteamBGetCallback == null)
-			{
+		{
 			return false;
 		}
 
 		_callSteamFreeLastCallback = GetExportFunction<NativeSteamFreeLastCallback>(module, "Steam_FreeLastCallback");
 		if (_callSteamFreeLastCallback == null)
-			{
+		{
 			return false;
 		}
 
