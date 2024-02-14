@@ -11,9 +11,9 @@ public partial class App
 {
 	protected readonly ILog Log = LogManager.GetLogger(nameof(App));
 
-	protected override void OnStartup (StartupEventArgs args)
+	protected override void OnStartup (StartupEventArgs e)
 	{
-		base.OnStartup(args);
+		base.OnStartup(e);
 
 		try
 		{
@@ -43,11 +43,11 @@ public partial class App
 
 			ShutdownMode = ShutdownMode.OnMainWindowClose;
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			var message = $"An error occurred on application startup. {e.Message}";
+			var message = $"An error occurred on application startup. {ex.Message}";
 
-			Log.Error(message, e);
+			Log.Error(message, ex);
 
 			MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -59,9 +59,9 @@ public partial class App
 		}
 	}
 
-	protected override void OnExit (ExitEventArgs args)
+	protected override void OnExit (ExitEventArgs e)
 	{
-		base.OnExit(args);
+		base.OnExit(e);
 
 		try
 		{
@@ -69,9 +69,9 @@ public partial class App
 
 			SAMHelper.CloseAllManagers();
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			Log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
+			Log.Fatal($"An error occurred attempting to exit the SAM Managers. {ex.Message}", ex);
 		}
 	}
 

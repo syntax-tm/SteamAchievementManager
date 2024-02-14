@@ -272,17 +272,17 @@ public class IsolatedStorageManager : IStorageManager
 		return fileText;
 	}
 
-	public void CreateDirectory (string path)
+	public void CreateDirectory (string directory)
 	{
-		ArgumentNullException.ThrowIfNull(path);
+		ArgumentNullException.ThrowIfNull(directory);
 
 		using var isoStorage = GetStore();
-		if (isoStorage.DirectoryExists(path))
+		if (isoStorage.DirectoryExists(directory))
 			{
 			return;
 		}
 
-		isoStorage.CreateDirectory(path);
+		isoStorage.CreateDirectory(directory);
 	}
 
 	public bool FileExists (string fileName)

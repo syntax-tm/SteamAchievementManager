@@ -18,9 +18,9 @@ public partial class App
 	private static uint? _appID;
 
 	[STAThread]
-	protected override void OnStartup (StartupEventArgs args)
+	protected override void OnStartup (StartupEventArgs e)
 	{
-		base.OnStartup(args);
+		base.OnStartup(e);
 
 		try
 		{
@@ -42,7 +42,7 @@ public partial class App
 			if (!uint.TryParse(commandLineArgs [1], out var appId))
 			{
 				var message = $"Failed to parse the {nameof(appId)} from command line argument {commandLineArgs [1]}.";
-				throw new ArgumentException(message, nameof(args));
+				throw new ArgumentException(message, nameof(e));
 			}
 
 			_appID = appId;
@@ -92,11 +92,11 @@ public partial class App
 
 			ShutdownMode = ShutdownMode.OnMainWindowClose;
 		}
-		catch (Exception e)
+		catch (Exception ex)
 		{
-			var message = $"An error occurred during SAM Manager application startup. {e.Message}";
+			var message = $"An error occurred during SAM Manager application startup. {ex.Message}";
 
-			log.Fatal(message, e);
+			log.Fatal(message, ex);
 
 			MessageBox.Show(message, "Application Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -108,9 +108,9 @@ public partial class App
 		}
 	}
 
-	protected override void OnExit (ExitEventArgs args)
+	protected override void OnExit (ExitEventArgs e)
 	{
-		base.OnExit(args);
+		base.OnExit(e);
 
 		log.Info(@$"SAM manager for app {_appID} is exiting.");
 	}
