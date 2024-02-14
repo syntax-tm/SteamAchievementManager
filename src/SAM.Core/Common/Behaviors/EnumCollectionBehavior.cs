@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Markup;
+﻿using System.Windows.Markup;
 using SAM.Core.Extensions;
 
 namespace SAM.Core.Behaviors;

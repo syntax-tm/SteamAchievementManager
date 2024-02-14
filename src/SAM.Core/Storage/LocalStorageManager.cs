@@ -1,7 +1,5 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using log4net;
 

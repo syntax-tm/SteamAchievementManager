@@ -1,8 +1,6 @@
 ﻿#pragma warning disable CA1305
 
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
 
 namespace SAM.Core.Settings;

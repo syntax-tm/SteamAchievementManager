@@ -1,7 +1,5 @@
 ﻿#pragma warning disable CA1720
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
 

@@ -1,9 +1,7 @@
 ﻿#pragma warning disable CA1305
 
-using System;
 using System.Drawing;
 using System.IO;
-using System.Threading.Tasks;
 using log4net;
 using SAM.Core.Storage;
 

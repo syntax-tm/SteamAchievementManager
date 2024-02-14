@@ -1,5 +1,4 @@
-﻿using System;
-using DevExpress.Mvvm;
+﻿using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
 
 namespace SAM.Core;

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
 using System.IO.IsolatedStorage;
 using System.Reflection;
-using System.Threading.Tasks;
 using log4net;
 
 namespace SAM.Core.Storage;

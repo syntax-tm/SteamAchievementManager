@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SAM.API;
+﻿namespace SAM.API;
 
 public interface ICallback
 {

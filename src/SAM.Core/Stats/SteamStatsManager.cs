@@ -1,11 +1,6 @@
 ﻿#pragma warning disable CA1305
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Timers;
 using System.Windows;
 using DevExpress.Mvvm;

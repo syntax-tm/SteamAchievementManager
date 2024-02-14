@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SAM.API.Stats;
+﻿namespace SAM.API.Stats;
 
 [Flags]
 public enum StatFlags

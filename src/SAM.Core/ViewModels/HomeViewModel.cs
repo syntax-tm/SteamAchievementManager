@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CA1305
 
-using System;
 using System.ComponentModel;
 using System.Windows.Data;
 using DevExpress.Mvvm.CodeGenerators;

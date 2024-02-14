@@ -1,5 +1,4 @@
-﻿using System;
-using SAM.API;
+﻿using SAM.API;
 using SAM.API.Stats;
 
 namespace SAM.Core.Stats;

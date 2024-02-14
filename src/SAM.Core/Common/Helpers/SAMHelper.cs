@@ -1,9 +1,7 @@
 ﻿#pragma warning disable CA1305
 
-using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using log4net;
 using SAM.Core.Extensions;

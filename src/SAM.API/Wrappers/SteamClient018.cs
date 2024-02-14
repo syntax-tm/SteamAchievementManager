@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using SAM.API.Types;
 // ReSharper disable UnassignedField.Global
 // ReSharper disable ClassNeverInstantiated.Global

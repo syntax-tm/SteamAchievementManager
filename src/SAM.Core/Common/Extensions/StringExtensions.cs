@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SAM.Core.Extensions;
+﻿namespace SAM.Core.Extensions;
 
 public static class StringExtensions
 {

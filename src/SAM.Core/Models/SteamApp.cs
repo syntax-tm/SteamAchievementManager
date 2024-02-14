@@ -1,16 +1,12 @@
 ﻿#pragma warning disable CA1305
 #pragma warning disable IDE1006
 
-using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.CodeGenerators;
 using log4net;

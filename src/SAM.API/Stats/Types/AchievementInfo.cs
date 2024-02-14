@@ -1,6 +1,4 @@
-﻿using SAM.API.Types;
-
-namespace SAM.API.Stats;
+﻿namespace SAM.API.Stats;
 
 public class AchievementInfo
 {

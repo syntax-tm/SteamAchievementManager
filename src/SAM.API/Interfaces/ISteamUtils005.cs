@@ -1,6 +1,5 @@
 ﻿#pragma warning disable IDE1006
 
-using System;
 using System.Runtime.InteropServices;
 
 namespace SAM.API;

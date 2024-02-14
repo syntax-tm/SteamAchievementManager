@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using log4net;
 using Newtonsoft.Json.Linq;
 using SAM.Core.Extensions;

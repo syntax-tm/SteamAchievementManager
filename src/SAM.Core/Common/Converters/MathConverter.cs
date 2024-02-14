@@ -1,9 +1,7 @@
 ﻿#pragma warning disable CA1305
 
-using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;

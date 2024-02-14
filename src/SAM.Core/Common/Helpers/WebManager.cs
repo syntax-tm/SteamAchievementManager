@@ -1,8 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Net;
 using System.Net.Http;
-using System.Threading.Tasks;
 using log4net;
 using SAM.Core.Storage;
 

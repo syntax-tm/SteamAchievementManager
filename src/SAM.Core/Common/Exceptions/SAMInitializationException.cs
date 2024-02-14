@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SAM.Core;
+﻿namespace SAM.Core;
 
 [Serializable]
 public class SAMInitializationException : SAMException
