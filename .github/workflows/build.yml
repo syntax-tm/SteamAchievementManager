@@ -36,7 +36,6 @@ jobs:
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-        restore-keys: ${{ runner.os }}-nuget-
     - name: Restore dependencies
       run: dotnet restore .\src\SAM.sln --packages ${{ env.PACKAGES }}
     - id: cache-save
