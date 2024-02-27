@@ -25,6 +25,8 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      artifact-id: ${{ steps.artifact-upload.outputs.artifact-id }}
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
@@ -47,6 +49,7 @@ jobs:
     - name: Publish
       run: dotnet publish .\src\SAM\SAM.csproj -c Debug -a x86 -o publish --no-restore
     - name: Upload a Build Artifact
+      id: artifact-upload
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.ARTIFACT }}
