@@ -1,8 +1,13 @@
-## 0.3.0-beta
+## 0.3.0
+
+- Added search functionality to library view
+- Improved application startup time
+
+### 0.3.0-beta
 
 - Added search functionality to library view
 
-## 0.3.0-alpha
+### 0.3.0-alpha
 
 - Improved application startup time
 
