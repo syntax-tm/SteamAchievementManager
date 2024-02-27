@@ -1,3 +1,7 @@
+## 0.4.0
+
+- Fixed console window showing when running app
+
 ## 0.3.0
 
 - Added search functionality to library view
