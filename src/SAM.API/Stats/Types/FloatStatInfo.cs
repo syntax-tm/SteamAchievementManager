@@ -5,7 +5,6 @@ namespace SAM.API.Stats;
 public class FloatStatInfo : StatInfoBase<float>
 {
     public float DefaultValue { get; set; }
-    public bool IncrementOnly { get; set; }
     public float MaxChange { get; set; }
     public float MaxValue { get; set; }
     public float MinValue { get; set; }

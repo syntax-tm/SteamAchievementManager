@@ -16,7 +16,7 @@ namespace SAM.Core.Stats
 
         public string Id => StatInfo?.Id;
         public string DisplayName => StatInfo?.DisplayName;
-        public bool IsIncrementOnly => StatInfo?.IsIncrementOnly ?? default;
+        public bool IsIncrementOnly => StatInfo?.IncrementOnly ?? default;
         public int Permission => StatInfo?.Permission ?? default;
         public bool IsAverageRate => StatType == StatType.AvgRate;
         public bool IsFloat => StatType is StatType.Float or StatType.Unknown;

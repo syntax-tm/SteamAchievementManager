@@ -5,7 +5,6 @@ namespace SAM.API.Stats;
 public class IntegerStatInfo : StatInfoBase<int>
 {
     public int DefaultValue { get; set; }
-    public bool IncrementOnly { get; set; }
     public int MaxChange { get; set; }
     public int MaxValue { get; set; }
     public int MinValue { get; set; }
