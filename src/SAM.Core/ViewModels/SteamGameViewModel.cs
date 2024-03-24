@@ -199,23 +199,30 @@ namespace SAM.Core.ViewModels
 
             var achievementMessage = achievementsSaved switch
             {
+                0 => string.Empty,
                 1 => $"{achievementsSaved} achievement",
                 _ => $"{achievementsSaved} achievements"
             };
 
             var statsMessage = statsSaved switch
             {
+                0 => string.Empty,
                 1 => $"{statsSaved} stat",
                 _ => $"{statsSaved} stats"
             };
 
             message.Append("Successfully saved ");
             message.Append(achievementMessage);
-            message.Append(" and ");
+
+            if (achievementsSaved > 0 && statsSaved > 0)
+            {
+                message.Append(" and ");
+            }
+
             message.Append(statsMessage);
             message.Append(".");
 
-            MessageBox.Show(message.ToString(), "Achievements and Stats Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(message.ToString(), "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public void RefreshStats()

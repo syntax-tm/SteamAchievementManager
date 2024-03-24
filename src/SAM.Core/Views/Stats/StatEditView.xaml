@@ -12,14 +12,34 @@
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type stats:IntegerSteamStatistic}">
             <ui:NumberBox Margin="0,0,0,0" 
-                          Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource StatsNumberBoxStyle}" />
+                          Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                          Validation.ErrorTemplate="{x:Null}">
+                <ui:NumberBox.Style>
+                    <Style TargetType="{x:Type ui:NumberBox}" BasedOn="{StaticResource StatsNumberBoxStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsIncrementOnly}" Value="True">
+                                <Setter Property="Minimum" Value="{Binding OriginalValue}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:NumberBox.Style>
+            </ui:NumberBox>
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type stats:FloatSteamStatistic}">
-            <ui:NumberBox Margin="0,0,0,0" 
-                          Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxDecimalPlaces="8"
-                          Style="{StaticResource StatsNumberBoxStyle}" />
+            <ui:NumberBox Margin="0,0,0,0" MaxDecimalPlaces="8"
+                          Value="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                          Validation.ErrorTemplate="{x:Null}">
+                <ui:NumberBox.Style>
+                    <Style TargetType="{x:Type ui:NumberBox}" BasedOn="{StaticResource StatsNumberBoxStyle}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsIncrementOnly}" Value="True">
+                                <Setter Property="Minimum" Value="{Binding OriginalValue}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:NumberBox.Style>
+            </ui:NumberBox>
         </DataTemplate>
     </UserControl.Resources>
 
