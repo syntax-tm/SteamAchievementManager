@@ -1,6 +1,11 @@
+## 0.5.0
+
+- [BUG] Fixed issue with increment only stats allowing invalid values
+- [BUG] Fixed issue with increment only stats not displaying properly
+
 ## 0.4.0
 
-- Fixed console window showing when running app
+- [BUG] Fixed console window showing when running app
 
 ## 0.3.0
 
