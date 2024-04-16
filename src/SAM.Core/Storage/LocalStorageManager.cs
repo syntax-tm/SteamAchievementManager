@@ -81,7 +81,7 @@ namespace SAM.Core.Storage
             File.WriteAllText(path, text);
         }
 
-        public Task SaveTextAsync(string fileName, string text, bool overwrite = true)
+        public async Task SaveTextAsync(string fileName, string text, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
 
@@ -97,7 +97,7 @@ namespace SAM.Core.Storage
                 }
             }
 
-            return File.WriteAllTextAsync(path, text);
+            await File.WriteAllTextAsync(path, text).ConfigureAwait(false);
         }
         
         public void SaveBytes(string fileName, byte[] bytes, bool overwrite = true)
@@ -119,7 +119,6 @@ namespace SAM.Core.Storage
             File.WriteAllBytes(path, bytes);
         }
 
-        [NotNull]
         public Task SaveBytesAsync(string fileName, byte[] bytes, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);

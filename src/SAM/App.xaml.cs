@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using log4net;
 using SAM.Core;
+using SAM.Core.Logging;
 
 namespace SAM;
 
@@ -17,6 +18,10 @@ public partial class App
 
         try
         {
+            GlobalContext.Properties[AssemblyVersionHelper.KEY] = new AssemblyVersionHelper();
+            GlobalContext.Properties[EntryAssemblyHelper.KEY] = new EntryAssemblyHelper();
+            GlobalContext.Properties[SteamAppContextHelper.KEY] = new SteamAppContextHelper();
+
             log.Info("Application startup.");
 
             SplashScreenHelper.Show("Starting up...");

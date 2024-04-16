@@ -6,6 +6,7 @@ using log4net;
 using SAM.API;
 using SAM.Core;
 using SAM.Core.Extensions;
+using SAM.Core.Logging;
 using SAM.Core.ViewModels;
 using SAM.Manager.ViewModels;
 
@@ -24,6 +25,10 @@ public partial class App
             
         try
         {
+            GlobalContext.Properties[AssemblyVersionHelper.KEY] = new AssemblyVersionHelper();
+            GlobalContext.Properties[EntryAssemblyHelper.KEY] = new EntryAssemblyHelper();
+            GlobalContext.Properties[SteamAppContextHelper.KEY] = new SteamAppContextHelper();
+
             var commandLineArgs = Environment.GetCommandLineArgs();
             if (commandLineArgs.Length < 2)
             {

@@ -1,20 +1,19 @@
 ﻿using System.Diagnostics;
 using log4net.Core;
 
-namespace SAM.Core.Logging
+namespace SAM.Core.Logging;
+
+public class FormattedDebugAppender : log4net.Appender.DebugAppender
 {
-    public class FormattedDebugAppender : log4net.Appender.DebugAppender
+    protected override void Append(LoggingEvent loggingEvent)
     {
-        protected override void Append(LoggingEvent loggingEvent)
-        {
-            var message = RenderLoggingEvent(loggingEvent);
-            if (string.IsNullOrWhiteSpace(message)) return;
+        var message = RenderLoggingEvent(loggingEvent);
+        if (string.IsNullOrWhiteSpace(message)) return;
 
-            Debug.Write(message);
+        Debug.Write(message);
 
-            if (!ImmediateFlush) return;
+        if (!ImmediateFlush) return;
 
-            Debug.Flush();
-        }
+        Debug.Flush();
     }
 }

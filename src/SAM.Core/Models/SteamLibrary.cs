@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using DevExpress.Mvvm;
-using DevExpress.Mvvm.Native;
+using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.API;
 using SAM.Core.Storage;
 
 namespace SAM.Core
 {
-    public class SteamLibrary : BindableBase
+    [SuppressMessage("ReSharper", "InconsistentNaming", Justification = "Multiple private readonly fields.")]
+    [GenerateViewModel]
+    public partial class SteamLibrary : BindableBase
     {
         private const int CACHE_INTERVAL = 25;
         private const int PROGRESS_INTERVAL = 10;
@@ -28,67 +31,19 @@ namespace SAM.Core
         private readonly List<SupportedApp> _supportedGames;
         private Queue<SupportedApp> _refreshQueue;
         private List<SupportedApp> _addedGames;
-
-        public int QueueCount
-        {
-            get => GetProperty(() => QueueCount);
-            set => SetProperty(() => QueueCount, value);
-        }
-        public int CompletedCount
-        {
-            get => GetProperty(() => CompletedCount);
-            set => SetProperty(() => CompletedCount, value);
-        }
-        public int SupportedGamesCount
-        {
-            get => GetProperty(() => SupportedGamesCount);
-            set => SetProperty(() => SupportedGamesCount, value);
-        }
-        public int TotalCount
-        {
-            get => GetProperty(() => TotalCount);
-            set => SetProperty(() => TotalCount, value);
-        }
-        public int GamesCount
-        {
-            get => GetProperty(() => GamesCount);
-            set => SetProperty(() => GamesCount, value);
-        }
-        public int JunkCount
-        {
-            get => GetProperty(() => JunkCount);
-            set => SetProperty(() => JunkCount, value);
-        }
-        public int ToolCount
-        {
-            get => GetProperty(() => ToolCount);
-            set => SetProperty(() => ToolCount, value);
-        }
-        public int ModCount
-        {
-            get => GetProperty(() => ModCount);
-            set => SetProperty(() => ModCount, value);
-        }
-        public int DemoCount
-        {
-            get => GetProperty(() => DemoCount);
-            set => SetProperty(() => DemoCount, value);
-        }
-        public int HiddenCount
-        {
-            get => GetProperty(() => HiddenCount);
-            set => SetProperty(() => HiddenCount, value);
-        }
-        public decimal PercentComplete
-        {
-            get => GetProperty(() => PercentComplete);
-            set => SetProperty(() => PercentComplete, value);
-        }
-        public bool IsLoading
-        {
-            get => GetProperty(() => IsLoading);
-            set => SetProperty(() => IsLoading, value);
-        }
+        
+        [GenerateProperty] private int _queueCount;
+        [GenerateProperty] private int _completedCount;
+        [GenerateProperty] private int _supportedGamesCount;
+        [GenerateProperty] private int _totalCount;
+        [GenerateProperty] private int _gamesCount;
+        [GenerateProperty] private int _junkCount;
+        [GenerateProperty] private int _toolCount;
+        [GenerateProperty] private int _modCount;
+        [GenerateProperty] private int _demoCount;
+        [GenerateProperty] private int _hiddenCount;
+        [GenerateProperty] private decimal _percentComplete;
+        [GenerateProperty] private bool _isLoading;
         
         public ObservableCollection<SteamApp> Items { get; }
 
@@ -98,10 +53,15 @@ namespace SAM.Core
 
             SupportedGamesCount = _supportedGames.Count;
             
-            Items = new();
+            Items = [];
             BindingOperations.EnableCollectionSynchronization(Items, _lock);
             
-            _libraryWorker = new();
+            _libraryWorker = new ()
+            {
+                Site = null,
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
             _libraryWorker.WorkerSupportsCancellation = true;
             _libraryWorker.WorkerReportsProgress = true;
             _libraryWorker.DoWork += LibraryWorkerOnDoWork;
@@ -110,10 +70,10 @@ namespace SAM.Core
         
         public void Refresh(bool loadCache = false)
         {
-            _resetEvent ??= new(false);
+            _resetEvent ??= new (false);
 
-            _refreshQueue = new(_supportedGames);
-            _addedGames = new();
+            _refreshQueue = new (_supportedGames);
+            _addedGames = [];
 
             Items.Clear();
 
@@ -137,7 +97,7 @@ namespace SAM.Core
 
             _libraryWorker.CancelAsync();
             
-            _resetEvent?.WaitOne();
+            _ = _resetEvent?.WaitOne();
         }
         
         private async void LibraryWorkerOnDoWork(object sender, DoWorkEventArgs args)
@@ -173,10 +133,7 @@ namespace SAM.Core
                     checkedCount++;
                 }
 
-                var refreshTasks = Items.Select(async i =>
-                {
-                    await i.Load();
-                });
+                var refreshTasks = Items.Select(async i => await i.Load().ConfigureAwait(false));
 
                 await Task.WhenAll(refreshTasks);
             }
@@ -187,11 +144,14 @@ namespace SAM.Core
             }
             finally
             {
-                CacheLibrary();
+                // TODO: remove after testing cache removal more
+                //CacheLibrary();
                 //CacheRefreshProgress();
                 RefreshCounts();
 
+#pragma warning disable IDE0058 // Expression value is never used
                 _resetEvent.Set();
+#pragma warning restore IDE0058 // Expression value is never used
             }
         }
         
@@ -206,9 +166,10 @@ namespace SAM.Core
         {
             try
             {
-                var type = Enum.Parse<GameInfoType>(app.Type, true);
+                var type = app.GameInfoType;
 
-                if (type != GameInfoType.Normal && type != GameInfoType.Mod) return false;
+                // TODO: allow users to configure filters for the types
+                if (type is not GameInfoType.Normal and not GameInfoType.Mod) return false;
                 if (_addedGames.Contains(app)) return false;
 
                 if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;
@@ -219,8 +180,6 @@ namespace SAM.Core
 
                 _addedGames.Add(app);
 
-                CacheLibrary();
-                
                 return true;
             }
             catch (Exception e)
@@ -275,9 +234,14 @@ namespace SAM.Core
                         log.Warn($"App with ID '{app.Id}' was in the local cache but was not found in supported app list.");
                     }
 
-                    AddGame(appInfo);
+                    var added = AddGame(appInfo);
 
-                    _supportedGames.Remove(appInfo);
+                    if (!added)
+                    {
+                        log.Warn($"Failed to add app '{appInfo.Id}' from saved library.");
+                    }
+
+                    _ = _supportedGames.Remove(appInfo);
                 }
 
                 RefreshCounts();

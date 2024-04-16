@@ -11,30 +11,29 @@ namespace SAM.Core.ViewModels
     [GenerateViewModel]
     public partial class HomeViewModel
     {
-        // ReSharper disable once InconsistentNaming
-        protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
+        private readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
         
         private CollectionViewSource _itemsViewSource;
         private bool _loading = true;
 
-        [GenerateProperty] private bool enableGrouping;
-        [GenerateProperty] private string filterText;
-        [GenerateProperty] private string filterNormal;
-        [GenerateProperty] private string filterDemos;
-        [GenerateProperty] private string filterMods;
-        [GenerateProperty] private bool filterJunk;
-        [GenerateProperty] private bool showHidden;
-        [GenerateProperty] private bool filterFavorites;
-        [GenerateProperty] private string filterTool;
-        [GenerateProperty] private int tileWidth = 100;
-        [GenerateProperty] private ICollectionView itemsView;
+        [GenerateProperty] private bool _enableGrouping;
+        [GenerateProperty] private string _filterText;
+        [GenerateProperty] private string _filterNormal;
+        [GenerateProperty] private string _filterDemos;
+        [GenerateProperty] private string _filterMods;
+        [GenerateProperty] private bool _filterJunk;
+        [GenerateProperty] private bool _showHidden;
+        [GenerateProperty] private bool _filterFavorites;
+        [GenerateProperty] private string _filterTool;
+        [GenerateProperty] private int _tileWidth = 100;
+        [GenerateProperty] private ICollectionView _itemsView;
+        [GenerateProperty] private SteamLibrary _library;
 
         public SteamApp SelectedItem
         {
             get => (SteamApp) ItemsView!.CurrentItem;
             set => ItemsView!.MoveCurrentTo(value);
         }
-        [GenerateProperty] private SteamLibrary library;
 
         public HomeViewModel()
         {
@@ -57,6 +56,7 @@ namespace SAM.Core.ViewModels
         [GenerateCommand]
         public void Loaded()
         {
+            log.Info($"{nameof(HomeViewModel)} {nameof(Loaded)}");
         }
 
         [GenerateCommand]

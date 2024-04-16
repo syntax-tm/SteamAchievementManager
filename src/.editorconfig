@@ -7,15 +7,15 @@ dotnet_diagnostic.IDE0058.severity = none
 #### Naming styles ####
 
 # Private readonly fields are camelCase
-dotnet_naming_rule.private_readonly_fields_rule.severity = suggestion
-dotnet_naming_rule.private_readonly_fields_rule.symbols = private_readonly_fields_group
-dotnet_naming_rule.private_readonly_fields_rule.style = private_readonly_field_style
+dotnet_naming_rule.private_protected_readonly_fields_rule.severity = suggestion
+dotnet_naming_rule.private_protected_readonly_fields_rule.symbols = private_protected_readonly_fields_group
+dotnet_naming_rule.private_protected_readonly_fields_rule.style = locals_and_parameters_style
 
-dotnet_naming_symbols.private_readonly_fields_group.applicable_kinds = field
-dotnet_naming_symbols.private_readonly_fields_group.applicable_accessibilities = private
-dotnet_naming_symbols.private_readonly_fields_group.required_modifiers = readonly
+dotnet_naming_symbols.private_protected_readonly_fields_group.applicable_kinds = field
+dotnet_naming_symbols.private_protected_readonly_fields_group.applicable_accessibilities = private, protected, private_protected
+dotnet_naming_symbols.private_protected_readonly_fields_group.required_modifiers = readonly
 
-dotnet_naming_style.private_readonly_field_style.capitalization = camel_case
+dotnet_naming_style.private_protected_readonly_field_style.capitalization = camel_case
 
 # Non-private readonly fields are PascalCase
 dotnet_naming_rule.non_private_readonly_fields_rule.severity = suggestion
@@ -23,7 +23,7 @@ dotnet_naming_rule.non_private_readonly_fields_rule.symbols = non_private_readon
 dotnet_naming_rule.non_private_readonly_fields_rule.style = non_private_readonly_field_style
 
 dotnet_naming_symbols.non_private_readonly_fields_group.applicable_kinds = field
-dotnet_naming_symbols.non_private_readonly_fields_group.applicable_accessibilities = public, protected, internal, protected_internal, private_protected
+dotnet_naming_symbols.non_private_readonly_fields_group.applicable_accessibilities = public, internal, protected_internal
 dotnet_naming_symbols.non_private_readonly_fields_group.required_modifiers = readonly
 
 dotnet_naming_style.non_private_readonly_field_style.capitalization = pascal_case
@@ -50,7 +50,7 @@ dotnet_naming_style.locals_and_parameters_style.capitalization = camel_case
 # Non-private constants are PascalCase
 dotnet_naming_rule.constants_rule.severity = suggestion
 dotnet_naming_rule.constants_rule.symbols = constants_group
-dotnet_naming_rule.constants_rule.style = constants_style
+dotnet_naming_rule.constants_rule.style = non_private_readonly_field_style
 
 dotnet_naming_symbols.constants_group.applicable_kinds = field
 dotnet_naming_symbols.constants_group.applicable_accessibilities = public, protected, internal, protected_internal, private_protected
@@ -72,7 +72,7 @@ dotnet_naming_style.local_consts_style.word_separator = _
 # Private constants are ALL_UPPER
 dotnet_naming_rule.private_constants_rule.severity = suggestion
 dotnet_naming_rule.private_constants_rule.symbols = private_constants_group
-dotnet_naming_rule.private_constants_rule.style = private_constant_style
+dotnet_naming_rule.private_constants_rule.style = local_consts_style
 
 dotnet_naming_symbols.private_constants_group.applicable_kinds = field, local
 dotnet_naming_symbols.private_constants_group.applicable_accessibilities = private
@@ -104,7 +104,7 @@ dotnet_naming_style.type_parameters_style.required_prefix = T
 # By default, name items with PascalCase
 dotnet_naming_rule.default_members_rule.severity = suggestion
 dotnet_naming_rule.default_members_rule.symbols = default_members_group
-dotnet_naming_rule.default_members_rule.style = default_members_style
+dotnet_naming_rule.default_members_rule.style = non_private_readonly_field_style
 
 dotnet_naming_symbols.default_members_group.applicable_kinds = *
 
@@ -157,6 +157,8 @@ csharp_style_prefer_extended_property_pattern = true:suggestion
 csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_var_elsewhere = true:suggestion
+csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_prefer_readonly_struct_member = true:suggestion
 
 [*.{cs,vb}]
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
@@ -194,3 +196,4 @@ dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = false:suggestion
+dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
