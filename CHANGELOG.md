@@ -1,3 +1,10 @@
+## 0.6.0
+
+### 0.6.0-alpha
+
+- Updated logging
+- [BUG] Removed library caching
+
 ## 0.5.0
 
 - [BUG] Fixed issue with increment only stats allowing invalid values
