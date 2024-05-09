@@ -16,8 +16,8 @@
 The Steam Achievement Manager lets you manage achievements, stats, and more for any currently supported Steam app.
 
 <p align="center">
-  <a href="./resources/animated/SAM.webp">
-    <img alt="SAM Screenshot" src="./resources/animated/SAM.webp" />
+  <a href="./resources/screenshots/SAM.png">
+    <img alt="SAM Screenshot" src="./resources/screenshots/SAM.png" />
   </a>
 </p>
 
