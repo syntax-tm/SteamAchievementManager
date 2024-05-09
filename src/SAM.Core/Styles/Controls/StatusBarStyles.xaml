@@ -3,7 +3,7 @@
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/styles/wpf.ui.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/statusbar/statusbar.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="StatusBarStyleBase" TargetType="{x:Type StatusBar}">

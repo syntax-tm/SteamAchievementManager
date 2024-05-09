@@ -43,14 +43,14 @@ namespace SAM.Core
 
             var countries = countriesToken!.ToObject<SteamCountry[]>();
 
-            _countries = new (countries);
+            _countries = [..countries];
 
             _isInitialized = true;
         }
 
         internal class SteamLocation
         {
-            private readonly string _location;
+            private readonly string location;
 
             public bool IsValid { get; }
             public string City { get; set; }
@@ -71,14 +71,14 @@ namespace SAM.Core
 
             public SteamLocation(string location)
             {
-                _location = location;
+                this.location = location;
 
                 var segments = location.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
                 if (segments.Length is < 2 or > 3)
                 {
                     // if it's anything else don't bother trying to shorten it
-                    log.Warn($"Unknown location format ('{location}'). Location will not be shortened.");
+                    log.Info($"Unknown location format ('{location}'). Location will not be shortened.");
                     return;
                 }
                 
@@ -101,12 +101,12 @@ namespace SAM.Core
 
             public string GetShortDisplayText()
             {
-                if (!IsValid) return _location;
+                if (!IsValid) return location;
 
                 var country = _countries.FirstOrDefault(c => c.Name.EqualsIgnoreCase(Country));
                 if (country == null)
                 {
-                    return _location;
+                    return location;
                 }
 
                 var countryCode = country.Code;
@@ -125,7 +125,7 @@ namespace SAM.Core
             public string Code { get; set; }
             public string Name { get; set; }
             public bool HasStates => States != null && States.Any();
-            public List<SteamState> States { get; set; } = new ();
+            public List<SteamState> States { get; set; } = [];
 
             public SteamState GetStateByName(string name)
             {

@@ -94,6 +94,7 @@ namespace SAM.API
             return true;
         }
 
+        // TODO: replace with CSWin32's PInvoke
         private struct Native
         {
             [DllImport("kernel32.dll", SetLastError = true, BestFitMapping = false, ThrowOnUnmappableChar = true)]

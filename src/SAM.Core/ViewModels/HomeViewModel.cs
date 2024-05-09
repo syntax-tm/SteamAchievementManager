@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Data;
+using System.Windows.Documents;
+using DevExpress.Mvvm;
 using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.Core.Converters;
 using SAM.Core.Extensions;
+using SAM.Core.Messages;
 
 namespace SAM.Core.ViewModels
 {
@@ -27,6 +32,7 @@ namespace SAM.Core.ViewModels
         [GenerateProperty] private string _filterTool;
         [GenerateProperty] private int _tileWidth = 100;
         [GenerateProperty] private ICollectionView _itemsView;
+        [GenerateProperty] private List<string> _suggestions;
         [GenerateProperty] private SteamLibrary _library;
 
         public SteamApp SelectedItem
@@ -38,25 +44,31 @@ namespace SAM.Core.ViewModels
         public HomeViewModel()
         {
             Refresh();
+
+            Messenger.Default.Register<ActionMessage>(this, OnActionMessage);
         }
         
-        private void ItemsViewSourceOnFilter(object sender, FilterEventArgs e)
+        [GenerateCommand]
+        public void ToggleShowHidden()
         {
-            if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
+            ShowHidden = !ShowHidden;
+        }
 
-            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
-            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText) || app.Id.ToString().Contains(FilterText);
-            var isJunkFiltered = !FilterJunk || app.IsJunk;
-            var isHiddenFiltered = ShowHidden || !app.IsHidden;
-            var isNonFavoriteFiltered = !FilterFavorites || app.IsFavorite;
-            
-            e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
+        [GenerateCommand]
+        public void UnHideAll()
+        {
+            // TODO: consider adding confirmation before clearing the user's hidden apps
+            var hidden = Library!.Items.Where(a => a.IsHidden).ToList();
+
+            hidden.ForEach(a => a.ToggleVisibility());
+
+            Messenger.Default.Send<RequestMessage>(new (EntityType.Library, RequestType.Refresh));
         }
         
         [GenerateCommand]
         public void Loaded()
         {
-            log.Info($"{nameof(HomeViewModel)} {nameof(Loaded)}");
+            log.Debug($"{nameof(HomeViewModel)} {nameof(Loaded)}");
         }
 
         [GenerateCommand]
@@ -92,6 +104,14 @@ namespace SAM.Core.ViewModels
                 _itemsViewSource.IsLiveGroupingRequested = false;
             }
 
+            // suggestions are sorted by favorites first, then normal (non-favorite & non-hidden) apps,
+            // and then any hidden apps
+            Suggestions = Library.Items
+                                     .OrderByDescending(a => a.IsFavorite)
+                                     .ThenBy(a => a.IsHidden)
+                                     .ThenBy(a => a.Name)
+                                     .Select(a => a.Name).ToList();
+
             _loading = false;
         }
 
@@ -101,7 +121,21 @@ namespace SAM.Core.ViewModels
 
             ItemsView!.Refresh();
         }
+
+        protected void OnShowHiddenChanged()
+        {
+            if (_loading) return;
+
+            ItemsView!.Refresh();
+        }
         
+        protected void OnFilterFavoritesChanged()
+        {
+            if (_loading) return;
+
+            ItemsView!.Refresh();
+        }
+
         protected void OnEnableGroupingChanged()
         {
             if (_loading) return;
@@ -116,6 +150,28 @@ namespace SAM.Core.ViewModels
                     ItemsView!.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Name), new StringToGroupConverter()));
                 }
             }
+        }
+        
+        private void OnActionMessage(ActionMessage message)
+        {
+            // on library refresh completed
+            if (message.EntityType == EntityType.Library && message.ActionType == ActionType.Refreshed)
+            {
+                Refresh();
+            }
+        }
+
+        private void ItemsViewSourceOnFilter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
+
+            var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
+            var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText) || app.Id.ToString().Contains(FilterText);
+            var isJunkFiltered = !FilterJunk || app.IsJunk;
+            var isHiddenFiltered = ShowHidden || !app.IsHidden;
+            var isNonFavoriteFiltered = !FilterFavorites || app.IsFavorite;
+            
+            e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
         }
     }
 }

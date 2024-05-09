@@ -115,10 +115,10 @@ namespace SAM.Core
 
                 var image = Image.FromStream(data);
                 
-                // if we were passed a key, cache the image so we can load it from cache next time
+                // if we were passed a key, cache the image, so we can load it from cache next time
                 if (cacheKey != null)
                 {
-                    CacheManager.CacheImage(cacheKey, image);
+                    await CacheManager.CacheImageAsync(cacheKey, image);
                 }
 
                 return image;

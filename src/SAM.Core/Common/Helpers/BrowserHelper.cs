@@ -24,6 +24,7 @@ namespace SAM.Core
         private const string ACHIEVEMENTS_URI_FORMAT = @"steam://url/SteamIDAchievementsPage/{0}";
 
         private const string STEAM_STORE_URI_FORMAT = @"https://store.steampowered.com/app/{0}";
+        private const string STEAMGRIDDB_URI_FORMAT = @"https://www.steamgriddb.com/steam/{0}";
         private const string STEAMDB_URI_FORMAT = @"https://steamdb.info/app/{0}/graphs/";
         private const string CARD_EXCHANGE_URI_FORMAT = @"https://www.steamcardexchange.net/index.php?gamepage-appid-{0}";
         private const string PCGW_URI_FORMAT = @"https://www.pcgamingwiki.com/api/appid.php?appid={0}";
@@ -42,6 +43,13 @@ namespace SAM.Core
         public static void ViewOnSteamStore(uint id)
         {
             var steamStorePage = string.Format(STEAM_STORE_URI_FORMAT, id);
+
+            OpenUrl(steamStorePage);
+        }
+
+        public static void ViewOnSteamGridDB(uint id)
+        {
+            var steamStorePage = string.Format(STEAMGRIDDB_URI_FORMAT, id);
 
             OpenUrl(steamStorePage);
         }
@@ -78,7 +86,8 @@ namespace SAM.Core
         {
             try
             {
-                Process.Start(url);
+                var psi = new ProcessStartInfo(url) { UseShellExecute = true };
+                Process.Start(psi);
             }
             catch
             {

@@ -13,6 +13,11 @@
     <Color x:Key="OrangeColor">#FE7F49</Color>
     <Color x:Key="RedColor">#F04646</Color>
 
+    <!-- Colors | Accent -->
+    <Color x:Key="AccentColor">#795087</Color>
+    <Color x:Key="FavoritesColor">#795087</Color>
+    <Color x:Key="HiddenColor">#464646</Color>
+
     <!-- Colors | Controls -->
     <Color x:Key="ControlBorderColor">#6F6F6F</Color>
     <Color x:Key="ControlBackgroundColor">#333333</Color>
@@ -40,6 +45,10 @@
     <SolidColorBrush x:Key="RedBrush" Color="{StaticResource RedColor}" po:Freeze="true" />
 
     <!-- Brushes | Accent -->
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="FavoritesBrush" Color="{StaticResource FavoritesColor}" po:Freeze="true" />
+    <SolidColorBrush x:Key="HiddenBrush" Color="{StaticResource HiddenColor}" po:Freeze="true" />
+
     <SolidColorBrush x:Key="AccentPrimaryBrush" Color="{StaticResource AccentPrimaryColor}" po:Freeze="true" />
     <SolidColorBrush x:Key="Accent2PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.9" po:Freeze="true" />
     <SolidColorBrush x:Key="Accent3PrimaryBrush" Color="{StaticResource AccentPrimaryColor}" Opacity="0.8" po:Freeze="true" />

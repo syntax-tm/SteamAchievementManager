@@ -1,8 +1,7 @@
-﻿namespace SAM.Core
+﻿namespace SAM.Core;
+
+public enum AppThemeBase
 {
-    public enum AppThemeBase
-    {
-        Light,
-        Dark
-    }
+    Light,
+    Dark
 }

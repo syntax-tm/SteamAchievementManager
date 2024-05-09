@@ -2,7 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
     
-    <Style x:Key="UiWindowStyleBase" TargetType="{x:Type ui:UiWindow}">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/fluentwindow/fluentwindow.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="UiWindowStyleBase" TargetType="{x:Type ui:FluentWindow}" BasedOn="{StaticResource DefaultFluentWindowStyle}">
         <Setter Property="ShowActivated" Value="True" />
         <Setter Property="ShowInTaskbar" Value="True" />
         <Setter Property="WindowBackdropType" Value="Mica" />
@@ -11,7 +15,7 @@
         <Setter Property="WindowCornerPreference" Value="DoNotRound" />
     </Style>
 
-    <Style BasedOn="{StaticResource UiWindowStyleBase}" TargetType="{x:Type ui:UiWindow}">
+    <Style BasedOn="{StaticResource UiWindowStyleBase}" TargetType="{x:Type ui:FluentWindow}">
     </Style>
 
 </ResourceDictionary>

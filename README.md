@@ -1,25 +1,27 @@
-<div align="center">
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/syntax-tm/SteamAchievementManager">
-  <img src="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/build.yml/badge.svg">
-  <img alt="GitHub issues" src="https://img.shields.io/github/issues/syntax-tm/SteamAchievementManager">
-  <img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/syntax-tm/SteamAchievementManager">
-</div>
+<h1>
+  <div align="center">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/syntax-tm/SteamAchievementManager">
+    <img alt="Build Badge" src="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/build.yml/badge.svg">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/syntax-tm/SteamAchievementManager">
+    <img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/syntax-tm/SteamAchievementManager">
+  </div>
+</h1>
 
 <p align="center">
-  <img src="./resources/SAM_logo_light_blue.svg" style="max-width: 600px; width: 70%;">
+  <img alt="SAM Logo" src="./resources/SAM_logo_default.svg" style="max-width: 600px; width: 70%;">
 </p>
 
 ## Overview
 
-The Steam Achievement Manager lets you manage achievements, stats, and more for any currently supported app.
+The Steam Achievement Manager lets you manage achievements, stats, and more for any currently supported Steam app.
 
 <p align="center">
-  <a href="./resources/sam_screenshot.png">
-    <img src="./resources/sam_screenshot.png" />
+  <a href="./resources/animated/SAM.webp">
+    <img alt="SAM Screenshot" src="./resources/animated/SAM.webp" />
   </a>
 </p>
 
-This project is a fork of the [Steam Achievement Manager](https://github.com/gibbed/SteamAchievementManager) project with the goal of updating to .NET Core and WPF. This is very much a work in progress.
+This project is a fork of the [Steam Achievement Manager](https://github.com/gibbed/SteamAchievementManager) project with the goal of updating to .NET Core and WPF.
 
 ## Project Structure
 
@@ -63,7 +65,7 @@ flowchart TB
 <table align="center">
     <tr>
         <th align="center">Legacy Project</th>
-        <th>New Project</th>
+        <th align="center">New Project</th>
         <th style="width: 80%;">Description</th>
     </tr>
     <tr>
@@ -88,33 +90,26 @@ flowchart TB
     </tr>
 </table>
 
----
+## Sponsors
 
-## FAQ
+<p align="center">
+  <img alt="JetBrains" src="./resources/ref/JetBrains_Logo_2016.svg" width="120" />
+</p>
 
-### What is an App or App ID?
+A special thank you to [JetBrains](https://www.jetbrains.com/) for their continued [Support of Open-Source Projects](https://www.jetbrains.com/community/opensource/#support) like **SAM**.
 
-> An Application (or App) is the main representation of a product on Steam. An App generally has its own store page, it's own Community Hub, and is what appears in customers' libraries. Each App is represented by a unique ID called an App ID - that you'll see referenced throughout this documentation and used with the Steamworks API and Steamworks Web API. Generally a single product will not span multiple Applications. ([source](https://partner.steamgames.com/doc/store/application))
-
-### Why does SAM let people cheat achievements?
-
-Some games have achievements that are no longer reasonably or actually attainable. While SAM _can_ be used to abuse the achievement system, it also lets people who do care about achievements unlock achievements that would otherwise be impossible. One common example is achievements requiring you to play multiplayer on a game that no longer has any active players, or even dedicated servers. **SAM** is a potential solution for a game's poorly designed achievements.
-
----
+> [!NOTE]
+> Active **SAM** contributors are eligible to receieve complimentary licenses [for non-commercial development] for **all** **JetBrains** products. For questions regarding eligability please refer to the [Open Source FAQ](https://sales.jetbrains.com/hc/en-gb/categories/13706169183250-Free-Licenses-for-OSS-development).
 
 ## Acknowledgements
 
-- [Devexpress MVVM](https://github.com/DevExpress/DevExpress.Mvvm.Free)
-- [Font-Awesome-WPF](https://github.com/charri/Font-Awesome-WPF)
-- [SteamCountries](https://github.com/RudeySH/SteamCountries)
-- [WPF UI](https://github.com/lepoco/wpfui)
-
----
+<p align="center">
+  <a href="https://github.com/DevExpress/DevExpress.Mvvm.Free">DevExpress MVVM</a> • <a href="https://github.com/RudeySH/SteamCountries">SteamCountries</a> • <a href="https://github.com/lepoco/wpfui">WPF UI</a>
+</p>
 
 ## Resources
 
 - [DevExpress MVVM](https://docs.devexpress.com/WPF/15112/mvvm-framework)
-- [Font-Awesome-WPF Documentation](https://github.com/charri/Font-Awesome-WPF/blob/master/README-WPF.md)
-- [Steamworks API Overview](https://partner.steamgames.com/doc/sdk/api)
+- [Steamworks Overview](https://partner.steamgames.com/doc/sdk/api)
   - [Steamworks API](https://partner.steamgames.com/doc/api)
   - [Steamworks Web API](https://partner.steamgames.com/doc/webapi)

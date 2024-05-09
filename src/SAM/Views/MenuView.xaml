@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:vm="clr-namespace:SAM.ViewModels"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:sam="urn:sam"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}">
+             d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
 
@@ -16,10 +16,16 @@
 
     <Grid>
         <Grid Width="400" HorizontalAlignment="Right" Margin="15,0">
-            <ui:TextBox Text="{Binding FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged}"
-                        PlaceholderText="Search..." BorderBrush="Transparent"
-                        AutoWordSelection="True" Icon="Search24"
-                        MaxLines="1" />
+            <ui:AutoSuggestBox Text="{Binding FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                               PlaceholderText="Search..." BorderBrush="Transparent"
+                               Icon="Search24" Margin="5"
+                               OriginalItemsSource="{Binding Suggestions, Mode=OneWay}">
+                <ui:AutoSuggestBox.Style>
+                    <Style TargetType="{x:Type ui:AutoSuggestBox}" BasedOn="{StaticResource BaseUiAutoSuggestBoxStyle}">
+                        
+                    </Style>
+                </ui:AutoSuggestBox.Style>
+            </ui:AutoSuggestBox>
         </Grid>
     </Grid>
 </UserControl>

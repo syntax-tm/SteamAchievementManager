@@ -11,6 +11,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.API;
+using SAM.Core.Messages;
 using SAM.Core.Storage;
 
 namespace SAM.Core
@@ -42,6 +43,7 @@ namespace SAM.Core
         [GenerateProperty] private int _modCount;
         [GenerateProperty] private int _demoCount;
         [GenerateProperty] private int _hiddenCount;
+        [GenerateProperty] private int _favoriteCount;
         [GenerateProperty] private decimal _percentComplete;
         [GenerateProperty] private bool _isLoading;
         
@@ -56,6 +58,8 @@ namespace SAM.Core
             Items = [];
             BindingOperations.EnableCollectionSynchronization(Items, _lock);
             
+            Messenger.Default.Register<RequestMessage>(this, OnRequestMessage);
+
             _libraryWorker = new ()
             {
                 Site = null,
@@ -67,7 +71,27 @@ namespace SAM.Core
             _libraryWorker.DoWork += LibraryWorkerOnDoWork;
             _libraryWorker.RunWorkerCompleted += LibraryWorkerOnRunWorkerCompleted;
         }
-        
+
+        private void OnRequestMessage(RequestMessage message)
+        {
+            try
+            {
+                if (message == null) return;
+                if (message.EntityType != EntityType.Library) return;
+
+                // if we received a refresh request refresh the counts
+                if (message.RequestType == RequestType.Refresh)
+                {
+                    RefreshCounts();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         public void Refresh(bool loadCache = false)
         {
             _resetEvent ??= new (false);
@@ -158,6 +182,8 @@ namespace SAM.Core
         private void LibraryWorkerOnRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             RefreshCounts();
+
+            Messenger.Default.Send(new ActionMessage(EntityType.Library, ActionType.Refreshed));
 
             IsLoading = false;
         }
@@ -281,6 +307,7 @@ namespace SAM.Core
             JunkCount = Items.Count(g => g.GameInfoType == GameInfoType.Junk);
             DemoCount = Items.Count(g => g.GameInfoType == GameInfoType.Demo);
             HiddenCount = Items.Count(g => g.IsHidden);
+            FavoriteCount = Items.Count(g => g.IsFavorite);
         }
     }
 }

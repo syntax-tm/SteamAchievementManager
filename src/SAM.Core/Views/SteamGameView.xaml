@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/styles/wpf.ui.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/toggleswitch/toggleswitch.xaml" />
                 <ResourceDictionary>
                     <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
                         <Setter Property="Margin" Value="10,0" />
@@ -45,12 +45,12 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <StatusBar DockPanel.Dock="Bottom" Height="70" Padding="2">
-                <StatusBarItem Content="Filter:" FontWeight="SemiBold" FontSize="13" Margin="5,0" />
+                <!--<StatusBarItem Content="Filter:" FontWeight="SemiBold" FontSize="13" Margin="5,0" />
                 <StatusBarItem>
                     <ComboBox SelectedItem="{Binding SelectedAchievementFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               Margin="4" Width="160" ItemsSource="{Binding Source={core:EnumBindingSource {x:Type core:AchievementFilter}}}">
                     </ComboBox>
-                </StatusBarItem>
+                </StatusBarItem>-->
                 <StatusBarItem Content="Show Hidden:" FontWeight="SemiBold" FontSize="13" Margin="5,0" />
                 <StatusBarItem>
                     <ui:ToggleSwitch IsChecked="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -124,9 +124,8 @@
                         <views:StatsView />
                     </TabItem>
                 </TabControl>
-                <ui:AutoSuggestBox PlaceholderText="Search..."
-                                   AcceptsReturn="False" Margin="5,0"
-                                   Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=200}"
+                <ui:AutoSuggestBox PlaceholderText="Search..." Margin="5,0"
+                                   Text="{Binding SearchText, Delay=300, UpdateSourceTrigger=PropertyChanged}"
                                    Icon="Search24" HorizontalAlignment="Right" MinWidth="300" MaxWidth="500"
                                    VerticalAlignment="Top" BorderThickness="0">
                 </ui:AutoSuggestBox>

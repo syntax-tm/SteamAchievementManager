@@ -4,6 +4,7 @@
     
     <ResourceDictionary.MergedDictionaries>
         <!-- SAM controls -->
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/AutoSuggestBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ButtonStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/CheckBoxStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/ContainerStyles.xaml" />
@@ -12,6 +13,7 @@
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/NumberBoxStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/StatusBarStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextBoxStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/WindowStyles.xaml" />
         <!-- SAM resources -->
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Xml.XPath;
@@ -16,7 +15,7 @@ namespace SAM.Core
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMLibraryHelper));
 
-        // TODO: Store this somewhere outside of the application so that it can be actively maintained separately
+        // TODO: Store this somewhere outside the application so that it can be actively maintained separately
         private static readonly uint[] _ignoredApps =
         {
             13260 // Unreal Development Kit

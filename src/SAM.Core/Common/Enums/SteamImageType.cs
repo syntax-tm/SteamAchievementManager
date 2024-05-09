@@ -1,33 +1,64 @@
-﻿namespace SAM.Core
+﻿using System;
+
+namespace SAM.Core;
+
+[Flags]
+public enum SteamImageType
 {
-    public enum SteamImageType
-    {
-        ClientIcon,
-        Icon,
-        /// <summary>
-        /// logo.png
-        /// </summary>
-        Logo,
-        /// <summary>
-        /// header.jpg
-        /// </summary>
-        Header,
-        /// <summary>
-        /// library_hero.jpg
-        /// </summary>
-        LibraryHero,
-        /// <summary>
-        /// capsule_231x87.jpg
-        /// </summary>
-        SmallCapsule,
-        /// <summary>
-        /// capsule_467x181.jpg
-        /// </summary>
-        MediumCapsule,
-        /// <summary>
-        /// capsule_616x353.jpg
-        /// </summary>
-        LargeCapsule,
-        AchievementIcon
-    }
+    /// <summary>
+    /// {APPID}.jpg
+    /// </summary>
+    GridLandscape = 1,
+    /// <summary>
+    /// {APPID}p.jpg
+    /// </summary>
+    GridPortrait = 2,
+    /// <summary>
+    /// {APPID}_icon.jpg
+    /// </summary>
+    GridIcon = 4,
+    /// <summary>
+    /// {APPID}_hero.jpg
+    /// </summary>
+    GridHero = 8,
+    Grid = GridLandscape | GridPortrait | GridIcon | GridHero,
+    ClientIcon,
+    /// <summary>
+    /// {APPID}_icon.jpg
+    /// </summary>
+    Icon,
+    /// <summary>
+    /// logo.png
+    /// </summary>
+    Logo,
+    /// <summary>
+    /// header.jpg
+    /// </summary>
+    Header,
+    /// <summary>
+    /// {APPID}_library_600x900.jpg
+    /// </summary>
+    Library,
+    /// <summary>
+    /// {APPID}_library_hero.jpg
+    /// </summary>
+    LibraryHero,
+    /// <summary>
+    /// {APPID}_library_hero_blur.jpg
+    /// </summary>
+    LibraryHeroBlur,
+    /// <summary>
+    /// capsule_231x87.jpg
+    /// </summary>
+    SmallCapsule,
+    /// <summary>
+    /// capsule_467x181.jpg
+    /// </summary>
+    MediumCapsule,
+    /// <summary>
+    /// capsule_616x353.jpg
+    /// </summary>
+    LargeCapsule,
+    AchievementIcon,
+
 }

@@ -22,13 +22,15 @@ namespace SAM.Core.ViewModels
 
         public virtual ICurrentWindowService CurrentWindow => GetService<ICurrentWindowService>();
 
+        private bool _loading = true;
+        private CollectionViewSource _achievementsViewSource;
+
         [UsedImplicitly]
         private readonly ObservableHandler<SteamStatsManager> statsHandler;
         
         [UsedImplicitly]
         private ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement> _achievementsPropertyHandler;
         
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         // ReSharper disable once InconsistentNaming
         private readonly SteamStatsManager _statsManager;
 
@@ -261,30 +263,46 @@ namespace SAM.Core.ViewModels
 
         protected void Refresh()
         {
-            if (!Achievements!.Any()) return;
+            _loading = true;
+            
+            _achievementsViewSource = new ()
+            {
+                Source = Achievements
+            };
 
-            AllowUnlockAll = Achievements.Any(a => !a.IsAchieved);
+            AchievementsView = _achievementsViewSource.View;
+
+            using (_achievementsViewSource.DeferRefresh())
+            {
+                _achievementsViewSource.Filter += AchievementFilter;
+
+                _achievementsViewSource.SortDescriptions.Clear();
+                _achievementsViewSource.SortDescriptions.Add(new (nameof(SteamAchievement.IsModified), ListSortDirection.Descending));
+                _achievementsViewSource.SortDescriptions.Add(new (nameof(SteamAchievement.IsAchieved), ListSortDirection.Ascending));
+                _achievementsViewSource.SortDescriptions.Add(new (nameof(SteamAchievement.Name), ListSortDirection.Ascending));
+
+                _achievementsViewSource.LiveFilteringProperties.Clear();
+                _achievementsViewSource.LiveFilteringProperties.Add(nameof(SteamAchievement.IsModified));
+                _achievementsViewSource.LiveFilteringProperties.Add(nameof(SteamAchievement.IsAchieved));
+
+                _achievementsViewSource.IsLiveFilteringRequested = true;
+                _achievementsViewSource.IsLiveSortingRequested = true;
+                _achievementsViewSource.IsLiveGroupingRequested = false;
+            }
+
+            _loading = false;
         }
 
         protected void OnManagerIsModifiedChanged()
         {
             IsModified = _statsManager.IsModified;
 
-            Refresh();
+            AllowUnlockAll = Achievements!.Any(a => !a.IsAchieved);
         }
 
         private void ManagerAchievementsChanged(SteamStatsManager obj)
         {
             Achievements = new (obj.Achievements);
-
-            AchievementsView = (CollectionView) CollectionViewSource.GetDefaultView(Achievements);
-            AchievementsView!.Filter = AchievementFilter;
-            AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.IsModified), ListSortDirection.Descending));
-            AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.IsAchieved), ListSortDirection.Ascending));
-            AchievementsView.SortDescriptions.Add(new (nameof(SteamAchievement.Name), ListSortDirection.Ascending));
-
-            _achievementsPropertyHandler = new ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement>(Achievements)
-                .Add(a => a.IsModified, OnAchievementModifiedHandler);
         }
 
         private void OnAchievementModifiedHandler(ObservableCollection<SteamAchievement> arg1, SteamAchievement arg2)
@@ -294,28 +312,52 @@ namespace SAM.Core.ViewModels
 
         protected void OnSearchTextChanged()
         {
-            AchievementsView!.Refresh();
+            if (_loading) return;
+
+            AchievementsView?.Refresh();
         }
 
-        private bool AchievementFilter(object obj)
+        private void OnAchievementsChanged()
         {
+            AllowUnlockAll = Achievements!.Any(a => !a.IsAchieved);
+
+            _achievementsPropertyHandler = new ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement>(Achievements)
+                .Add(a => a.IsModified, OnAchievementModifiedHandler);
+
+            Refresh();
+        }
+
+        private void AchievementFilter(object sender, FilterEventArgs args)
+        {
+            var obj = args.Item;
             if (obj is not SteamAchievement achievement)
             {
                 throw new InvalidOperationException($"{nameof(obj)} must be of type {nameof(SteamAchievement)}.");
             }
 
-            if (string.IsNullOrEmpty(SearchText))
+            // if we have search text that was entered
+            if (!string.IsNullOrEmpty(SearchText))
             {
-                return true;
+                // if it's not a match on the name or description then filter it out
+                if (!achievement.Name.ContainsIgnoreCase(SearchText)
+                    && !achievement.Description.ContainsIgnoreCase(SearchText))
+                {
+                    args.Accepted = false;
+                    return;
+                }
             }
 
-            if (achievement.Name.ContainsIgnoreCase(SearchText)
-                || achievement.Description.ContainsIgnoreCase(SearchText))
+            var accepted = SelectedAchievementFilter switch
             {
-                return true;
-            }
+                Core.AchievementFilter.Locked     => !achievement.IsAchieved,
+                Core.AchievementFilter.Unlocked   => achievement.IsAchieved,
+                Core.AchievementFilter.Modified   => achievement.IsModified,
+                Core.AchievementFilter.Unmodified => !achievement.IsModified,
+                Core.AchievementFilter.All        => true,
+                _                                 => true
+            };
 
-            return false;
+            args.Accepted = accepted;
         }
 
         private void OnShowHiddenChanged()
@@ -323,9 +365,9 @@ namespace SAM.Core.ViewModels
             Achievements.ForEach(a => a.RefreshDescription(ShowHidden));
         }
 
-        private void OnAchievementsChanged()
+        private void OnSelectedAchievementFilterChanged()
         {
-            Refresh();
+            AchievementsView?.Refresh();
         }
 
         private void ManagerStatisticsChanged(SteamStatsManager obj)

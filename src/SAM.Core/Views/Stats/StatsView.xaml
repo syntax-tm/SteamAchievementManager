@@ -16,7 +16,9 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/styles/wpf.ui.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/resources/staticcolors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/resources/palette.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/resources/theme/dark.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="StatsGridRowStyle" TargetType="{x:Type DataGridRow}">
                 <Setter Property="ToolTip">

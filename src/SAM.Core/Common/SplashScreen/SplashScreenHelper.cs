@@ -5,7 +5,7 @@ namespace SAM.Core
     public static class SplashScreenHelper
     {
         private static bool _isInitialized;
-        private static UiWindow _splashWindow;
+        private static FluentWindow _splashWindow;
         private static SplashScreenViewModel _splashScreenVm;
         
         public static void Init()

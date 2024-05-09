@@ -7,7 +7,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Converters.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/styles/wpf.ui.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/numberbox/numberbox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Thickness x:Key="NumberBoxBorderThemeThickness">1,1,1,0</Thickness>

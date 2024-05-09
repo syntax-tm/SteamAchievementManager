@@ -11,64 +11,141 @@
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
-        <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
-        <Style x:Key="StatusBarItemStyle" TargetType="{x:Type StatusBarItem}">
-            <Setter Property="FontFamily" Value="{StaticResource FiraCode}" />
-            <Setter Property="FontWeight" Value="ExtraLight" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Opacity" Value="0.7" />
-            <Setter Property="Margin" Value="3" />
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="1" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="{x:Type StatusBarItem}" BasedOn="{StaticResource StatusBarItemStyle}">
-            
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/button/button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/menu/menuitem.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/togglebutton/togglebutton.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
+            <Style x:Key="StatusBarItemStyle" TargetType="{x:Type StatusBarItem}">
+                <Setter Property="FontFamily" Value="{StaticResource FiraCode}" />
+                <Setter Property="FontWeight" Value="ExtraLight" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Opacity" Value="0.7" />
+                <Setter Property="Margin" Value="3" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="1" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="{x:Type StatusBarItem}" BasedOn="{StaticResource StatusBarItemStyle}">
+    
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
         <StatusBar Style="{StaticResource StatusBarStyleBase}" Padding="10">
-            <StatusBarItem Content="{Binding Library.TotalCount, Mode=OneWay}" ContentStringFormat="{}{0} Total"
-                           Visibility="{Binding Library.TotalCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+            <StatusBarItem Content="{Binding Library.TotalCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay}" ContentStringFormat="{}{0} Total"
+                           Visibility="{Binding Library.TotalCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=GamesStatusBarItem, Path=Visibility}" />
-            <StatusBarItem x:Name="GamesStatusBarItem" Content="{Binding Library.GamesCount, Mode=OneWay}" ContentStringFormat="{}{0} Games"
-                           Visibility="{Binding Library.GamesCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+            <StatusBarItem x:Name="GamesStatusBarItem" Content="{Binding Library.GamesCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay}" ContentStringFormat="{}{0} Games"
+                           Visibility="{Binding Library.GamesCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=ModsStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="ModsStatusBarItem"
-                           Content="{Binding Library.ModCount, Mode=OneWay}"
+                           Content="{Binding Library.ModCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay}"
                            ContentStringFormat="{}{0} Mods"
-                           Visibility="{Binding Library.ModCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           Visibility="{Binding Library.ModCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=ToolsStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="ToolsStatusBarItem"
-                           Content="{Binding Library.ToolCount, Mode=OneWay}"
+                           Content="{Binding Library.ToolCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay}"
                            ContentStringFormat="{}{0} Tools"
-                           Visibility="{Binding Library.ToolCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           Visibility="{Binding Library.ToolCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=DemosStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="DemosStatusBarItem"
-                           Content="{Binding Library.DemoCount, Mode=OneWay}"
+                           Content="{Binding Library.DemoCount, Mode=OneWay, FallbackValue=0, TargetNullValue=0}"
                            ContentStringFormat="{}{0} Demos"
-                           Visibility="{Binding Library.DemoCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           Visibility="{Binding Library.DemoCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=JunkStatusBarItem, Path=Visibility}" />
             <StatusBarItem x:Name="JunkStatusBarItem"
-                           Content="{Binding Library.JunkCount, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
-                           Visibility="{Binding Library.JunkCount, Converter={dxmvvm:NumericToVisibilityConverter}}" />
+                           Content="{Binding Library.JunkCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay}" ContentStringFormat="{}{0} Junk"
+                           Visibility="{Binding Library.JunkCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}" />
 
             <Separator Visibility="{Binding ElementName=HiddenStatusBarItem, Path=Visibility}" />
-            <StatusBarItem x:Name="HiddenStatusBarItem" Content="{Binding Library.HiddenCount, Mode=OneWay}" ContentStringFormat="{}{0} Hidden">
-                <StatusBarItem.Visibility>
-                    <MultiBinding Converter="{sam:MultiBoolToVisibilityConverter Mode=All}">
-                        <Binding Path="DataContext.Library.HiddenCount" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Converter="{dxmvvm:NumericToBooleanConverter}" />
-                        <Binding Path="DataContext.ShowHidden" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}" Converter="{dxmvvm:BooleanNegationConverter}" />
-                    </MultiBinding>
-                </StatusBarItem.Visibility>
+            <StatusBarItem x:Name="HiddenStatusBarItem"
+                           Visibility="{Binding Library.HiddenCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}">
+                <dxmvvm:Interaction.Behaviors>
+                    <sam:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="True" ShowOnMouseOverDelay="1000" />
+                </dxmvvm:Interaction.Behaviors>
+                <StatusBarItem.ContextMenu>
+                    <ContextMenu>
+                        <ui:MenuItem Command="{Binding ToggleShowHiddenCommand}"
+                                     ToolTip="Show or hide hidden apps.">
+                            <ui:MenuItem.Style>
+                                <Style TargetType="{x:Type ui:MenuItem}" BasedOn="{StaticResource UiMenuItem}">
+                                    <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
+                                    <Setter Property="Header" Value="Show hidden apps" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ShowHidden}" Value="True">
+                                            <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
+                                            <Setter Property="Header" Value="Hide hidden apps" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:MenuItem.Style>
+                        </ui:MenuItem>
+                        <Separator />
+                        <ui:MenuItem Header="Unhide All" Icon="{ui:SymbolIcon SelectAllOn24}"
+                                     Command="{Binding UnHideAllCommand}"
+                                     ToolTip="Resets all currently hidden apps."/>
+                    </ContextMenu>
+                </StatusBarItem.ContextMenu>
+                <ToggleButton IsChecked="{Binding ShowHidden, UpdateSourceTrigger=PropertyChanged}">
+                    <ToggleButton.Style>
+                        <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource DefaultToggleButtonStyle}">
+                            <Setter Property="ToolTip" Value="Hide Hidden Apps" />
+                            <Style.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter Property="ToolTip" Value="Show Hidden Apps" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                    <StackPanel>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="{Binding Library.HiddenCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay, StringFormat='{}{0} Hidden'}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Library.HiddenCount, FallbackValue=0, TargetNullValue=0}" Value="1">
+                                            <Setter Property="Text" Value="{Binding Library.HiddenCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay, StringFormat='{}{0} Hidden'}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </ToggleButton>
+            </StatusBarItem>
+
+            <Separator Visibility="{Binding ElementName=FavoriteStatusBarItem, Path=Visibility}" />
+
+            <StatusBarItem x:Name="FavoriteStatusBarItem"
+                           Visibility="{Binding Library.FavoriteCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}"
+                           ToolTip="Show Only Favorites">
+                <ToggleButton IsChecked="{Binding FilterFavorites, UpdateSourceTrigger=PropertyChanged}">
+                    <StackPanel>
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Text" Value="{Binding Library.FavoriteCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay, StringFormat='{}{0} Favorites'}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Library.FavoriteCount, FallbackValue=0, TargetNullValue=0}" Value="1">
+                                            <Setter Property="Text" Value="{Binding Library.FavoriteCount, FallbackValue=0, TargetNullValue=0, Mode=OneWay, StringFormat='{}{0} Favorite'}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </ToggleButton>
             </StatusBarItem>
 
             <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0">
@@ -78,11 +155,10 @@
                                 Value="{Binding TileWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Value}" />
                     </StatusBarItem>
-
-                    <StatusBarItem Content="{Binding Library.PercentComplete, Mode=OneWay, Converter={StaticResource PercentFormatConverter}}"
+                    <StatusBarItem Content="{Binding Library.PercentComplete, Mode=OneWay, FallbackValue=0, TargetNullValue=0, Converter={StaticResource PercentFormatConverter}}"
                                    ContentStringFormat="{}Loading... {0}" 
-                                   Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
-                    <StatusBarItem Visibility="{Binding Library.IsLoading, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}"
+                                   Visibility="{Binding Library.IsLoading, FallbackValue=Collapsed, TargetNullValue=Collapsed, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+                    <StatusBarItem Visibility="{Binding Library.IsLoading, FallbackValue=Collapsed, TargetNullValue=Collapsed, Converter={dxmvvm:BooleanToVisibilityConverter Inverse=True}}"
                                    Margin="0" Padding="0">
                         <ui:Button Content="Refresh" Icon="ArrowSync20"
                                    CornerRadius="1" Margin="2"

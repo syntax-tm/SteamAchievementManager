@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel;
 
-namespace SAM.Core
+namespace SAM.Core;
+
+public enum GameInfoType
 {
-    public enum GameInfoType
-    {
-        [Description("normal")]
-        Normal,
-        [Description("demo")]
-        Demo,
-        [Description("mod")]
-        Mod,
-        [Description("junk")]
-        Junk,
-        [Description("tool")]
-        Tool
-    }
+    [Description("normal")]
+    Normal,
+    [Description("demo")]
+    Demo,
+    [Description("mod")]
+    Mod,
+    [Description("junk")]
+    Junk,
+    [Description("tool")]
+    Tool
 }

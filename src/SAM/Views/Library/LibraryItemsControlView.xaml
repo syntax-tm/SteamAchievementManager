@@ -13,7 +13,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/Styles/Assets/StaticColors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/resources/staticcolors.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/button/button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/togglebutton/togglebutton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -22,13 +24,14 @@
         <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView}" HorizontalContentAlignment="Center">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True" />
+                    <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True" 
+                                              VirtualizationMode="Recycling" IsVirtualizing="True" />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
             <ui:VirtualizingItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type sam:SteamApp}">
                     <Grid Margin="5" Width="300" Height="143">
-                        <ui:Button Padding="0">
+                        <ui:Button x:Name="PART_Button" Padding="0">
                             <ui:Button.Resources>
                                 <sam:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
                             </ui:Button.Resources>
@@ -49,12 +52,38 @@
                                         <Trigger Property="IsPressed" Value="True">
                                             <Setter Property="BorderBrush" Value="{StaticResource Accent3PrimaryBrush}" />
                                         </Trigger>
-                                        <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}}" Value="True">
+                                        <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}, TargetNullValue=False, FallbackValue=False}" Value="True">
                                             <Setter Property="BorderBrush" Value="{StaticResource AccentPrimaryBrush}" />
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
                                             <Setter Property="Background" Value="{StaticResource AccentPrimaryBrush}" />
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                            <Setter Property="BorderThickness" Value="5" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                            <Setter Property="BorderThickness" Value="5" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
+                                        </DataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsFavorite}" Value="True" />
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
+                                            <Setter Property="MouseOverBackground" Value="{StaticResource FavoritesBrush}" />
+                                            <Setter Property="MouseOverBorderBrush" Value="{StaticResource FavoritesBrush}" />
+                                        </MultiDataTrigger>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding IsHidden}" Value="True" />
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                            </MultiDataTrigger.Conditions>
+                                            <Setter Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
+                                            <Setter Property="MouseOverBackground" Value="{StaticResource HiddenBrush}" />
+                                            <Setter Property="MouseOverBorderBrush" Value="{StaticResource HiddenBrush}" />
+                                        </MultiDataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </ui:Button.Style>
@@ -73,48 +102,82 @@
                                     </ui:MenuItem>
                                     <Separator />
                                     <ui:MenuItem Header="Open in Manager" Command="{Binding ManageAppCommand}"
-                                                 SymbolIcon="AppGeneric24" SymbolIconFilled="False" />
+                                                 Icon="{ui:SymbolIcon AppGeneric24}" />
                                     <Separator />
-                                    <ui:MenuItem Command="{Binding ToggleFavoriteCommand}" SymbolIconFilled="False">
+                                    <ui:MenuItem Command="{Binding ToggleFavoriteCommand}">
                                         <ui:MenuItem.Style>
                                             <Style TargetType="{x:Type ui:MenuItem}">
-                                                <Setter Property="Header" Value="Remove from Favorites" />
-                                                <Setter Property="SymbolIcon" Value="HeartBroken24" />
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding IsFavorite}" Value="False">
                                                         <Setter Property="Header" Value="Add to Favorites" />
-                                                        <Setter Property="SymbolIcon" Value="Heart24" />
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24}" />
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                        <Setter Property="Header" Value="Remove from Favorites" />
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                                    </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                            <Condition Binding="{Binding IsFavorite}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon HeartBroken24, Filled=False}" />
+                                                    </MultiDataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                            <Condition Binding="{Binding IsFavorite}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                                    </MultiDataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </ui:MenuItem.Style>
                                     </ui:MenuItem>
-                                    <ui:MenuItem Command="{Binding ToggleVisibilityCommand}" SymbolIconFilled="False">
+                                    <ui:MenuItem Command="{Binding ToggleVisibilityCommand}">
                                         <ui:MenuItem.Style>
                                             <Style TargetType="{x:Type ui:MenuItem}">
-                                                <Setter Property="Header" Value="Hide" />
-                                                <Setter Property="SymbolIcon" Value="EyeOff24" />
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                                        <Setter Property="Header" Value="Show" />
-                                                        <Setter Property="SymbolIcon" Value="Eye24" />
+                                                    <DataTrigger Binding="{Binding IsHidden}" Value="False">
+                                                        <Setter Property="Header" Value="Hide" />
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
                                                     </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                        <Setter Property="Header" Value="Unhide" />
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
+                                                    </DataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                            <Condition Binding="{Binding IsHidden}" Value="True" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Eye24, Filled=True}" />
+                                                    </MultiDataTrigger>
+                                                    <MultiDataTrigger>
+                                                        <MultiDataTrigger.Conditions>
+                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                            <Condition Binding="{Binding IsHidden}" Value="False" />
+                                                        </MultiDataTrigger.Conditions>
+                                                        <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24, Filled=True}" />
+                                                    </MultiDataTrigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </ui:MenuItem.Style>
                                     </ui:MenuItem>
                                     <Separator />
                                     <ui:MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}"
-                                                 SymbolIcon="Database20" />
+                                                 Icon="{ui:SymbolIcon Database24}" />
+                                    <ui:MenuItem Header="View on SteamGridDB" Command="{Binding ViewOnSteamGridDBCommand}"
+                                                 Icon="{ui:SymbolIcon SlideMultiple24}" />
                                     <ui:MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
-                                                 SymbolIcon="ShoppingBag16" />
+                                                 Icon="{ui:SymbolIcon ShoppingBag24}" />
                                     <ui:MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}"
-                                                 SymbolIcon="Server20" />
+                                                 Icon="{ui:SymbolIcon Server24}" />
                                     <ui:MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}"
-                                                 SymbolIcon="ArrowSwap20" />
+                                                 Icon="{ui:SymbolIcon ArrowSwap24}" />
                                     <Separator />
                                     <ui:MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}"
-                                                 SymbolIcon="Copy20" />
+                                                 Icon="{ui:SymbolIcon Copy24}" />
                                     <!-- ReSharper restore Xaml.RedundantResource -->
                                 </ContextMenu>
                             </ui:Button.ContextMenu>
@@ -134,6 +197,9 @@
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding ContextMenu.IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
                                                     <Setter Property="Opacity" Value="0.25" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                    <Setter Property="Opacity" Value="0.4" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -157,6 +223,132 @@
                                     </TextBlock>
                                 </Viewbox>
                             </Grid>
+                        </ui:Button>
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                                    Orientation="Horizontal">
+                            <StackPanel.Style>
+                                <Style TargetType="{x:Type StackPanel}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </Trigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <ui:Button Width="30" Height="30" Margin="0" BorderThickness="0"
+                                       Padding="2" CornerRadius="0"
+                                       Command="{Binding ToggleFavoriteCommand}">
+                                <ui:Button.Style>
+                                    <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                        <Setter Property="Background" Value="{StaticResource FavoritesBrush}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
+                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                            </DataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                    <Condition Binding="{Binding IsFavorite}" Value="False" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                                <Setter Property="ToolTip" Value="Add to Favorites" />
+                                            </MultiDataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                    <Condition Binding="{Binding IsFavorite}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Icon" Value="{ui:SymbolIcon HeartBroken24}" />
+                                                <Setter Property="ToolTip" Value="Remove From Favorites" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
+                            </ui:Button>
+                            <ui:Button Width="30" Height="30" Margin="0" BorderThickness="0"
+                                       Padding="2" CornerRadius="0"
+                                       Command="{Binding ToggleVisibilityCommand}">
+                                <ui:Button.Style>
+                                    <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                        <Setter Property="Background" Value="{StaticResource HiddenBrush}" />
+                                        <Setter Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
+                                        <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
+                                            </DataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                    <Condition Binding="{Binding IsHidden}" Value="False" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24, Filled=True}" />
+                                                <Setter Property="ToolTip" Value="Hide App" />
+                                            </MultiDataTrigger>
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                    <Condition Binding="{Binding IsHidden}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+                                                <Setter Property="Icon" Value="{ui:SymbolIcon Eye24, Filled=True}" />
+                                                <Setter Property="ToolTip" Value="Unhide App" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
+                            </ui:Button>
+                        </StackPanel>
+                        <ui:Button HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                   Width="30" Height="30" Margin="0,0,5,5" BorderThickness="5,5,0,0"
+                                   Padding="2" CornerRadius="0"
+                                   IsHitTestVisible="False">
+                            <ui:Button.Style>
+                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <!--<DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="False">
+                                            <Setter Property="Opacity" Value="1" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Opacity" Value="1" />
+                                        </DataTrigger>-->
+                                        <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                            <!--<Setter Property="Background" Value="{StaticResource Accent5PrimaryBrush}" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource Accent5PrimaryBrush}" />-->
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                            <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
+                                            <!--<Setter Property="Background">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="{StaticResource ControlBorderColor}" Opacity="0.4" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="BorderBrush">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="{StaticResource ControlBorderColor}" Opacity="0.4" />
+                                                </Setter.Value>
+                                            </Setter>-->
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource Accent4PrimaryBrush}" />
+                                            <Setter Property="BorderBrush" Value="{StaticResource Accent5PrimaryBrush}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="False">
+                                            <Setter Property="Background" Value="{Binding ElementName=PART_Button, Path=BorderBrush}" />
+                                            <Setter Property="BorderBrush" Value="{Binding ElementName=PART_Button, Path=BorderBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
                         </ui:Button>
                     </Grid>
                 </DataTemplate>

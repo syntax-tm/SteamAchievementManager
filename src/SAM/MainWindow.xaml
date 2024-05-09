@@ -1,35 +1,33 @@
-﻿<ui:UiWindow x:Class="SAM.MainWindow"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:sam="urn:sam"
-             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
-             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:views="clr-namespace:SAM.Views"
-             xmlns:vm="clr-namespace:SAM.ViewModels"
-             mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
-             ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-             WindowStyle="None" WindowBackdropType="None"
-             ShowActivated="True"
-             Icon="{svgc:SvgImage Source=/SAMCore;/Styles/Images/square-steam.svg}">
+﻿<ui:FluentWindow x:Class="SAM.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:views="clr-namespace:SAM.Views"
+                 xmlns:vm="clr-namespace:SAM.ViewModels"
+                 xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+                 xmlns:sam="urn:sam"
+                 mc:Ignorable="d"
+                 d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
+                 ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
+                 WindowBackdropType="Mica">
 
-    <ui:UiWindow.DataContext>
+    <ui:FluentWindow.DataContext>
         <vm:MainWindowViewModel />
-    </ui:UiWindow.DataContext>
+    </ui:FluentWindow.DataContext>
 
     <dxmvvm:Interaction.Behaviors>
         <sam:WindowAutoSaveBehavior />
+        <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding OnLoadedCommand}" />
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top" FontSize="13" />
+            <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top" Height="30" Padding="16,16,16,0" />
             <views:StatusBarView DockPanel.Dock="Bottom" DataContext="{Binding HomeVm}" />
             <views:HomeView DataContext="{Binding HomeVm}" />
         </DockPanel>
     </Grid>
 
-</ui:UiWindow>
+</ui:FluentWindow>

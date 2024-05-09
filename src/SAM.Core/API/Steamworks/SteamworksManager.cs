@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
@@ -19,7 +23,12 @@ namespace SAM.Core
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SteamworksManager));
 
+        private static readonly object syncLock = new ();
+        // ReSharper disable once InconsistentNaming
         private static readonly HttpClient _client = new ();
+        // ReSharper disable once InconsistentNaming
+        private static readonly ConcurrentQueue<SteamApp> _refreshQueue = new ();
+        private static BackgroundWorker _refreshWorker;
 
         public static Dictionary<uint, string> GetAppList()
         {
@@ -216,28 +225,178 @@ namespace SAM.Core
             }
         }
 
+        /// <summary>
+        /// Queues a <see cref="SteamApp"/> for loading information from the Steam store.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <exception cref="ArgumentNullException">Occurs when <paramref name="app" /> is <see langword="null" /></exception>
+        public static void LoadStoreInfo(SteamApp app)
+        {
+            if (app == null) throw new ArgumentNullException(nameof(app));
+
+            // if we are going to skip it anyway, don't bother queueing it
+            if (ShouldSkip(app.Id))
+            {
+                return;
+            }
+
+            _refreshQueue.Enqueue(app);
+            
+            // if we've already started the background worker then return
+            if (_refreshWorker != null) return;
+
+            lock (syncLock)
+            {
+                // re-checking after entering lock
+                if (_refreshWorker != null) return;
+
+                _refreshWorker = new ();
+                _refreshWorker.WorkerSupportsCancellation = true;
+                _refreshWorker.DoWork += OnRefreshWorkerDoWork;
+                _refreshWorker.RunWorkerCompleted += OnRefreshWorkerCompleted;
+
+                _refreshWorker.RunWorkerAsync();
+            }
+        }
+
+        private static void OnRefreshWorkerCompleted(object sender, RunWorkerCompletedEventArgs args)
+        {
+            if (args.Cancelled)
+            {
+                log.Warn($"{nameof(SteamworksManager)} refresh {nameof(BackgroundWorker)} stopped due to requested cancellation.");
+            }
+
+            log.Info($"The {nameof(SteamworksManager)} refresh {nameof(BackgroundWorker)} stopped.");
+        }
+
+        private static void OnRefreshWorkerDoWork(object sender, DoWorkEventArgs args)
+        {
+            try
+            {
+                while (true)
+                {
+                    if (_refreshWorker.CancellationPending)
+                    {
+                        args.Cancel = true;
+                        return;
+                    }
+
+                    while (_refreshQueue.TryDequeue(out var app))
+                    {
+                        // take the next app in the queue and load the store info, if successful this
+                        // will automatically load its images
+                        var result = LoadAppInfo(app);
+
+                        if (result != SteamworksOperationResult.Success)
+                        {
+                            // re-queue the app to try again later
+                            _refreshQueue.Enqueue(app);
+
+                            continue;
+                        }
+
+                        log.Debug($"Completed store information refresh for {app.Name} ({app.Id}).");
+                    }
+
+                    // once we're done with everything in the queue, wait 10 seconds before checking it again
+                    // in case new items are added
+                    Thread.Sleep(TimeSpan.FromSeconds(10));
+                }
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred while refreshing app information. {e.Message}";
+                log.Error(message, e);
+
+                args.Cancel = true;
+            }
+        }
+
+        private static SteamworksOperationResult LoadAppInfo(SteamApp app)
+        {
+            const int MAX_RETRIES = 3;
+            var retries = 0;
+            var rateLimited = false;
+
+            do
+            {
+                // this function processes one individual app from the queue, including any
+                // retries (up to the maximum allotted)
+                try
+                {
+                    var storeInfo = GetAppInfo(app.Id);
+                            
+                    // this happens when an app is explicitly skipped (_skipStoreInfoAppIds)
+                    if (storeInfo == null)
+                    {
+                        continue;
+                    }
+
+                    app.StoreInfo = storeInfo;
+
+                    return SteamworksOperationResult.Success;
+                }
+                catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests)
+                {
+                    rateLimited = true;
+
+                    // if we are being blocked (Unauthorized or Forbidden) then wait at least 30 minutes
+                    // otherwise if it's an intermittent failure or TooManyRequests then wait 5 minutes
+                    var retryTime = hre.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden
+                        ? TimeSpan.FromMinutes(30)
+                        : TimeSpan.FromMinutes(5);
+                    
+                    var retrySb = new StringBuilder();
+
+                    retrySb.Append($"Request for store info on app '{app.Id}' returned {nameof(HttpStatusCode)} {hre.StatusCode:D} ({hre.StatusCode:G}). ");
+                    retrySb.Append($"Waiting {retryTime.TotalMinutes:N0} minute(s) and then retrying...");
+
+                    log.Warn(retrySb);
+
+                    Thread.Sleep(retryTime);
+                }
+                catch (Exception e)
+                {
+                    log.Error($"An error occurred attempting to load the store info for {app.Name} ({app.Id}). {e.Message}", e);
+                    break;
+                }
+                finally
+                {
+                    retries++;
+                }
+            }
+            while (retries < MAX_RETRIES);
+
+            return rateLimited
+                ? SteamworksOperationResult.RateLimited
+                : SteamworksOperationResult.Failed;
+        }
+
         private static bool ShouldSkip(uint id)
         {
             return _skipStoreInfoAppIds.Contains(id);
         }
         
+        // ReSharper disable CommentTypo
         // TODO: Create a better way to skip non-queryable apps in the store API
-        // these are all app ids that do not return successfully so we can skip them
+        // these are all app ids that do not return successfully, so we can skip them
         // and reduce calls to the store API
+        // ReSharper disable once InconsistentNaming
         private static readonly uint[] _skipStoreInfoAppIds =
-        {
-            41010,  // Serious Sam HD: The Second Encounter
-            42160,  // War of the Roses
-            91310,  // Dead Island
-            92500,  // PC Gamer
-            200110, // Nosgoth
-            202270, // Leviathan: Warships
-            204080, // The Showdown Effect
-            218130, // Dungeonland
-            223390, // Forge
-            225140, // Duke Nukem 3D: Megaton Edition
-            254270, // Dungeonland - All access pass
-            321040  // DiRT 3 Complete Edition
-        };
+        [
+            //41010,  // Serious Sam HD: The Second Encounter
+            //42160,  // War of the Roses
+            //91310,  // Dead Island
+            //92500,  // PC Gamer
+            //200110, // Nosgoth
+            //202270, // Leviathan: Warships
+            //204080, // The Showdown Effect
+            //218130, // Dungeonland
+            //223390, // Forge
+            //225140, // Duke Nukem 3D: Megaton Edition
+            //254270, // Dungeonland - All access pass
+            //321040  // DiRT 3 Complete Edition
+        ];
+        // ReSharper restore CommentTypo
     }
 }

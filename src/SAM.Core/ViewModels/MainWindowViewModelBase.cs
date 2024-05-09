@@ -1,5 +1,6 @@
 ﻿using DevExpress.Mvvm.CodeGenerators;
 using SAM.Core.Behaviors;
+using Wpf.Ui.Appearance;
 
 namespace SAM.Core.ViewModels
 {
@@ -14,7 +15,13 @@ namespace SAM.Core.ViewModels
 
         public MainWindowViewModelBase()
         {
+            ApplicationThemeManager.Apply(ApplicationTheme.Dark);
+        }
 
+        [GenerateCommand]
+        protected void OnLoaded()
+        {
+            SplashScreenHelper.Close();
         }
         
         private void OnSubTitleChanged()

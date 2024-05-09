@@ -1,24 +1,24 @@
-﻿<ui:UiWindow x:Class="SAM.Core.SplashScreenView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
-             xmlns:local="clr-namespace:SAM.Core"
-             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}"
-             Width="500" Height="340"
-             ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-             WindowStyle="None" WindowBackdropType="None"
-             ShowActivated="True" ShowInTaskbar="True" WindowStartupLocation="CenterScreen"
-             FontFamily="Segoe UI Light"
-             Foreground="{StaticResource TextFillColorLightPrimaryBrush}"
-             Icon="{svgc:SvgImage Source=/Styles/Images/steam-symbol.svg}">
+﻿<ui:FluentWindow x:Class="SAM.Core.SplashScreenView"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+                 xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
+                 xmlns:local="clr-namespace:SAM.Core"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 mc:Ignorable="d" 
+                 d:DesignHeight="450" d:DesignWidth="800"
+                 d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}"
+                 Width="500" Height="340"
+                 ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
+                 WindowStyle="None" WindowBackdropType="Mica"
+                 ShowActivated="True" ShowInTaskbar="True" WindowStartupLocation="CenterScreen"
+                 FontFamily="Segoe UI Light"
+                 Foreground="{DynamicResource TextFillColorLightPrimaryBrush}"
+                 Icon="{svgc:SvgImage Source=/Styles/Images/sam_icon_logo.svg}">
 
-    <ui:UiWindow.Resources>
+    <ui:FluentWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/AllResources.xaml" />
@@ -26,7 +26,7 @@
             <Style TargetType="{x:Type TextBlock}">
                 <Setter Property="Opacity" Value="0.8" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:UiWindow}}, Path=IsMouseOver}" Value="True">
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:FluentWindow}}, Path=IsMouseOver}" Value="True">
                         <Setter Property="Opacity" Value="0.9" />
                     </DataTrigger>
                 </Style.Triggers>
@@ -34,13 +34,13 @@
             <Style TargetType="{x:Type svgc:SvgViewbox}">
                 <Setter Property="Opacity" Value="0.1" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:UiWindow}}, Path=IsMouseOver}" Value="True">
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:FluentWindow}}, Path=IsMouseOver}" Value="True">
                         <Setter Property="Opacity" Value="0.12" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
-    </ui:UiWindow.Resources>
+    </ui:FluentWindow.Resources>
 
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:CurrentWindowService />
@@ -48,7 +48,7 @@
 
     <Grid>
         <svgc:SvgViewbox Source="/Styles/Images/steam-symbol.svg" Stretch="Uniform" HorizontalAlignment="Left" />
-        <ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" ShowHelp="False" Opacity="0.5" />
+        <!--<ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" ShowHelp="False" Opacity="0.5" />-->
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,8,25">
                 <TextBlock Text="Steam Achievement Manager" FontSize="26" Margin="2" HorizontalAlignment="Right"
@@ -61,4 +61,4 @@
             <ProgressBar IsIndeterminate="True" />
         </StackPanel>
     </Grid>
-</ui:UiWindow>
+</ui:FluentWindow>

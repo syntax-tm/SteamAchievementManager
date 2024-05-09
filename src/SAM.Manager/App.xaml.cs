@@ -107,10 +107,6 @@ public partial class App
 
             Environment.Exit(SAMExitCode.UnhandledException);
         }
-        finally
-        {
-            SplashScreenHelper.Close();
-        }
     }
 
     protected override void OnExit(ExitEventArgs args)
