@@ -30,6 +30,9 @@ jobs:
         $version = '${{ github.ref_name || inputs.version }}'
         $version = $version.TrimStart('v')
 
+        Write-Host "Version: " -NoNewLine
+        Write-Host "$($PSStyle.Background.BrightCyan)$version$($PSStyle.Reset)"
+
         if ([string]::IsNullOrEmpty($version)) { throw 'A release version was not specified.' }
 
         # TODO: validate the version number format with regex
@@ -38,8 +41,18 @@ jobs:
         $prefix = $parts[0]
         $suffix = $parts[1]
 
-        echo "version-prefix=$prefix" >> $GITHUB_OUTPUT
-        echo "version-suffix=$suffix" >> $GITHUB_OUTPUT
+        Write-Host ""
+
+        Write-Host "Prefix: " -NoNewLine
+        Write-Host "$($PSStyle.Background.BrightCyan)$prefix$($PSStyle.Reset)"
+
+        Write-Host "Suffix: " -NoNewLine
+        Write-Host "$($PSStyle.Background.BrightCyan)$suffix$($PSStyle.Reset)"
+
+        Write-Host ""
+
+        echo "version-prefix=$prefix" >> $env:GITHUB_OUTPUT
+        echo "version-suffix=$suffix" >> $env:GITHUB_OUTPUT
   build:
     uses: syntax-tm/SteamAchievementManager/.github/workflows/build.yml@main
     needs: setup

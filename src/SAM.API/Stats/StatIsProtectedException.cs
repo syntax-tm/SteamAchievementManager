@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace SAM.API.Stats
 {
@@ -17,11 +16,6 @@ namespace SAM.API.Stats
 
         public StatIsProtectedException(string message, Exception innerException)
             : base(message, innerException)
-        {
-        }
-
-        protected StatIsProtectedException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         {
         }
     }
