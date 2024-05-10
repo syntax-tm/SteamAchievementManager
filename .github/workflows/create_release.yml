@@ -31,7 +31,7 @@ jobs:
         $version = $version.TrimStart('v')
 
         Write-Host "Version: " -NoNewLine
-        Write-Host "$($PSStyle.Background.BrightCyan)$version$($PSStyle.Reset)"
+        Write-Host "$($PSStyle.Foreground.BrightCyan)$version$($PSStyle.Reset)"
 
         if ([string]::IsNullOrEmpty($version)) { throw 'A release version was not specified.' }
 
@@ -44,10 +44,10 @@ jobs:
         Write-Host ""
 
         Write-Host "Prefix: " -NoNewLine
-        Write-Host "$($PSStyle.Background.BrightCyan)$prefix$($PSStyle.Reset)"
+        Write-Host "$($PSStyle.Foreground.BrightCyan)$prefix$($PSStyle.Reset)"
 
         Write-Host "Suffix: " -NoNewLine
-        Write-Host "$($PSStyle.Background.BrightCyan)$suffix$($PSStyle.Reset)"
+        Write-Host "$($PSStyle.Foreground.BrightCyan)$suffix$($PSStyle.Reset)"
 
         Write-Host ""
 
