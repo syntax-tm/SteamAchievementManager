@@ -2,14 +2,51 @@ name: Create Release
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version'
+        required: true
+        default: 'v0.0.1-alpha'
+        type: string
   push:
     tags:
     - 'v*'
 
 jobs:
 
+  setup:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    outputs:
+      version-prefix: ${{ steps.validate-version.outputs.version-prefix }}
+      version-suffix: ${{ steps.validate-version.outputs.version-suffix }}
+    steps:
+    - id: validate-version
+      name: Validate Version
+      run: |
+        # if this is on a release tag push it will use the ref_name, otherwise on
+        # workflow_dispatch the version is required
+        $version = '${{ github.ref_name || inputs.version }}'
+        $version = $version.TrimStart('v')
+
+        if ([string]::IsNullOrEmpty($version)) { throw 'A release version was not specified.' }
+
+        # TODO: validate the version number format with regex
+
+        $parts = $version -split '-',2
+        $prefix = $parts[0]
+        $suffix = $parts[1]
+
+        echo "version-prefix=$prefix" >> $GITHUB_OUTPUT
+        echo "version-suffix=$suffix" >> $GITHUB_OUTPUT
   build:
     uses: syntax-tm/SteamAchievementManager/.github/workflows/build.yml@main
+    needs: setup
+    with:
+      is_release: true
+      version-prefix: ${{ needs.setup.outputs.version-prefix }}
+      version-suffix: ${{ needs.setup.outputs.version-suffix }}
   create-release:
     runs-on: windows-latest
     needs: [build]

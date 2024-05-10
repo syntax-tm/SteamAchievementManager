@@ -3,15 +3,33 @@ name: Build
 env:
   ARTIFACT: SAM
   PACKAGES: ${{ github.workspace }}\.nuget\packages
+  VERSION_PREFIX: 0.0.1
+  VERSION_SUFFIX: alpha
 
 on:
   workflow_call:
+    inputs:
+      is_release:
+        description: 'True if this build is for a release, false otherwise'
+        default: false
+        type: boolean
+      version-prefix:
+        description: 'The version prefix (e.g. "1.0.0")'
+        default: '0.0.1'
+        required: false
+        type: string
+      version-suffix:
+        description: 'The version suffix (e.g. "alpha")'
+        default: ''
+        required: false
+        type: string
   workflow_dispatch:
   push:
     branches: [ "main", "master" ]
     tags-ignore:
       - v*
     paths-ignore:
+      - 'resources/*'
       - 'README.md'
       - 'CHANGELOG.md'
       - '.gitignore'
@@ -45,7 +63,7 @@ jobs:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
     - name: Publish
-      run: dotnet publish .\src\SAM\SAM.csproj -c Debug -a x86 -o publish --no-restore
+      run: dotnet publish .\src\SAM\SAM.csproj -c Debug -a x86 -o publish --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
     - name: Upload a Build Artifact
       id: artifact-upload
       uses: actions/upload-artifact@v3
