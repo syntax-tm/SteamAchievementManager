@@ -18,7 +18,6 @@ public partial class App
 
     private static uint? _appID;
 
-    [STAThread]
     protected override void OnStartup(StartupEventArgs args)
     {
         base.OnStartup(args);
@@ -38,7 +37,8 @@ public partial class App
 
                     SAMHelper.OpenPicker();
                 }
-                    
+                
+                // TODO: this should probably not be fatal as it fills the error logs
                 log.Fatal(@"No app ID argument was supplied. Application will now exit...");
 
                 Environment.Exit(SAMExitCode.NoAppIdArgument);
@@ -138,7 +138,7 @@ public partial class App
         {
             log.Fatal($"An error occurred in {nameof(OnUnobservedTaskException)}. {e.Message}", e);
 
-            Environment.Exit((int) SAMExitCode.UnhandledException);
+            Environment.Exit(SAMExitCode.UnhandledException);
         }
     }
 

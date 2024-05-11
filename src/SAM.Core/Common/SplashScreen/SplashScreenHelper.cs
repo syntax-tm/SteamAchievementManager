@@ -1,22 +1,27 @@
-﻿using Wpf.Ui.Controls;
+﻿using System.Threading;
+using System.Windows.Threading;
+using Wpf.Ui.Controls;
 
 namespace SAM.Core
 {
     public static class SplashScreenHelper
     {
-        private static bool _isInitialized;
-        private static FluentWindow _splashWindow;
-        private static SplashScreenViewModel _splashScreenVm;
+        private static Thread _thread;
+        private static volatile bool _isInitialized;
+        private static volatile FluentWindow _splashWindow;
+        private static volatile SplashScreenViewModel _splashScreenVm;
         
-        public static void Init()
+        public static void Init(string status = null)
         {
             if (_isInitialized) throw new SAMException();
-            
-            _splashScreenVm = SplashScreenViewModel.Create();
 
-            _splashWindow = new SplashScreenView();
-            _splashWindow.DataContext = _splashScreenVm;
-            
+            var pts = new ParameterizedThreadStart(ThreadStartingPoint);
+
+            _thread = new Thread(pts);
+            _thread.SetApartmentState(ApartmentState.STA);
+            _thread.IsBackground = true;
+            _thread.Start(status);
+
             _isInitialized = true;
         }
 
@@ -25,23 +30,37 @@ namespace SAM.Core
             _splashScreenVm.Status = status;
         }
 
+        private static void ThreadStartingPoint(object arg = null)
+        {
+            _splashScreenVm = SplashScreenViewModel.Create();
+            _splashScreenVm.Status = arg?.ToString();
+
+            _splashWindow = new SplashScreenView();
+            _splashWindow.DataContext = _splashScreenVm;
+
+            _splashWindow.Show();
+
+            Dispatcher.Run();
+        }
+
         public static void Show(string status = null)
         {
             if (!_isInitialized)
             {
-                Init();
+                Init(status);
+
+                return;
             }
 
             _splashScreenVm.Status = status;
-
-            if (_splashWindow.IsVisible) return;
-
-            _splashWindow.Show();
         }
 
         public static void Close()
         {
-            _splashWindow.Close();
+            _splashWindow.Dispatcher.BeginInvoke(() =>
+            {
+                _splashWindow.Close();
+            }, DispatcherPriority.Background);
         }
     }
 }

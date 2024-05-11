@@ -23,6 +23,7 @@ namespace SAM.Core.ViewModels
         public virtual ICurrentWindowService CurrentWindow => GetService<ICurrentWindowService>();
 
         private bool _loading = true;
+        private readonly object syncLock = new ();
         private CollectionViewSource _achievementsViewSource;
 
         [UsedImplicitly]
@@ -297,12 +298,19 @@ namespace SAM.Core.ViewModels
         {
             IsModified = _statsManager.IsModified;
 
+            if (Achievements == null) return;
+
             AllowUnlockAll = Achievements!.Any(a => !a.IsAchieved);
         }
 
         private void ManagerAchievementsChanged(SteamStatsManager obj)
         {
-            Achievements = new (obj.Achievements);
+            Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                Achievements = new (obj.Achievements);
+
+                BindingOperations.EnableCollectionSynchronization(Achievements, syncLock);
+            });
         }
 
         private void OnAchievementModifiedHandler(ObservableCollection<SteamAchievement> arg1, SteamAchievement arg2)

@@ -1,5 +1,27 @@
 ## 0.6.0
 
+### 0.6.0-beta
+
+#### General
+
+- Fixed publish settings
+  - The main executable files should now contain their framework and package references
+- Fixed splash screen responsiveness
+
+#### SAM
+
+- Added main menu
+  - Added menu item to export library
+  - Added menu item for filtering favorite apps
+  - Added menu item for showing hidden apps
+  - Added menu item to reset all settings
+  - Added menu item to open log directory
+  - Moved the search box to be inline with the menu
+
+#### SAM.Manager
+
+- **[BUG]** Fixed window icon not showing in title bar
+
 ### 0.6.0-alpha
 
 #### General
@@ -30,16 +52,6 @@
 #### SAM.Manager
 
 - **[BUG]** Ability to filter achievements using the drop down has been temporarily removed
-
-#### Planned
-
-##### SAM
-
-- Ability to customize favorites overlay color
-- Ability to customize hidden overlay color
-- Basic command line options
-  - For automating resettings stats/achievements, generating reports, etc.
-- Save and auto load `Show Hidden` and `Show Only Favorites` view settings
 
 #### Known Issues
 

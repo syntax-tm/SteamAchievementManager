@@ -6,6 +6,7 @@
     <Platforms>x86</Platforms>
     <UseWPF>true</UseWPF>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

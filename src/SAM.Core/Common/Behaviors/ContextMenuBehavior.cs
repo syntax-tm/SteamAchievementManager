@@ -19,7 +19,9 @@ public class ContextMenuBehaviour : Behavior<Control>
 
     public static readonly DependencyProperty ShowOnLeftMouseDownProperty =
         DependencyProperty.Register(nameof(ShowOnLeftMouseDown), typeof(bool), typeof(ContextMenuBehaviour));
-    
+
+    private bool _mouseEnterHooked;
+    private bool _leftMouseDownHooked;
     private DispatcherTimer _timer;
 
     public bool ShowOnMouseOver
@@ -43,16 +45,35 @@ public class ContextMenuBehaviour : Behavior<Control>
     protected override void OnAttached()
     {
         base.OnAttached();
-        AssociatedObject.MouseEnter += AssociatedObjectOnMouseEnter;
-        AssociatedObject.MouseLeave += AssociatedObjectOnMouseLeave;
+
+        if (ShowOnMouseOver)
+        {
+            AssociatedObject.MouseEnter += AssociatedObjectOnMouseEnter;
+            AssociatedObject.MouseLeave += AssociatedObjectOnMouseLeave;
+
+            _mouseEnterHooked = true;
+        }
+
+        if (!ShowOnLeftMouseDown) return;
+
         AssociatedObject.MouseLeftButtonDown += AssociatedObjectOnMouseLeftButtonDown;
+
+        _leftMouseDownHooked = true;
     }
     
     protected override void OnDetaching()
     {
-        AssociatedObject.MouseEnter -= AssociatedObjectOnMouseEnter;
-        AssociatedObject.MouseLeave -= AssociatedObjectOnMouseLeave;
-        AssociatedObject.MouseLeftButtonDown -= AssociatedObjectOnMouseLeftButtonDown;
+        if (_mouseEnterHooked)
+        {
+            AssociatedObject.MouseEnter -= AssociatedObjectOnMouseEnter;
+            AssociatedObject.MouseLeave -= AssociatedObjectOnMouseLeave;
+        }
+
+        if (_leftMouseDownHooked)
+        {
+            AssociatedObject.MouseLeftButtonDown -= AssociatedObjectOnMouseLeftButtonDown;
+        }
+
         base.OnDetaching();
     }
 
@@ -65,6 +86,8 @@ public class ContextMenuBehaviour : Behavior<Control>
 
     private void AssociatedObjectOnMouseEnter(object sender, MouseEventArgs e)
     {
+        if (!ShowOnMouseOver) return;
+        
         StartTimer();
 
         e.Handled = true;

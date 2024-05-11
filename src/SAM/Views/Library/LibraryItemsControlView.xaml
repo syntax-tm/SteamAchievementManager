@@ -17,6 +17,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/button/button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/togglebutton/togglebutton.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Size x:Key="ItemSize" Width="600" Height="286" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -33,7 +34,7 @@
                     <Grid Margin="5" Width="300" Height="143">
                         <ui:Button x:Name="PART_Button" Padding="0">
                             <ui:Button.Resources>
-                                <sam:BindingProxy x:Key="BindingProxy" Data="{Binding}" />
+                                <sam:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
                             </ui:Button.Resources>
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}">
@@ -183,6 +184,7 @@
                             </ui:Button.ContextMenu>
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
+                                <sam:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="False" />
                             </dxmvvm:Interaction.Behaviors>
                             <Grid>
                                 <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}" Stretch="Fill" StretchDirection="Both">
@@ -206,21 +208,20 @@
                                     </Image.Style>
                                 </Image>
                                 <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+                                    <Viewbox.Style>
+                                        <Style TargetType="{x:Type Viewbox}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Viewbox.Style>
                                     <TextBlock Text="{Binding Name}" 
                                                FontSize="30" TextAlignment="Center"
                                                HorizontalAlignment="Center"
-                                               Margin="5" TextWrapping="Wrap">
-                                        <TextBlock.Style>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
-                                                        <Setter Property="Visibility" Value="Visible" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                               Margin="5" TextWrapping="Wrap" />
                                 </Viewbox>
                             </Grid>
                         </ui:Button>

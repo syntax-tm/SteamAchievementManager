@@ -14,7 +14,7 @@ namespace SAM.Core.Storage
         private static readonly object syncLock = new ();
         private static IsolatedStorageManager _instance;
         
-        public string Path { get; }
+        public string ApplicationStoragePath { get; }
 
         protected IsolatedStorageManager()
         {
@@ -25,7 +25,7 @@ namespace SAM.Core.Storage
 
             log.Debug($"IsolatedStorageFile Path: '{path}'");
 
-            Path = path;
+            ApplicationStoragePath = path;
 
             if (!store.DirectoryExists(@"apps")) store.CreateDirectory(@"apps");
         }

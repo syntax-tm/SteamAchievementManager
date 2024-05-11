@@ -11,6 +11,16 @@
                  d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}"
                  ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
                  WindowStyle="None" WindowBackdropType="Mica">
+    
+    <ui:FluentWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/menu/menu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/menu/menuitem.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/WindowStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ui:FluentWindow.Resources>
 
     <dxmvvm:Interaction.Behaviors>
         <sam:WindowAutoSaveBehavior />
@@ -19,7 +29,11 @@
 
     <Grid>
         <DockPanel LastChildFill="True">
-            <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top" />
+            <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top">
+                <ui:TitleBar.Icon>
+                    <ui:ImageIcon Source="/sam.png" />
+                </ui:TitleBar.Icon>
+            </ui:TitleBar>
             <sam:SteamGameView DataContext="{Binding GameVm}" />
         </DockPanel>
     </Grid>

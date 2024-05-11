@@ -5,6 +5,8 @@ namespace SAM.Core.Storage;
 
 public interface IStorageManager
 {
+    string ApplicationStoragePath { get; }
+
     void SaveImage(string fileName, Image img, bool overwrite = true);
     Task SaveImageAsync(string fileName, Image img, bool overwrite = true);
     void SaveText(string fileName, string text, bool overwrite = true);

@@ -7,16 +7,21 @@
     <Platforms>x86</Platforms>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>sam.ico</ApplicationIcon>
-    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <!--<PublishSingleFile>true</PublishSingleFile>-->
-    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <PublishSingleFile>true</PublishSingleFile>
+    <!--<PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <_SuppressWpfTrimError>true</_SuppressWpfTrimError>-->
+    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
@@ -35,12 +40,14 @@
   <ItemGroup>
     <None Remove="packages.lock.json" />
     <None Remove="SAM.csproj.DotSettings" />
+    <None Remove="sam.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="sam.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="sam.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="sam.png" />
   </ItemGroup>
 
   <ItemGroup>

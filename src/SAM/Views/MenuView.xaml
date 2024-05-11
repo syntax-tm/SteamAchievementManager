@@ -11,21 +11,12 @@
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/menu/menu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/menu/menuitem.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid Width="400" HorizontalAlignment="Right" Margin="15,0">
-            <ui:AutoSuggestBox Text="{Binding FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                               PlaceholderText="Search..." BorderBrush="Transparent"
-                               Icon="Search24" Margin="5"
-                               OriginalItemsSource="{Binding Suggestions, Mode=OneWay}">
-                <ui:AutoSuggestBox.Style>
-                    <Style TargetType="{x:Type ui:AutoSuggestBox}" BasedOn="{StaticResource BaseUiAutoSuggestBoxStyle}">
-                        
-                    </Style>
-                </ui:AutoSuggestBox.Style>
-            </ui:AutoSuggestBox>
-        </Grid>
-    </Grid>
 </UserControl>

@@ -6,6 +6,7 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/TextBoxStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/autosuggestbox/autosuggestbox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
@@ -103,11 +104,30 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ui:AutoSuggestBox}">
-                    <Grid>
+                    <Grid Width="{TemplateBinding Width}">
+                        <Grid.Style>
+                            <Style TargetType="{x:Type Grid}">
+                                <Setter Property="Width" Value="400" />
+                            </Style>
+                        </Grid.Style>
                         <ui:TextBox x:Name="PART_TextBox"
-                                    Grid.Row="0" Icon="{TemplateBinding Icon}"
-                                    IconPlacement="Right" PlaceholderText="{TemplateBinding PlaceholderText}"
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                                    Grid.Row="0" Icon="{ui:SymbolIcon Search24}"
+                                    IconPlacement="Left" PlaceholderText="{TemplateBinding PlaceholderText}"
+                                    BorderBrush="Transparent" Padding="{TemplateBinding Padding}"
+                                    FontSize="{TemplateBinding FontSize}"
+                                    VerticalContentAlignment="Center"
+                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
+                            <ui:TextBox.Style>
+                                <Style TargetType="{x:Type ui:TextBox}" BasedOn="{StaticResource BaseUiTextBoxStyle}">
+                                    <Setter Property="Icon" Value="{ui:SymbolIcon Search24}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsFocused" Value="True">
+                                            <Setter Property="Icon" Value="{ui:SymbolIcon Empty}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:TextBox.Style>
+                        </ui:TextBox>
                         <Popup x:Name="PART_SuggestionsPopup"
                                MinWidth="{TemplateBinding ActualWidth}"
                                Margin="0"

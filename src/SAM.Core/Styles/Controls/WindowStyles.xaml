@@ -18,4 +18,159 @@
     <Style BasedOn="{StaticResource UiWindowStyleBase}" TargetType="{x:Type ui:FluentWindow}">
     </Style>
 
+    <Style TargetType="{x:Type ui:TitleBar}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+        <Setter Property="ButtonsForeground" Value="{DynamicResource ButtonForeground}" />
+        <Setter Property="ButtonsBackground">
+            <Setter.Value>
+                <SolidColorBrush Color="#1A000000" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Padding" Value="16,4,16,4" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ui:TitleBar}">
+                    <Grid x:Name="PART_MainGrid"
+                          HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                          Background="{TemplateBinding Background}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid x:Name="TitleGrid" 
+                              Grid.Column="0"
+                              Margin="{TemplateBinding Padding}"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Custom application icon  -->
+                            <ContentPresenter x:Name="PART_Icon"
+                                              Grid.Column="0"
+                                              Height="20"
+                                              Margin="-5,0,14,0"
+                                              VerticalAlignment="Center"
+                                              Content="{TemplateBinding Icon}"
+                                              Focusable="False"
+                                              RenderOptions.BitmapScalingMode="HighQuality" />
+
+                            <!--<Separator Grid.Column="1" Margin="0,0,8,0" />-->
+                            <!--  Main application title  -->
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Text="{TemplateBinding Title}">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Opacity" Value="0.7" />
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            
+                            <!--  Additional header content  -->
+                            <ContentPresenter Grid.Column="2"
+                                              HorizontalAlignment="Left"
+                                              Content="{TemplateBinding Header}" />
+
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Navigation buttons - Close, Restore, Maximize, Minimize  -->
+                            <Grid Grid.Column="1"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <ui:TitleBarButton x:Name="PART_HelpButton"
+                                                   Grid.Column="0"
+                                                   ButtonType="Help" />
+
+                                <ui:TitleBarButton x:Name="PART_MinimizeButton"
+                                                   Grid.Column="1"
+                                                   ButtonType="Minimize" />
+
+                                <ui:TitleBarButton x:Name="PART_MaximizeButton"
+                                                   Grid.Column="2"
+                                                   ButtonType="Maximize" />
+
+                                <ui:TitleBarButton x:Name="PART_CloseButton"
+                                                   Grid.Column="4"
+                                                   ButtonType="Close"
+                                                   MouseOverButtonsForeground="White"
+                                                   MouseOverBackground="{DynamicResource PaletteRedBrush}" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Icon" Value="{x:Null}" />
+                                <Condition Property="Title" Value="{x:Null}" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="TitleGrid" Property="Visibility" Value="Collapsed" />
+                        </MultiTrigger>
+                        <Trigger Property="ApplicationTheme" Value="Dark">
+                            <Setter Property="ButtonsBackground">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="#17FFFFFF" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="Icon" Value="{x:Null}">
+                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_Icon" Property="Margin" Value="0" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="ShowMaximize" Value="True" />
+                                <Condition Property="IsMaximized" Value="True" />
+                            </MultiTrigger.Conditions>
+
+                            <Setter TargetName="PART_MaximizeButton" Property="ButtonType" Value="Restore" />
+                        </MultiTrigger>
+                        <Trigger Property="ShowHelp" Value="False">
+                            <Setter TargetName="PART_HelpButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="ShowMinimize" Value="False">
+                            <Setter TargetName="PART_MinimizeButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="ShowMaximize" Value="False">
+                            <Setter TargetName="PART_MaximizeButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="ShowClose" Value="False">
+                            <Setter TargetName="PART_CloseButton" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>
