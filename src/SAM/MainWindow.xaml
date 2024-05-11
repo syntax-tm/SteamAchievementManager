@@ -11,7 +11,8 @@
                  mc:Ignorable="d"
                  d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
                  ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-                 WindowBackdropType="Mica">
+                 WindowBackdropType="Mica"
+                 ShowActivated="True">
 
     <ui:FluentWindow.Resources>
         <ResourceDictionary>
@@ -26,11 +27,9 @@
 
             <!--  TopLevelHeader  -->
             <ControlTemplate x:Key="WpfUiMenuItemTopLevelHeaderTemplateKey" TargetType="{x:Type ui:MenuItem}">
-                <Border
-                    x:Name="Border"
-                    Margin="0"
-                    Background="Transparent"
-                    CornerRadius="0">
+                <Border x:Name="Border"
+                        Margin="0" Background="Transparent"
+                        CornerRadius="0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
@@ -43,46 +42,42 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <ContentControl
-                                x:Name="IconElement"
-                                Grid.Column="0"
-                                Margin="0,0,6,0"
-                                VerticalAlignment="Center"
-                                Content="{TemplateBinding Icon}"
-                                FontSize="{TemplateBinding FontSize}" />
+                            <ContentControl x:Name="IconElement"
+                                            Grid.Column="0"
+                                            Margin="0,0,6,0"
+                                            VerticalAlignment="Center"
+                                            Content="{TemplateBinding Icon}"
+                                            FontSize="{TemplateBinding FontSize}" />
 
-                            <ContentPresenter
-                                x:Name="HeaderPresenter"
-                                Grid.Column="2"
-                                VerticalAlignment="Center"
-                                ContentSource="Header"
-                                RecognizesAccessKey="True"
-                                TextElement.Foreground="{TemplateBinding Foreground}" />
+                            <ContentPresenter x:Name="HeaderPresenter"
+                                              Grid.Column="2"
+                                              VerticalAlignment="Center"
+                                              ContentSource="Header"
+                                              RecognizesAccessKey="True"
+                                              TextElement.Foreground="{TemplateBinding Foreground}" />
                         </Grid>
 
-                        <Popup
-                            x:Name="Popup"
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="2"
-                            AllowsTransparency="True"
-                            Focusable="False"
-                            HorizontalOffset="-12"
-                            IsOpen="{TemplateBinding IsSubmenuOpen}"
-                            Placement="Bottom"
-                            PlacementTarget="{Binding ElementName=Border}"
-                            PopupAnimation="None"
-                            VerticalOffset="1">
+                        <Popup x:Name="Popup"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               HorizontalOffset="-12"
+                               IsOpen="{TemplateBinding IsSubmenuOpen}"
+                               Placement="Bottom"
+                               PlacementTarget="{Binding ElementName=Border}"
+                               PopupAnimation="None"
+                               VerticalOffset="1">
                             <Grid>
-                                <Border
-                                    x:Name="SubmenuBorder"
-                                    Margin="12,0,12,18"
-                                    Padding="0,3,0,3"
-                                    Background="{DynamicResource FlyoutBackground}"
-                                    BorderBrush="{DynamicResource FlyoutBorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="0"
-                                    SnapsToDevicePixels="True">
+                                <Border x:Name="SubmenuBorder"
+                                        Margin="12,0,12,18"
+                                        Padding="0,3,0,3"
+                                        Background="{DynamicResource FlyoutBackground}"
+                                        BorderBrush="{DynamicResource FlyoutBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="0"
+                                        SnapsToDevicePixels="True">
                                     <Border.RenderTransform>
                                         <TranslateTransform />
                                     </Border.RenderTransform>
@@ -90,11 +85,8 @@
                                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
                                     </ui:PassiveScrollViewer>
                                     <Border.Effect>
-                                        <DropShadowEffect
-                                            BlurRadius="20"
-                                            Direction="270"
-                                            Opacity="0.25"
-                                            ShadowDepth="6" />
+                                        <DropShadowEffect BlurRadius="20" Direction="270"
+                                                          Opacity="0.25" ShadowDepth="6" />
                                     </Border.Effect>
                                 </Border>
                             </Grid>
@@ -124,12 +116,9 @@
                         <Trigger.EnterActions>
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <DoubleAnimation
-                                        Storyboard.TargetName="SubmenuBorder"
-                                        Storyboard.TargetProperty="(Border.RenderTransform).(TranslateTransform.Y)"
-                                        From="-90"
-                                        To="0"
-                                        Duration="00:00:00.167">
+                                    <DoubleAnimation Storyboard.TargetName="SubmenuBorder"
+                                                     Storyboard.TargetProperty="(Border.RenderTransform).(TranslateTransform.Y)"
+                                                     From="-90" To="0" Duration="00:00:00.167">
                                         <DoubleAnimation.EasingFunction>
                                             <CircleEase EasingMode="EaseOut" />
                                         </DoubleAnimation.EasingFunction>
@@ -420,10 +409,14 @@
                 <Setter Property="FocusVisualStyle" Value="{DynamicResource DefaultControlFocusVisualStyle}" />
                 <Setter Property="KeyboardNavigation.IsTabStop" Value="True" />
                 <Setter Property="Focusable" Value="True" />
+                <Setter Property="Opacity" Value="0.7" />
                 <Style.Triggers>
                     <Trigger Property="Role" Value="TopLevelHeader">
                         <Setter Property="Template" Value="{StaticResource WpfUiMenuItemTopLevelHeaderTemplateKey}" />
                         <Setter Property="Grid.IsSharedSizeScope" Value="True" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Opacity" Value="1" />
                     </Trigger>
                     <Trigger Property="Role" Value="TopLevelItem">
                         <Setter Property="Template" Value="{StaticResource WpfUiMenuItemTopLevelItemTemplateKey}" />
@@ -498,7 +491,7 @@
                         <Separator Margin="0,4,4,4" />
                         <ui:AutoSuggestBox Text="{Binding HomeVm.FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                            PlaceholderText="Search..." BorderBrush="Transparent"
-                                           Icon="Search24" Margin="5" FontSize="12"
+                                           Icon="Search24" Margin="5" FontSize="13" Padding="0"
                                            OriginalItemsSource="{Binding HomeVm.Suggestions, Mode=OneWay}"
                                            Width="400">
                             <ui:AutoSuggestBox.Style>
