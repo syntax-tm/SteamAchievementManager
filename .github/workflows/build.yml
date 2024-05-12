@@ -3,8 +3,7 @@ name: Build
 env:
   ARTIFACT: SAM
   PACKAGES: ${{ github.workspace }}\.nuget\packages
-  VERSION_PREFIX: 0.0.1
-  VERSION_SUFFIX: alpha
+  VERSION: 0.0.1-alpha
 
 on:
   workflow_call:
@@ -13,14 +12,9 @@ on:
         description: 'True if this build is for a release, false otherwise'
         default: false
         type: boolean
-      version-prefix:
-        description: 'The version prefix (e.g. "1.0.0")'
-        default: '0.0.1'
-        required: false
-        type: string
-      version-suffix:
-        description: 'The version suffix (e.g. "alpha")'
-        default: ''
+      version:
+        description: 'The semantic version number (e.g. "2.0.1-beta")'
+        default: '0.0.1-alpha'
         required: false
         type: string
   workflow_dispatch:
@@ -63,9 +57,9 @@ jobs:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
     - name: Publish SAM
-      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Release -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Release -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
     - name: Publish SAM.Manager
-      run: dotnet publish .\src\SAM.Manager\SAM.Manager.csproj -o publish_manager -c Release -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+      run: dotnet publish .\src\SAM.Manager\SAM.Manager.csproj -o publish_manager -c Release -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
     - name: Stage Artifacts
       run: |
         $samDir = Get-Item publish | Select-Object -ExpandProperty FullName
@@ -76,29 +70,32 @@ jobs:
         $stagedFiles = gci $samDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
 
         Write-Host ""
-        Write-Host "`nStaged Artifacts:`n" -ForegroundColor Cyan
+        Write-Host "::group::Staged Artifacts"
 
         foreach ($stagedFile in $stagedFiles)
         {
           $relPath = [System.IO.Path]::GetRelativePath($samDir, $stagedFile)
           $ext = [System.IO.Path]::GetExtension($stagedFile)
 
+          $color = ''
+
           if ($ext -eq '.exe') {
-            Write-Host "- $relPath" -ForegroundColor Cyan
+            $color = $PSStyle.Foreground.BrightCyan
           }
           elseif ($ext -eq '.dll') {
-            Write-Host "- $relPath" -ForegroundColor Magenta
+            $color = $PSStyle.Foreground.BrightMagenta
           }
           elseif ($ext -eq '.pdb') {
-            Write-Host "- $relPath" -ForegroundColor Green
+            $color = $PSStyle.Foreground.BrightGreen
           }
-          elseif ($ext -eq '.json') {
-            Write-Host "- $relPath" -ForegroundColor Blue
+          elseif ($ext -eq '.json' -or $ext -eq '.config') {
+            $color = $PSStyle.Foreground.BrightBlue
           }
-          else {
-            Write-Host "- $relPath"
-          }
+
+          Write-Host "- $color$relPath$($PSStyle.Reset)"
         }
+
+        Write-Host "::endgroup::"
     - name: Upload a Build Artifact
       id: artifact-upload
       uses: actions/upload-artifact@v3

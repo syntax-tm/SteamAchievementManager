@@ -19,6 +19,7 @@ jobs:
     permissions:
       contents: write
     outputs:
+      version: ${{ steps.validate-version.outputs.version }}
       version-prefix: ${{ steps.validate-version.outputs.version-prefix }}
       version-suffix: ${{ steps.validate-version.outputs.version-suffix }}
     steps:
@@ -51,6 +52,7 @@ jobs:
 
         Write-Host ""
 
+        echo "version=version" >> $env:GITHUB_OUTPUT
         echo "version-prefix=$prefix" >> $env:GITHUB_OUTPUT
         echo "version-suffix=$suffix" >> $env:GITHUB_OUTPUT
   build:
@@ -58,8 +60,7 @@ jobs:
     needs: setup
     with:
       is_release: true
-      version-prefix: ${{ needs.setup.outputs.version-prefix }}
-      version-suffix: ${{ needs.setup.outputs.version-suffix }}
+      version: ${{ needs.setup.outputs.version }}
   create-release:
     runs-on: windows-latest
     needs: [build]
