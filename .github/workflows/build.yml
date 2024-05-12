@@ -63,10 +63,9 @@ jobs:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
     - name: Publish SAM
-      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Debug -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Release -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
     - name: Publish SAM.Manager
-      run: dotnet publish .\src\SAM.Manager\SAM.Manager.csproj -o publish_manager -c Debug -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
-
+      run: dotnet publish .\src\SAM.Manager\SAM.Manager.csproj -o publish_manager -c Release -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
     - name: Stage Artifacts
       run: |
         $samDir = Get-Item publish | Select-Object -ExpandProperty FullName
