@@ -71,7 +71,7 @@ jobs:
         $samDir = Get-Item publish | Select-Object -ExpandProperty FullName
         $samManagerDir = Get-Item publish_manager | Select-Object -ExpandProperty FullName
 
-        cp $samManagerDir\* -DestinationPath $samDir -Recurse -Force
+        cp $samManagerDir\* -Destination $samDir -Recurse -Force
 
         $stagedFiles = gci $samDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
 
