@@ -42,17 +42,13 @@ jobs:
         $prefix = $parts[0]
         $suffix = $parts[1]
 
-        Write-Host ""
-
         Write-Host "Prefix: " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$prefix$($PSStyle.Reset)"
 
         Write-Host "Suffix: " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$suffix$($PSStyle.Reset)"
 
-        Write-Host ""
-
-        echo "version=version" >> $env:GITHUB_OUTPUT
+        echo "version=$version" >> $env:GITHUB_OUTPUT
         echo "version-prefix=$prefix" >> $env:GITHUB_OUTPUT
         echo "version-suffix=$suffix" >> $env:GITHUB_OUTPUT
   build:
