@@ -114,7 +114,7 @@ public partial class MainWindowViewModel : MainWindowViewModelBase
 
         try
         {
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyLocation = AppContext.BaseDirectory;
             var currentPath = Path.GetDirectoryName(assemblyLocation);
             var logPath = Path.Join(currentPath, LOG_DIR_NAME);
 

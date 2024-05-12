@@ -55,7 +55,7 @@ jobs:
         path: ${{ env.PACKAGES }}
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
     - name: Restore dependencies
-      run: dotnet restore .\src\SAM.sln --packages ${{ env.PACKAGES }}
+      run: dotnet restore .\src\SAM_NoTests.slnf --packages ${{ env.PACKAGES }}
     - id: cache-save
       uses: actions/cache/save@v4
       if: steps.cache-restore.outputs.cache-hit != 'true'
@@ -63,7 +63,47 @@ jobs:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
     - name: Publish
-      run: dotnet publish .\src\SAM\SAM.csproj -c Debug -a x86 -o publish --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+      run: dotnet publish .\src\SAM_NoTests.slnf -c Debug -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+    - name: Stage Artifacts
+      run: |
+        $stageDir = New-Item publish -ItemType Directory
+
+        New-Item $stageDir -ItemType Directory | Out-Null
+
+        $artifactDirs = gci win-x86 -Recurse -Directory | Select-Object -ExpandProperty FullName
+        $samDir = $artifactDirs | where { $_ -like '*\src\SAM\*' }
+        $samManagerDir = $artifactDirs | where { $_ -like '*\src\SAM.Manager\*' }
+
+        # copy SAM first since manager will override with its published assembly
+        cp $samDir\* -DestinationPath $stageDir -Recurse -Force
+        cp $samManagerDir\* -DestinationPath $stageDir -Recurse -Force
+
+        $stagedFiles = gci $stageDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
+
+        Write-Host ""
+        Write-Host "`nStaged Artifacts:`n" -ForegroundColor Cyan
+
+        foreach ($stagedFile in $stagedFiles)
+        {
+          $relPath = [System.IO.Path]::GetRelativePath($stageDir, $stagedFile)
+          $ext = [System.IO.Path]::GetExtension($stagedFile)
+
+          if ($ext -eq '.exe') {
+            Write-Host "- $relPath" -ForegroundColor Cyan
+          }
+          elseif ($ext -eq '.dll') {
+            Write-Host "- $relPath" -ForegroundColor Magenta
+          }
+          elseif ($ext -eq '.pdb') {
+            Write-Host "- $relPath" -ForegroundColor Green
+          }
+          elseif ($ext -eq '.json') {
+            Write-Host "- $relPath" -ForegroundColor Blue
+          }
+          else {
+            Write-Host "- $relPath"
+          }
+        }
     - name: Upload a Build Artifact
       id: artifact-upload
       uses: actions/upload-artifact@v3

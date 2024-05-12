@@ -47,12 +47,13 @@
   <ItemGroup>
     <None Remove="packages.lock.json" />
     <None Remove="SAM.Manager.csproj.DotSettings" />
-    <None Remove="sam.png" />
     <None Remove="SAM.WPF.Manager.csproj.DotSettings" />
+    <None Remove="sam_manager.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="sam_manager.ico" />
+    <Resource Include="sam_manager.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,10 +77,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SAM.Core\SAM.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="sam.png" />
   </ItemGroup>
 
   <ItemGroup>

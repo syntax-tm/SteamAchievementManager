@@ -1,0 +1,11 @@
+{
+  "solution": {
+    "path": "SAM.sln",
+    "projects": [
+      "SAM.API\\SAM.API.csproj",
+      "SAM.Core\\SAM.Core.csproj",
+      "SAM.Manager\\SAM.Manager.csproj",
+      "SAM\\SAM.csproj"
+    ]
+  }
+}

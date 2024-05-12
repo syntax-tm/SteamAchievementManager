@@ -5,8 +5,8 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
                  xmlns:sam="urn:sam"
-                 xmlns:viewModels="clr-namespace:SAM.Manager.ViewModels"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:viewModels="clr-namespace:SAM.Manager.ViewModels"
                  mc:Ignorable="d"
                  d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}"
                  ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
@@ -31,7 +31,7 @@
         <DockPanel LastChildFill="True">
             <ui:TitleBar Title="{Binding Title}" DockPanel.Dock="Top">
                 <ui:TitleBar.Icon>
-                    <ui:ImageIcon Source="/sam.png" />
+                    <ui:ImageIcon Source="/sam_manager.png" />
                 </ui:TitleBar.Icon>
             </ui:TitleBar>
             <sam:SteamGameView DataContext="{Binding GameVm}" />
