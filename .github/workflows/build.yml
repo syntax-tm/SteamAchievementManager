@@ -80,7 +80,7 @@ jobs:
 
         foreach ($stagedFile in $stagedFiles)
         {
-          $relPath = [System.IO.Path]::GetRelativePath($stageDir, $stagedFile)
+          $relPath = [System.IO.Path]::GetRelativePath($samDir, $stagedFile)
           $ext = [System.IO.Path]::GetExtension($stagedFile)
 
           if ($ext -eq '.exe') {
