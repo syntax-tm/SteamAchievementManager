@@ -62,23 +62,19 @@ jobs:
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-    - name: Publish
-      run: dotnet publish .\src\SAM_NoTests.slnf -c Debug -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+    - name: Publish SAM
+      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Debug -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+    - name: Publish SAM.Manager
+      run: dotnet publish .\src\SAM.Manager\SAM.Manager.csproj -o publish_manager -c Debug -a x86 --no-restore /p:VersionPrefix=${{ inputs.version-prefix || env.VERSION_PREFIX }} /p:VersionSuffix=${{ inputs.version-suffix || env.VERSION_SUFFIX }}
+
     - name: Stage Artifacts
       run: |
-        $stageDir = New-Item publish -ItemType Directory
+        $samDir = Get-Item publish | Select-Object -ExpandProperty FullName
+        $samManagerDir = Get-Item publish_manager | Select-Object -ExpandProperty FullName
 
-        New-Item $stageDir -ItemType Directory | Out-Null
+        cp $samManagerDir\* -DestinationPath $samDir -Recurse -Force
 
-        $artifactDirs = gci win-x86 -Recurse -Directory | Select-Object -ExpandProperty FullName
-        $samDir = $artifactDirs | where { $_ -like '*\src\SAM\*' }
-        $samManagerDir = $artifactDirs | where { $_ -like '*\src\SAM.Manager\*' }
-
-        # copy SAM first since manager will override with its published assembly
-        cp $samDir\* -DestinationPath $stageDir -Recurse -Force
-        cp $samManagerDir\* -DestinationPath $stageDir -Recurse -Force
-
-        $stagedFiles = gci $stageDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
+        $stagedFiles = gci $samDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
 
         Write-Host ""
         Write-Host "`nStaged Artifacts:`n" -ForegroundColor Cyan
