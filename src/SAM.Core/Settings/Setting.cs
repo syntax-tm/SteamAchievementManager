@@ -1,64 +1,60 @@
 ﻿using System;
 using DevExpress.Mvvm;
-using DevExpress.Mvvm.DataAnnotations;
-using DevExpress.Mvvm.POCO;
+using DevExpress.Mvvm.CodeGenerators;
+using Newtonsoft.Json;
 
-namespace SAM.Core.Settings
+namespace SAM.Core.Settings;
+
+[GenerateViewModel(ImplementIDataErrorInfo = true)]
+public partial class Setting<T> : ViewModelBase, ISetting<T>
+    where T : IComparable
 {
-    [POCOViewModel(ImplementIDataErrorInfo = true)]
-    public class Setting<T> : ViewModelBase, ISetting<T>
-        where T : IComparable
+    [GenerateProperty] private string _name;
+    [GenerateProperty] private string _toolTip;
+    [GenerateProperty] private T _value;
+    [GenerateProperty] private T _previousValue;
+    [GenerateProperty] private T _default;
+    [GenerateProperty] private bool _isModified;
+    [GenerateProperty] private bool _isReadOnly;
+    [GenerateProperty] private bool _allowEdit;
+    [GenerateProperty] private EditorType _editorType;
+
+    public Setting(string name, T defaultValue)
     {
-        public virtual string Name { get; }
-        public virtual string ToolTip { get; set; }
-        public virtual T Value { get; set; }
-        public virtual T PreviousValue { get; protected set; }
-        public virtual T Default { get; protected set; }
-        public virtual bool IsModified { get; protected set; }
-        public virtual bool IsReadOnly { get; set; }
-        public virtual bool AllowEdit { get; set; }
-        public virtual EditorType EditorType { get; set; }
+        Name = name;
+        Default = defaultValue;
+    }
+        
+    [GenerateCommand]
+    public void CommitChange()
+    {
+        PreviousValue = Value;
+    }
+        
+    [GenerateCommand]
+    public void Reset()
+    {
+        Value = PreviousValue;
+    }
 
-        protected Setting(string name, T defaultValue)
-        {
-            Name = name;
-            Default = defaultValue;
-        }
+    public void RestoreDefault(bool showModified = false)
+    {
+        Value = Default;
 
-        public static Setting<T> Create(string name, T defaultValue)
-        {
-            return ViewModelSource.Create(() => new Setting<T>(name, defaultValue));
-        }
-
-        public void CommitChange()
+        if (!showModified)
         {
             PreviousValue = Value;
         }
-        
-        public void Reset()
+    }
+
+    protected void OnValueChanged()
+    {
+        if (ReferenceEquals(Value, null))
         {
-            Value = PreviousValue;
+            IsModified = ReferenceEquals(PreviousValue, null);
+            return;
         }
 
-        public void RestoreDefault(bool showModified = false)
-        {
-            Value = Default;
-
-            if (!showModified)
-            {
-                PreviousValue = Value;
-            }
-        }
-
-        protected void OnValueChanged()
-        {
-            if (ReferenceEquals(Value, null))
-            {
-                IsModified = ReferenceEquals(PreviousValue, null);
-                return;
-            }
-
-            IsModified = Value.Equals(PreviousValue);
-        }
+        IsModified = Value.Equals(PreviousValue);
     }
 }

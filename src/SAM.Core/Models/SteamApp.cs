@@ -144,7 +144,7 @@ public partial class SteamApp : ViewModelBase
 
         SaveSettings();
 
-        Messenger.Default.Send<RequestMessage>(new (EntityType.Library, RequestType.Refresh));
+        Messenger.Default.SendRequest(EntityType.Library, RequestType.Refresh);
     }
         
     [GenerateCommand]
@@ -152,8 +152,8 @@ public partial class SteamApp : ViewModelBase
     {
         IsFavorite = !IsFavorite;
         SaveSettings();
-
-        Messenger.Default.Send<RequestMessage>(new (EntityType.Library, RequestType.Refresh));
+        
+        Messenger.Default.SendRequest(EntityType.Library, RequestType.Refresh);
     }
 
     public async Task Load()
@@ -168,10 +168,10 @@ public partial class SteamApp : ViewModelBase
             CacheManager.StorageManager.CreateDirectory($@"apps\{Id}");
 
             await Task.WhenAll([
-                Task.Run(LoadImages),
+                Task.Run(LoadImagesAsync),
                 // load user preferences (hidden, favorite, etc) for app
                 Task.Run(LoadSettings)
-            ]);
+            ]).ConfigureAwait(false);
         }
         catch (Exception e)
         {
@@ -184,7 +184,7 @@ public partial class SteamApp : ViewModelBase
         }
     }
 
-    public async Task LoadImages()
+    public async Task LoadImagesAsync()
     {
         try
         {
@@ -218,7 +218,7 @@ public partial class SteamApp : ViewModelBase
             // refresh so that we can download a header
             SteamworksManager.LoadStoreInfo(this);
 
-            await Task.CompletedTask;
+            await Task.CompletedTask.ConfigureAwait(false);
         }
         catch (Exception e)
         {

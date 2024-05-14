@@ -17,7 +17,7 @@ namespace SAM.Core
 
             var pts = new ParameterizedThreadStart(ThreadStartingPoint);
 
-            _thread = new Thread(pts);
+            _thread = new (pts);
             _thread.SetApartmentState(ApartmentState.STA);
             _thread.IsBackground = true;
             _thread.Start(status);

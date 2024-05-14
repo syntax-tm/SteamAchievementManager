@@ -12,7 +12,7 @@ namespace SAM.Core
     public static class WebManager
     {
         private static readonly ILog log = LogManager.GetLogger(nameof(WebManager));
-        private static readonly HttpClient _wc = new ();
+        private static readonly HttpClient client = new ();
 
         public static byte[] DownloadBytes(string url, ICacheKey cacheKey = null)
         {
@@ -25,9 +25,9 @@ namespace SAM.Core
                     if (loadedFromCache) return cachedBytes;
                 }
 
-                var bytes = _wc.GetByteArrayAsync(url).Result;
+                var bytes = AsyncHelper.RunSync(() => client.GetByteArrayAsync(url));
                 
-                // if we were passed a key, cache the text so we can load it from cache next time
+                // if we were passed a key, cache the text so that we can load it from cache next time
                 if (cacheKey != null)
                 {
                     CacheManager.CacheBytes(cacheKey, bytes);
@@ -35,19 +35,61 @@ namespace SAM.Core
 
                 return bytes;
             }
-            catch (WebException we)
+            catch (HttpRequestException hre)
             {
-                switch (we.Response)
+                var message = $"Failed to download '{url}' ({hre.StatusCode:G}).";
+
+                if (hre.StatusCode is not (HttpStatusCode.NotFound or HttpStatusCode.TooManyRequests))
                 {
-                    case HttpWebResponse {StatusCode: HttpStatusCode.NotFound}:
-                        log.Error($"Failed to download '{url}' ({HttpStatusCode.NotFound}).", we);
-                        return null;
-                    case HttpWebResponse {StatusCode: HttpStatusCode.TooManyRequests}:
-                        log.Error($"Failed to download '{url}' ({HttpStatusCode.TooManyRequests}).", we);
-                        return null;
-                    default:
-                        throw;
+                    throw new SAMException(message, hre);
                 }
+
+                log.Warn(message, hre);
+
+                return null;
+
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to download '{url}'. {e.Message}";
+                throw new (message, e);
+            }
+        }
+
+        public static async Task<byte[]> DownloadBytesAsync(string url, ICacheKey cacheKey = null)
+        {
+            try
+            {
+                // if we were passed a key, try and load the text from cache
+                if (cacheKey != null)
+                {
+                    var loadedFromCache = CacheManager.TryGetBytes(cacheKey, out var cachedBytes);
+                    if (loadedFromCache) return cachedBytes;
+                }
+
+                var bytes = await client.GetByteArrayAsync(url);
+                
+                // if we were passed a key, cache the text so that we can load it from cache next time
+                if (cacheKey != null)
+                {
+                    await CacheManager.CacheBytesAsync(cacheKey, bytes);
+                }
+
+                return bytes;
+            }
+            catch (HttpRequestException hre)
+            {
+                var message = $"Failed to download '{url}' ({hre.StatusCode:G}).";
+
+                if (hre.StatusCode is not (HttpStatusCode.NotFound or HttpStatusCode.TooManyRequests))
+                {
+                    throw new SAMException(message, hre);
+                }
+
+                log.Warn(message, hre);
+
+                return null;
+
             }
             catch (Exception e)
             {
@@ -67,9 +109,9 @@ namespace SAM.Core
                     if (loadedFromCache) return cachedImage;
                 }
 
-                var data = _wc.GetStringAsync(url).Result;
-                
-                // if we were passed a key, cache the text so we can load it from cache next time
+                var data = AsyncHelper.RunSync(() => client.GetStringAsync(url));
+
+                // if we were passed a key, cache the text so that we can load it from cache next time
                 if (cacheKey != null)
                 {
                     CacheManager.CacheText(cacheKey, data);
@@ -77,19 +119,61 @@ namespace SAM.Core
 
                 return data;
             }
-            catch (WebException we)
+            catch (HttpRequestException hre)
             {
-                switch (we.Response)
+                var message = $"Failed to download '{url}' ({hre.StatusCode:G}).";
+
+                if (hre.StatusCode is not (HttpStatusCode.NotFound or HttpStatusCode.TooManyRequests))
                 {
-                    case HttpWebResponse {StatusCode: HttpStatusCode.NotFound}:
-                        log.Error($"Failed to download '{url}' ({HttpStatusCode.NotFound}).", we);
-                        return null;
-                    case HttpWebResponse {StatusCode: HttpStatusCode.TooManyRequests}:
-                        log.Error($"Failed to download '{url}' ({HttpStatusCode.TooManyRequests}).", we);
-                        return null;
-                    default:
-                        throw;
+                    throw new SAMException(message, hre);
                 }
+
+                log.Warn(message, hre);
+
+                return null;
+
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to download '{url}'. {e.Message}";
+                throw new (message, e);
+            }
+        }
+
+        public static async Task<string> DownloadStringAsync(string url, ICacheKey cacheKey = null)
+        {
+            try
+            {
+                // if we were passed a key, try and load the text from cache
+                if (cacheKey != null)
+                {
+                    var loadedFromCache = CacheManager.TryGetTextFile(cacheKey, out var cachedImage);
+                    if (loadedFromCache) return cachedImage;
+                }
+
+                var data = await client.GetStringAsync(url);
+
+                // if we were passed a key, cache the text so that we can load it from cache next time
+                if (cacheKey != null)
+                {
+                    await CacheManager.CacheTextAsync(cacheKey, data);
+                }
+
+                return data;
+            }
+            catch (HttpRequestException hre)
+            {
+                var message = $"Failed to download '{url}' ({hre.StatusCode:G}).";
+
+                if (hre.StatusCode is not (HttpStatusCode.NotFound or HttpStatusCode.TooManyRequests))
+                {
+                    throw new SAMException(message, hre);
+                }
+
+                log.Warn(message, hre);
+
+                return null;
+
             }
             catch (Exception e)
             {
@@ -111,7 +195,7 @@ namespace SAM.Core
                     if (loadedFromCache) return cachedImage;
                 }
 
-                var data = await _wc.GetStreamAsync(imageUrl);
+                var data = await client.GetStreamAsync(imageUrl);
 
                 var image = Image.FromStream(data);
                 
@@ -123,19 +207,19 @@ namespace SAM.Core
 
                 return image;
             }
-            catch (WebException we)
+            catch (HttpRequestException hre)
             {
-                switch (we.Response)
+                var message = $"Failed to download image '{imageUrl}' ({hre.StatusCode:G}).";
+
+                if (hre.StatusCode is not (HttpStatusCode.NotFound or HttpStatusCode.TooManyRequests))
                 {
-                    case HttpWebResponse {StatusCode: HttpStatusCode.NotFound}:
-                        log.Error($"Failed to download image '{imageUrl}' ({HttpStatusCode.NotFound}).", we);
-                        return null;
-                    case HttpWebResponse {StatusCode: HttpStatusCode.TooManyRequests}:
-                        log.Error($"Failed to download image '{imageUrl}' ({HttpStatusCode.TooManyRequests}).", we);
-                        return null;
-                    default:
-                        throw;
+                    throw new SAMException(message, hre);
                 }
+
+                log.Warn(message, hre);
+
+                return null;
+
             }
             catch (Exception e)
             {

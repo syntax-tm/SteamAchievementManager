@@ -17,7 +17,7 @@ namespace SAM.Core
 
         private static bool _isInitialized;
 
-        private static List<SteamCountry> _countries;
+        private static IReadOnlyList<SteamCountry> _countries;
 
         public static string GetShortLocation(string original)
         {

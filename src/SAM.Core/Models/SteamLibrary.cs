@@ -11,6 +11,7 @@ using DevExpress.Mvvm;
 using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.API;
+using SAM.Core.Extensions;
 using SAM.Core.Messages;
 using SAM.Core.Storage;
 
@@ -29,9 +30,9 @@ namespace SAM.Core
         private AutoResetEvent _resetEvent;
 
         private static readonly object _lock = new ();
-        private readonly List<SupportedApp> _supportedGames;
+        private readonly IDictionary<uint, SupportedApp> _supportedGames;
         private Queue<SupportedApp> _refreshQueue;
-        private List<SupportedApp> _addedGames;
+        private IDictionary<uint, SupportedApp> _addedGames;
         
         [GenerateProperty] private int _queueCount;
         [GenerateProperty] private int _completedCount;
@@ -72,21 +73,23 @@ namespace SAM.Core
             _libraryWorker.RunWorkerCompleted += LibraryWorkerOnRunWorkerCompleted;
         }
 
-        private void OnRequestMessage(RequestMessage message)
+        private void OnRequestMessage(RequestMessage request)
         {
             try
             {
-                if (message == null) return;
-                if (message.EntityType != EntityType.Library) return;
+                if (request == null) return;
+                if (request.EntityType != EntityType.Library) return;
 
                 // if we received a refresh request refresh the counts
-                if (message.RequestType == RequestType.Refresh)
+                if (request.RequestType == RequestType.Refresh)
                 {
                     RefreshCounts();
                 }
             }
             catch (Exception e)
             {
+                var message = $"An error occurred handling the {nameof(RequestMessage)} for {request}. {e.Message}";
+
                 Console.WriteLine(e);
                 throw;
             }
@@ -96,8 +99,8 @@ namespace SAM.Core
         {
             _resetEvent ??= new (false);
 
-            _refreshQueue = new (_supportedGames);
-            _addedGames = [];
+            _refreshQueue = new (_supportedGames.Values);
+            _addedGames = new Dictionary<uint, SupportedApp>();
 
             Items.Clear();
 
@@ -183,7 +186,7 @@ namespace SAM.Core
         {
             RefreshCounts();
 
-            Messenger.Default.Send(new ActionMessage(EntityType.Library, ActionType.Refreshed));
+            Messenger.Default.SendAction(ActionMessage.LibraryRefreshed);
 
             IsLoading = false;
         }
@@ -196,7 +199,7 @@ namespace SAM.Core
 
                 // TODO: allow users to configure filters for the types
                 if (type is not GameInfoType.Normal and not GameInfoType.Mod) return false;
-                if (_addedGames.Contains(app)) return false;
+                if (_addedGames.ContainsKey(app.Id)) return false;
 
                 if (!SteamClientManager.Default.OwnsGame(app.Id)) return false;
 
@@ -204,7 +207,7 @@ namespace SAM.Core
 
                 Items.Add(steamGame);
 
-                _addedGames.Add(app);
+                _addedGames[app.Id] = app;
 
                 return true;
             }
@@ -267,7 +270,7 @@ namespace SAM.Core
                         log.Warn($"Failed to add app '{appInfo.Id}' from saved library.");
                     }
 
-                    _ = _supportedGames.Remove(appInfo);
+                    _ = _supportedGames.Remove(app.Id);
                 }
 
                 RefreshCounts();

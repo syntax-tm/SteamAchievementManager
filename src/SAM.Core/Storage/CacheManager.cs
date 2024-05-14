@@ -20,6 +20,15 @@ namespace SAM.Core.Storage
             StorageManager.SaveBytes(filePath, bytes, overwrite);
         }
 
+        public static Task CacheBytesAsync(ICacheKey key, byte[] bytes, bool overwrite = true)
+        {
+            var filePath = key?.GetFullPath();
+            
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+            return StorageManager.SaveBytesAsync(filePath, bytes, overwrite);
+        }
+
         public static void CacheObject(ICacheKey key, object target, bool overwrite = true)
         {
             var filePath = key?.GetFullPath();

@@ -22,16 +22,23 @@
     </UserControl.Resources>
 
     <Grid>
-        <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView}" HorizontalContentAlignment="Center">
+        <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView, Mode=OneWay}" HorizontalContentAlignment="Center" CacheLengthUnit="Pixel">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True" 
                                               VirtualizationMode="Recycling" IsVirtualizing="True" />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
+            <ui:VirtualizingItemsControl.ItemContainerStyle>
+                <Style TargetType="{x:Type ContentPresenter}">
+                    <Setter Property="Width" Value="300" />
+                    <Setter Property="Height" Value="143" />
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </ui:VirtualizingItemsControl.ItemContainerStyle>
             <ui:VirtualizingItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type sam:SteamApp}">
-                    <Grid Margin="5" Width="300" Height="143">
+                    <Grid>
                         <ui:Button x:Name="PART_Button" Padding="0">
                             <ui:Button.Resources>
                                 <sam:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
@@ -197,7 +204,7 @@
                                                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
                                                     <Setter Property="Opacity" Value="0.75" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding ContextMenu.IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
+                                                <DataTrigger Binding="{Binding ContextMenu.IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}, TargetNullValue=False, FallbackValue=False}" Value="True">
                                                     <Setter Property="Opacity" Value="0.25" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsHidden}" Value="True">

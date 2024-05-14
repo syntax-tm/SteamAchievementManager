@@ -43,9 +43,9 @@ namespace SAM.Core
                 var fileName = Path.GetFileName(url);
                 var cacheKey = CacheKeys.CreateAppImageCacheKey(id, fileName);
                 
-                var img = Task.Run(() => WebManager.DownloadImageAsync(url, cacheKey));
+                var img = AsyncHelper.RunSync(() => WebManager.DownloadImageAsync(url, cacheKey));
                 
-                return img.Result;
+                return img;
             }
             catch (Exception e)
             {

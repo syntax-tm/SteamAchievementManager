@@ -5,6 +5,11 @@ namespace SAM.Core.Extensions;
 
 public static class MessengerExtensions
 {
+    public static void SendAction(this IMessenger messenger, ActionMessage action)
+    {
+        messenger.Send(action);
+    }
+
     public static void SendAction(this IMessenger messenger, EntityType entityType, ActionType action)
     {
         messenger.Send(new ActionMessage(entityType, action));
@@ -14,7 +19,12 @@ public static class MessengerExtensions
     {
         messenger.Send(new ActionMessage<T>(context, entityType, action));
     }
-        
+
+    public static void SendRequest(this IMessenger messenger, RequestMessage request)
+    {
+        messenger.Send(request);
+    }
+
     public static void SendRequest(this IMessenger messenger, EntityType entityType, RequestType request)
     {
         messenger.Send(new RequestMessage(entityType, request));

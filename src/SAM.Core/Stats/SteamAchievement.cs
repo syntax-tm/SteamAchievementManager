@@ -144,8 +144,17 @@ namespace SAM.Core.Stats
 
         private void DownloadIcons()
         {
-            LockedImage = SteamCdnHelper.DownloadImage(GameId, SteamImageType.AchievementIcon, IconLockedName);
-            NormalImage = SteamCdnHelper.DownloadImage(GameId, SteamImageType.AchievementIcon, IconNormalName);
+            // for some reason the image is not actually required so only download the image if one is set
+            if (!string.IsNullOrEmpty(IconLockedName))
+            {
+                LockedImage = SteamCdnHelper.DownloadImage(GameId, SteamImageType.AchievementIcon, IconLockedName);
+            }
+            
+            // only download the image if one is set
+            if (!string.IsNullOrEmpty(IconNormalName))
+            {
+                NormalImage = SteamCdnHelper.DownloadImage(GameId, SteamImageType.AchievementIcon, IconNormalName);
+            }
 
             RefreshImage();
         }

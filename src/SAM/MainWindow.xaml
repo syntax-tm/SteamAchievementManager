@@ -11,8 +11,7 @@
                  mc:Ignorable="d"
                  d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
                  ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-                 WindowBackdropType="Mica"
-                 ShowActivated="True">
+                 WindowBackdropType="Mica">
 
     <ui:FluentWindow.Resources>
         <ResourceDictionary>
@@ -491,7 +490,7 @@
                         <Separator Margin="0,4,4,4" />
                         <ui:AutoSuggestBox Text="{Binding HomeVm.FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                                            PlaceholderText="Search..." BorderBrush="Transparent"
-                                           Icon="Search24" Margin="5" FontSize="13" Padding="0"
+                                           Icon="Search24" Margin="5,3" FontSize="13" Padding="3,0" Height="30"
                                            OriginalItemsSource="{Binding HomeVm.Suggestions, Mode=OneWay}"
                                            Width="400">
                             <ui:AutoSuggestBox.Style>

@@ -10,7 +10,13 @@ namespace SAM.Core.Settings
     {
         private static UserSettings _instance;
         private static readonly object syncLock = new ();
-        
+
+        public bool IsOfflineMode
+        {
+            get => GetProperty(() => IsOfflineMode);
+            set => SetProperty(() => IsOfflineMode, value);
+        }
+
         public ManagerSettings ManagerSettings
         {
             get => GetProperty(() => ManagerSettings);

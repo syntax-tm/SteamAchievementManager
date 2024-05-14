@@ -47,6 +47,14 @@ namespace SAM.Core.ViewModels
 
             Messenger.Default.Register<ActionMessage>(this, OnActionMessage);
         }
+
+        [GenerateCommand]
+        public void ManageApp()
+        {
+            if (SelectedItem == null) return;
+
+            SAMHelper.OpenManager(SelectedItem.Id);
+        }
         
         [GenerateCommand]
         public void ToggleShowHidden()

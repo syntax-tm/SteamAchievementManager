@@ -1,0 +1,26 @@
+<Project>
+    <PropertyGroup>
+        <FrameworkVersion>net8.0</FrameworkVersion>
+        <TargetFramework>$(FrameworkVersion)-windows</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <Platforms>x86</Platforms>
+        <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+
+        <!-- Build Settings -->
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
+        <!-- <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath> -->
+
+        <!-- Publish Settings -->
+        <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+        <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+
+        <!-- NuGet Properties -->
+        <PackageProjectUrl>https://github.com/syntax-tm/SteamAchievementManager</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/syntax-tm/SteamAchievementManager</RepositoryUrl>
+    </PropertyGroup>
+</Project>

@@ -1,36 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <LangVersion>preview</LangVersion>
-    <Platforms>x86</Platforms>
-    <Title>SAM API</Title>
-    <Description>Steamworks wrapper used by the Steam Achievement Manager.</Description>
+    <Title>Steam Achievement Manager API</Title>
+    <Description>Steamworks API wrapper for the Steam Achievement Manager</Description>
     <PackageProjectUrl>https://github.com/syntax-tm/SteamAchievementManager</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/syntax-tm/SteamAchievementManager</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>sam;steam;steamworks;games;achievement;manager;valve;api;stats;</PackageTags>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
-    <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
-    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <DefineConstants>TRACE;BUILD_X86;DEBUG</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-    <DefineConstants>TRACE;BUILD_X86</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <RestoreLockedMode>true</RestoreLockedMode>
+    <PackageTags>sam;steam;steamworks;games;achievement;manager;valve;api;stats;wrapper;library</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -40,14 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-    <PackageReference Include="log4net" Version="2.0.17" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
       <PrivateAssets>all</PrivateAssets>
       <!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,19 +1,22 @@
 ﻿<UserControl x:Class="SAM.Views.LibraryDataGridView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:sam="urn:sam"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
-        <DataGrid ItemsSource="{Binding Library.Items, Mode=OneWay}" IsReadOnly="True"
-                  d:DesignSource="{d:DesignInstance Type={x:Type sam:SteamApp}, CreateList=True}"
-                  RowStyle="{StaticResource DataGridRowLoadingStyle}"
-                  SelectionMode="Single" SelectionUnit="FullRow" SelectedItem="{Binding SelectedItem}">
+        <ui:DataGrid ItemsSource="{Binding ItemsView, Mode=OneWay}" IsReadOnly="True"
+                     d:DesignSource="{d:DesignInstance Type={x:Type sam:SteamApp}}"
+                     d:DataContext="{d:DesignInstance Type={x:Type sam:SteamApp}}"
+                     RowStyle="{StaticResource DataGridRowLoadingStyle}"
+                     SelectionMode="Single" SelectionUnit="FullRow" SelectedItem="{Binding SelectedItem}"
+                     AutoGenerateColumns="False">
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
             </dxmvvm:Interaction.Behaviors>
@@ -35,50 +38,54 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.RowStyle>-->
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="" Width="SizeToCells" IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Border BorderThickness="0,0,1,0" BorderBrush="White" Margin="-1">
-                                <Grid Width="32" Height="32">
-                                    <Image Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}"
-                                           Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisConverter}}" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                    <DataGridTemplateColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
-                            <Setter Property="BorderThickness" Value="0,0,1,1" />
-                        </Style>
-                    </DataGridTemplateColumn.HeaderStyle>
-                    <DataGridTemplateColumn.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Setter Property="BorderThickness" Value="1" />
-                            <Setter Property="BorderBrush" Value="White" />
-                        </Style>
-                    </DataGridTemplateColumn.CellStyle>
-                </DataGridTemplateColumn>
+            <!--<DataGridTemplateColumn Header="" Width="SizeToCells" IsReadOnly="True">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                        <Border BorderThickness="0,0,1,0" BorderBrush="White" Margin="-1">
+                            <Grid Width="32" Height="32">
+                                <Image Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}"
+                                       Visibility="{Binding IsLoading, Converter={StaticResource InverseBoolToVisConverter}}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+                <DataGridTemplateColumn.HeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
+                        <Setter Property="BorderThickness" Value="0,0,1,1" />
+                    </Style>
+                </DataGridTemplateColumn.HeaderStyle>
+                <DataGridTemplateColumn.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="White" />
+                    </Style>
+                </DataGridTemplateColumn.CellStyle>
+            </DataGridTemplateColumn>-->
+            <ui:DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" SortDirection="Ascending" CanUserSort="True"
                                     Width="60"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" CanUserSort="True" Width="*"
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" CanUserSort="True"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <DataGridTextColumn Header="Type" Binding="{Binding GameInfoType, Converter={StaticResource EnumToStringConverter}}"
                                     CanUserSort="True" Width="100" CellStyle="{StaticResource CenterAlignedCellStyle}"
                                     HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <!--<DataGridComboBoxColumn Header="Type" TextBinding="{Binding GameInfoType, Converter={StaticResource EnumToStringConverter}}" CanUserSort="True"
-                                    Width="100" ItemsSource="{Binding Source={StaticResource GameInfoTypes}}"
-                                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
-                                    CellStyle="{StaticResource CenteredCellStyle}" />-->
+                    Width="100" ItemsSource="{Binding Source={StaticResource GameInfoTypes}}"
+                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
+                    CellStyle="{StaticResource CenteredCellStyle}" />-->
+                <DataGridTextColumn Header="Release Date" Binding="{Binding StoreInfo.ReleaseDate}" CanUserSort="True" Width="150"
+                                    CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding StoreInfo.ShortDescription}" CanUserSort="True" Width="150"
+                                    CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <DataGridTextColumn Header="Developer" Binding="{Binding Developer}" CanUserSort="True" Width="150"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher}" CanUserSort="True" Width="150"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <DataGridTextColumn Header="Achievements" Binding="{Binding StoreInfo.Achievements.Total}" CanUserSort="True" Width="100"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}">
-                    
+
                     <DataGridTextColumn.HeaderStyle>
                         <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
                             <Setter Property="Template">
@@ -106,11 +113,13 @@
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="SortDirection" Value="Ascending">
-                                                <Setter TargetName="SortArrow" Property="Data" Value="F1 M 34,57L 42,57L 42,32.25L 52,42.25L 52,31.75L 38,17.75L 24,31.75L 24,42.25L 34,32.25L 34,57 Z " />
+                                                <Setter TargetName="SortArrow" Property="Data"
+                                                        Value="F1 M 34,57L 42,57L 42,32.25L 52,42.25L 52,31.75L 38,17.75L 24,31.75L 24,42.25L 34,32.25L 34,57 Z " />
                                                 <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
                                             </Trigger>
                                             <Trigger Property="SortDirection" Value="Descending">
-                                                <Setter TargetName="SortArrow" Property="Data" Value="F1 M 42,19.0002L 34,19.0002L 34,43.7502L 24,33.7502L 24,44.2502L 38,58.2502L 52,44.2502L 52,33.7502L 42,43.7502L 42,19.0002 Z " />
+                                                <Setter TargetName="SortArrow" Property="Data"
+                                                        Value="F1 M 42,19.0002L 34,19.0002L 34,43.7502L 24,33.7502L 24,44.2502L 38,58.2502L 52,44.2502L 52,33.7502L 42,43.7502L 42,19.0002 Z " />
                                                 <Setter TargetName="SortArrow" Property="Margin" Value="0 0 8 0" />
                                                 <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
                                             </Trigger>
@@ -121,7 +130,7 @@
                         </Style>
                     </DataGridTextColumn.HeaderStyle>
                 </DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+            </ui:DataGrid.Columns>
+        </ui:DataGrid>
     </Grid>
 </UserControl>

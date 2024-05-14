@@ -9,7 +9,9 @@ public class RequestMessage(EntityType entityType, RequestType requestType)
 
     public EntityType EntityType { get; } = entityType;
     public RequestType RequestType { get; } = requestType;
-    
+
+    public override string ToString() => $"{EntityType} {RequestType}";
+
     protected virtual bool Equals(RequestMessage other)
     {
         return EntityType == other.EntityType && RequestType == other.RequestType;
@@ -48,6 +50,8 @@ public class RequestMessage<T>(T context, EntityType entityType, RequestType req
 {
     public T Context { get; } = context;
     
+    public override string ToString() => $"{EntityType} {Context} {RequestType}";
+
     protected virtual bool Equals(RequestMessage<T> other)
     {
         return EntityType == other.EntityType && RequestType == other.RequestType;

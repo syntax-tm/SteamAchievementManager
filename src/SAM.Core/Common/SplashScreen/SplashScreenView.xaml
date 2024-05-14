@@ -4,19 +4,17 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-                 xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
                  xmlns:local="clr-namespace:SAM.Core"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:views="clr-namespace:SAM.Core.Views"
                  mc:Ignorable="d"
                  d:DesignHeight="450" d:DesignWidth="800"
                  d:DataContext="{d:DesignInstance Type={x:Type local:SplashScreenViewModel}, IsDesignTimeCreatable=False}"
                  Width="500" Height="340"
                  ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
-                 WindowStyle="None" WindowBackdropType="Mica"
-                 ShowActivated="True" ShowInTaskbar="True" WindowStartupLocation="CenterScreen"
+                 WindowBackdropType="Mica" WindowStartupLocation="CenterScreen"
                  FontFamily="Segoe UI Light"
-                 Foreground="{DynamicResource TextFillColorLightPrimaryBrush}"
-                 Icon="{svgc:SvgImage Source=/Styles/Images/sam_icon_logo.svg}">
+                 Foreground="{DynamicResource TextFillColorLightPrimaryBrush}">
 
     <ui:FluentWindow.Resources>
         <ResourceDictionary>
@@ -31,11 +29,11 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-            <Style TargetType="{x:Type svgc:SvgViewbox}">
-                <Setter Property="Opacity" Value="0.1" />
+            <Style TargetType="{x:Type views:SteamSymbol}">
+                <Setter Property="Opacity" Value="0.2" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:FluentWindow}}, Path=IsMouseOver}" Value="True">
-                        <Setter Property="Opacity" Value="0.12" />
+                        <Setter Property="Opacity" Value="0.24" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -47,8 +45,8 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <svgc:SvgViewbox Source="/Styles/Images/steam-symbol.svg" Stretch="Uniform" HorizontalAlignment="Left" />
-        <!--<ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" ShowHelp="False" Opacity="0.5" />-->
+        <views:SteamSymbol HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="{StaticResource AccentBrush}" Margin="0,0,20,0" />
+        <ui:TitleBar VerticalAlignment="Top" CanMaximize="False" ShowMaximize="False" ShowHelp="False" Opacity="0.5" />
         <StackPanel Orientation="Vertical" VerticalAlignment="Bottom">
             <StackPanel Orientation="Vertical" VerticalAlignment="Bottom" Margin="0,0,8,25">
                 <TextBlock Text="Steam Achievement Manager" FontSize="26" Margin="2" HorizontalAlignment="Right"

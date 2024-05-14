@@ -14,9 +14,9 @@ public partial class MainWindowViewModelBase
     [GenerateProperty] private string subTitle;
     [GenerateProperty] private WindowSettings config;
 
-    public MainWindowViewModelBase()
+    protected MainWindowViewModelBase()
     {
-        ApplicationThemeManager.Apply(ApplicationTheme.Dark);
+
     }
 
     [GenerateCommand]

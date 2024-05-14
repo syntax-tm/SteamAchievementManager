@@ -1,5 +1,16 @@
 ## 0.6.0
 
+### 0.6.0-beta2
+
+#### General
+
+- Consolidated project properties and references to `Directory.Build.props` and `Directory.Build.targets`
+- **[BUG]** Fixed splash screen title bar crashing
+
+#### SAM.Manager
+
+- **[BUG]** Fixed crash caused by achievements missing a lock or unlocked image
+
 ### 0.6.0-beta
 
 #### General
@@ -28,6 +39,7 @@
 
 - Upgraded to .NET 8
 - Updated [WPF-UI](https://github.com/lepoco/wpfui) to version 3.0.4
+- Updated logging
 
 #### SAM
 
@@ -48,6 +60,7 @@
 - **[BUG]** Fixed error in debug output when launching a web page
 - **[BUG]** Fixed hidden apps status bar item count not updating
 - **[BUG]** Fixed library search textbox alignment
+- **[BUG]** Removed library caching
 
 #### SAM.Manager
 
@@ -59,11 +72,6 @@
   - This should only be visible in the output when debugging and can be ignored
 - Startup SlpashScreen's TitleBar was removed
   - During startup, you will not be able to move the SplashScreen or close it using the Window buttons
-
-### 0.6.0-alpha
-
-- Updated logging
-- **[BUG]** Removed library caching
 
 ## 0.5.0
 

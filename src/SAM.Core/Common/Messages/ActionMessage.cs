@@ -7,10 +7,13 @@ public class ActionMessage(EntityType entityType, ActionType actionType)
 {
     public static ActionMessage AppHidden { get; } = new (EntityType.Statistic, ActionType.Changed);
     public static ActionMessage AppFavorited { get; } = new (EntityType.SteamApp, ActionType.Favorited);
+    public static ActionMessage LibraryRefreshed { get; } = new (EntityType.Library, ActionType.Refreshed);
     public static ActionMessage StatChanged { get; } = new (EntityType.Statistic, ActionType.Changed);
 
     public EntityType EntityType { get; } = entityType;
     public ActionType ActionType { get; } = actionType;
+    
+    public override string ToString() => $"{EntityType} {ActionType}";
 
     protected virtual bool Equals(ActionMessage other)
     {
@@ -49,6 +52,8 @@ public class ActionMessage(EntityType entityType, ActionType actionType)
 public class ActionMessage<T>(T context, EntityType entityType, ActionType actionType) : ActionMessage(entityType, actionType)
 {
     public T Context { get; } = context;
+    
+    public override string ToString() => $"{EntityType} {Context} {ActionType}";
 
     public override int GetHashCode()
     {
