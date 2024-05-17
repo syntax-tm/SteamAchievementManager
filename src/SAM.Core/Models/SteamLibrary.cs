@@ -52,7 +52,7 @@ namespace SAM.Core
 
         public SteamLibrary()
         {
-            _supportedGames = SAMLibraryHelper.GetSupportedGames();
+            _supportedGames = SAMLibraryHelper.Apps;
 
             SupportedGamesCount = _supportedGames.Count;
             

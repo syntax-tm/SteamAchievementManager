@@ -20,12 +20,17 @@ namespace SAM.Core.Storage
 
         public string Key { get; protected set; }
         public string FilePath { get; protected set; }
+        /// <summary>
+        /// The maximum number of days the cached item is valid for. By <see langword="default"/> (<see langword="null"/>) the cached item does not expire.
+        /// </summary>
+        public uint? DaysValid { get; internal set; }
+        public bool HasExpiration => DaysValid.HasValue;
 
         protected CacheKey()
         {
 
         }
-        
+
         public CacheKey(object key, CacheKeyType type)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -36,6 +41,22 @@ namespace SAM.Core.Storage
             {
                 throw new NotSupportedException(@$"{CacheKeyType.App} cache keys require an additional id parameter.");
             }
+
+            FilePath = type.GetDescription();
+        }
+        
+        public CacheKey(object key, CacheKeyType type, uint daysValid)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
+            SetKey(key);
+            
+            if (type == CacheKeyType.App)
+            {
+                throw new NotSupportedException(@$"{CacheKeyType.App} cache keys require an additional id parameter.");
+            }
+
+            DaysValid = daysValid;
 
             FilePath = type.GetDescription();
         }
@@ -63,7 +84,33 @@ namespace SAM.Core.Storage
                 path.Add(subType.GetDescription());
             }
 
-            FilePath = string.Join('\\', path);
+            FilePath = string.Join(Path.DirectorySeparatorChar, path);
+        }
+
+        public virtual string GetFullPath()
+        {
+            if (_fullPath != null) return _fullPath;
+
+            return _fullPath = Path.Combine(FilePath, Key);
+        }
+
+        public static bool IsExpired(CacheKey key, string fileName)
+        {
+            var fi = new FileInfo(fileName);
+
+            return IsExpired(key, fi);
+        }
+
+        public static bool IsExpired(CacheKey key, FileInfo fi)
+        {
+            // if there's no expiration, it's never expired
+            if (!key.HasExpiration) return false;
+
+            var cacheDate = fi.CreationTime;
+            var cacheLimit = key.DaysValid!.Value;
+            var expirationDate =cacheDate.AddDays(cacheLimit);
+
+            return DateTime.Now < expirationDate;
         }
 
         protected void SetKey(object key)
@@ -79,11 +126,5 @@ namespace SAM.Core.Storage
             Key = fileName;
         }
 
-        public virtual string GetFullPath()
-        {
-            if (_fullPath != null) return _fullPath;
-
-            return _fullPath = Path.Combine(FilePath, Key);
-        }
     }
 }

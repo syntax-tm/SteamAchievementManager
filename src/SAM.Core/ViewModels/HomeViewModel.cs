@@ -47,7 +47,7 @@ namespace SAM.Core.ViewModels
 
             Messenger.Default.Register<ActionMessage>(this, OnActionMessage);
         }
-
+        
         [GenerateCommand]
         public void ManageApp()
         {
@@ -71,12 +71,6 @@ namespace SAM.Core.ViewModels
             hidden.ForEach(a => a.ToggleVisibility());
 
             Messenger.Default.Send<RequestMessage>(new (EntityType.Library, RequestType.Refresh));
-        }
-        
-        [GenerateCommand]
-        public void Loaded()
-        {
-            log.Debug($"{nameof(HomeViewModel)} {nameof(Loaded)}");
         }
 
         [GenerateCommand]

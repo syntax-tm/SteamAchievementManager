@@ -1,10 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using CommandLine;
 using log4net;
+using SAM.API;
 using SAM.Core;
 using SAM.Core.Logging;
+using SAM.Core.ViewModels;
+using SAM.Manager;
+using SAM.ViewModels;
 
 namespace SAM;
 
@@ -37,16 +45,22 @@ public partial class App
 
             // handle any TaskScheduler exceptions
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-                
-            // create the default Client instance
-            SteamClientManager.Init(0);
+            
+            var helpWriter = new StringWriter();
+            var parser = new Parser(with =>
+            {
+                //ignore case for enum values
+                with.CaseInsensitiveEnumValues = true;
+                with.HelpWriter = helpWriter;
+            });
+            
+            //var options = parser.ParseArguments<SAMOptions>(args.Args)
+            //                    .WithParsed(HandleOptions)
+            //                    .WithNotParsed(errs => DisplayHelp(errs, helpWriter));
 
-            SteamLibraryManager.Init();
+            var options = parser.ParseArguments<SAMOptions>(args.Args);
 
-            MainWindow = new MainWindow();
-            MainWindow.Show();
-
-            ShutdownMode = ShutdownMode.OnMainWindowClose;
+            HandleOptions(options.Value);
         }
         catch (Exception e)
         {
@@ -57,10 +71,6 @@ public partial class App
             MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
             Environment.Exit(SAMExitCode.UnhandledException);
-        }
-        finally
-        {
-            SplashScreenHelper.Close();
         }
     }
 
@@ -79,7 +89,71 @@ public partial class App
             log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
         }
     }
-        
+
+    private void HandleOptions(SAMOptions options)
+    {
+        var appId = options.AppId;
+        var isApp = appId != 0;
+
+        if (isApp)
+        {
+            SteamClientManager.Init(appId);
+
+            if (!SteamClientManager.Default.OwnsGame(appId))
+            {
+                throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
+            }
+
+            var appInfo = new SteamApp(appId);
+            
+            SplashScreenHelper.SetStatus(appInfo.Name);
+
+            var gameVm = new SteamGameViewModel(appInfo);
+            gameVm.RefreshStats();
+
+            var mainWindowVm = new MainWindowViewModel(gameVm)
+            {
+                SubTitle = appInfo.Name
+            };
+
+            MainWindow = new MainWindow
+            {
+                DataContext = mainWindowVm
+            };
+        }
+        else
+        {
+            // create the default Client instance
+            SteamClientManager.Init(0);
+
+            SteamLibraryManager.Init();
+
+            MainWindow = new MainWindow
+            {
+                DataContext = new MainWindowViewModel()
+            };
+        }
+
+        MainWindow.Show();
+
+        ShutdownMode = ShutdownMode.OnMainWindowClose;
+    }
+
+    // ReSharper disable once InconsistentNaming
+    private void DisplayHelp(IEnumerable<Error> err, TextWriter helpWriter)
+    {
+        var errors = err.ToList();
+
+        if (errors.IsVersion() || errors.IsHelp())
+        {
+            Console.WriteLine(helpWriter.ToString());
+        }
+        else
+        {
+            Console.Error.WriteLine(helpWriter.ToString());
+        }
+    }
+
     private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)
     {
         try

@@ -18,6 +18,10 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
             StorageManager.SaveBytes(filePath, bytes, overwrite);
+
+            if (!key.HasExpiration) return;
+
+            StorageManager.UpdateCacheMetadata(filePath);
         }
 
         public static Task CacheBytesAsync(ICacheKey key, byte[] bytes, bool overwrite = true)
@@ -26,7 +30,13 @@ namespace SAM.Core.Storage
             
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
-            return StorageManager.SaveBytesAsync(filePath, bytes, overwrite);
+            var task = StorageManager.SaveBytesAsync(filePath, bytes, overwrite);
+
+            if (!key.HasExpiration) return task;
+
+            StorageManager.UpdateCacheMetadata(filePath);
+
+            return task;
         }
 
         public static void CacheObject(ICacheKey key, object target, bool overwrite = true)
@@ -38,6 +48,10 @@ namespace SAM.Core.Storage
             var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
 
             StorageManager.SaveText(filePath, targetObjectJson, overwrite);
+
+            if (!key.HasExpiration) return;
+
+            StorageManager.UpdateCacheMetadata(filePath);
         }
 
         public static Task CacheObjectAsync(ICacheKey key, object target, bool overwrite = true)
@@ -48,7 +62,13 @@ namespace SAM.Core.Storage
 
             var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
 
-            return StorageManager.SaveTextAsync(filePath, targetObjectJson, overwrite);
+            var task = StorageManager.SaveTextAsync(filePath, targetObjectJson, overwrite);
+
+            if (!key.HasExpiration) return task;
+
+            StorageManager.UpdateCacheMetadata(filePath);
+
+            return task;
         }
 
         public static void CacheText(ICacheKey key, string text, bool overwrite = true)
@@ -58,6 +78,10 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
             StorageManager.SaveText(filePath, text, overwrite);
+
+            if (!key.HasExpiration) return;
+
+            StorageManager.UpdateCacheMetadata(filePath);
         }
 
         public static Task CacheTextAsync(ICacheKey key, string text, bool overwrite = true)
@@ -66,7 +90,13 @@ namespace SAM.Core.Storage
             
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
-            return StorageManager.SaveTextAsync(filePath, text, overwrite);
+            var task = StorageManager.SaveTextAsync(filePath, text, overwrite);
+            
+            if (!key.HasExpiration) return task;
+
+            StorageManager.UpdateCacheMetadata(filePath);
+
+            return task;
         }
 
         public static void CacheImage(ICacheKey key, Image img, bool overwrite = true)
@@ -76,6 +106,10 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
             StorageManager.SaveImage(filePath, img, overwrite);
+
+            if (!key.HasExpiration) return;
+
+            StorageManager.UpdateCacheMetadata(filePath);
         }
 
         public static Task CacheImageAsync(ICacheKey key, Image img, bool overwrite = true)
@@ -84,7 +118,13 @@ namespace SAM.Core.Storage
             
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
-            return StorageManager.SaveImageAsync(filePath, img, overwrite);
+            var task = StorageManager.SaveImageAsync(filePath, img, overwrite);
+
+            if (!key.HasExpiration) return task;
+
+            StorageManager.UpdateCacheMetadata(filePath);
+
+            return task;
         }
         
         public static bool TryGetBytes(ICacheKey key, out byte[] bytes)
@@ -94,6 +134,12 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
             if (!StorageManager.FileExists(filePath))
+            {
+                bytes = null;
+                return false;
+            }
+            
+            if (IsExpired(key, filePath))
             {
                 bytes = null;
                 return false;
@@ -118,6 +164,12 @@ namespace SAM.Core.Storage
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
             if (!StorageManager.FileExists(filePath))
+            {
+                img = null;
+                return false;
+            }
+            
+            if (IsExpired(key, filePath))
             {
                 img = null;
                 return false;
@@ -155,6 +207,11 @@ namespace SAM.Core.Storage
             {
                 throw new FileNotFoundException(filePath);
             }
+            
+            if (IsExpired(key, filePath))
+            {
+                return null;
+            }
 
             return StorageManager.GetImageFileAsync(filePath);
         }
@@ -171,6 +228,11 @@ namespace SAM.Core.Storage
                 return false;
             }
             
+            if (IsExpired(key, filePath))
+            {
+                return false;
+            }
+
             try
             {
                 var fileText = StorageManager.GetTextFile(filePath);
@@ -197,6 +259,12 @@ namespace SAM.Core.Storage
                 return false;
             }
             
+            if (IsExpired(key, filePath))
+            {
+                cachedObject = default;
+                return false;
+            }
+
             try
             {
                 var fileText = StorageManager.GetTextFile(filePath);
@@ -224,6 +292,12 @@ namespace SAM.Core.Storage
                 fileText = null;
                 return false;
             }
+
+            if (IsExpired(key, filePath))
+            {
+                fileText = null;
+                return false;
+            }
             
             try
             {
@@ -245,8 +319,29 @@ namespace SAM.Core.Storage
             {
                 throw new FileNotFoundException(filePath);
             }
+            
+            if (IsExpired(key, filePath))
+            {
+                // TODO: this should probably not return null in the event the cache is expired
+                return null;
+            }
 
             return StorageManager.GetTextFile(filePath);
+        }
+
+        private static bool IsExpired(ICacheKey key, string fileName)
+        {
+            // if it doesn't have an expiration then it's never expired
+            if (!key.HasExpiration)
+            {
+                return false;
+            }
+
+            var dateCreated = StorageManager.GetDateCreated(fileName) ?? DateTime.Now;
+            var expireDate = dateCreated.AddDays(key.DaysValid!.Value);
+            var isValid = DateTime.Now < expireDate;
+
+            return !isValid;
         }
     }
 }

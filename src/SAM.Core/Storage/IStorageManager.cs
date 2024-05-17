@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Threading.Tasks;
 
 namespace SAM.Core.Storage;
@@ -21,4 +22,7 @@ public interface IStorageManager
     Task<byte[]> GetBytesAsync(string fileName);
     void CreateDirectory(string directory);
     bool FileExists(string fileName);
+    DateTime? GetDateCreated(string fileName);
+    DateTime? GetDateModified(string fileName);
+    void UpdateCacheMetadata(string fileName);
 }

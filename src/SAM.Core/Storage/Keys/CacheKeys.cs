@@ -2,11 +2,14 @@
 {
     public static class CacheKeys
     {
+        private const uint GAMES_XML_EXPIRATION = 2;
+
         public static ICacheKey AppList => new CacheKey(@"app_list.json", CacheKeyType.Data);
         public static ICacheKey CheckedAppList => new CacheKey(@"checked_apps.json", CacheKeyType.Default);
         public static ICacheKey UserTheme => new CacheKey(@"default", CacheKeyType.Theme);
         public static ICacheKey UserLibrary => new CacheKey(@"user_apps.json", CacheKeyType.Default);
         public static ICacheKey UserSettings => new CacheKey(@"user", CacheKeyType.Settings);
+        public static ICacheKey Games => new CacheKey(@"games.xml", CacheKeyType.Data, GAMES_XML_EXPIRATION);
 
         public static ICacheKey CreateAppCacheKey(uint appid)
         {

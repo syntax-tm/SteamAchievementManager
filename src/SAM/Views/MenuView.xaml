@@ -13,10 +13,60 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/menu/menu.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/menu/menuitem.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/MenuStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+
+    <StackPanel Orientation="Horizontal">
+        <Separator Margin="8,4,2,4" />
+        <Menu IsMainMenu="True" HorizontalAlignment="Left" FontSize="12">
+            <!--<Menu.Style>
+                <Style TargetType="{x:Type Menu}" BasedOn="{StaticResource DefaultMenuStyle}">
+                    <Setter Property="Opacity" Value="0.7" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Menu.Style>-->
+            <ui:MenuItem Header="File" Icon="{ui:SymbolIcon Document20}">
+                <ui:MenuItem Header="Export Library (.json)" Icon="{ui:SymbolIcon ArrowExport24}" Command="{Binding ExportAppsCommand}" />
+                <Separator />
+                <ui:MenuItem Header="Exit" Icon="{ui:SymbolIcon ArrowExit20}" Command="{Binding ExitCommand}" />
+            </ui:MenuItem>
+            <ui:MenuItem Header="View" Icon="{ui:SymbolIcon Grid24}">
+                <ui:MenuItem Header="Hidden Apps" IsEnabled="False" />
+                <ui:MenuItem Header="Show Hidden" IsCheckable="True" IsChecked="{Binding HomeVm.ShowHidden}" />
+                <Separator />
+                <ui:MenuItem Header="Favorite Apps" IsEnabled="False" />
+                <ui:MenuItem Header="Show Only Favorites" IsCheckable="True" IsChecked="{Binding HomeVm.FilterFavorites}" />
+            </ui:MenuItem>
+            <ui:MenuItem Header="Help" Icon="{ui:SymbolIcon Question24}">
+                <ui:MenuItem Header="Reset to Default" Icon="{ui:SymbolIcon ArrowReset24}" Command="{Binding ResetAllSettingsCommand}" />
+                <Separator />
+                <ui:MenuItem Header="View Logs" Icon="{ui:SymbolIcon History24}" Command="{Binding ViewLogsCommand}" />
+                <Separator />
+                <ui:MenuItem Header="Report Issue" Icon="{ui:SymbolIcon Bug24}" Command="{Binding ViewIssuesOnGitHubCommand}" />
+                <Separator />
+                <ui:MenuItem Header="About" IsEnabled="False" />
+                <ui:MenuItem Header="Version History" Icon="{ui:SymbolIcon DocumentBulletList24}"
+                             Command="{Binding ViewChangelogOnGitHubCommand}" />
+                <ui:MenuItem Header="View on GitHub" Icon="{ui:SymbolIcon Code24}"
+                             Command="{Binding ViewOnGitHubCommand}" />
+            </ui:MenuItem>
+        </Menu>
+        <Separator Margin="0,4,4,4" />
+        <ui:AutoSuggestBox Text="{Binding HomeVm.FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                           PlaceholderText="Search..." BorderBrush="Transparent"
+                           Icon="Search24" Margin="5,3" FontSize="13" Padding="3,0" Height="30"
+                           OriginalItemsSource="{Binding HomeVm.Suggestions, Mode=OneWay}"
+                           Width="400">
+            <ui:AutoSuggestBox.Style>
+                <Style TargetType="{x:Type ui:AutoSuggestBox}" BasedOn="{StaticResource BaseUiAutoSuggestBoxStyle}" />
+            </ui:AutoSuggestBox.Style>
+        </ui:AutoSuggestBox>
+    </StackPanel>
 
 </UserControl>

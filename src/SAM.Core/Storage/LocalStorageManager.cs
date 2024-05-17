@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using log4net;
 
 namespace SAM.Core.Storage
@@ -42,13 +45,10 @@ namespace SAM.Core.Storage
             var path = Path.Combine(ApplicationStoragePath, fileName);
 
             CreateFileDirectory(path);
-
-            if (!overwrite)
+            
+            if (!overwrite && File.Exists(path))
             {
-                if (File.Exists(path))
-                {
-                    throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-                }
+                throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
             }
 
             img.Save(path, img.RawFormat);
@@ -57,8 +57,19 @@ namespace SAM.Core.Storage
         public Task SaveImageAsync(string fileName, Image img, bool overwrite = true)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+            
+            var path = Path.Combine(ApplicationStoragePath, fileName);
 
-            return Task.Run(() => SaveImage(fileName, img, overwrite));
+            CreateFileDirectory(path);
+            
+            if (!overwrite && File.Exists(path))
+            {
+                throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
+            }
+
+            img.Save(path, img.RawFormat);
+
+            return Task.CompletedTask;
         }
 
         public void SaveText(string fileName, string text, bool overwrite = true)
@@ -68,13 +79,10 @@ namespace SAM.Core.Storage
             var path = Path.Combine(ApplicationStoragePath, fileName);
 
             CreateFileDirectory(path);
-
-            if (!overwrite)
+            
+            if (!overwrite && File.Exists(path))
             {
-                if (File.Exists(path))
-                {
-                    throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-                }
+                throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
             }
 
             File.WriteAllText(path, text);
@@ -87,13 +95,10 @@ namespace SAM.Core.Storage
             var path = Path.Combine(ApplicationStoragePath, fileName);
 
             CreateFileDirectory(path);
-
-            if (!overwrite)
+            
+            if (!overwrite && File.Exists(path))
             {
-                if (File.Exists(path))
-                {
-                    throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-                }
+                throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
             }
 
             await File.WriteAllTextAsync(path, text).ConfigureAwait(false);
@@ -106,13 +111,10 @@ namespace SAM.Core.Storage
             var path = Path.Combine(ApplicationStoragePath, fileName);
 
             CreateFileDirectory(path);
-
-            if (!overwrite)
+            
+            if (!overwrite && File.Exists(path))
             {
-                if (File.Exists(path))
-                {
-                    throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-                }
+                throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
             }
 
             File.WriteAllBytes(path, bytes);
@@ -126,12 +128,9 @@ namespace SAM.Core.Storage
 
             CreateFileDirectory(path);
 
-            if (!overwrite)
+            if (!overwrite && File.Exists(path))
             {
-                if (File.Exists(path))
-                {
-                    throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
-                }
+                throw new InvalidOperationException($"File '{fileName}' exists and {nameof(overwrite)} was not specified.");
             }
 
             return File.WriteAllBytesAsync(path, bytes);
@@ -161,6 +160,21 @@ namespace SAM.Core.Storage
             return img;
         }
         
+        public async Task<ImageSource> GetImageSourceFileAsync(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
+
+            var bytes = await GetBytesAsync(fileName);
+            using var ms = new MemoryStream(bytes);
+            var img = new BitmapImage();
+            img.BeginInit();
+            img.CacheOption = BitmapCacheOption.OnLoad;
+            img.StreamSource = ms;
+            img.EndInit();
+
+            return img;
+        }
+
         public string GetTextFile(string fileName)
         {
             if (string.IsNullOrEmpty(fileName)) throw new ArgumentNullException(fileName);
@@ -219,6 +233,8 @@ namespace SAM.Core.Storage
             
             var path = Directory.GetParent(fullPath);
             
+            Debug.Assert(path != null, $"{nameof(path)} is null");
+
             Directory.CreateDirectory(path.FullName);
         }
 
@@ -239,6 +255,33 @@ namespace SAM.Core.Storage
             var exists = File.Exists(path);
 
             return exists;
+        }
+
+        public DateTime? GetDateCreated(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (!FileExists(fileName)) return null;
+            
+            var fullName = Path.Combine(ApplicationStoragePath, fileName);
+            var fi = new FileInfo(fullName);
+
+            return fi.CreationTime;
+        }
+
+        public DateTime? GetDateModified(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (!FileExists(fileName)) return null;
+
+            var fullName = Path.Combine(ApplicationStoragePath, fileName);
+            var fi = new FileInfo(fullName);
+
+            return fi.LastWriteTime;
+        }
+
+        public void UpdateCacheMetadata(string _)
+        {
+            // local storage does not need to update this metadata as it's handled by the file system
         }
     }
 }

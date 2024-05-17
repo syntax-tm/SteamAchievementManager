@@ -1,7 +1,6 @@
 ﻿using System;
 using DevExpress.Mvvm.CodeGenerators;
 using SAM.Core.Behaviors;
-using Wpf.Ui.Appearance;
 
 namespace SAM.Core.ViewModels;
 

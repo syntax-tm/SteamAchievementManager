@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Windows;
 using DevExpress.Mvvm.CodeGenerators;
@@ -22,8 +21,10 @@ public partial class MainWindowViewModel : MainWindowViewModelBase
 {
     private readonly ILog log = LogManager.GetLogger(typeof(MainWindowViewModel));
 
+    [GenerateProperty] private ApplicationMode _mode;
     [GenerateProperty] private SteamUser _user;
     [GenerateProperty] private HomeViewModel _homeVm;
+    [GenerateProperty] private SteamGameViewModel gameVm;
 
     public MainWindowViewModel()
     {
@@ -31,6 +32,19 @@ public partial class MainWindowViewModel : MainWindowViewModelBase
         HomeVm = new ();
     }
     
+    public MainWindowViewModel(SteamGameViewModel gameVm)
+    {
+        GameVm = gameVm;
+
+        User = new ();
+    }
+    
+    [GenerateCommand]
+    public void Loaded()
+    {
+        log.Debug($"{nameof(HomeViewModel)} {nameof(Loaded)}");
+    }
+
     [GenerateCommand]
     public void ResetAllSettings()
     {
@@ -175,5 +189,10 @@ public partial class MainWindowViewModel : MainWindowViewModelBase
 
             log.Error(message, ex);
         }
+    }
+
+    private void OnGameVmChanged()
+    {
+        Mode = GameVm != null ? ApplicationMode.Manager : ApplicationMode.Default;
     }
 }

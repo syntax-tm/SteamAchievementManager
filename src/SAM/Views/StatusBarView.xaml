@@ -19,7 +19,7 @@
             </ResourceDictionary.MergedDictionaries>
             <dxmvvm:FormatStringConverter x:Key="PercentFormatConverter" FormatString="p2" />
             <Style x:Key="StatusBarItemStyle" TargetType="{x:Type StatusBarItem}">
-                <Setter Property="FontFamily" Value="{StaticResource FiraCode}" />
+                <!--<Setter Property="FontFamily" Value="{StaticResource FiraCode}" />-->
                 <Setter Property="FontWeight" Value="ExtraLight" />
                 <Setter Property="FontSize" Value="12" />
                 <Setter Property="Opacity" Value="0.7" />

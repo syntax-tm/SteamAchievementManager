@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <ApplicationIcon>sam_manager.ico</ApplicationIcon>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>

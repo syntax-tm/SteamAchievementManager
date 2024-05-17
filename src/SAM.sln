@@ -16,11 +16,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D6A8B0BA-447B-4E9B-8DDE-69B06AE3B3AB}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
 		..\CHANGELOG.md = ..\CHANGELOG.md
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SAM.API", "SAM.API\SAM.API.csproj", "{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Console", "SAM.Console\SAM.Console.csproj", "{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,6 +94,18 @@ Global
 		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|x64.Build.0 = Release|x86
 		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|x86.ActiveCfg = Release|x86
 		{4AF9AEBC-EE7C-4B5D-95B8-95603295D4BC}.Release|x86.Build.0 = Release|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Debug|Any CPU.Build.0 = Debug|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Debug|x64.ActiveCfg = Debug|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Debug|x64.Build.0 = Debug|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Debug|x86.ActiveCfg = Debug|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Debug|x86.Build.0 = Debug|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Release|Any CPU.ActiveCfg = Release|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Release|Any CPU.Build.0 = Release|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Release|x64.ActiveCfg = Release|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Release|x64.Build.0 = Release|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Release|x86.ActiveCfg = Release|x86
+		{7F8EBFAA-2F1D-4477-AB9E-B6D0FF1C39CB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

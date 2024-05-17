@@ -27,7 +27,7 @@ namespace SAM.Core
         // ReSharper disable once InconsistentNaming
         private static readonly HttpClient _client = new ();
         // ReSharper disable once InconsistentNaming
-        private static readonly ConcurrentQueue<SteamApp> _refreshQueue = new ();
+        private static readonly ConcurrentQueue<SteamApp> _refreshQueue = [ ];
         private static BackgroundWorker _refreshWorker;
 
         public static Dictionary<uint, string> GetAppList()

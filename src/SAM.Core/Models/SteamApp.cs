@@ -50,7 +50,7 @@ public partial class SteamApp : ViewModelBase
     [GenerateProperty] private bool _isMenuOpen;
     public bool StoreInfoLoaded => StoreInfo != null;
 
-    public SteamApp(uint id, GameInfoType type)
+    public SteamApp(uint id, GameInfoType type = GameInfoType.Normal)
     {
         Id = id;
         GameInfoType = type;
