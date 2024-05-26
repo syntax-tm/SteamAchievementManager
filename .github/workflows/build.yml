@@ -71,9 +71,9 @@ jobs:
       run: |
         $now = Get-Date
         $longTs = $now.ToString('yyyy-MM-dd')
-        $ts = $now.ToString('yyMMdd')
+        $ts = $now.ToString('yy.MM.dd')
         $buildType = "${{ inputs.is_release && 'release' || 'debug' }}"
-        $artifactName = $releaseType -eq 'release' ? "SAM_${{ inputs.version }}" : "SAM_$ts_${{ github.run_number }}_$buildType"
+        $artifactName = $releaseType -eq 'release' ? "SAM_${{ inputs.version }}" : [string]::Format('SAM_{0}_{1}.{2}', $buildType, $ts, '${{ github.run_number }}')
 
         Write-Host "Build Date    : " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$longTs ($ts)$($PSStyle.Reset)"
