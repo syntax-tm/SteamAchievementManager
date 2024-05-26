@@ -73,21 +73,16 @@ jobs:
         $longTs = $now.ToString('yyyy-MM-dd')
         $ts = $now.ToString('yyMMdd')
         $buildType = "${{ inputs.is_release && 'release' || 'debug' }}"
-        $artifactName = $releaseType -eq 'release' ? "SAM_${{ inputs.version }}" : "SAM_$ts-${{ github.run_id }}_$buildType"
+        $artifactName = $releaseType -eq 'release' ? "SAM_${{ inputs.version }}" : "SAM_$ts_${{ github.run_number }}_$buildType"
 
-        Write-Host ""
-        Write-Host "::group::Staged Artifacts"
-
-        Write-Host "Build Date   : " -NoNewLine
+        Write-Host "Build Date    : " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$longTs ($ts)$($PSStyle.Reset)"
 
-        Write-Host "Build Type   : " -NoNewLine
+        Write-Host "Build Type    : " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$buildType$($PSStyle.Reset)"
 
-        Write-Host "Artifact Name: " -NoNewLine
+        Write-Host "Artifact Name : " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$artifactName$($PSStyle.Reset)"
-
-        Write-Host "::endgroup::"
 
         echo "BUILD_DATE=$ts" >> $env:GITHUB_ENV
         echo "BUILD_DATE_LONG=$longTs" >> $env:GITHUB_ENV
