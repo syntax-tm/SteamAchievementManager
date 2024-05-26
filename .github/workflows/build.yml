@@ -130,7 +130,7 @@ jobs:
         Write-Host "::endgroup::"
     - name: Upload a Build Artifact
       id: artifact-upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ env.ARTIFACT_NAME }}
         path: publish
