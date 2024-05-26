@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <!-- SAM controls -->
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/AutoSuggestBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/ButtonStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/CheckBoxStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/ContainerStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/DataGridStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/MenuStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/NumberBoxStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/StatusBarStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/TextBoxStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/WindowStyles.xaml" />
+        <!-- SAM resources -->
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Converters.xaml" />
+        <!-- WPF UI resources -->
+        <ui:ThemesDictionary Theme="Dark" />
+        <ui:ControlsDictionary />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- This is needed for Win10 and below -->
+    <!-- see: https://wpfui.lepo.co/documentation/icons -->
+    <FontFamily x:Key="SegoeFluentIcons">pack://application:,,,/;component/Fonts/#Segoe Fluent Icons</FontFamily>
+</ResourceDictionary>

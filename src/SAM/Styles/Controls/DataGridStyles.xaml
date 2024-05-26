@@ -1,0 +1,200 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/datagrid/datagrid.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    <Style x:Key="DataGridRowLoadingStyle" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource DefaultDataGridRowStyle}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Loaded}" Value="False">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Grid>
+                                <ui:ProgressRing IsIndeterminate="True" VerticalAlignment="Center"
+                                                 HorizontalAlignment="Center" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="LeftAlignedCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Grid>
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CenterAlignedCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                    <Grid>
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CenteredGridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DefaultDataGridColumnHeaderStyle}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="LeftGridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DefaultDataGridColumnHeaderStyle}">
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
+
+    </Style>
+
+    <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource DefaultDataGridStyle}">
+        <Setter Property="SelectionMode" Value="Single" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="AutoGenerateColumns" Value="False" />
+        <Setter Property="CanUserAddRows" Value="False" />
+        <Setter Property="CanUserDeleteRows" Value="False" />
+        <Setter Property="CanUserResizeRows" Value="False" />
+    </Style>
+
+    <Style x:Key="AchievementGridRowStyle" TargetType="{x:Type DataGridRow}">
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWayToSource}" />
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <Grid>
+                    <StackPanel Margin="2">
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold" Margin="2" />
+                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontStyle="Italic" />
+                        <Separator Margin="0,6,0,4"
+                                   Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:FontIcon Glyph="&#xE7BA;"
+                                         Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}"
+                                         Foreground="{StaticResource PaletteOrangeBrush}"/>
+                            <TextBlock Text="Unsaved change." Foreground="{StaticResource PaletteOrangeBrush}"
+                                       Margin="5,0"
+                                       Visibility="{Binding IsModified, Converter={dxmvvm:BooleanToVisibilityConverter}}">
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <!-- selected -->
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+                <Setter Property="Background" Value="{StaticResource PaletteBlueBrush}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
+            </Trigger>
+            <!-- hover -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+                <Setter Property="Background" Value="{StaticResource PaletteBlueBrush}" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="0.6" Color="{StaticResource PaletteBlueColor}" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            <!-- unlocked -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding IsAchieved}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="1" Color="{StaticResource GreenColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                    <Condition Binding="{Binding IsAchieved}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="0.7" Color="{StaticResource GreenColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <!-- modified (adding) -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding IsModified}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="1" Color="{StaticResource YellowColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                    <Condition Binding="{Binding IsModified}" Value="True" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorDarkPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="0.8" Color="{StaticResource YellowColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <!-- modified (removing) -->
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="False" />
+                    <Condition Binding="{Binding IsModified}" Value="True" />
+                    <Condition Binding="{Binding IsAchieved}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="0.6" Color="{StaticResource RedColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                    <Condition Binding="{Binding IsModified}" Value="True" />
+                    <Condition Binding="{Binding IsAchieved}" Value="False" />
+                </MultiDataTrigger.Conditions>
+                <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <SolidColorBrush Opacity="0.4" Color="{StaticResource RedColor}" />
+                    </Setter.Value>
+                </Setter>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+</ResourceDictionary>

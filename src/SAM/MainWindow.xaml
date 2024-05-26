@@ -7,18 +7,25 @@
                  xmlns:views="clr-namespace:SAM.Views"
                  xmlns:vm="clr-namespace:SAM.ViewModels"
                  xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-                 xmlns:sam="urn:sam"
+                 xmlns:behaviors="clr-namespace:SAM.Behaviors"
+                 xmlns:sam="clr-namespace:SAM"
                  mc:Ignorable="d"
-                 d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel, IsDesignTimeCreatable=False}"
+                 d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
                  ExtendsContentIntoTitleBar="True" WindowCornerPreference="DoNotRound"
                  WindowBackdropType="Mica">
 
     <ui:FluentWindow.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/MenuStyles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/WindowStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/MenuStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/WindowStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type vm:SteamGameViewModel}">
+                <views:SteamGameView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:HomeViewModel}">
+                <views:HomeView />
+            </DataTemplate>
         </ResourceDictionary>
     </ui:FluentWindow.Resources>
 
@@ -27,7 +34,7 @@
     </ui:FluentWindow.DataContext>-->
 
     <dxmvvm:Interaction.Behaviors>
-        <sam:WindowAutoSaveBehavior />
+        <behaviors:WindowAutoSaveBehavior />
         <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding OnLoadedCommand}" />
     </dxmvvm:Interaction.Behaviors>
 
@@ -43,26 +50,7 @@
                     <ui:ImageIcon Source="/SAM.png" />
                 </ui:TitleBar.Icon>
             </ui:TitleBar>
-            <ContentPresenter>
-                <ContentPresenter.Style>
-                    <Style TargetType="{x:Type ContentPresenter}">
-                        <Setter Property="Content">
-                            <Setter.Value>
-                                <sam:SteamGameView DataContext="{Binding GameVm}" />
-                            </Setter.Value>
-                        </Setter>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding GameVm}" Value="{x:Null}">
-                                <Setter Property="Content">
-                                    <Setter.Value>
-                                        <views:HomeView DataContext="{Binding HomeVm}" />
-                                    </Setter.Value>
-                                </Setter>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ContentPresenter.Style>
-            </ContentPresenter>
+            <ContentControl Content="{Binding CurrentVm}" />
         </DockPanel>
     </Grid>
 

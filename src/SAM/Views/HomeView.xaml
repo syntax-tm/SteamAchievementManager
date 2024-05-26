@@ -5,22 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:views="clr-namespace:SAM.Views"
-             xmlns:sam="urn:sam"
              xmlns:viewModels="clr-namespace:SAM.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type={x:Type viewModels:MainWindowViewModel}, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type={x:Type viewModels:HomeViewModel}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
-
-    <dxmvvm:Interaction.Behaviors>
-        <dxmvvm:EventToCommand Command="{Binding LoadedCommand}" EventName="Loaded" />
-    </dxmvvm:Interaction.Behaviors>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <views:LibraryItemsControlView DataContext="{Binding HomeVm}" />
+        <views:LibraryItemsControlView />
         <views:StatusBarView Grid.Row="1"  />
     </Grid>
 </UserControl>

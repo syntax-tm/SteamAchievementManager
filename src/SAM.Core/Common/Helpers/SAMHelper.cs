@@ -10,12 +10,10 @@ namespace SAM.Core
 {
     public static class SAMHelper
     {
-        private const string SAM_MANAGER_EXE = @"SAM.Manager.exe";
-        private const string SAM_PICKER_EXE = @"SAM.exe";
+        private const string SAM_EXE = @"SAM.exe";
         private const string STEAM_PROCESS_NAME = @"Steam";
 
-        private const string PICKER_PROCESS_REGEX = @"^SAM(?:\.exe)?$";
-        private const string MANAGER_PROCESS_REGEX = @"^SAM\.Manager(?:\.exe)?$";
+        private const string SAM_PROCESS_REGEX = @"^SAM(?:\.exe)?$";
 
         private static readonly ILog log = LogManager.GetLogger(nameof(SAMHelper));
 
@@ -36,17 +34,17 @@ namespace SAM.Core
         public static bool IsPickerRunning()
         {
             var processes = Process.GetProcesses();
-            return processes.Any(p => Regex.IsMatch(p.ProcessName, PICKER_PROCESS_REGEX));
+            return processes.Any(p => Regex.IsMatch(p.ProcessName, SAM_PROCESS_REGEX));
         }
 
         public static Process OpenPicker()
         {
-            if (!File.Exists(SAM_PICKER_EXE))
+            if (!File.Exists(SAM_EXE))
             {
-                throw new FileNotFoundException($"Unable to start '{SAM_PICKER_EXE}' because it does not exist.", SAM_PICKER_EXE);
+                throw new FileNotFoundException($"Unable to start '{SAM_EXE}' because it does not exist.", SAM_EXE);
             }
 
-            var proc = Process.Start(SAM_PICKER_EXE);
+            var proc = Process.Start(SAM_EXE);
 
             proc.SetActive();
 
@@ -57,12 +55,12 @@ namespace SAM.Core
         {
             if (appId == default) throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
             
-            if (!File.Exists(SAM_MANAGER_EXE))
+            if (!File.Exists(SAM_EXE))
             {
-                throw new FileNotFoundException($"Unable to start '{SAM_MANAGER_EXE}' because it does not exist.", SAM_MANAGER_EXE);
+                throw new FileNotFoundException($"Unable to start '{SAM_EXE}' because it does not exist.", SAM_EXE);
             }
 
-            var proc = Process.Start(SAM_MANAGER_EXE, appId.ToString());
+            var proc = Process.Start(SAM_EXE, appId.ToString());
 
             proc.SetActive();
 
@@ -75,7 +73,7 @@ namespace SAM.Core
             {
                 foreach (var proc in Process.GetProcesses())
                 {
-                    if (!Regex.IsMatch(proc.ProcessName, MANAGER_PROCESS_REGEX)) continue;
+                    if (!Regex.IsMatch(proc.ProcessName, SAM_PROCESS_REGEX)) continue;
 
                     log.Info($"Found SAM Manager process with process ID {proc.Id}.");
 

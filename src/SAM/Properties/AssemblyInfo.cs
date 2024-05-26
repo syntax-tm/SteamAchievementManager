@@ -1,12 +1,20 @@
+using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Markup;
 
-[assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
-                                     //(used if a resource is not found in the page,
-                                     // or application resource dictionaries)
-    ResourceDictionaryLocation.SourceAssembly //where the generic resource dictionary is located
-                                              //(used if a resource is not found in the page,
-                                              // app, or any theme specific resource dictionaries)
-)]
+[assembly: ComVisible(false)]
+
+[assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = false)]
+
+[assembly: XmlnsPrefix(@"urn:sam", "sam")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.Behaviors")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.Converters")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.Controls")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.Resources")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.Settings")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.Stats")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.Views")]
+[assembly: XmlnsDefinition(@"urn:sam", "SAM.ViewModels")]

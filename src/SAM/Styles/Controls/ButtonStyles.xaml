@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/TextStyles.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/togglebutton/togglebutton.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>
+    

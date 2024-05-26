@@ -1,6 +1,5 @@
 ﻿// macros
 HWND
-PCSTR
 // functions
 CloseHandle
 DeleteObject

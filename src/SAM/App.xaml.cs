@@ -10,9 +10,9 @@ using log4net;
 using SAM.API;
 using SAM.Core;
 using SAM.Core.Logging;
-using SAM.Core.ViewModels;
-using SAM.Manager;
 using SAM.ViewModels;
+using SAM.SplashScreen;
+using SteamGameViewModel = SAM.ViewModels.SteamGameViewModel;
 
 namespace SAM;
 
@@ -54,10 +54,6 @@ public partial class App
                 with.HelpWriter = helpWriter;
             });
             
-            //var options = parser.ParseArguments<SAMOptions>(args.Args)
-            //                    .WithParsed(HandleOptions)
-            //                    .WithNotParsed(errs => DisplayHelp(errs, helpWriter));
-
             var options = parser.ParseArguments<SAMOptions>(args.Args);
 
             HandleOptions(options.Value);
@@ -78,16 +74,17 @@ public partial class App
     {
         base.OnExit(args);
 
-        try
-        {
-            log.Info(@"Application exiting. Ending any running manager processes...");
+        // TODO: with there being only one executable now need to differentiate the process types
+        //try
+        //{
+        //    log.Info(@"Application exiting. Ending any running manager processes...");
 
-            SAMHelper.CloseAllManagers();
-        }
-        catch (Exception e)
-        {
-            log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
-        }
+        //    SAMHelper.CloseAllManagers();
+        //}
+        //catch (Exception e)
+        //{
+        //    log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
+        //}
     }
 
     private void HandleOptions(SAMOptions options)

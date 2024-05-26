@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="SAM.Views.Stats.AchievementsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="clr-namespace:SAM.ViewModels"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:converters="clr-namespace:SAM.Converters"
+             xmlns:core="urn:sam.core"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/AllResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <ui:DataGrid ItemsSource="{Binding AchievementsView}"
+                  SelectedItem="{Binding SelectedAchievement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  AutoGenerateColumns="False" HeadersVisibility="None"
+                  CanUserAddRows="False" SelectionMode="Single"
+                  EnableRowVirtualization="False" EnableColumnVirtualization="False"
+                  RowStyle="{StaticResource AchievementGridRowStyle}"
+                  GridLinesVisibility="None"
+                  d:DesignSource="{d:DesignInstance Type={x:Type core:SteamAchievement}, CreateList=True}">
+            <ui:DataGrid.Columns>
+                <DataGridCheckBoxColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
+                                        Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        Width="50">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                        <Grid>
+                                            <CheckBox IsChecked="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      Margin="4,4,4,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+                <DataGridTemplateColumn Header="" IsReadOnly="True" CanUserSort="False" Width="SizeToCells">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type core:SteamAchievement}">
+                            <Border BorderThickness="2" BorderBrush="Black" Padding="0" Margin="0">
+                                <Grid Width="40" Height="40">
+                                    <Image Source="{Binding Image, Mode=OneWay, Converter={converters:BitmapToImageSourceConverter}}" Margin="-1" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id, Mode=OneWay}"
+                                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
+                                    CellStyle="{StaticResource CenterAlignedCellStyle}"
+                                    Width="100" Visibility="Collapsed" />
+                <DataGridTemplateColumn Header="Description" Width="*"
+                                        HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type core:SteamAchievement}">
+                            <Grid Margin="6,3">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <TextBlock Text="{Binding Name, Mode=OneWay}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                               FontWeight="SemiBold" FontSize="{StaticResource LargeFontSize}"
+                                               Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
+                                </Grid>
+                                <Grid Grid.Row="1">
+                                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"
+                                               TextWrapping="Wrap" FontSize="{StaticResource SmallFontSize}"
+                                               Text="{Binding Description}"
+                                               Foreground="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridRow}}, Path=Foreground}" />
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </ui:DataGrid.Columns>
+        </ui:DataGrid>
+    </Grid>
+</UserControl>

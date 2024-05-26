@@ -5,13 +5,22 @@
     <ApplicationIcon>sam.ico</ApplicationIcon>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <UseWPF>True</UseWPF>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
+      <PrivateAssets>all</PrivateAssets>
+      <!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
+    </PackageReference>
+    <PackageReference Include="Microsoft.Windows.SDK.Win32Metadata" Version="60.0.34-preview" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="NativeMethods.json" />
+    <None Remove="NativeMethods.txt" />
+    <None Remove="packages.lock.json" />
     <None Remove="sam.png" />
   </ItemGroup>
 
@@ -22,13 +31,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SAM.Core\SAM.Core.csproj" />
-    <ProjectReference Include="..\SAM.Manager\SAM.Manager.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Styles\" />
   </ItemGroup>
 
 </Project>

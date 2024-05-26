@@ -4,10 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:sam="urn:sam"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:mvvm="clr-namespace:SAM.Mvvm"
+             xmlns:vm="clr-namespace:SAM.ViewModels"
+             xmlns:behaviors="clr-namespace:SAM.Behaviors"
+             xmlns:converters="clr-namespace:SAM.Converters"
+             xmlns:core="urn:sam.core"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -37,11 +41,11 @@
                 </Style>
             </ui:VirtualizingItemsControl.ItemContainerStyle>
             <ui:VirtualizingItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type sam:SteamApp}">
+                <DataTemplate DataType="{x:Type core:SteamApp}">
                     <Grid>
                         <ui:Button x:Name="PART_Button" Padding="0">
                             <ui:Button.Resources>
-                                <sam:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
+                                <mvvm:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
                             </ui:Button.Resources>
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}">
@@ -191,10 +195,10 @@
                             </ui:Button.ContextMenu>
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
-                                <sam:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="False" />
+                                <behaviors:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="False" />
                             </dxmvvm:Interaction.Behaviors>
                             <Grid>
-                                <Image x:Name="HeaderImage" Source="{Binding Header, Converter={sam:BitmapToImageSourceConverter}}" Stretch="Fill" StretchDirection="Both">
+                                <Image x:Name="HeaderImage" Source="{Binding Header, Converter={converters:BitmapToImageSourceConverter}}" Stretch="Fill" StretchDirection="Both">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
                                             <Style.Triggers>

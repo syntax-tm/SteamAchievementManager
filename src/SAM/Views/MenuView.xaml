@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:sam="urn:sam"
+             xmlns:vm="clr-namespace:SAM.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=sam:HomeViewModel, IsDesignTimeCreatable=False}">
+             d:DataContext="{d:DesignInstance Type={x:Type vm:MainWindowViewModel}, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/SAM.Core;component/Styles/Controls/MenuStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/MenuStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -21,27 +21,19 @@
     <StackPanel Orientation="Horizontal">
         <Separator Margin="8,4,2,4" />
         <Menu IsMainMenu="True" HorizontalAlignment="Left" FontSize="12">
-            <!--<Menu.Style>
-                <Style TargetType="{x:Type Menu}" BasedOn="{StaticResource DefaultMenuStyle}">
-                    <Setter Property="Opacity" Value="0.7" />
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Opacity" Value="1" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Menu.Style>-->
             <ui:MenuItem Header="File" Icon="{ui:SymbolIcon Document20}">
-                <ui:MenuItem Header="Export Library (.json)" Icon="{ui:SymbolIcon ArrowExport24}" Command="{Binding ExportAppsCommand}" />
-                <Separator />
+                <ui:MenuItem Header="Export Library (.json)" Icon="{ui:SymbolIcon ArrowExport24}" Command="{Binding ExportAppsCommand}"
+                             Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+                <Separator Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}"/>
                 <ui:MenuItem Header="Exit" Icon="{ui:SymbolIcon ArrowExit20}" Command="{Binding ExitCommand}" />
             </ui:MenuItem>
-            <ui:MenuItem Header="View" Icon="{ui:SymbolIcon Grid24}">
+            <ui:MenuItem Header="View" Icon="{ui:SymbolIcon Grid24}"
+                         Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}">
                 <ui:MenuItem Header="Hidden Apps" IsEnabled="False" />
-                <ui:MenuItem Header="Show Hidden" IsCheckable="True" IsChecked="{Binding HomeVm.ShowHidden}" />
+                <ui:MenuItem Header="Show Hidden" IsCheckable="True" IsChecked="{Binding HomeVm.ShowHidden, FallbackValue=False}" />
                 <Separator />
                 <ui:MenuItem Header="Favorite Apps" IsEnabled="False" />
-                <ui:MenuItem Header="Show Only Favorites" IsCheckable="True" IsChecked="{Binding HomeVm.FilterFavorites}" />
+                <ui:MenuItem Header="Show Only Favorites" IsCheckable="True" IsChecked="{Binding HomeVm.FilterFavorites, FallbackValue=False}" />
             </ui:MenuItem>
             <ui:MenuItem Header="Help" Icon="{ui:SymbolIcon Question24}">
                 <ui:MenuItem Header="Reset to Default" Icon="{ui:SymbolIcon ArrowReset24}" Command="{Binding ResetAllSettingsCommand}" />
@@ -57,12 +49,14 @@
                              Command="{Binding ViewOnGitHubCommand}" />
             </ui:MenuItem>
         </Menu>
-        <Separator Margin="0,4,4,4" />
+        <Separator Margin="0,4,4,4" 
+                   Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
         <ui:AutoSuggestBox Text="{Binding HomeVm.FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                            PlaceholderText="Search..." BorderBrush="Transparent"
                            Icon="Search24" Margin="5,3" FontSize="13" Padding="3,0" Height="30"
                            OriginalItemsSource="{Binding HomeVm.Suggestions, Mode=OneWay}"
-                           Width="400">
+                           Width="400"
+                           Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}">
             <ui:AutoSuggestBox.Style>
                 <Style TargetType="{x:Type ui:AutoSuggestBox}" BasedOn="{StaticResource BaseUiAutoSuggestBoxStyle}" />
             </ui:AutoSuggestBox.Style>

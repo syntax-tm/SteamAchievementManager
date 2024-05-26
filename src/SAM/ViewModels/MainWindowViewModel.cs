@@ -9,27 +9,39 @@ using DevExpress.Mvvm.Native;
 using log4net;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using SAM.Behaviors;
 using SAM.Core;
+using SAM.Core.Extensions;
 using SAM.Core.Storage;
-using SAM.Core.ViewModels;
+using SAM.SplashScreen;
 using MessageBox = System.Windows.MessageBox;
 
 namespace SAM.ViewModels;
 
 [GenerateViewModel]
-public partial class MainWindowViewModel : MainWindowViewModelBase
+public partial class MainWindowViewModel
 {
+    private const string TITLE_BASE = "Steam Achievement Manager";
+
     private readonly ILog log = LogManager.GetLogger(typeof(MainWindowViewModel));
 
+    [GenerateProperty] private string title = TITLE_BASE;
+    [GenerateProperty] private string subTitle;
+    [GenerateProperty] private bool _isManager;
+    [GenerateProperty] private bool _isLibrary;
     [GenerateProperty] private ApplicationMode _mode;
     [GenerateProperty] private SteamUser _user;
     [GenerateProperty] private HomeViewModel _homeVm;
     [GenerateProperty] private SteamGameViewModel gameVm;
+    [GenerateProperty] private WindowSettings config;
+    [GenerateProperty] private object _currentVm;
 
     public MainWindowViewModel()
     {
         User = new ();
         HomeVm = new ();
+        
+        CurrentVm = HomeVm;
     }
     
     public MainWindowViewModel(SteamGameViewModel gameVm)
@@ -37,14 +49,10 @@ public partial class MainWindowViewModel : MainWindowViewModelBase
         GameVm = gameVm;
 
         User = new ();
+
+        CurrentVm = gameVm;
     }
     
-    [GenerateCommand]
-    public void Loaded()
-    {
-        log.Debug($"{nameof(HomeViewModel)} {nameof(Loaded)}");
-    }
-
     [GenerateCommand]
     public void ResetAllSettings()
     {
@@ -190,9 +198,35 @@ public partial class MainWindowViewModel : MainWindowViewModelBase
             log.Error(message, ex);
         }
     }
+    
+    [GenerateCommand]
+    public void Exit()
+    {
+        Environment.Exit(0);
+    }
 
+    [GenerateCommand]
+    protected void OnLoaded()
+    {
+        SplashScreenHelper.Close();
+
+        Process.GetCurrentProcess().SetActive();
+    }
+    
+    private void OnSubTitleChanged()
+    {
+        if (string.IsNullOrWhiteSpace(SubTitle))
+        {
+            Title = TITLE_BASE;
+            return;
+        }
+
+        Title = $"{TITLE_BASE} | {SubTitle}";
+    }
     private void OnGameVmChanged()
     {
         Mode = GameVm != null ? ApplicationMode.Manager : ApplicationMode.Default;
+        IsManager = Mode == ApplicationMode.Manager;
+        IsLibrary = Mode == ApplicationMode.Default;
     }
 }
