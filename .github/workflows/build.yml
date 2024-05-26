@@ -2,7 +2,7 @@ name: Build
 
 env:
   PACKAGES: ${{ github.workspace }}\.nuget\packages
-  VERSION: 0.0.1-alpha
+  VERSION: 0.0.1
   # these are all set in the set-vars step
   ARTIFACT_NAME: ''
   BUILD_DATE: ''
