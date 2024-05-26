@@ -1,9 +1,13 @@
 name: Build
 
 env:
-  ARTIFACT: SAM
   PACKAGES: ${{ github.workspace }}\.nuget\packages
   VERSION: 0.0.1-alpha
+  # these are all set in the set-vars step
+  ARTIFACT_NAME: ''
+  BUILD_DATE: ''
+  BUILD_DATE_LONG: ''
+  BUILD_TYPE: ''
 
 on:
   workflow_call:
@@ -14,7 +18,7 @@ on:
         type: boolean
       version:
         description: 'The semantic version number (e.g. "2.0.1-beta")'
-        default: '0.0.1-alpha'
+        default: '0.0.1'
         required: false
         type: string
   workflow_dispatch:
@@ -38,34 +42,64 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      id: git-checkout
+      uses: actions/checkout@v4
     - name: Setup .NET
+      id: setup-dotnet
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - id: cache-restore
+    - name: Cache Restore
+      id: cache-restore
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
     - name: Restore dependencies
+      id: dotnet-restore
       run: dotnet restore .\src\SAM_NoTests.slnf --packages ${{ env.PACKAGES }}
-    - id: cache-save
+    - name: Cache Save
+      id: cache-save
       uses: actions/cache/save@v4
       if: steps.cache-restore.outputs.cache-hit != 'true'
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
+    - name: Set Vars
+      id: set-vars
+      run: |
+        $now = Get-Date
+        $longTs = $now.ToString('yyyy-MM-dd')
+        $ts = $now.ToString('yyMMdd')
+        $buildType = "${{ inputs.is_release && 'release' || 'debug' }}"
+        $artifactName = $releaseType -eq 'release' ? "SAM_${{ inputs.version }}" : "SAM_$ts-${{ github.run_id }}_$buildType"
+
+        Write-Host ""
+        Write-Host "::group::Staged Artifacts"
+
+        Write-Host "Build Date   : " -NoNewLine
+        Write-Host "$($PSStyle.Foreground.BrightCyan)$longTs ($ts)$($PSStyle.Reset)"
+
+        Write-Host "Build Type   : " -NoNewLine
+        Write-Host "$($PSStyle.Foreground.BrightCyan)$buildType$($PSStyle.Reset)"
+
+        Write-Host "Artifact Name: " -NoNewLine
+        Write-Host "$($PSStyle.Foreground.BrightCyan)$artifactName$($PSStyle.Reset)"
+
+        Write-Host "::endgroup::"
+
+        echo "BUILD_DATE=$ts" >> $env:GITHUB_ENV
+        echo "BUILD_DATE_LONG=$longTs" >> $env:GITHUB_ENV
+        echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
+        echo "ARTIFACT_NAME=$artifactName" >> $env:GITHUB_ENV
     - name: Publish SAM
+      id: dotnet-publish
       run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Release -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
-    - name: Publish SAM.Manager
-      run: dotnet publish .\src\SAM.Manager\SAM.Manager.csproj -o publish_manager -c Release -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
     - name: Stage Artifacts
+      id: stage-artifacts
       run: |
         $samDir = Get-Item publish | Select-Object -ExpandProperty FullName
-        $samManagerDir = Get-Item publish_manager | Select-Object -ExpandProperty FullName
-
-        cp $samManagerDir\* -Destination $samDir -Recurse -Force
 
         $stagedFiles = gci $samDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
 
@@ -91,6 +125,9 @@ jobs:
           elseif ($ext -eq '.json' -or $ext -eq '.config') {
             $color = $PSStyle.Foreground.BrightBlue
           }
+          else {
+            $color = $PSStyle.Foreground.BrightWhite
+          }
 
           Write-Host "- $color$relPath$($PSStyle.Reset)"
         }
@@ -100,6 +137,6 @@ jobs:
       id: artifact-upload
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ env.ARTIFACT }}
+        name: ${{ env.ARTIFACT_NAME }}
         path: publish
         if-no-files-found: error
