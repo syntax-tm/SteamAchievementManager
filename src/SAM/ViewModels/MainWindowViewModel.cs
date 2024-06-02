@@ -39,7 +39,7 @@ public partial class MainWindowViewModel
 
     public MainWindowViewModel()
     {
-        User = new (SteamClientManager.Default);
+        //User = new (SteamClientManager.Default);
         HomeVm = new ();
 
         CurrentVm = HomeVm;
@@ -47,9 +47,8 @@ public partial class MainWindowViewModel
 
     public MainWindowViewModel(SteamGameViewModel gameVm)
     {
+        //User = new (SteamClientManager.Default);
         GameVm = gameVm;
-
-        User = new (SteamClientManager.Default);
 
         CurrentVm = gameVm;
     }
