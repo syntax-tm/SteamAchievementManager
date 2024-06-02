@@ -13,6 +13,7 @@ using SAM.Core.Logging;
 using SAM.ViewModels;
 using SAM.SplashScreen;
 using SteamGameViewModel = SAM.ViewModels.SteamGameViewModel;
+using SAM.Managers;
 
 namespace SAM;
 
@@ -45,7 +46,7 @@ public partial class App
 
             // handle any TaskScheduler exceptions
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-            
+
             var helpWriter = new StringWriter();
             var parser = new Parser(with =>
             {
@@ -53,7 +54,7 @@ public partial class App
                 with.CaseInsensitiveEnumValues = true;
                 with.HelpWriter = helpWriter;
             });
-            
+
             var options = parser.ParseArguments<SAMOptions>(args.Args);
 
             HandleOptions(options.Value);
@@ -102,7 +103,7 @@ public partial class App
             }
 
             var appInfo = new SteamApp(appId);
-            
+
             SplashScreenHelper.SetStatus(appInfo.Name);
 
             var gameVm = new SteamGameViewModel(appInfo);
@@ -123,7 +124,7 @@ public partial class App
             // create the default Client instance
             SteamClientManager.Init(0);
 
-            SteamLibraryManager.Init();
+            SteamLibraryManager.Default.Init();
 
             MainWindow = new MainWindow
             {
@@ -166,7 +167,7 @@ public partial class App
             log.Error(message, args.Exception);
 
             MessageBox.Show(message, $"Unhandled ${exception.GetType().Name}", MessageBoxButton.OK, MessageBoxImage.Error);
-                    
+
             args.SetObserved();
         }
         catch (Exception e)

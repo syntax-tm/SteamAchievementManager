@@ -12,7 +12,7 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
-        <UseArtifactsOutput>true</UseArtifactsOutput>
+        <!--<UseArtifactsOutput>true</UseArtifactsOutput>-->
         <!-- <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath> -->
 
         <!-- Publish Settings -->

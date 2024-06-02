@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 using log4net;
 using SAM.Core;
 using SAM.Core.Extensions;
-using SAM.Core.Stats;
+using SAM.Stats;
 
 namespace SAM.ViewModels
 {
@@ -29,10 +29,10 @@ namespace SAM.ViewModels
 
         [UsedImplicitly]
         private readonly ObservableHandler<SteamStatsManager> statsHandler;
-        
+
         [UsedImplicitly]
         private ObservableCollectionPropertyHandler<ObservableCollection<SteamAchievement>, SteamAchievement> _achievementsPropertyHandler;
-        
+
         // ReSharper disable once InconsistentNaming
         private readonly SteamStatsManager _statsManager;
 
@@ -61,7 +61,7 @@ namespace SAM.ViewModels
         {
             SteamApp = steamApp;
 
-            _statsManager = new ();
+            _statsManager = new (SteamClientManager.Default);
 
             statsHandler = new ObservableHandler<SteamStatsManager>(_statsManager)
                 .AddAndInvoke(m => m.Achievements, ManagerAchievementsChanged)
@@ -243,20 +243,20 @@ namespace SAM.ViewModels
         {
             LinqExtensions.ForEach<SteamStatisticBase>(Statistics, s => s.Reset());
         }
-        
+
         [GenerateCommand]
         public void Reset()
         {
             ResetAchievements();
             ResetStats();
         }
-        
+
         [GenerateCommand]
         public void LockAllAchievements()
         {
             Achievements.ForEach(a => a.Lock());
         }
-        
+
         [GenerateCommand]
         public void UnlockAllAchievements()
         {
@@ -266,7 +266,7 @@ namespace SAM.ViewModels
         protected void Refresh()
         {
             _loading = true;
-            
+
             _achievementsViewSource = new ()
             {
                 Source = Achievements

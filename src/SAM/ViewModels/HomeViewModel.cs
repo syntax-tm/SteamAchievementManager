@@ -10,6 +10,7 @@ using SAM.Converters;
 using SAM.Core;
 using SAM.Core.Extensions;
 using SAM.Core.Messages;
+using SAM.Managers;
 
 namespace SAM.ViewModels
 {
@@ -17,7 +18,7 @@ namespace SAM.ViewModels
     public partial class HomeViewModel
     {
         private readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
-        
+
         private CollectionViewSource _itemsViewSource;
         private bool _loading = true;
 
@@ -47,7 +48,7 @@ namespace SAM.ViewModels
 
             Messenger.Default.Register<ActionMessage>(this, OnActionMessage);
         }
-        
+
         [GenerateCommand]
         public void ManageApp()
         {
@@ -55,7 +56,7 @@ namespace SAM.ViewModels
 
             SAMHelper.OpenManager(SelectedItem.Id);
         }
-        
+
         [GenerateCommand]
         public void ToggleShowHidden()
         {
@@ -84,7 +85,7 @@ namespace SAM.ViewModels
             }
 
             Library = SteamLibraryManager.DefaultLibrary;
-            
+
             _itemsViewSource = new ()
             {
                 Source = Library.Items
@@ -130,7 +131,7 @@ namespace SAM.ViewModels
 
             ItemsView!.Refresh();
         }
-        
+
         protected void OnFilterFavoritesChanged()
         {
             if (_loading) return;
@@ -141,7 +142,7 @@ namespace SAM.ViewModels
         protected void OnEnableGroupingChanged()
         {
             if (_loading) return;
-            
+
             using (_itemsViewSource.DeferRefresh())
             {
                 _itemsViewSource.GroupDescriptions.Clear();
@@ -153,7 +154,7 @@ namespace SAM.ViewModels
                 }
             }
         }
-        
+
         private void OnActionMessage(ActionMessage message)
         {
             // on library refresh completed
@@ -172,7 +173,7 @@ namespace SAM.ViewModels
             var isJunkFiltered = !FilterJunk || app.IsJunk;
             var isHiddenFiltered = ShowHidden || !app.IsHidden;
             var isNonFavoriteFiltered = !FilterFavorites || app.IsFavorite;
-            
+
             e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
         }
     }

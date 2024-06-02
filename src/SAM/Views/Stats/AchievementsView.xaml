@@ -1,12 +1,14 @@
 ﻿<UserControl x:Class="SAM.Views.Stats.AchievementsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="clr-namespace:SAM.ViewModels"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:converters="clr-namespace:SAM.Converters"
              xmlns:core="urn:sam.core"
+             xmlns:sam="clr-namespace:SAM"
+             xmlns:stats="clr-namespace:SAM.Stats"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:SteamGameViewModel}}">
@@ -27,7 +29,7 @@
                   EnableRowVirtualization="False" EnableColumnVirtualization="False"
                   RowStyle="{StaticResource AchievementGridRowStyle}"
                   GridLinesVisibility="None"
-                  d:DesignSource="{d:DesignInstance Type={x:Type core:SteamAchievement}, CreateList=True}">
+                  d:DesignSource="{d:DesignInstance Type={x:Type stats:SteamAchievement}, CreateList=True}">
             <ui:DataGrid.Columns>
                 <DataGridCheckBoxColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -49,7 +51,7 @@
                 </DataGridCheckBoxColumn>
                 <DataGridTemplateColumn Header="" IsReadOnly="True" CanUserSort="False" Width="SizeToCells">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type core:SteamAchievement}">
+                        <DataTemplate DataType="{x:Type stats:SteamAchievement}">
                             <Border BorderThickness="2" BorderBrush="Black" Padding="0" Margin="0">
                                 <Grid Width="40" Height="40">
                                     <Image Source="{Binding Image, Mode=OneWay, Converter={converters:BitmapToImageSourceConverter}}" Margin="-1" />
@@ -65,7 +67,7 @@
                 <DataGridTemplateColumn Header="Description" Width="*"
                                         HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="{x:Type core:SteamAchievement}">
+                        <DataTemplate DataType="{x:Type stats:SteamAchievement}">
                             <Grid Margin="6,3">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />

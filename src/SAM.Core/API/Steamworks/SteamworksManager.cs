@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SAM.Core.Interfaces;
 using SAM.Core.Storage;
 
 namespace SAM.Core
@@ -27,7 +28,7 @@ namespace SAM.Core
         // ReSharper disable once InconsistentNaming
         private static readonly HttpClient _client = new ();
         // ReSharper disable once InconsistentNaming
-        private static readonly ConcurrentQueue<SteamApp> _refreshQueue = [ ];
+        private static readonly ConcurrentQueue<ISteamApp> _refreshQueue = [ ];
         private static BackgroundWorker _refreshWorker;
 
         public static Dictionary<uint, string> GetAppList()
@@ -42,9 +43,9 @@ namespace SAM.Core
                 {
                     return cachedApps;
                 }
-                
+
                 var apiResponse = _client.GetStringAsync(GETAPPLIST_URL).Result;
-                
+
                 if (string.IsNullOrEmpty(apiResponse))
                 {
                     throw new SAMInitializationException(@"The Steam API request for GetAppList returned nothing.");
@@ -58,7 +59,7 @@ namespace SAM.Core
                     var appid = item.GetProperty(@"appid").GetUInt32();
 
                     if (apps.ContainsKey(appid)) continue;
-                    
+
                     var name = item.GetProperty(@"name").GetString();
 
                     apps.Add(appid, name);
@@ -81,7 +82,7 @@ namespace SAM.Core
             }
         }
 
-        public static SteamStoreApp GetAppInfo(uint id, bool loadDlc = false)
+        public static LoadAppInfoResult GetAppInfo(uint id, bool loadDlc = false)
         {
 
             try
@@ -89,7 +90,7 @@ namespace SAM.Core
                 if (ShouldSkip(id))
                 {
                     log.Debug($"Skipping {nameof(GetAppInfo)} for app id '{id}'.");
-                    return null;
+                    return new (SteamworksOperationResult.Skipped);
                 }
 
                 var cacheKey = CacheKeys.CreateAppCacheKey(id);
@@ -98,31 +99,40 @@ namespace SAM.Core
                 // return that
                 if (CacheManager.TryGetObject<SteamStoreApp>(cacheKey, out var cachedApp))
                 {
-                    return cachedApp;
+                    return new (SteamworksOperationResult.Success, cachedApp);
                 }
 
                 var storeUrl = string.Format(APPDETAILS_URL, id);
-                
+
                 var appInfoText = _client.GetStringAsync(storeUrl).Result;
                 var jo = JObject.Parse(appInfoText);
 
                 var successElement = jo.SelectToken($"{id}.success");
                 var success = successElement != null && successElement.Value<bool>();
-                
+
                 if (!success)
                 {
                     log.Warn($@"Steam Web API appdetails for app id '{id}' failed.");
+                    
+                    // add it to the ignored list
+                    _skipStoreInfoAppIds.Add(id);
+                    
+                    // cache the app
+                    CacheManager.CacheObject(cacheKey, new { });
 
-                    return null;
+                    return new (SteamworksOperationResult.Failed);
                 }
-                
+
                 var appData = jo.SelectToken($"{id}.data")?.ToString();
 
                 if (string.IsNullOrWhiteSpace(appData))
                 {
                     log.Warn($@"Steam Web API appdetails for app id '{id}' returned no data.");
+                    
+                    // cache the app
+                    CacheManager.CacheObject(cacheKey, new { });
 
-                    return null;
+                    return new (SteamworksOperationResult.Invalid);
                 }
 
                 var storeApp = JsonConvert.DeserializeObject<SteamStoreApp>(appData);
@@ -136,11 +146,11 @@ namespace SAM.Core
                 //        storeApp.DlcInfo.Add(dlcApp);
                 //    }
                 //}
-                
-                // cache the app list
+
+                // cache the app
                 CacheManager.CacheObject(cacheKey, storeApp);
 
-                return storeApp;
+                return new (SteamworksOperationResult.Success, storeApp);
             }
             catch (HttpRequestException) { throw; }
             catch (Exception e)
@@ -174,20 +184,23 @@ namespace SAM.Core
                 }
 
                 var storeUrl = string.Format(APPDETAILS_URL, id);
-                
+
                 var appInfoText = await _client.GetStringAsync(storeUrl);
                 var jo = JObject.Parse(appInfoText);
 
                 var successElement = jo.SelectToken($"{id}.success");
                 var success = successElement != null && successElement.Value<bool>();
-                
+
                 if (!success)
                 {
                     log.Warn($@"Steam Web API appdetails for app id '{id}' failed.");
 
+                    // add it to the ignored list
+                    _skipStoreInfoAppIds.Add(id);
+
                     return null;
                 }
-                
+
                 var appData = jo.SelectToken($"{id}.data")?.ToString();
 
                 if (string.IsNullOrWhiteSpace(appData))
@@ -208,7 +221,7 @@ namespace SAM.Core
                 //        storeApp.DlcInfo.Add(dlcApp);
                 //    }
                 //}
-                
+
                 // cache the app list
                 await CacheManager.CacheObjectAsync(cacheKey, storeApp);
 
@@ -226,11 +239,11 @@ namespace SAM.Core
         }
 
         /// <summary>
-        /// Queues a <see cref="SteamApp"/> for loading information from the Steam store.
+        /// Queues an <see cref="ISteamApp"/> for loading information from the Steam store.
         /// </summary>
         /// <param name="app"></param>
         /// <exception cref="ArgumentNullException">Occurs when <paramref name="app" /> is <see langword="null" /></exception>
-        public static void LoadStoreInfo(SteamApp app)
+        public static void LoadStoreInfo(ISteamApp app)
         {
             if (app == null) throw new ArgumentNullException(nameof(app));
 
@@ -241,7 +254,7 @@ namespace SAM.Core
             }
 
             _refreshQueue.Enqueue(app);
-            
+
             // if we've already started the background worker then return
             if (_refreshWorker != null) return;
 
@@ -312,7 +325,9 @@ namespace SAM.Core
             }
         }
 
-        private static SteamworksOperationResult LoadAppInfo(SteamApp app)
+        public record struct LoadAppInfoResult(SteamworksOperationResult Result, ISteamStoreApp StoreApp = null);
+
+        private static SteamworksOperationResult LoadAppInfo(ISteamApp app)
         {
             const int MAX_RETRIES = 3;
             var retries = 0;
@@ -325,15 +340,10 @@ namespace SAM.Core
                 try
                 {
                     var storeInfo = GetAppInfo(app.Id);
-                            
-                    // this happens when an app is explicitly skipped (_skipStoreInfoAppIds)
-                    if (storeInfo == null)
-                    {
-                        continue;
-                    }
 
-                    app.StoreInfo = storeInfo;
+                    app.StoreInfo = storeInfo.StoreApp;
 
+                    // return a success regardless of whether it was skipped or not so it can be removed from the queue
                     return SteamworksOperationResult.Success;
                 }
                 catch (HttpRequestException hre) when (hre.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden or HttpStatusCode.TooManyRequests)
@@ -345,7 +355,7 @@ namespace SAM.Core
                     var retryTime = hre.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden
                         ? TimeSpan.FromMinutes(30)
                         : TimeSpan.FromMinutes(5);
-                    
+
                     var retrySb = new StringBuilder();
 
                     retrySb.Append($"Request for store info on app '{app.Id}' returned {nameof(HttpStatusCode)} {hre.StatusCode:D} ({hre.StatusCode:G}). ");
@@ -376,13 +386,13 @@ namespace SAM.Core
         {
             return _skipStoreInfoAppIds.Contains(id);
         }
-        
+
         // ReSharper disable CommentTypo
         // TODO: Create a better way to skip non-queryable apps in the store API
         // these are all app ids that do not return successfully, so we can skip them
         // and reduce calls to the store API
         // ReSharper disable once InconsistentNaming
-        private static readonly uint[] _skipStoreInfoAppIds =
+        private static readonly List<uint> _skipStoreInfoAppIds =
         [
             //41010,  // Serious Sam HD: The Second Encounter
             //42160,  // War of the Roses

@@ -11,10 +11,8 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using SAM.Behaviors;
 using SAM.Core;
-using SAM.Core.Extensions;
 using SAM.Core.Storage;
 using SAM.SplashScreen;
-using MessageBox = System.Windows.MessageBox;
 
 namespace SAM.ViewModels;
 
@@ -22,6 +20,9 @@ namespace SAM.ViewModels;
 public partial class MainWindowViewModel
 {
     private const string TITLE_BASE = "Steam Achievement Manager";
+    private const string GITHUB_CHANGELOG_URL = @"https://github.com/syntax-tm/SteamAchievementManager/blob/main/CHANGELOG.md";
+    private const string GITHUB_ISSUES_URL = @"https://github.com/syntax-tm/SteamAchievementManager/issues";
+    private const string GITHUB_URL = @"https://github.com/syntax-tm/SteamAchievementManager";
 
     private readonly ILog log = LogManager.GetLogger(typeof(MainWindowViewModel));
 
@@ -38,21 +39,21 @@ public partial class MainWindowViewModel
 
     public MainWindowViewModel()
     {
-        User = new ();
+        User = new (SteamClientManager.Default);
         HomeVm = new ();
-        
+
         CurrentVm = HomeVm;
     }
-    
+
     public MainWindowViewModel(SteamGameViewModel gameVm)
     {
         GameVm = gameVm;
 
-        User = new ();
+        User = new (SteamClientManager.Default);
 
         CurrentVm = gameVm;
     }
-    
+
     [GenerateCommand]
     public void ResetAllSettings()
     {
@@ -108,25 +109,19 @@ public partial class MainWindowViewModel
     [GenerateCommand]
     public void ViewChangelogOnGitHub()
     {
-        const string URL = @"https://github.com/syntax-tm/SteamAchievementManager/blob/main/CHANGELOG.md";
-
-        BrowserHelper.OpenUrl(URL);
+        BrowserHelper.OpenUrl(GITHUB_CHANGELOG_URL);
     }
 
     [GenerateCommand]
     public void ViewIssuesOnGitHub()
     {
-        const string URL = @"https://github.com/syntax-tm/SteamAchievementManager/issues";
-
-        BrowserHelper.OpenUrl(URL);
+        BrowserHelper.OpenUrl(GITHUB_ISSUES_URL);
     }
-    
+
     [GenerateCommand]
     public void ViewOnGitHub()
     {
-        const string URL = @"https://github.com/syntax-tm/SteamAchievementManager";
-
-        BrowserHelper.OpenUrl(URL);
+        BrowserHelper.OpenUrl(GITHUB_URL);
     }
 
     [GenerateCommand]
@@ -164,7 +159,7 @@ public partial class MainWindowViewModel
         const string DEFAULT_FILENAME = @"apps.json";
         const string DEFAULT_EXT = @"json";
         const string DEFAULT_FILTER = "Json Files (*.json)|*.json|All Files (*.*)|*.*";
-            
+
         try
         {
             var fd = new SaveFileDialog
@@ -184,7 +179,7 @@ public partial class MainWindowViewModel
             if (!result.HasValue || !result.Value) return;
 
             var apps = HomeVm?.Library?.Items;
-            var ids = apps?.Select(a => new { a.Id, a.Name, a.IsHidden, a.IsFavorite, a.IsMod, a.IsJunk, a.IsDemo }).ToList();
+            var ids = apps?.Select(a => new { a.Id, a.Name, a.IsHidden, a.IsFavorite, a.GameInfoType }).ToList();
             var json = JsonConvert.SerializeObject(ids, Formatting.Indented);
 
             File.WriteAllText(fd.FileName, json, Encoding.UTF8);
@@ -198,7 +193,7 @@ public partial class MainWindowViewModel
             log.Error(message, ex);
         }
     }
-    
+
     [GenerateCommand]
     public void Exit()
     {
@@ -210,9 +205,10 @@ public partial class MainWindowViewModel
     {
         SplashScreenHelper.Close();
 
-        Process.GetCurrentProcess().SetActive();
+        // activate the main window after closing the splash screen and shutting its dispatcher down
+        Application.Current.MainWindow?.Activate();
     }
-    
+
     private void OnSubTitleChanged()
     {
         if (string.IsNullOrWhiteSpace(SubTitle))
@@ -223,7 +219,7 @@ public partial class MainWindowViewModel
 
         Title = $"{TITLE_BASE} | {SubTitle}";
     }
-    private void OnGameVmChanged()
+    private void OnCurrentVmChanged()
     {
         Mode = GameVm != null ? ApplicationMode.Manager : ApplicationMode.Default;
         IsManager = Mode == ApplicationMode.Manager;

@@ -1,15 +1,15 @@
 ## 0.6.0
 
-### 0.6.0-beta2
-
 #### General
 
-- Consolidated project properties and references to `Directory.Build.props` and `Directory.Build.targets`
+- Consolidated **SAM** and **SAM.Manager** into a single project
+- **[BUG]** Fixed crash caused by achievements missing a lock or unlocked image
+- **[BUG]** Fixed main window not activating after startup
 - **[BUG]** Fixed splash screen title bar crashing
 
 #### SAM.Manager
 
-- **[BUG]** Fixed crash caused by achievements missing a lock or unlocked image
+- Removed **SAM.Manager**
 
 ### 0.6.0-beta
 

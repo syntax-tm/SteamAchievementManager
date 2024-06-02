@@ -61,6 +61,8 @@ namespace SAM.SplashScreen
             _splashWindow.Dispatcher.BeginInvoke(() =>
             {
                 _splashWindow.Close();
+
+                _splashWindow.Dispatcher.InvokeShutdown();
             }, DispatcherPriority.Background);
         }
     }

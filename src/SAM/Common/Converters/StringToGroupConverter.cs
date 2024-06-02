@@ -3,69 +3,68 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace SAM.Converters
+namespace SAM.Converters;
+
+[ValueConversion(typeof(string), typeof(string))]
+public class StringToGroupConverter : IValueConverter
 {
-    [ValueConversion(typeof(string), typeof(string))]
-    public class StringToGroupConverter : IValueConverter
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        if (value is not string text)
         {
-            if (value is not string text)
-            {
-                return null;
-            }
+            return null;
+        }
 
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return string.Empty;
-            }
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
 
-            var formatted = text.Trim().ToUpper();
-            var firstChar = formatted[0];
+        var formatted = text.Trim().ToUpper();
+        var firstChar = formatted[0];
 
-            if (char.IsLetter(firstChar))
-            {
-                return firstChar;
-            }
+        if (char.IsLetter(firstChar))
+        {
+            return firstChar;
+        }
 
-            if (char.IsDigit(firstChar))
-            {
-                return "#";
-            }
+        if (char.IsDigit(firstChar))
+        {
+            return "#";
+        }
 
-            if (char.IsSeparator(firstChar) ||
-                char.IsPunctuation(firstChar) ||
-                char.IsSymbol(firstChar))
-            {
-                return "-";
-            }
-
+        if (char.IsSeparator(firstChar) ||
+            char.IsPunctuation(firstChar) ||
+            char.IsSymbol(firstChar))
+        {
             return "-";
         }
- 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+
+        return "-";
     }
 
-    public class StringToGroupConverterExtension : MarkupExtension
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public IValueConverter ItemConverter { get; set; }
+        throw new NotImplementedException();
+    }
+}
 
-        public StringToGroupConverterExtension()
-        {
+public class StringToGroupConverterExtension : MarkupExtension
+{
+    public IValueConverter ItemConverter { get; set; }
 
-        }
+    public StringToGroupConverterExtension()
+    {
 
-        public StringToGroupConverterExtension(IValueConverter itemConverter)
-        {
-            ItemConverter = itemConverter;
-        }
+    }
 
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return new StringToGroupConverter();
-        }
+    public StringToGroupConverterExtension(IValueConverter itemConverter)
+    {
+        ItemConverter = itemConverter;
+    }
+
+    public override object ProvideValue(IServiceProvider serviceProvider)
+    {
+        return new StringToGroupConverter();
     }
 }

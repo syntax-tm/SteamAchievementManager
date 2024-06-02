@@ -1,23 +1,24 @@
 ﻿<UserControl x:Class="SAM.Views.LibraryGridView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:core="clr-namespace:SAM.Core;assembly=SAM.Core"
              xmlns:converters="clr-namespace:SAM.Converters"
-             xmlns:sam="clr-namespace:SAM.ViewModels"
+             xmlns:sam="clr-namespace:SAM"
+             xmlns:vm="clr-namespace:SAM.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type={x:Type sam:HomeViewModel}, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type={x:Type vm:HomeViewModel}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
         <ListView ItemsSource="{Binding ItemsView, Mode=OneWay}">
             <ListView.View>
-                <GridView d:DataContext="{d:DesignInstance Type={x:Type core:SteamApp}}">
+                <GridView d:DataContext="{d:DesignInstance Type={x:Type sam:SteamApp}}">
                     <GridViewColumn Width="100">
                         <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type core:SteamApp}">
+                            <DataTemplate DataType="{x:Type sam:SteamApp}">
                                 <Grid Margin="0">
                                     <Image Source="{Binding Icon, Converter={converters:BitmapToImageSourceConverter}}"
                                            Margin="0" />

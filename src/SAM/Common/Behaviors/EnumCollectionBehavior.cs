@@ -4,33 +4,32 @@ using System.Linq;
 using System.Windows.Markup;
 using SAM.Core.Extensions;
 
-namespace SAM.Behaviors
+namespace SAM.Behaviors;
+
+public class EnumCollectionBehavior : MarkupExtension
 {
-    public class EnumCollectionBehavior : MarkupExtension
+    public Type EnumType { get; set; }
+    public bool UseEnumValue { get; set; }
+
+    public override object ProvideValue(IServiceProvider _)
     {
-        public Type EnumType { get; set; }
-        public bool UseEnumValue { get; set; }
- 
-        public override object ProvideValue(IServiceProvider _)
-        {
-            return EnumType is null ?  default(object) : CreateEnumValueList(EnumType);
-        }
- 
-        private List<object> CreateEnumValueList(Type enumType)
-        {
-            if (UseEnumValue)
-            {
-                var intValues = Enum.GetValues(enumType)
-                    .Cast<object>();
+        return EnumType is null ?  default(object) : CreateEnumValueList(EnumType);
+    }
 
-                return intValues.ToList();
-            }
+    private List<object> CreateEnumValueList(Type enumType)
+    {
+        if (UseEnumValue)
+        {
+            var intValues = Enum.GetValues(enumType)
+                .Cast<object>();
 
-            var values = Enum.GetValues(enumType)
-                .Cast<Enum>()
-                .Select(i => i.GetDescription())
-                .ToList<object>();
-            return values;
+            return intValues.ToList();
         }
+
+        var values = Enum.GetValues(enumType)
+            .Cast<Enum>()
+            .Select(i => i.GetDescription())
+            .ToList<object>();
+        return values;
     }
 }

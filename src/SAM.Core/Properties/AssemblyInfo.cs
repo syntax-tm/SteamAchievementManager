@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
+#if WPF
 using System.Windows.Markup;
+#endif
 
 [assembly: ComVisible(false)]
 
@@ -7,8 +9,10 @@ using System.Windows.Markup;
 
 [assembly: log4net.Config.XmlConfigurator(ConfigFile = "log4net.config", Watch = false)]
 
+#if WPF
 [assembly: XmlnsPrefix(@"urn:sam.core", "core")]
 [assembly: XmlnsDefinition(@"urn:sam.core", "SAM.Core")]
 [assembly: XmlnsDefinition(@"urn:sam.core", "SAM.Core.Converters")]
 [assembly: XmlnsDefinition(@"urn:sam.core", "SAM.Core.Settings")]
 [assembly: XmlnsDefinition(@"urn:sam.core", "SAM.Core.Stats")]
+#endif

@@ -13,7 +13,7 @@ public class ContextMenuBehaviour : Behavior<Control>
 
     public static readonly DependencyProperty ShowOnMouseOverProperty =
         DependencyProperty.Register(nameof(ShowOnMouseOver), typeof(bool), typeof(ContextMenuBehaviour));
-    
+
     public static readonly DependencyProperty ShowOnMouseOverDelayProperty =
         DependencyProperty.Register(nameof(ShowOnMouseOverDelay), typeof(int), typeof(ContextMenuBehaviour), new (DEFAULT_DELAY_IN_MS));
 
@@ -29,7 +29,7 @@ public class ContextMenuBehaviour : Behavior<Control>
         get => (bool) GetValue(ShowOnMouseOverProperty);
         set => SetValue(ShowOnMouseOverProperty, value);
     }
-    
+
     public int ShowOnMouseOverDelay
     {
         get => (int) GetValue(ShowOnMouseOverDelayProperty);
@@ -41,7 +41,7 @@ public class ContextMenuBehaviour : Behavior<Control>
         get => (bool) GetValue(ShowOnLeftMouseDownProperty);
         set => SetValue(ShowOnLeftMouseDownProperty, value);
     }
-        
+
     protected override void OnAttached()
     {
         base.OnAttached();
@@ -60,7 +60,7 @@ public class ContextMenuBehaviour : Behavior<Control>
 
         _leftMouseDownHooked = true;
     }
-    
+
     protected override void OnDetaching()
     {
         if (_mouseEnterHooked)
@@ -80,14 +80,14 @@ public class ContextMenuBehaviour : Behavior<Control>
     private void AssociatedObjectOnMouseLeave(object sender, MouseEventArgs e)
     {
         StopTimer();
-        
+
         e.Handled = true;
     }
 
     private void AssociatedObjectOnMouseEnter(object sender, MouseEventArgs e)
     {
         if (!ShowOnMouseOver) return;
-        
+
         StartTimer();
 
         e.Handled = true;
@@ -118,7 +118,7 @@ public class ContextMenuBehaviour : Behavior<Control>
 
         _timer = null;
     }
-    
+
     private void TimerOnTick(object sender, EventArgs e)
     {
         StopTimer();
