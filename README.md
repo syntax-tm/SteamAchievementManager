@@ -3,7 +3,8 @@
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/syntax-tm/SteamAchievementManager">
     <img alt="Build Badge" src="https://github.com/syntax-tm/SteamAchievementManager/actions/workflows/build.yml/badge.svg">
     <img alt="GitHub issues" src="https://img.shields.io/github/issues/syntax-tm/SteamAchievementManager">
-    <img alt="GitHub release (with filter)" src="https://img.shields.io/github/v/release/syntax-tm/SteamAchievementManager">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/syntax-tm/SteamAchievementManager">
+    <img alt="GitHub pre-release" src="https://img.shields.io/github/v/release/syntax-tm/SteamAchievementManager?include_prereleases">
   </div>
 </h1>
 
@@ -21,7 +22,7 @@ The Steam Achievement Manager lets you manage achievements, stats, and more for 
   </a>
 </p>
 
-This project is a fork of the [Steam Achievement Manager](https://github.com/gibbed/SteamAchievementManager) project with the goal of updating to .NET Core and WPF.
+This project is an actively updated fork of the [Steam Achievement Manager](https://github.com/gibbed/SteamAchievementManager).
 
 ## Project Structure
 
@@ -30,9 +31,7 @@ This project is a fork of the [Steam Achievement Manager](https://github.com/gib
 ![](./resources/SAM_projects_white.svg#gh-dark-mode-only)
 ![](./resources/SAM_projects_black.svg#gh-light-mode-only)
 
-`SAM` and `SAM.Manager` are the two application projects that create an executable. `SAM` is the executable that will display your Steam library and let you select an app (game) to manage. When the manager is started, it's passed an ID for a Steam app after which it initializes the Steam API client with that AppID just like any game on Steam would. Steam will show you as in-game, record your play time, and you can earn trading cards (if you have drops left).
-
-The reason why there's two executables is because the manager (`SAM.Manager`) needs to be in its own process anyways in order to actually manage the achievements and stats. Once a process is registered with the Steam client it's not possible to re-initialize the Client with a different AppID. Steam will also treat you as in-game until that Process and any child Processes have exited.
+`SAM` and `SAM.Console` (_WIP_) are the two application projects that create an executable. `SAM` is the executable that will display your Steam library and let you select an app (game) to manage. When managing a game, the app ID is passed as an argument to `SAM.exe` and it initializes the Steam API client with that AppID the same way that normal games would. Steam will show you as in-game, record your play time, and you can earn trading cards (assuming of course you have drops left).
 
 Both `SAM.API` and `SAM.Core` are libraries (`*.dll`). As its name suggests, `SAM.API` contains the native Steam API wrappers. `SAM.Core` is referenced by both executable projects (more on these later) and allows them to both use the same types, resources, etc. without having to duplicate code.
 
@@ -43,7 +42,7 @@ Both `SAM.API` and `SAM.Core` are libraries (`*.dll`). As its name suggests, `SA
 flowchart TB
     subgraph Applicaitons
         S["SAM"]:::app
-        SM["SAM.Manager"]:::app
+        SM["SAM.Console"]:::app
     end
     subgraph Unit Tests
       SU["SAM.UnitTests"]:::unitTests
@@ -74,8 +73,13 @@ flowchart TB
         <td>The main executable used to select a game (or app) from your library</td>
     </tr>
     <tr>
+        <td align="center">-</th>
+        <td align="center"><b>SAM.Console</b></td>
+        <td>Command line interface for SAM for use with console, automation, etc. <i>This is still in development and will be released in a future version.</i></td>
+    </tr>
+    <tr>
         <td align="center"><b>SAM.Game</b></td>
-        <td align="center"><b>SAM.Manager</b></td>
+        <td align="center"><b>SAM</b></td>
         <td>Allows for viewing and editing an app's achievements and stats</td>
     </tr>
     <tr>
@@ -86,7 +90,7 @@ flowchart TB
     <tr>
         <td align="center">-</th>
         <td align="center"><b>SAM.Core</b></td>
-        <td>Common resources used by both <code>SAM</code> and <code>SAM.Manager</code>.</td>
+        <td>Common resources used by both <code>SAM</code> and <code>SAM.Console</code>.</td>
     </tr>
 </table>
 

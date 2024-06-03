@@ -22,7 +22,7 @@
       </style>
       <ul style="float: left;">
         <li><b style="font-size: 12pt"><code style="color: #247FD4">SAM</code></b></li>
-        <li><b style="font-size: 12pt"><code style="color: #247FD4">SAM.Manager</code></b></li>
+        <li><b style="font-size: 12pt"><code style="color: #247FD4">SAM.Console</code></b></li>
         <li><b style="font-size: 12pt"><code style="color: #D63E48">SAM.Core</code></b></li>
         <li><b style="font-size: 12pt"><code style="color: #D63E48">SAM.API</code></b></li>
         <li><b style="font-size: 12pt"><code style="color: #9478F0">SAM.UnitTests</code></b></li>
