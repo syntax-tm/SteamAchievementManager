@@ -79,7 +79,7 @@ jobs:
 
         foreach ($item in $items)
         {
-          Write-Host "- $($PSStyle.Foreground.BrightCyan)$relPath$($PSStyle.Reset)"
+          Write-Host "- $($PSStyle.Foreground.BrightCyan)$($item.Name)$($PSStyle.Reset)"
         }
 
         $items | % { Compress-Archive -Path "$($_.FullName)\*" -DestinationPath "$($_.FullName).zip" -Force }
