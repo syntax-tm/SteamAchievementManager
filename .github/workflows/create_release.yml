@@ -59,7 +59,7 @@ jobs:
       version: ${{ needs.setup.outputs.version }}
   create-release:
     runs-on: windows-latest
-    needs: [build]
+    needs: [setup, build]
     permissions:
       contents: write
     steps:
@@ -67,12 +67,21 @@ jobs:
     - uses: actions/download-artifact@v4
       with:
         path: artifacts
-        name: ${{ env.artifact-name }}
+        # name: ${{ env.artifact-name }}
       env:
         artifact-name: ${{ needs.build.outputs.artifact-name }}
     - name: Create Archive
       run: |
         $items = Get-ChildItem artifacts
+        $artifactName = "SAM_${{ needs.setup.outputs.version }}"
+
+        Write-Host "Artifacts:"
+
+        foreach ($item in $items)
+        {
+          Write-Host "- $($PSStyle.Foreground.BrightCyan)$relPath$($PSStyle.Reset)"
+        }
+
         $items | % { Compress-Archive -Path "$($_.FullName)\*" -DestinationPath "$($_.FullName).zip" -Force }
 
         Get-ChildItem -Path artifacts -Filter *.zip | Format-Table
