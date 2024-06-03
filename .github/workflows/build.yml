@@ -21,6 +21,10 @@ on:
         default: '0.0.1'
         required: false
         type: string
+    outputs:
+      artifact-name:
+        description: 'The name of the build artifact'
+        value: ${{ jobs.build.outputs.artifact-name }}
   workflow_dispatch:
   push:
     branches: [ "main", "master" ]
@@ -41,6 +45,8 @@ concurrency:
 jobs:
   build:
     runs-on: windows-latest
+    outputs:
+      artifact-name: ${{ steps.set-vars.outputs.artifact-name }}
     steps:
     - name: Checkout
       id: git-checkout
@@ -88,6 +94,8 @@ jobs:
         echo "BUILD_DATE_LONG=$longTs" >> $env:GITHUB_ENV
         echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
         echo "ARTIFACT_NAME=$artifactName" >> $env:GITHUB_ENV
+
+        echo "artifact-name=$artifactName" >> $env:GITHUB_OUTPUT
     - name: Publish SAM
       id: dotnet-publish
       run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Release -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}

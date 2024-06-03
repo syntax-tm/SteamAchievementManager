@@ -67,6 +67,9 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         path: artifacts
+        name: ${{ env.artifact-name }}
+      env:
+        artifact-name: ${{ needs.build.outputs.artifact-name }}
     - name: Create Archive
       run: |
         $items = Get-ChildItem artifacts
