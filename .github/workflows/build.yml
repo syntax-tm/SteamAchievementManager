@@ -8,6 +8,7 @@ env:
   BUILD_DATE: ''
   BUILD_DATE_LONG: ''
   BUILD_TYPE: ''
+  CONFIGURATION: ''
 
 on:
   workflow_call:
@@ -79,7 +80,8 @@ jobs:
         $longTs = $now.ToString('yyyy-MM-dd')
         $ts = $now.ToString('yy.MM.dd')
         $buildType = "${{ inputs.is_release && 'release' || 'debug' }}"
-        $artifactName = $releaseType -eq 'release' ? "SAM_${{ inputs.version }}" : [string]::Format('SAM_{0}_{1}.{2}', $buildType, $ts, '${{ github.run_number }}')
+        $artifactName = $buildType -eq 'release' ? "SAM_${{ inputs.version }}" : [string]::Format('SAM_{0}_{1}.{2}', $buildType, $ts, '${{ github.run_number }}')
+        $configuration = $buildType -eq 'release' ? 'Release' : 'Debug'
 
         Write-Host "Build Date    : " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$longTs ($ts)$($PSStyle.Reset)"
@@ -90,28 +92,33 @@ jobs:
         Write-Host "Artifact Name : " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$artifactName$($PSStyle.Reset)"
 
+        Write-Host "Configuration : " -NoNewLine
+        Write-Host "$($PSStyle.Foreground.BrightCyan)$configuration$($PSStyle.Reset)"
+
         echo "BUILD_DATE=$ts" >> $env:GITHUB_ENV
         echo "BUILD_DATE_LONG=$longTs" >> $env:GITHUB_ENV
         echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
+        echo "CONFIGURATION=$configuration" >> $env:GITHUB_ENV
         echo "ARTIFACT_NAME=$artifactName" >> $env:GITHUB_ENV
 
         echo "artifact-name=$artifactName" >> $env:GITHUB_OUTPUT
     - name: Publish SAM
       id: dotnet-publish
-      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c Release -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
+      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c ${{ env.CONFIGURATION }} -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
     - name: Stage Artifacts
       id: stage-artifacts
       run: |
-        $samDir = Get-Item publish | Select-Object -ExpandProperty FullName
+        $publishDir = Get-Item publish | Select-Object -ExpandProperty FullName
 
-        $stagedFiles = gci $samDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
+        $stagedFiles = gci $publishDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
 
         Write-Host ""
-        Write-Host "::group::Staged Artifacts"
+        Write-Host "$($PSStyle.Bold)Staged Artifacts$($PSStyle.BoldOff)"
+        Write-Host ""
 
         foreach ($stagedFile in $stagedFiles)
         {
-          $relPath = [System.IO.Path]::GetRelativePath($samDir, $stagedFile)
+          $relPath = [System.IO.Path]::GetRelativePath($publishDir, $stagedFile)
           $ext = [System.IO.Path]::GetExtension($stagedFile)
 
           $color = ''
@@ -134,8 +141,6 @@ jobs:
 
           Write-Host "- $color$relPath$($PSStyle.Reset)"
         }
-
-        Write-Host "::endgroup::"
     - name: Upload a Build Artifact
       id: artifact-upload
       uses: actions/upload-artifact@v4
