@@ -37,6 +37,11 @@ public class SteamLibraryManager
     }
     public bool IsInitialized { get; private set; }
     public SteamLibrary Library { get; set; }
+    
+    protected SteamLibraryManager()
+    {
+
+    }
 
     public static SteamLibraryManager Default
     {
@@ -51,11 +56,6 @@ public class SteamLibraryManager
         }
     }
     public static SteamLibrary DefaultLibrary => Default.Library;
-
-    protected SteamLibraryManager()
-    {
-
-    }
 
     public void Init()
     {
@@ -100,6 +100,7 @@ public class SteamLibraryManager
         throw new SAMException(message);
     }
 
+    // TODO: add async function
     private IDictionary<uint, ISupportedApp> GetSupportedGames(uint? appId = null)
     {
         if (_gameList != null) return _gameList;

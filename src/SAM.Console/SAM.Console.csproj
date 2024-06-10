@@ -6,10 +6,20 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
+    <PackageReference Include="Terminal.Gui" Version="1.17.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SAM.API\SAM.API.csproj" />
     <ProjectReference Include="..\SAM.Core\SAM.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

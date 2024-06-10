@@ -9,7 +9,7 @@ public class EntryAssemblyHelper
     public override string ToString()
     {
         var assemblyName = Assembly.GetEntryAssembly()?.GetName().Name;
-        var appId = SteamClientManager.AppId == 0 ? string.Empty : $" ({SteamClientManager.AppId})";
+        var appId = string.Empty;
         return $"{assemblyName}{appId}";
     }
 }

@@ -9,7 +9,7 @@ namespace SAM.API.Types
     {
         private static readonly KeyValue _invalid = new();
 
-        public List<KeyValue> Children;
+        public List<KeyValue> Children { get; set; }
         public string Name = @"<root>";
         public KeyValueType Type = KeyValueType.None;
         public bool Valid;
@@ -19,7 +19,7 @@ namespace SAM.API.Types
         {
             get
             {
-                var child = Children?.SingleOrDefault(c => string.Compare(c.Name, key, StringComparison.InvariantCultureIgnoreCase) == 0);
+                var child = Children?.SingleOrDefault(c => c?.Name?.Equals(key, StringComparison.InvariantCultureIgnoreCase) ?? false);
 
                 return child ?? _invalid;
             }
@@ -120,7 +120,7 @@ namespace SAM.API.Types
 
         public bool ReadAsBinary(Stream input)
         {
-            Children = new ();
+            Children = [ ];
 
             try
             {

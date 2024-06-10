@@ -84,7 +84,6 @@ namespace SAM.Core
 
         public static LoadAppInfoResult GetAppInfo(uint id, bool loadDlc = false)
         {
-
             try
             {
                 if (ShouldSkip(id))
@@ -165,7 +164,6 @@ namespace SAM.Core
 
         public static async Task<SteamStoreApp> GetAppInfoAsync(uint id, bool loadDlc = false)
         {
-
             try
             {
                 if (ShouldSkip(id))

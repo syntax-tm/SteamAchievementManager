@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.CodeGenerators;
@@ -32,14 +31,16 @@ public partial class SteamApp : BindableBase, ISteamApp
     [GenerateProperty] private string _publisher;
     [GenerateProperty] private string _developer;
     [GenerateProperty] private ISteamStoreApp _storeInfo;
-    [GenerateProperty] private Image _icon;
-    [GenerateProperty] private Image _header;
-    [GenerateProperty] private Image _capsule;
-    [GenerateProperty] private Image _logo;
+    [GenerateProperty] private Uri _icon;
+    [GenerateProperty] private Uri _header;
+    [GenerateProperty] private Uri _capsule;
+    [GenerateProperty] private Uri _logo;
+    [GenerateProperty] private bool _headerLoaded;
     [GenerateProperty] private string _group;
     [GenerateProperty] private bool _isHidden;
     [GenerateProperty] private bool _isFavorite;
     [GenerateProperty] private bool _isMenuOpen;
+    [GenerateProperty] private bool _isManaging;
 
     public bool IsJunk => GameInfoType == GameInfoType.Junk;
     public bool IsDemo => GameInfoType == GameInfoType.Demo;
@@ -73,6 +74,18 @@ public partial class SteamApp : BindableBase, ISteamApp
         // TODO: Add a visual indication that the manager is running (handle Exited event)
         if (_managerProcess != null && _managerProcess.SetActive()) return;
         _managerProcess = SAMHelper.OpenManager(Id);
+        _managerProcess.EnableRaisingEvents = true;
+        _managerProcess.Exited += OnManagerProcessExited;
+        IsManaging = true;
+    }
+
+    private void OnManagerProcessExited(object sender, EventArgs args)
+    {
+        _managerProcess.Exited -= OnManagerProcessExited;
+        _managerProcess.Dispose();
+        _managerProcess = null;
+
+        IsManaging = false;
     }
 
     [GenerateCommand]
@@ -188,7 +201,7 @@ public partial class SteamApp : BindableBase, ISteamApp
         try
         {
             // try and load the user's grid image for the app first
-            if (SteamClientManager.TryGetCachedAppImage(Id, SteamImageType.GridLandscape, out var gridHeader))
+            if (SteamClientManager.TryGetCachedAppImageUri(Id, SteamImageType.GridLandscape, out var gridHeader))
             {
                 Header = gridHeader;
 
@@ -196,7 +209,7 @@ public partial class SteamApp : BindableBase, ISteamApp
             }
 
             // if they don't have a grid image then try and use the default header
-            if (SteamClientManager.TryGetCachedAppImage(Id, SteamImageType.Header, out var appHeader))
+            if (SteamClientManager.TryGetCachedAppImageUri(Id, SteamImageType.Header, out var appHeader))
             {
                 Header = appHeader;
 
@@ -204,7 +217,7 @@ public partial class SteamApp : BindableBase, ISteamApp
             }
 
             // if there's no default header either, then see if there's a logo we can use
-            if (SteamClientManager.TryGetCachedAppImage(Id, SteamImageType.Logo, out var appLogo))
+            if (SteamClientManager.TryGetCachedAppImageUri(Id, SteamImageType.Logo, out var appLogo))
             {
                 log.Info($"Using {nameof(SteamImageType.Logo)} for app id {Id}.");
 
@@ -256,14 +269,19 @@ public partial class SteamApp : BindableBase, ISteamApp
         log.Debug($"Saving {nameof(SteamAppSettings)} {settings}.");
     }
 
+    protected void OnHeaderChanged()
+    {
+        HeaderLoaded = Header != null;
+    }
+
     protected void OnStoreInfoChanged()
     {
         // we didn't have a header OR a logo in the cache, so try downloading the header first
         if (!string.IsNullOrEmpty(StoreInfo?.HeaderImage))
         {
-            var storeHeader = SteamCdnHelper.DownloadImage(Id, SteamImageType.Header);
+            var storeHeaderUri = SteamCdnHelper.GetImageUri(Id, SteamImageType.Header);
 
-            Header = storeHeader;
+            Header = storeHeaderUri;
 
             return;
         }
@@ -273,7 +291,11 @@ public partial class SteamApp : BindableBase, ISteamApp
         var appLogoUrl = SteamClientManager.Default.GetAppLogo(Id);
         if (!string.IsNullOrEmpty(appLogoUrl))
         {
-            Header = Logo = SteamCdnHelper.DownloadImage(Id, SteamImageType.Logo, appLogoUrl);
+            var appLogoUri = SteamCdnHelper.GetImageUri(Id, SteamImageType.Logo, appLogoUrl);
+
+            Header = Logo = appLogoUri;
+
+            return;
         }
 
         // TODO: re-add this back when the other library views are available, until then nothing uses the icon

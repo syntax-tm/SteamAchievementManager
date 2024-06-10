@@ -52,7 +52,7 @@ namespace SAM.Core
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to download '{url}'. {e.Message}";
-                throw new (message, e);
+                throw new SAMException(message, e);
             }
         }
 
@@ -94,7 +94,7 @@ namespace SAM.Core
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to download '{url}'. {e.Message}";
-                throw new (message, e);
+                throw new SAMException(message, e);
             }
         }
 
@@ -136,7 +136,7 @@ namespace SAM.Core
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to download '{url}'. {e.Message}";
-                throw new (message, e);
+                throw new SAMException(message, e);
             }
         }
 
@@ -178,7 +178,7 @@ namespace SAM.Core
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to download '{url}'. {e.Message}";
-                throw new (message, e);
+                throw new SAMException(message, e);
             }
         }
 
@@ -224,7 +224,7 @@ namespace SAM.Core
             catch (Exception e)
             {
                 var message = $"An error occurred attempting to download '{imageUrl}'. {e.Message}";
-                throw new (message, e);
+                throw new SAMException(message, e);
             }
         }
 

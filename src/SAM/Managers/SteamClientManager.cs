@@ -4,13 +4,14 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-#if WPF
 using System.Windows.Documents;
-#endif
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using log4net;
 using SAM.API;
+using SAM.Core;
 
-namespace SAM.Core;
+namespace SAM;
 
 public static class SteamClientManager
 {
@@ -114,6 +115,53 @@ public static class SteamClientManager
         catch
         {
             image = null;
+            return false;
+        }
+    }
+
+    // TODO: load user's grid images (if present)
+    public static bool TryGetCachedAppImageSource(uint appId, SteamImageType type, out ImageSource image)
+    {
+        try
+        {
+            if (!CachedAppImageExists(appId, type))
+            {
+                image = null;
+                return false;
+            }
+
+            var imagePath = GetCachedAppImagePath(appId, type);
+
+            image = new BitmapImage(new (imagePath));
+
+            return true;
+        }
+        catch
+        {
+            image = null;
+            return false;
+        }
+    }
+
+    public static bool TryGetCachedAppImageUri(uint appId, SteamImageType type, out Uri uri)
+    {
+        try
+        {
+            if (!CachedAppImageExists(appId, type))
+            {
+                uri = null;
+                return false;
+            }
+
+            var imagePath = GetCachedAppImagePath(appId, type);
+
+            uri = new (imagePath);
+
+            return true;
+        }
+        catch
+        {
+            uri = null;
             return false;
         }
     }

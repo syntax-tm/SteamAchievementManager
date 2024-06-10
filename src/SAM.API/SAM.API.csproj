@@ -21,6 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
     </PackageReference>
+    <PackageReference Include="ValveKeyValue" Version="0.8.2.162" />
   </ItemGroup>
 
   <ItemGroup>

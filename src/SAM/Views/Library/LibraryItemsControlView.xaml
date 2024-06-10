@@ -27,11 +27,11 @@
     </UserControl.Resources>
 
     <Grid>
-        <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView, Mode=OneWay}" HorizontalContentAlignment="Center" CacheLengthUnit="Pixel">
+        <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView, Mode=OneWay}" HorizontalContentAlignment="Center" CacheLengthUnit="Page">
             <ui:VirtualizingItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True"
-                                              VirtualizationMode="Recycling" IsVirtualizing="True" />
+                                              VirtualizationMode="Standard" IsVirtualizing="True" />
                 </ItemsPanelTemplate>
             </ui:VirtualizingItemsControl.ItemsPanel>
             <ui:VirtualizingItemsControl.ItemContainerStyle>
@@ -199,21 +199,27 @@
                                 <behaviors:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="False" />
                             </dxmvvm:Interaction.Behaviors>
                             <Grid>
-                                <Image x:Name="HeaderImage" Source="{Binding Header, Converter={converters:BitmapToImageSourceConverter}}" Stretch="Fill" StretchDirection="Both">
+                                <Image x:Name="HeaderImage" Stretch="Fill" StretchDirection="Both">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Source={StaticResource BindingProxy}, Path=Data, TargetNullValue=False, FallbackValue=False}" Value="True">
                                                     <Setter Property="Opacity" Value="0.25" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}}" Value="True">
+                                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=PART_Button}" Value="True">
                                                     <Setter Property="Opacity" Value="0.75" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding ContextMenu.IsOpen, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ui:Button}}, TargetNullValue=False, FallbackValue=False}" Value="True">
+                                                <DataTrigger Binding="{Binding ContextMenu.IsOpen, ElementName=PART_Button, TargetNullValue=False, FallbackValue=False}" Value="True">
                                                     <Setter Property="Opacity" Value="0.25" />
                                                 </DataTrigger>
                                                 <DataTrigger Binding="{Binding IsHidden}" Value="True">
                                                     <Setter Property="Opacity" Value="0.4" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HeaderLoaded}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding HeaderLoaded}" Value="True">
+                                                    <Setter Property="Source" Value="{Binding Header}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

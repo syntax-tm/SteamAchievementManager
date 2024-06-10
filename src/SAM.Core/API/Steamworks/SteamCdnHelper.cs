@@ -54,5 +54,33 @@ namespace SAM.Core
                 throw;
             }
         }
+
+        public static Uri GetImageUri(uint id, SteamImageType type, string file = null)
+        {
+            try
+            {
+                var url = type switch
+                {
+                    SteamImageType.ClientIcon      => string.Format(GAME_CLIENT_ICON_URI, id, file),
+                    SteamImageType.Icon            => string.Format(GAME_ICON_URI, id, file),
+                    SteamImageType.Logo            => string.Format(GAME_LOGO_URI, id, file),
+                    SteamImageType.Header          => string.Format(GAME_HEADER_URI, id),
+                    SteamImageType.LibraryHero     => string.Format(GAME_LIBRARY_HERO_URI, id),
+                    SteamImageType.SmallCapsule    => string.Format(GAME_SMALL_CAPSULE_URI, id),
+                    SteamImageType.MediumCapsule   => string.Format(GAME_MEDIUM_CAPSULE_URI, id),
+                    SteamImageType.LargeCapsule    => string.Format(GAME_LARGE_CAPSULE_URI, id),
+                    SteamImageType.AchievementIcon => string.Format(GAME_ACHIEVEMENT_URI, id, file),
+                    _                              => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+                };
+
+                return new (url);
+            }
+            catch (Exception e)
+            {
+                log.Error($"An error occurred downloading the {type} image for app id '{id}'.", e);
+
+                throw;
+            }
+        }
     }
 }

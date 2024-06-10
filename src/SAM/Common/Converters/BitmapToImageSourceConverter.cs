@@ -15,6 +15,25 @@ namespace SAM.Converters;
 [ValueConversion(typeof(Bitmap), typeof(ImageSource))]
 public class BitmapToImageSourceConverter : IValueConverter
 {
+    //public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //{
+    //    if (value is not Bitmap bmp)
+    //        return null;
+    //
+    //    var ms = new MemoryStream();
+    //    bmp.Save(ms, bmp.RawFormat);
+    //
+    //    ms.Position = 0;
+    //
+    //    var img = new BitmapImage();
+    //    img.BeginInit();
+    //    img.StreamSource = ms;
+    //    img.EndInit();
+    //    img.Freeze();
+    //
+    //    return img;
+    //}
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not Bitmap bmp)

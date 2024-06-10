@@ -103,12 +103,12 @@ flowchart TB
 A special thank you to [JetBrains](https://www.jetbrains.com/) for their continued [Support of Open-Source Projects](https://www.jetbrains.com/community/opensource/#support) like **SAM**.
 
 > [!NOTE]
-> Active **SAM** contributors are eligible to receieve complimentary licenses [for non-commercial development] for **all** **JetBrains** products. For questions regarding eligability please refer to the [Open Source FAQ](https://sales.jetbrains.com/hc/en-gb/categories/13706169183250-Free-Licenses-for-OSS-development).
+> Active **SAM** contributors are eligible to receieve complimentary licenses [^1] for **all** **JetBrains** products. For questions regarding eligability please refer to the [Open Source FAQ](https://sales.jetbrains.com/hc/en-gb/categories/13706169183250-Free-Licenses-for-OSS-development).
 
 ## Acknowledgements
 
 <p align="center">
-  <a href="https://github.com/DevExpress/DevExpress.Mvvm.Free">DevExpress MVVM</a> • <a href="https://github.com/RudeySH/SteamCountries">SteamCountries</a> • <a href="https://github.com/lepoco/wpfui">WPF UI</a>
+  <a href="https://github.com/DevExpress/DevExpress.Mvvm.Free">DevExpress</a> • <a href="https://github.com/RudeySH/SteamCountries">SteamCountries</a> • <a href="https://github.com/lepoco/wpfui">WPF UI</a>
 </p>
 
 ## Resources
@@ -117,3 +117,7 @@ A special thank you to [JetBrains](https://www.jetbrains.com/) for their continu
 - [Steamworks Overview](https://partner.steamgames.com/doc/sdk/api)
   - [Steamworks API](https://partner.steamgames.com/doc/api)
   - [Steamworks Web API](https://partner.steamgames.com/doc/webapi)
+
+---
+
+[^1]: For non-commercial development
