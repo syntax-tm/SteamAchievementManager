@@ -1,0 +1,214 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:SAM.Controls"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                    xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+                    xmlns:mvvm="clr-namespace:SAM.Mvvm"
+                    xmlns:behaviors="clr-namespace:SAM.Behaviors">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Colors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/resources/staticcolors.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/button/button.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/togglebutton/togglebutton.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type controls:AppTileButton}">
+        <!--<Setter Property="Width" Value="" />-->
+        <Setter Property="ToolTip" Value="{Binding Name}" />
+        <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
+        <!--<Setter Property="Width" Value="300" />
+        <Setter Property="Height" Value="143" />
+        <Setter Property="Margin" Value="5" />-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:AppTileButton}">
+                    <Border x:Name="PART_Border"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{StaticResource ControlBorderBrush}">
+                        <Grid x:Name="PART_RootGrid">
+                            <ui:Button x:Name="PART_Button" Padding="0"
+                                       Background="Transparent"
+                                       BorderBrush="Transparent"
+                                       MouseOverBackground="Transparent"
+                                       MouseOverBorderBrush="Transparent"
+                                       Foreground="{StaticResource TextFillColorLightPrimaryBrush}">
+                                <Grid>
+                                    <Image x:Name="PART_Image"
+                                           Stretch="Fill" StretchDirection="Both"
+                                           Visibility="Collapsed" />
+                                    <TextBlock x:Name="PART_Header"
+                                               Visibility="Collapsed"
+                                               Text="{TemplateBinding Header}"
+                                               FontSize="30"
+                                               HorizontalAlignment="Center"
+                                               Margin="5" TextWrapping="Wrap"
+                                               TextTrimming="WordEllipsis" />
+                                </Grid>
+                            </ui:Button>
+                            <StackPanel x:Name="PART_ButtonPanel" HorizontalAlignment="Left"
+                                        VerticalAlignment="Bottom"
+                                        Orientation="Horizontal" Visibility="Collapsed">
+                                <ui:Button x:Name="PART_FavoriteButton"
+                                           Width="30" Height="30" Margin="0" BorderThickness="0"
+                                           Padding="2" CornerRadius="0"
+                                           Background="{StaticResource FavoritesBrush}">
+                                    <ui:Button.Style>
+                                        <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                            <Setter Property="Icon" Value="{ui:SymbolIcon Heart24}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsFavorite}" Value="True">
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsFavorite}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                                    <Setter Property="ToolTip" Value="Add to Favorites" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsFavorite}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon HeartBroken24}" />
+                                                    <Setter Property="ToolTip" Value="Remove From Favorites" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:Button.Style>
+                                </ui:Button>
+                                <ui:Button x:Name="PART_HideButton"
+                                           Width="30" Height="30" Margin="0" BorderThickness="0"
+                                           Padding="2" CornerRadius="0"
+                                           Background="{StaticResource HiddenBrush}">
+                                    <ui:Button.Style>
+                                        <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                            <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsHidden}" Value="True">
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsHidden}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24, Filled=True}" />
+                                                    <Setter Property="ToolTip" Value="Hide App" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsHidden}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Eye24, Filled=True}" />
+                                                    <Setter Property="ToolTip" Value="Unhide App" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:Button.Style>
+                                </ui:Button>
+                            </StackPanel>
+                            <ui:Button x:Name="PART_Icon" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                       Width="30" Height="30" Margin="0" BorderThickness="0"
+                                       Padding="0" CornerRadius="0"
+                                       Background="Transparent"
+                                       BorderBrush="Transparent"
+                                       MouseOverBackground="Transparent"
+                                       MouseOverBorderBrush="Transparent"
+                                       Visibility="Collapsed" Foreground="{TemplateBinding Foreground}"
+                                       IsHitTestVisible="False">
+                                <ui:Button.Icon>
+                                    <ui:SymbolIcon Symbol="{TemplateBinding Icon}" Filled="True" />
+                                </ui:Button.Icon>
+                            </ui:Button>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ShowImage" Value="False">
+                            <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="PART_Header" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="ShowImage" Value="True">
+                            <Setter TargetName="PART_Image" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_Image" Property="Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                            <Setter TargetName="PART_Header" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="ContextMenu.IsOpen" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Accent2PrimaryBrush}" />
+                            <Setter TargetName="PART_Icon" Property="BorderBrush" Value="{StaticResource Accent2PrimaryBrush}" />
+                            <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource Accent2PrimaryBrush}" />
+                            <Setter TargetName="PART_Image" Property="Opacity" Value="0.25" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource Accent4PrimaryBrush}" />
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Accent5PrimaryBrush}" />
+                            <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource Accent4PrimaryBrush}" />
+                            <Setter TargetName="PART_ButtonPanel" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_Image" Property="Opacity" Value="0.75" />
+                        </Trigger>
+                        <!-- Favorite -->
+                        <Trigger Property="IsFavorite" Value="True">
+                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource FavoritesBrush}" />
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
+                            <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource FavoritesBrush}" />
+                            <Setter TargetName="PART_Icon" Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsFavorite" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Icon" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="PART_Border" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="PART_Border" Property="BorderBrush">
+                                <Setter.Value>
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" />
+                                </Setter.Value>
+                            </Setter>
+                        </MultiTrigger>
+                        <!-- Hidden -->
+                        <Trigger Property="IsHidden" Value="True">
+                            <Setter TargetName="PART_Icon" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_Image" Property="Opacity" Value="0.4" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsHidden" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Icon" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="PART_Border" Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="PART_Border" Property="BorderBrush">
+                                <Setter.Value>
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" />
+                                </Setter.Value>
+                            </Setter>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

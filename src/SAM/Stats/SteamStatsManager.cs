@@ -11,6 +11,7 @@ using SAM.API.Stats;
 using SAM.API.Types;
 using SAM.Core;
 using SAM.Core.Extensions;
+using AchievementInfo = SAM.API.Stats.AchievementInfo;
 using Timer = System.Timers.Timer;
 // ReSharper disable InconsistentNaming
 // ReSharper disable CollectionNeverQueried.Local

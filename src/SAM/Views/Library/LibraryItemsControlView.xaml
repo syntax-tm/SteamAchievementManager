@@ -5,12 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-             xmlns:mvvm="clr-namespace:SAM.Mvvm"
              xmlns:vm="clr-namespace:SAM.ViewModels"
-             xmlns:behaviors="clr-namespace:SAM.Behaviors"
-             xmlns:converters="clr-namespace:SAM.Converters"
-             xmlns:core="urn:sam.core"
              xmlns:sam="clr-namespace:SAM"
+             xmlns:controls="clr-namespace:SAM.Controls"
+             xmlns:behaviors="clr-namespace:SAM.Behaviors"
+             xmlns:mvvm="clr-namespace:SAM.Mvvm"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -19,88 +18,77 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/resources/staticcolors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/button/button.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/togglebutton/togglebutton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/ExpanderStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Size x:Key="ItemSize" Width="600" Height="286" />
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding LoadAllImagesCommand}" />
+    </dxmvvm:Interaction.Behaviors>
+
     <Grid>
-        <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView, Mode=OneWay}" HorizontalContentAlignment="Center" CacheLengthUnit="Page">
-            <ui:VirtualizingItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True"
-                                              VirtualizationMode="Standard" IsVirtualizing="True" />
-                </ItemsPanelTemplate>
-            </ui:VirtualizingItemsControl.ItemsPanel>
-            <ui:VirtualizingItemsControl.ItemContainerStyle>
-                <Style TargetType="{x:Type ContentPresenter}">
-                    <Setter Property="Width" Value="300" />
-                    <Setter Property="Height" Value="143" />
-                    <Setter Property="Margin" Value="5" />
-                </Style>
-            </ui:VirtualizingItemsControl.ItemContainerStyle>
-            <ui:VirtualizingItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type sam:SteamApp}">
-                    <Grid>
-                        <ui:Button x:Name="PART_Button" Padding="0">
-                            <ui:Button.Resources>
+        <ui:PassiveScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding ItemsView, Mode=OneWay}" HorizontalContentAlignment="Center">
+                <ItemsControl.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.Panel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Orientation="Vertical" IsVirtualizing="True" IsVirtualizingWhenGrouping="True" />
+                            </ItemsPanelTemplate>
+                        </GroupStyle.Panel>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Margin" Value="0,0,0,5" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <Expander IsExpanded="False" Background="{StaticResource ExpanderHeaderBackground}" BorderBrush="{StaticResource SeparatorBorderBrush}"
+                                                      Foreground="{StaticResource TextFillColorLightPrimaryBrush}" BorderThickness="1,1,1,5">
+                                                <Expander.Header>
+                                                    <Grid>
+                                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" Margin="5,0,0,0" />
+                                                        <TextBlock Text="{Binding ItemCount, Mode=OneWay, StringFormat='{}({0})'}" FontWeight="Light"
+                                                                   HorizontalAlignment="Right" Margin="0,0,10,0" />
+                                                    </Grid>
+                                                </Expander.Header>
+                                                <Expander.Content>
+                                                    <ItemsPresenter />
+                                                </Expander.Content>
+                                            </Expander>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </ItemsControl.GroupStyle>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True"
+                                                  VirtualizationMode="Recycling" IsVirtualizing="True" />
+                        <!--<WrapPanel Orientation="Horizontal" />-->
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Setter Property="Width" Value="300" />
+                        <Setter Property="Height" Value="143" />
+                        <Setter Property="Margin" Value="5" />
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type sam:SteamApp}">
+                        <controls:AppTileButton Command="{Binding ManageAppCommand}"
+                                                IsFavorite="{Binding IsFavorite}"
+                                                IsHidden="{Binding IsHidden}"
+                                                Header="{Binding Name}"
+                                                ImageSource="{Binding Header}">
+                            <controls:AppTileButton.Resources>
                                 <mvvm:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
-                            </ui:Button.Resources>
-                            <ui:Button.Style>
-                                <Style TargetType="{x:Type ui:Button}">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="ToolTip" Value="{Binding Name}" />
-                                    <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
-                                    <Setter Property="BorderBrush" Value="{StaticResource ControlElevationBorderBrush}" />
-                                    <Setter Property="BorderThickness" Value="3" />
-                                    <Style.Triggers>
-                                        <Trigger Property="ContextMenu.IsOpen" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource Accent2PrimaryBrush}" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource Accent2PrimaryBrush}" />
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource Accent3PrimaryBrush}" />
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding Data, Source={StaticResource BindingProxy}, TargetNullValue=False, FallbackValue=False}" Value="True">
-                                            <Setter Property="BorderBrush" Value="{StaticResource AccentPrimaryBrush}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
-                                            <Setter Property="Background" Value="{StaticResource AccentPrimaryBrush}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsFavorite}" Value="True">
-                                            <Setter Property="BorderThickness" Value="5" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                            <Setter Property="BorderThickness" Value="5" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
-                                        </DataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsFavorite}" Value="True" />
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
-                                            <Setter Property="MouseOverBackground" Value="{StaticResource FavoritesBrush}" />
-                                            <Setter Property="MouseOverBorderBrush" Value="{StaticResource FavoritesBrush}" />
-                                        </MultiDataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding IsHidden}" Value="True" />
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
-                                            <Setter Property="MouseOverBackground" Value="{StaticResource HiddenBrush}" />
-                                            <Setter Property="MouseOverBorderBrush" Value="{StaticResource HiddenBrush}" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ui:Button.Style>
-                            <ui:Button.ContextMenu>
+                            </controls:AppTileButton.Resources>
+                            <controls:AppTileButton.ContextMenu>
                                 <ContextMenu>
                                     <!-- ReSharper disable Xaml.RedundantResource -->
                                     <ui:MenuItem Header="{Binding Name}" IsEnabled="False" Margin="0,5,0,0">
@@ -193,185 +181,15 @@
                                                  Icon="{ui:SymbolIcon Copy24}" />
                                     <!-- ReSharper restore Xaml.RedundantResource -->
                                 </ContextMenu>
-                            </ui:Button.ContextMenu>
+                            </controls:AppTileButton.ContextMenu>
                             <dxmvvm:Interaction.Behaviors>
                                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
                                 <behaviors:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="False" />
                             </dxmvvm:Interaction.Behaviors>
-                            <Grid>
-                                <Image x:Name="HeaderImage" Stretch="Fill" StretchDirection="Both">
-                                    <Image.Style>
-                                        <Style TargetType="{x:Type Image}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Source={StaticResource BindingProxy}, Path=Data, TargetNullValue=False, FallbackValue=False}" Value="True">
-                                                    <Setter Property="Opacity" Value="0.25" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=PART_Button}" Value="True">
-                                                    <Setter Property="Opacity" Value="0.75" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding ContextMenu.IsOpen, ElementName=PART_Button, TargetNullValue=False, FallbackValue=False}" Value="True">
-                                                    <Setter Property="Opacity" Value="0.25" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                                    <Setter Property="Opacity" Value="0.4" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding HeaderLoaded}" Value="False">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding HeaderLoaded}" Value="True">
-                                                    <Setter Property="Source" Value="{Binding Header}" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                                <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
-                                    <Viewbox.Style>
-                                        <Style TargetType="{x:Type Viewbox}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Header}" Value="{x:Null}">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Viewbox.Style>
-                                    <TextBlock Text="{Binding Name}"
-                                               FontSize="30" TextAlignment="Center"
-                                               HorizontalAlignment="Center"
-                                               Margin="5" TextWrapping="Wrap" />
-                                </Viewbox>
-                            </Grid>
-                        </ui:Button>
-                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                                    Orientation="Horizontal">
-                            <StackPanel.Style>
-                                <Style TargetType="{x:Type StackPanel}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </Trigger>
-                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Style>
-                            <ui:Button Width="30" Height="30" Margin="0" BorderThickness="0"
-                                       Padding="2" CornerRadius="0"
-                                       Command="{Binding ToggleFavoriteCommand}">
-                                <ui:Button.Style>
-                                    <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
-                                        <Setter Property="Background" Value="{StaticResource FavoritesBrush}" />
-                                        <Setter Property="BorderBrush" Value="{StaticResource FavoritesBrush}" />
-                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsFavorite}" Value="True">
-                                                <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
-                                            </DataTrigger>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                    <Condition Binding="{Binding IsFavorite}" Value="False" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
-                                                <Setter Property="ToolTip" Value="Add to Favorites" />
-                                            </MultiDataTrigger>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                    <Condition Binding="{Binding IsFavorite}" Value="True" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Icon" Value="{ui:SymbolIcon HeartBroken24}" />
-                                                <Setter Property="ToolTip" Value="Remove From Favorites" />
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ui:Button.Style>
-                            </ui:Button>
-                            <ui:Button Width="30" Height="30" Margin="0" BorderThickness="0"
-                                       Padding="2" CornerRadius="0"
-                                       Command="{Binding ToggleVisibilityCommand}">
-                                <ui:Button.Style>
-                                    <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
-                                        <Setter Property="Background" Value="{StaticResource HiddenBrush}" />
-                                        <Setter Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
-                                        <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                                <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
-                                            </DataTrigger>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                    <Condition Binding="{Binding IsHidden}" Value="False" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24, Filled=True}" />
-                                                <Setter Property="ToolTip" Value="Hide App" />
-                                            </MultiDataTrigger>
-                                            <MultiDataTrigger>
-                                                <MultiDataTrigger.Conditions>
-                                                    <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                    <Condition Binding="{Binding IsHidden}" Value="True" />
-                                                </MultiDataTrigger.Conditions>
-                                                <Setter Property="Icon" Value="{ui:SymbolIcon Eye24, Filled=True}" />
-                                                <Setter Property="ToolTip" Value="Unhide App" />
-                                            </MultiDataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ui:Button.Style>
-                            </ui:Button>
-                        </StackPanel>
-                        <ui:Button HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                   Width="30" Height="30" Margin="0,0,5,5" BorderThickness="5,5,0,0"
-                                   Padding="2" CornerRadius="0"
-                                   IsHitTestVisible="False">
-                            <ui:Button.Style>
-                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <!--<DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="False">
-                                            <Setter Property="Opacity" Value="1" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Opacity" Value="1" />
-                                        </DataTrigger>-->
-                                        <DataTrigger Binding="{Binding IsFavorite}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                            <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
-                                            <!--<Setter Property="Background" Value="{StaticResource Accent5PrimaryBrush}" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource Accent5PrimaryBrush}" />-->
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                            <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
-                                            <!--<Setter Property="Background">
-                                                <Setter.Value>
-                                                    <SolidColorBrush Color="{StaticResource ControlBorderColor}" Opacity="0.4" />
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="BorderBrush">
-                                                <Setter.Value>
-                                                    <SolidColorBrush Color="{StaticResource ControlBorderColor}" Opacity="0.4" />
-                                                </Setter.Value>
-                                            </Setter>-->
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="True">
-                                            <Setter Property="Background" Value="{StaticResource Accent4PrimaryBrush}" />
-                                            <Setter Property="BorderBrush" Value="{StaticResource Accent5PrimaryBrush}" />
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding ElementName=PART_Button, Path=IsMouseOver}" Value="False">
-                                            <Setter Property="Background" Value="{Binding ElementName=PART_Button, Path=BorderBrush}" />
-                                            <Setter Property="BorderBrush" Value="{Binding ElementName=PART_Button, Path=BorderBrush}" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ui:Button.Style>
-                        </ui:Button>
-                    </Grid>
-                </DataTemplate>
-            </ui:VirtualizingItemsControl.ItemTemplate>
-        </ui:VirtualizingItemsControl>
+                        </controls:AppTileButton>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ui:PassiveScrollViewer>
     </Grid>
 </UserControl>

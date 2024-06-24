@@ -29,6 +29,25 @@
             </ui:MenuItem>
             <ui:MenuItem Header="View" Icon="{ui:SymbolIcon Grid24}"
                          Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}">
+                <ui:MenuItem Header="Display" IsEnabled="False" />
+                <ui:MenuItem Header="Grid" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.IsGridView, FallbackValue=False, Mode=TwoWay}"
+                             Command="{Binding HomeVm.ShowLibraryGridCommand, FallbackValue={x:Null}}" />
+                <ui:MenuItem Header="Tile" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.IsTileView, FallbackValue=False, Mode=TwoWay}"
+                             Command="{Binding HomeVm.ShowLibraryTileCommand, FallbackValue={x:Null}}" />
+                <Separator />
+                <ui:MenuItem Header="Options" IsEnabled="False" />
+                <ui:MenuItem Header="Enable Grouping" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.EnableGrouping, FallbackValue=False, Mode=TwoWay}"
+                             Command="{Binding HomeVm.ToggleEnableGroupingCommand, FallbackValue={x:Null}}" />
+                <ui:MenuItem Header="Show Images" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.ShowImages, FallbackValue=False, Mode=TwoWay}"
+                             Command="{Binding HomeVm.ToggleShowImagesCommand, FallbackValue={x:Null}}" />
+                <ui:MenuItem Header="Local Images Only" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.LocalImagesOnly, FallbackValue=False, Mode=TwoWay}"
+                             Command="{Binding HomeVm.ToggleLocalImagesOnlyCommand, FallbackValue={x:Null}}" />
+                <Separator />
                 <ui:MenuItem Header="Hidden Apps" IsEnabled="False" />
                 <ui:MenuItem Header="Show Hidden" IsCheckable="True" IsChecked="{Binding HomeVm.ShowHidden, FallbackValue=False}" />
                 <Separator />

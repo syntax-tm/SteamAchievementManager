@@ -44,6 +44,10 @@ public enum SteamImageType
     /// </summary>
     LibraryHero,
     /// <summary>
+    /// library_header.jpg
+    /// </summary>
+    LibraryHeader,
+    /// <summary>
     /// {APPID}_library_hero_blur.jpg
     /// </summary>
     LibraryHeroBlur,
@@ -60,5 +64,4 @@ public enum SteamImageType
     /// </summary>
     LargeCapsule,
     AchievementIcon,
-
 }

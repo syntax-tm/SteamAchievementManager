@@ -2,8 +2,8 @@
 using System.Drawing;
 using System.Windows.Input;
 using DevExpress.Mvvm;
-using SAM.API.Stats;
 using SAM.Core;
+using AchievementInfo = SAM.API.Stats.AchievementInfo;
 
 namespace SAM.Stats;
 
