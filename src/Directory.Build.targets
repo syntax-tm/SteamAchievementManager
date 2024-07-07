@@ -1,6 +1,5 @@
 <Project>
   <PropertyGroup Condition="'$(OutputType)'=='WinExe'">
-    <UseWPF>true</UseWPF>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <PublishReadyToRun>false</PublishReadyToRun>
     <PublishSingleFile>true</PublishSingleFile>

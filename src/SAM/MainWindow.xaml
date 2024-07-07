@@ -16,10 +16,6 @@
 
     <ui:FluentWindow.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/MenuStyles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/WindowStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <DataTemplate DataType="{x:Type vm:SteamGameViewModel}">
                 <views:SteamGameView />
             </DataTemplate>

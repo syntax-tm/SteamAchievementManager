@@ -98,4 +98,30 @@ public class SteamApps008 : NativeWrapper<ISteamApps008>
     }
 
 #endregion
+
+#region GetAppInstallDir
+
+    [UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+    private delegate nint NativeGetAppInstallDir(nint self, uint appId, nint pchFolder, uint folderBufferSize);
+
+    public string GetAppInstallDir(uint appId, uint cchFolderBufferSize = byte.MaxValue)
+    {
+        var pchFolder = Marshal.AllocHGlobal((int) cchFolderBufferSize);
+
+        var call = GetFunction<NativeGetAppInstallDir>(_functions.GetAppInstallDir);
+        var result = call(_objectAddress, appId, pchFolder, cchFolderBufferSize);
+
+        string folder = null;
+
+        if (result > 0)
+        {
+            folder = NativeStrings.PointerToString(pchFolder);
+        }
+
+        Marshal.FreeHGlobal(pchFolder);
+
+        return folder;
+    }
+
+#endregion
 }

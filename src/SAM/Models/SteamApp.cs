@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.CodeGenerators;
@@ -10,7 +12,6 @@ using SAM.Core.Extensions;
 using SAM.Core.Interfaces;
 using SAM.Settings;
 using SAM.Core.Storage;
-using SAM.ViewModels;
 
 namespace SAM;
 
@@ -18,11 +19,6 @@ namespace SAM;
 [GenerateViewModel]
 public partial class SteamApp : BindableBase, ISteamApp
 {
-    private const string FAVORITES_GROUP = "Favorites";
-    private const string HIDDEN_GROUP = "Hidden";
-    private const string MISC_GROUP = "Misc.";
-    private const string NUMBER_GROUP = "#";
-
     protected readonly ILog log = LogManager.GetLogger(nameof(SteamApp));
 
     private Process _managerProcess;
@@ -45,6 +41,8 @@ public partial class SteamApp : BindableBase, ISteamApp
     [GenerateProperty] private bool _isFavorite;
     [GenerateProperty] private bool _isMenuOpen;
     [GenerateProperty] private bool _isManaging;
+    [GenerateProperty] private bool _isInstalled;
+    [GenerateProperty] private string _installDirectory;
     [GenerateProperty] private string _group;
     [GenerateProperty] private ulong _groupSortIndex;
 
@@ -69,6 +67,7 @@ public partial class SteamApp : BindableBase, ISteamApp
     }
 
     [GenerateCommand]
+    [SupportedOSPlatform("windows5.0")]
     public void ManageApp()
     {
         // TODO: Add a visual indication that the manager is running (handle Exited event)
@@ -86,38 +85,6 @@ public partial class SteamApp : BindableBase, ISteamApp
         if (_managerProcess.HasExited) return;
 
         _managerProcess.Kill();
-    }
-
-    private void RefreshGroup()
-    {
-        Group = GetGroup();
-        GroupSortIndex = GetGroupSortIndex();
-    }
-
-    private string GetGroup()
-    {
-        
-        if (IsFavorite) return FAVORITES_GROUP;
-        if (IsHidden) return HIDDEN_GROUP;
-        if (string.IsNullOrEmpty(Name)) return MISC_GROUP;
-
-        var firstChar = Name.ToUpperInvariant()[0];
-
-        if (char.IsDigit(firstChar)) return NUMBER_GROUP;
-
-        return $"{firstChar}";
-    }
-
-    private ulong GetGroupSortIndex()
-    {
-        return Group switch
-        {
-            FAVORITES_GROUP => 0,
-            HIDDEN_GROUP    => int.MaxValue,
-            MISC_GROUP      => uint.MaxValue,
-            NUMBER_GROUP    => 1,
-            _               => Group![0]
-        };
     }
 
     private void OnManagerProcessExited(object sender, EventArgs args)
@@ -202,6 +169,18 @@ public partial class SteamApp : BindableBase, ISteamApp
     }
     
     [GenerateCommand]
+    public void BrowseFiles()
+    {
+        if (!IsInstalled) return;
+        if (string.IsNullOrEmpty(InstallDirectory)) return;
+        if (!Directory.Exists(InstallDirectory)) return;
+
+        var psi = new ProcessStartInfo(InstallDirectory) { UseShellExecute = true, Verb = "open" };
+
+        Process.Start(psi);
+    }
+
+    [GenerateCommand]
     public async Task Load()
     {
         if (Loaded) return;
@@ -213,12 +192,48 @@ public partial class SteamApp : BindableBase, ISteamApp
             // TODO: SteamApp shouldn't need to configure its cache directory structure
             CacheManager.StorageManager.CreateDirectory($@"apps\{Id}");
 
-            await Task.WhenAll([
-                // load user preferences (hidden, favorite, etc) for app
-                Task.Run(LoadSettings),
-                Task.Run(LoadImagesAsync)
-            ]).ContinueWith(_ => RefreshGroup())
-              .ContinueWith(_ => SaveSettings(), TaskContinuationOptions.OnlyOnRanToCompletion);
+            var loadSteamDataTask = Task.Run(LoadSteamData);
+
+            var dirty = false;
+            var settings = LoadSettings();
+            
+            IsFavorite = settings.IsFavorite;
+            IsHidden = settings.IsHidden;
+
+            if (settings.GroupSortIndex == null)
+            {
+                var group = AppGroupHelper.GetGroup(this);
+
+                Group = group.Name;
+                GroupSortIndex = group.SortIndex;
+
+                dirty = true;
+            }
+            else
+            {
+                Group = settings.Group;
+                GroupSortIndex = settings.GroupSortIndex.Value;
+            }
+
+            if (settings.ImagesLoaded)
+            {
+                Logo = settings.Logo;
+                Header = settings.Header;
+                Capsule = settings.Capsule;
+                Icon = settings.Icon;
+            }
+            else
+            {
+                await LoadImagesAsync();
+
+                dirty = true;
+            }
+
+            await loadSteamDataTask;
+
+            if (!dirty) return;
+
+            SaveSettings();
         }
         catch (Exception e)
         {
@@ -230,24 +245,6 @@ public partial class SteamApp : BindableBase, ISteamApp
             IsLoading = false;
         }
     }
-
-    //public async Task LoadCachedInfo()
-    //{
-    //    try
-    //    {
-    //        var appInfo = await SteamManager.LoadCachedAppInfoAsync(Id);
-
-    //        if (appInfo == null) return;
-
-    //        Publisher = appInfo.Associations?.Publisher;
-    //        Developer = appInfo.Associations?.Developer;
-    //        Franchise = appInfo.Associations?.Franchise;
-    //    }
-    //    catch (Exception e)
-    //    {
-    //        log.Error($"An error occurred attempting to load cached app info for '{Name}' ({Id}). {e.Message}", e);
-    //    }
-    //}
 
     public void UnloadImages()
     {
@@ -300,13 +297,13 @@ public partial class SteamApp : BindableBase, ISteamApp
 
             // if we are only using local images don't download from the store
 
-            var settings = new HomeSettings(true);
+            //var settings = new HomeSettings(true);
 
-            if (settings.LocalImagesOnly) return;
+            //if (settings.LocalImagesOnly) return;
 
             // if we don't have any cached header or logo image to use, then request the store info
             // refresh so that we can download a header
-            SteamworksManager.LoadStoreInfo(this);
+            //SteamworksManager.LoadStoreInfo(this);
 
             await Task.CompletedTask.ConfigureAwait(false);
         }
@@ -317,29 +314,27 @@ public partial class SteamApp : BindableBase, ISteamApp
         }
     }
 
-    private void LoadSettings()
+    private void LoadSteamData()
+    {
+        var client = SteamClientManager.Default;
+        var steamApps = client.SteamApps008;
+
+        IsInstalled = steamApps.IsAppInstalled(Id);
+        InstallDirectory = steamApps.GetAppInstallDir(Id);
+    }
+
+    private SteamAppSettings LoadSettings()
     {
         var key = CacheKeys.CreateAppSettingsCacheKey(Id);
 
         if (!CacheManager.TryGetObject<SteamAppSettings>(key, out var settings))
         {
-            return;
-        }
-
-        IsFavorite = settings.IsFavorite;
-        IsHidden = settings.IsHidden;
-        Group ??= settings.Group;
-        Logo ??= settings.Logo;
-        Header ??= settings.Header;
-        Capsule ??= settings.Capsule;
-        Icon ??= settings.Icon;
-
-        if (settings.GroupSortIndex.HasValue)
-        {
-            GroupSortIndex = settings.GroupSortIndex.Value;
+            return SteamAppSettings.Create(Id, Name);
         }
 
         log.Debug($"Loaded {nameof(SteamAppSettings)} {settings}.");
+
+        return settings;
     }
 
     private void SaveSettings()
@@ -356,7 +351,8 @@ public partial class SteamApp : BindableBase, ISteamApp
             Logo = Logo,
             Header = Header,
             Capsule = Capsule,
-            Icon = Icon
+            Icon = Icon,
+            Version = SteamAppSettings.CurrentVersion
         };
 
         CacheManager.CacheObject(key, settings);
@@ -366,6 +362,10 @@ public partial class SteamApp : BindableBase, ISteamApp
     
     protected void OnIsHiddenChanged()
     {
+        if (IsLoading) return;
+        
+        RefreshGroup();
+
         SaveSettings();
 
         //Messenger.Default.SendRequest(EntityType.Library, RequestType.Refresh);
@@ -373,6 +373,10 @@ public partial class SteamApp : BindableBase, ISteamApp
 
     protected void OnIsFavoriteChanged()
     {
+        if (IsLoading) return;
+        
+        RefreshGroup();
+
         SaveSettings();
 
         //Messenger.Default.SendRequest(EntityType.Library, RequestType.Refresh);
@@ -383,27 +387,11 @@ public partial class SteamApp : BindableBase, ISteamApp
         HeaderLoaded = Header != null;
     }
 
-    protected void OnStoreInfoChanged()
+    private void RefreshGroup()
     {
-        // this should run when Header is null regardless of whether
-        // the StoreInfo.HeaderImage is null
-        var appLogoUrl = SteamClientManager.Default.GetAppLogo(Id);
-        if (!string.IsNullOrEmpty(appLogoUrl))
-        {
-            var appLogoUri = SteamCdnHelper.GetImageUri(Id, SteamImageType.Logo, appLogoUrl);
+        var group = AppGroupHelper.GetGroup(this);
 
-            Header = Logo = appLogoUri;
-
-            return;
-        }
-
-        // TODO: re-add this back when the other library views are available, until then nothing uses the icon
-        // TODO: Change to be lazy loaded when needed
-        //var iconName = SteamClientManager.Default.GetAppIcon(Id);
-        //
-        //if (!string.IsNullOrEmpty(iconName))
-        //{
-        //    Icon = SteamCdnHelper.DownloadImage(Id, SteamImageType.Icon, iconName);
-        //}
+        Group = group.Name;
+        GroupSortIndex = group.SortIndex;
     }
 }

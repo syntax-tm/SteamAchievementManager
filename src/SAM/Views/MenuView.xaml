@@ -6,6 +6,7 @@
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:vm="clr-namespace:SAM.ViewModels"
+             xmlns:sam="clr-namespace:SAM"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type={x:Type vm:MainWindowViewModel}, IsDesignTimeCreatable=False}">
@@ -31,28 +32,52 @@
                          Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}">
                 <ui:MenuItem Header="Display" IsEnabled="False" />
                 <ui:MenuItem Header="Grid" IsCheckable="True"
-                             IsChecked="{Binding HomeVm.IsGridView, FallbackValue=False, Mode=TwoWay}"
-                             Command="{Binding HomeVm.ShowLibraryGridCommand, FallbackValue={x:Null}}" />
+                             Command="{Binding HomeVm.ShowLibraryGridCommand, FallbackValue={x:Null}}">
+                    <ui:MenuItem.Style>
+                        <Style TargetType="{x:Type ui:MenuItem}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HomeVm.LibraryViewType}" Value="{x:Static sam:LibraryView.DataGrid}">
+                                    <Setter Property="IsChecked" Value="True" />
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:MenuItem.Style>
+                </ui:MenuItem>
                 <ui:MenuItem Header="Tile" IsCheckable="True"
-                             IsChecked="{Binding HomeVm.IsTileView, FallbackValue=False, Mode=TwoWay}"
-                             Command="{Binding HomeVm.ShowLibraryTileCommand, FallbackValue={x:Null}}" />
+                             Command="{Binding HomeVm.ShowLibraryTileCommand, FallbackValue={x:Null}}">
+                    <ui:MenuItem.Style>
+                        <Style TargetType="{x:Type ui:MenuItem}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding HomeVm.LibraryViewType}" Value="{x:Static sam:LibraryView.Tile}">
+                                    <Setter Property="IsChecked" Value="True" />
+                                    <Setter Property="IsEnabled" Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:MenuItem.Style>
+                </ui:MenuItem>
                 <Separator />
                 <ui:MenuItem Header="Options" IsEnabled="False" />
                 <ui:MenuItem Header="Enable Grouping" IsCheckable="True"
-                             IsChecked="{Binding HomeVm.EnableGrouping, FallbackValue=False, Mode=TwoWay}"
-                             Command="{Binding HomeVm.ToggleEnableGroupingCommand, FallbackValue={x:Null}}" />
+                             IsChecked="{Binding HomeVm.CurrentSettings.EnableGrouping, FallbackValue=False, Mode=TwoWay}" />
                 <ui:MenuItem Header="Show Images" IsCheckable="True"
-                             IsChecked="{Binding HomeVm.ShowImages, FallbackValue=False, Mode=TwoWay}"
-                             Command="{Binding HomeVm.ToggleShowImagesCommand, FallbackValue={x:Null}}" />
-                <ui:MenuItem Header="Local Images Only" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.Settings.TileSettings.ShowImages, FallbackValue=False, Mode=TwoWay}" />
+                <!--<ui:MenuItem Header="Local Images Only" IsCheckable="True"
                              IsChecked="{Binding HomeVm.LocalImagesOnly, FallbackValue=False, Mode=TwoWay}"
-                             Command="{Binding HomeVm.ToggleLocalImagesOnlyCommand, FallbackValue={x:Null}}" />
+                             Command="{Binding HomeVm.ToggleLocalImagesOnlyCommand, FallbackValue={x:Null}}" />-->
                 <Separator />
                 <ui:MenuItem Header="Hidden Apps" IsEnabled="False" />
-                <ui:MenuItem Header="Show Hidden" IsCheckable="True" IsChecked="{Binding HomeVm.ShowHidden, FallbackValue=False}" />
+                <ui:MenuItem Header="Show Hidden" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.CurrentSettings.ShowHidden, FallbackValue=False, Mode=TwoWay}" />
                 <Separator />
                 <ui:MenuItem Header="Favorite Apps" IsEnabled="False" />
-                <ui:MenuItem Header="Show Only Favorites" IsCheckable="True" IsChecked="{Binding HomeVm.FilterFavorites, FallbackValue=False}" />
+                <ui:MenuItem Header="Show Only Favorites" IsCheckable="True"
+                             IsChecked="{Binding HomeVm.CurrentSettings.ShowFavoritesOnly, FallbackValue=False, Mode=TwoWay}" />
+            </ui:MenuItem>
+            <ui:MenuItem Header="Tools" Icon="{ui:SymbolIcon Toolbox24}">
+                <ui:MenuItem Header="Steam" IsEnabled="False" />
+                <ui:MenuItem Header="Console" Command="{Binding OpenSteamConsoleCommand}" />
             </ui:MenuItem>
             <ui:MenuItem Header="Help" Icon="{ui:SymbolIcon Question24}">
                 <ui:MenuItem Header="Reset to Default" Icon="{ui:SymbolIcon ArrowReset24}" Command="{Binding ResetAllSettingsCommand}" />
@@ -70,10 +95,10 @@
         </Menu>
         <Separator Margin="0,4,4,4" 
                    Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
-        <ui:AutoSuggestBox Text="{Binding HomeVm.FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+        <ui:AutoSuggestBox Text="{Binding HomeVm.CurrentVm.FilterText, Delay=300, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                            PlaceholderText="Search..." BorderBrush="Transparent"
                            Icon="Search24" Margin="5,3" FontSize="13" Padding="3,0" Height="30"
-                           OriginalItemsSource="{Binding HomeVm.Suggestions, Mode=OneWay}"
+                           OriginalItemsSource="{Binding HomeVm.CurrentVm.Suggestions, Mode=OneWay}"
                            Width="400"
                            Visibility="{Binding IsLibrary, Converter={dxmvvm:BooleanToVisibilityConverter}}">
             <ui:AutoSuggestBox.Style>

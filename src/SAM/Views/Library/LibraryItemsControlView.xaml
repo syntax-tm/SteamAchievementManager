@@ -16,10 +16,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/resources/staticcolors.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/ExpanderStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <Size x:Key="ItemSize" Width="600" Height="286" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -29,167 +25,166 @@
     </dxmvvm:Interaction.Behaviors>
 
     <Grid>
-        <ui:PassiveScrollViewer HorizontalScrollBarVisibility="Disabled">
-            <ItemsControl ItemsSource="{Binding ItemsView, Mode=OneWay}" HorizontalContentAlignment="Center">
-                <ItemsControl.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.Panel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel Orientation="Vertical" IsVirtualizing="True" IsVirtualizingWhenGrouping="True" />
-                            </ItemsPanelTemplate>
-                        </GroupStyle.Panel>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Margin" Value="0,0,0,5" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <Expander IsExpanded="False" Background="{StaticResource ExpanderHeaderBackground}" BorderBrush="{StaticResource SeparatorBorderBrush}"
-                                                      Foreground="{StaticResource TextFillColorLightPrimaryBrush}" BorderThickness="1,1,1,5">
-                                                <Expander.Header>
-                                                    <Grid>
-                                                        <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" Margin="5,0,0,0" />
-                                                        <TextBlock Text="{Binding ItemCount, Mode=OneWay, StringFormat='{}({0})'}" FontWeight="Light"
-                                                                   HorizontalAlignment="Right" Margin="0,0,10,0" />
-                                                    </Grid>
-                                                </Expander.Header>
-                                                <Expander.Content>
-                                                    <ItemsPresenter />
-                                                </Expander.Content>
-                                            </Expander>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-                </ItemsControl.GroupStyle>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True"
-                                                  VirtualizationMode="Recycling" IsVirtualizing="True" />
-                        <!--<WrapPanel Orientation="Horizontal" />-->
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemContainerStyle>
-                    <Style TargetType="{x:Type ContentPresenter}">
-                        <Setter Property="Width" Value="300" />
-                        <Setter Property="Height" Value="143" />
-                        <Setter Property="Margin" Value="5" />
-                    </Style>
-                </ItemsControl.ItemContainerStyle>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type sam:SteamApp}">
-                        <controls:AppTileButton Command="{Binding ManageAppCommand}"
-                                                IsFavorite="{Binding IsFavorite}"
-                                                IsHidden="{Binding IsHidden}"
-                                                Header="{Binding Name}"
-                                                ImageSource="{Binding Header}">
-                            <controls:AppTileButton.Resources>
-                                <mvvm:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
-                            </controls:AppTileButton.Resources>
-                            <controls:AppTileButton.ContextMenu>
-                                <ContextMenu>
-                                    <!-- ReSharper disable Xaml.RedundantResource -->
-                                    <ui:MenuItem Header="{Binding Name}" IsEnabled="False" Margin="0,5,0,0">
-                                        <ui:MenuItem.HeaderTemplate>
-                                            <DataTemplate>
+        <ui:VirtualizingItemsControl ItemsSource="{Binding ItemsView, Mode=OneWay}" HorizontalContentAlignment="Center">
+            <ui:VirtualizingItemsControl.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.Panel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Vertical" IsVirtualizing="True" IsVirtualizingWhenGrouping="True" />
+                        </ItemsPanelTemplate>
+                    </GroupStyle.Panel>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Margin" Value="0,0,0,5" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander IsExpanded="False" Background="{StaticResource ExpanderHeaderBackground}" BorderBrush="{StaticResource SeparatorBorderBrush}"
+                                                  Foreground="{StaticResource TextFillColorLightPrimaryBrush}" BorderThickness="1,1,1,5">
+                                            <Expander.Header>
                                                 <Grid>
-                                                    <TextBlock Text="{Binding}" FontWeight="SemiBold"
-                                                               HorizontalAlignment="Center" />
+                                                    <TextBlock Text="{Binding Name, Mode=OneWay}" FontWeight="Bold" Margin="5,0,0,0" />
+                                                    <TextBlock Text="{Binding ItemCount, Mode=OneWay, StringFormat='{}({0})'}" FontWeight="Light"
+                                                               HorizontalAlignment="Right" Margin="0,0,10,0" />
                                                 </Grid>
-                                            </DataTemplate>
-                                        </ui:MenuItem.HeaderTemplate>
-                                    </ui:MenuItem>
-                                    <Separator />
-                                    <ui:MenuItem Header="Open in Manager" Command="{Binding ManageAppCommand}"
-                                                 Icon="{ui:SymbolIcon AppGeneric24}" />
-                                    <Separator />
-                                    <ui:MenuItem Command="{Binding ToggleFavoriteCommand}">
-                                        <ui:MenuItem.Style>
-                                            <Style TargetType="{x:Type ui:MenuItem}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsFavorite}" Value="False">
-                                                        <Setter Property="Header" Value="Add to Favorites" />
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding IsFavorite}" Value="True">
-                                                        <Setter Property="Header" Value="Remove from Favorites" />
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
-                                                    </DataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                            <Condition Binding="{Binding IsFavorite}" Value="True" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon HeartBroken24, Filled=False}" />
-                                                    </MultiDataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                            <Condition Binding="{Binding IsFavorite}" Value="False" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
-                                                    </MultiDataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ui:MenuItem.Style>
-                                    </ui:MenuItem>
-                                    <ui:MenuItem Command="{Binding ToggleVisibilityCommand}">
-                                        <ui:MenuItem.Style>
-                                            <Style TargetType="{x:Type ui:MenuItem}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsHidden}" Value="False">
-                                                        <Setter Property="Header" Value="Hide" />
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding IsHidden}" Value="True">
-                                                        <Setter Property="Header" Value="Unhide" />
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
-                                                    </DataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                            <Condition Binding="{Binding IsHidden}" Value="True" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon Eye24, Filled=True}" />
-                                                    </MultiDataTrigger>
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                            <Condition Binding="{Binding IsHidden}" Value="False" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24, Filled=True}" />
-                                                    </MultiDataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ui:MenuItem.Style>
-                                    </ui:MenuItem>
-                                    <Separator />
-                                    <ui:MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}"
-                                                 Icon="{ui:SymbolIcon Database24}" />
-                                    <ui:MenuItem Header="View on SteamGridDB" Command="{Binding ViewOnSteamGridDBCommand}"
-                                                 Icon="{ui:SymbolIcon SlideMultiple24}" />
-                                    <ui:MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
-                                                 Icon="{ui:SymbolIcon ShoppingBag24}" />
-                                    <ui:MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}"
-                                                 Icon="{ui:SymbolIcon Server24}" />
-                                    <ui:MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}"
-                                                 Icon="{ui:SymbolIcon ArrowSwap24}" />
-                                    <Separator />
-                                    <ui:MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}"
-                                                 Icon="{ui:SymbolIcon Copy24}" />
-                                    <!-- ReSharper restore Xaml.RedundantResource -->
-                                </ContextMenu>
-                            </controls:AppTileButton.ContextMenu>
-                            <dxmvvm:Interaction.Behaviors>
-                                <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
-                                <behaviors:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="False" />
-                            </dxmvvm:Interaction.Behaviors>
-                        </controls:AppTileButton>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ui:PassiveScrollViewer>
+                                            </Expander.Header>
+                                            <Expander.Content>
+                                                <ItemsPresenter />
+                                            </Expander.Content>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ui:VirtualizingItemsControl.GroupStyle>
+            <ui:VirtualizingItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ui:VirtualizingWrapPanel SpacingMode="BetweenItemsOnly" Orientation="Vertical" StretchItems="True"
+                                              VirtualizationMode="Recycling" IsVirtualizing="True"
+                                              CanHorizontallyScroll="False" />
+                    <!--<WrapPanel Orientation="Horizontal" />-->
+                </ItemsPanelTemplate>
+            </ui:VirtualizingItemsControl.ItemsPanel>
+            <ui:VirtualizingItemsControl.ItemContainerStyle>
+                <Style TargetType="{x:Type ContentPresenter}">
+                    <Setter Property="Width" Value="300" />
+                    <Setter Property="Height" Value="143" />
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </ui:VirtualizingItemsControl.ItemContainerStyle>
+            <ui:VirtualizingItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type sam:SteamApp}">
+                    <controls:AppTileButton Command="{Binding ManageAppCommand}"
+                                            IsFavorite="{Binding IsFavorite}"
+                                            IsHidden="{Binding IsHidden}"
+                                            Header="{Binding Name}"
+                                            ImageSource="{Binding Header}">
+                        <controls:AppTileButton.Resources>
+                            <mvvm:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
+                        </controls:AppTileButton.Resources>
+                        <controls:AppTileButton.ContextMenu>
+                            <ContextMenu>
+                                <!-- ReSharper disable Xaml.RedundantResource -->
+                                <ui:MenuItem Header="{Binding Name}" IsEnabled="False" Margin="0,5,0,0">
+                                    <ui:MenuItem.HeaderTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <TextBlock Text="{Binding}" FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ui:MenuItem.HeaderTemplate>
+                                </ui:MenuItem>
+                                <Separator />
+                                <ui:MenuItem Header="Open in Manager" Command="{Binding ManageAppCommand}"
+                                             Icon="{ui:SymbolIcon AppGeneric24}" />
+                                <Separator />
+                                <ui:MenuItem Command="{Binding ToggleFavoriteCommand}">
+                                    <ui:MenuItem.Style>
+                                        <Style TargetType="{x:Type ui:MenuItem}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsFavorite}" Value="False">
+                                                    <Setter Property="Header" Value="Add to Favorites" />
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Heart24}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                    <Setter Property="Header" Value="Remove from Favorites" />
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding IsFavorite}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon HeartBroken24, Filled=False}" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding IsFavorite}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Heart24, Filled=True}" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:MenuItem.Style>
+                                </ui:MenuItem>
+                                <ui:MenuItem Command="{Binding ToggleVisibilityCommand}">
+                                    <ui:MenuItem.Style>
+                                        <Style TargetType="{x:Type ui:MenuItem}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsHidden}" Value="False">
+                                                    <Setter Property="Header" Value="Hide" />
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding IsHidden}" Value="True">
+                                                    <Setter Property="Header" Value="Unhide" />
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
+                                                </DataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding IsHidden}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon Eye24, Filled=True}" />
+                                                </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                        <Condition Binding="{Binding IsHidden}" Value="False" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24, Filled=True}" />
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:MenuItem.Style>
+                                </ui:MenuItem>
+                                <Separator />
+                                <ui:MenuItem Header="View on SteamDB" Command="{Binding ViewOnSteamDBCommand}"
+                                             Icon="{ui:SymbolIcon Database24}" />
+                                <ui:MenuItem Header="View on SteamGridDB" Command="{Binding ViewOnSteamGridDBCommand}"
+                                             Icon="{ui:SymbolIcon SlideMultiple24}" />
+                                <ui:MenuItem Header="View on Steam Store" Command="{Binding ViewOnSteamCommand}"
+                                             Icon="{ui:SymbolIcon ShoppingBag24}" />
+                                <ui:MenuItem Header="View on PCGamingWiki" Command="{Binding ViewOnPCGWCommand}"
+                                             Icon="{ui:SymbolIcon Server24}" />
+                                <ui:MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}"
+                                             Icon="{ui:SymbolIcon ArrowSwap24}" />
+                                <Separator />
+                                <ui:MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}"
+                                             Icon="{ui:SymbolIcon Copy24}" />
+                                <!-- ReSharper restore Xaml.RedundantResource -->
+                            </ContextMenu>
+                        </controls:AppTileButton.ContextMenu>
+                        <dxmvvm:Interaction.Behaviors>
+                            <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
+                            <behaviors:ContextMenuBehaviour ShowOnLeftMouseDown="True" ShowOnMouseOver="False" />
+                        </dxmvvm:Interaction.Behaviors>
+                    </controls:AppTileButton>
+                </DataTemplate>
+            </ui:VirtualizingItemsControl.ItemTemplate>
+        </ui:VirtualizingItemsControl>
     </Grid>
 </UserControl>

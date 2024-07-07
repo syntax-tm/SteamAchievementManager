@@ -1,7 +1,6 @@
 ﻿using System;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.CodeGenerators;
-using Newtonsoft.Json;
 using SAM.Core;
 
 namespace SAM.Settings;

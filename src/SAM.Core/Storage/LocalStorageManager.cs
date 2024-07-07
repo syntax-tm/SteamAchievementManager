@@ -266,5 +266,15 @@ namespace SAM.Core.Storage
         {
             // local storage does not need to update this metadata as it's handled by the file system
         }
+
+        public Uri GetFile(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            if (!FileExists(fileName)) return null;
+
+            var fullName = Path.Combine(ApplicationStoragePath, fileName);
+
+            return new (fullName);
+        }
     }
 }

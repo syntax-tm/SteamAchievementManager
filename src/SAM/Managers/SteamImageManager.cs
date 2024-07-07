@@ -68,7 +68,6 @@ public static class SteamImageManager
     private static readonly object syncLock = new ();
     private static readonly List<uint> gridCacheAppWarnings = [];
     private static readonly Dictionary<SteamAppImageCacheKey, string> cachedAppImagePaths = [];
-    private static bool _isInitialized;
     private static string _steamInstallPath;
     private static string _steamLibraryCachePath;
     private static string _gridCachePath;

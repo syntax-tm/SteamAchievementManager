@@ -208,6 +208,49 @@ namespace SAM.Core
             }
         }
 
+        public static Uri GetCachedImageUri(Uri imageUri, ICacheKey cacheKey, bool localOnly = false)
+        {
+            try
+            {
+                // try and load the image from cache
+                var loadedFromCache = CacheManager.TryGetFile(cacheKey, out var cachedImage);
+                if (loadedFromCache)
+                {
+                    return cachedImage;
+                }
+                
+                // if we didn't find it in the cache return null
+                if (localOnly) return null;
+                
+                using var request = new HttpRequestMessage(HttpMethod.Get, imageUri);
+                using var response = client.Send(request);
+
+                var responseStream = response.Content.ReadAsStream();
+
+                var image = Image.FromStream(responseStream);
+                
+                return CacheManager.CacheImage(cacheKey, image);
+            }
+            catch (HttpRequestException hre)
+            {
+                var message = $"Failed to download image '{imageUri}' ({hre.StatusCode:G}).";
+
+                if (hre.StatusCode is not (HttpStatusCode.NotFound or HttpStatusCode.TooManyRequests or HttpStatusCode.Unauthorized))
+                {
+                    throw new SAMException(message, hre);
+                }
+
+                log.Warn(message, hre);
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                var message = $"An error occurred attempting to download '{imageUri}'. {e.Message}";
+                throw new SAMException(message, e);
+            }
+        }
+
         public static Image DownloadImage(Uri imageUri, ICacheKey cacheKey = null, bool localOnly = false)
         {
             try

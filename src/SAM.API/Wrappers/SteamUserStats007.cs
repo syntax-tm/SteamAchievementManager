@@ -149,9 +149,9 @@ public class SteamUserStats007 : NativeWrapper<ISteamUserStats007>
 
     public bool StoreStats()
     {
-            var call = GetFunction<NativeStoreStats>(_functions.StoreStats);
-            return call(_objectAddress);
-        }
+        var call = GetFunction<NativeStoreStats>(_functions.StoreStats);
+        return call(_objectAddress);
+    }
 
 #endregion
 

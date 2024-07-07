@@ -193,6 +193,20 @@ public class AppTileButton : Button
 
 #endregion
 
+#region ContextMenuOpen
+    
+    public static readonly DependencyProperty ContextMenuOpenProperty =
+        DependencyProperty.Register(nameof(ContextMenuOpen), typeof(bool), typeof(AppTileButton),
+                                    new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public bool ContextMenuOpen
+    {
+        get { return (bool) GetValue(ContextMenuOpenProperty); }
+        set { SetValue(ContextMenuOpenProperty, value); }
+    }
+
+#endregion
+
     protected Grid PART_RootGrid;
     protected Border PART_Border;
     protected Button PART_Button;
@@ -239,6 +253,20 @@ public class AppTileButton : Button
 
         if (PART_HideButton != null)
             PART_HideButton.Click -= OnToggleHidden;
+    }
+
+    protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+    {
+        base.OnContextMenuOpening(e);
+
+        ContextMenuOpen = true;
+    }
+
+    protected override void OnContextMenuClosing(ContextMenuEventArgs e)
+    {
+        base.OnContextMenuClosing(e);
+
+        ContextMenuOpen = false;
     }
 
     private void OnToggleFavorited(object sender, RoutedEventArgs args)

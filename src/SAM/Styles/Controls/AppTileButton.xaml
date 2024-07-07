@@ -14,6 +14,9 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type controls:AppTileButton}">
+        <Style.Resources>
+            <mvvm:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
+        </Style.Resources>
         <!--<Setter Property="Width" Value="" />-->
         <Setter Property="ToolTip" Value="{Binding Name}" />
         <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
@@ -41,7 +44,7 @@
                                                Visibility="Collapsed"
                                                Text="{TemplateBinding Header}"
                                                FontSize="30"
-                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center"
                                                Margin="5" TextWrapping="Wrap"
                                                TextTrimming="WordEllipsis" />
                                 </Grid>
@@ -137,10 +140,10 @@
                             <Setter TargetName="PART_Image" Property="Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
                             <Setter TargetName="PART_Header" Property="Visibility" Value="Collapsed" />
                         </Trigger>
-                        <Trigger Property="ContextMenu.IsOpen" Value="True">
-                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource Accent2PrimaryBrush}" />
-                            <Setter TargetName="PART_Icon" Property="BorderBrush" Value="{StaticResource Accent2PrimaryBrush}" />
-                            <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource Accent2PrimaryBrush}" />
+                        <Trigger Property="ContextMenuOpen" Value="True">
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource ControlElevationBorderBrush}" />
+                            <Setter TargetName="PART_Icon" Property="BorderBrush" Value="{StaticResource ControlElevationBorderBrush}" />
+                            <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource ControlElevationBorderBrush}" />
                             <Setter TargetName="PART_Image" Property="Opacity" Value="0.25" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">

@@ -2,12 +2,8 @@
 
 namespace SAM;
 
-//[Verb(VERB, true, HelpText = "Options for performing various SAM tasks")]
 public class SAMOptions
 {
-    //public const string VERB = "manage";
-
-    //[Option('a', "appid", HelpText = "A Steam app id")]
     [Value(0, HelpText = "A Steam app id")]
     public uint AppId { get; set; }
 
@@ -16,4 +12,10 @@ public class SAMOptions
     
     [Option('o', "offline", Default = false)]
     public bool OfflineMode { get; set; }
+
+    [Option('g', "grid", Default = false)]
+    public bool GridView { get; set; }
+
+    [Option('t', "tile", Default = false)]
+    public bool TileView { get; set; }
 }

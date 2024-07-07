@@ -6,6 +6,7 @@ public enum EntityType
     ManagerApp,
     SteamApp,
     SteamAppSettings,
+    HomeSettings,
     Setting,
     User,
     Image,

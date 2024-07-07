@@ -2,346 +2,404 @@
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
+using log4net;
 using Newtonsoft.Json;
 
-namespace SAM.Core.Storage
+namespace SAM.Core.Storage;
+
+public static class CacheManager
 {
-    public static class CacheManager
+    private static readonly ILog log = LogManager.GetLogger(typeof(CacheManager));
+
+    // TODO: remove public access to the StorageManager
+    public static IStorageManager StorageManager { get; } = LocalStorageManager.Default;
+        
+    public static void CacheBytes(ICacheKey key, byte[] bytes, bool overwrite = true)
     {
-        // TODO: remove public access to the StorageManager
-        public static IStorageManager StorageManager { get; } = LocalStorageManager.Default;
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+        StorageManager.SaveBytes(filePath, bytes, overwrite);
+
+        if (!key.HasExpiration) return;
+
+        StorageManager.UpdateCacheMetadata(filePath);
+    }
+
+    public static Task CacheBytesAsync(ICacheKey key, byte[] bytes, bool overwrite = true)
+    {
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+        var task = StorageManager.SaveBytesAsync(filePath, bytes, overwrite);
+
+        if (!key.HasExpiration) return task;
+
+        StorageManager.UpdateCacheMetadata(filePath);
+
+        return task;
+    }
+
+    public static void CacheObject(ICacheKey key, object target, bool overwrite = true)
+    {
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+        var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
+
+        StorageManager.SaveText(filePath, targetObjectJson, overwrite);
+
+        if (!key.HasExpiration) return;
+
+        StorageManager.UpdateCacheMetadata(filePath);
+    }
+
+    public static Task CacheObjectAsync(ICacheKey key, object target, bool overwrite = true)
+    {
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+        var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
+
+        var task = StorageManager.SaveTextAsync(filePath, targetObjectJson, overwrite);
+
+        if (!key.HasExpiration) return task;
+
+        StorageManager.UpdateCacheMetadata(filePath);
+
+        return task;
+    }
+
+    public static void CacheText(ICacheKey key, string text, bool overwrite = true)
+    {
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            
+        StorageManager.SaveText(filePath, text, overwrite);
+
+        if (!key.HasExpiration) return;
+
+        StorageManager.UpdateCacheMetadata(filePath);
+    }
+
+    public static Task CacheTextAsync(ICacheKey key, string text, bool overwrite = true)
+    {
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            
+        var task = StorageManager.SaveTextAsync(filePath, text, overwrite);
+            
+        if (!key.HasExpiration) return task;
+
+        StorageManager.UpdateCacheMetadata(filePath);
+
+        return task;
+    }
+
+    public static Uri CacheImage(ICacheKey key, Image img, bool overwrite = true)
+    {
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+        StorageManager.SaveImage(filePath, img, overwrite);
+
+        if (!key.HasExpiration)
+        {
+            var fullPath = Path.Join(StorageManager.ApplicationStoragePath, filePath);
+
+            return new (fullPath);
+        }
+
+        StorageManager.UpdateCacheMetadata(filePath);
+
+        return new (filePath);
+    }
+
+    public static async Task<Uri> CacheImageAsync(ICacheKey key, Image img, bool overwrite = true)
+    {
+        var filePath = key?.GetFullPath();
+            
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+
+        await StorageManager.SaveImageAsync(filePath, img, overwrite);
+
+        if (!key.HasExpiration)
+        {
+            var fullPath = Path.Join(StorageManager.ApplicationStoragePath, filePath);
+
+            return new (fullPath);
+        }
+
+        StorageManager.UpdateCacheMetadata(filePath);
+
+        return new (filePath);
+    }
         
-        public static void CacheBytes(ICacheKey key, byte[] bytes, bool overwrite = true)
-        {
-            var filePath = key?.GetFullPath();
+    public static bool TryGetBytes(ICacheKey key, out byte[] bytes)
+    {
+        var filePath = key?.GetFullPath();
+
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
-            StorageManager.SaveBytes(filePath, bytes, overwrite);
-
-            if (!key.HasExpiration) return;
-
-            StorageManager.UpdateCacheMetadata(filePath);
+        if (!StorageManager.FileExists(filePath))
+        {
+            bytes = null;
+            return false;
+        }
+            
+        if (IsExpired(key, filePath))
+        {
+            bytes = null;
+            return false;
         }
 
-        public static Task CacheBytesAsync(ICacheKey key, byte[] bytes, bool overwrite = true)
+        try
         {
-            var filePath = key?.GetFullPath();
+            bytes = StorageManager.GetBytes(filePath);
+            return bytes != null;
+        }
+        catch
+        {
+            bytes = null;
+            return false;
+        }
+    }
+
+    public static bool TryGetImageFile(ICacheKey key, out Image img)
+    {
+        var filePath = key?.GetFullPath();
+
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
             
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
-            var task = StorageManager.SaveBytesAsync(filePath, bytes, overwrite);
-
-            if (!key.HasExpiration) return task;
-
-            StorageManager.UpdateCacheMetadata(filePath);
-
-            return task;
+        if (!StorageManager.FileExists(filePath))
+        {
+            img = null;
+            return false;
+        }
+            
+        if (IsExpired(key, filePath))
+        {
+            img = null;
+            return false;
         }
 
-        public static void CacheObject(ICacheKey key, object target, bool overwrite = true)
+        try
         {
-            var filePath = key?.GetFullPath();
-            
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            img = StorageManager.GetImageFile(filePath);
+            return img != null;
+        }
+        catch
+        {
+            img = null;
+            return false;
+        }
+    }
 
-            var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
+    public static Image GetImageFile(ICacheKey key)
+    {
+        var filePath = key.GetFullPath();
 
-            StorageManager.SaveText(filePath, targetObjectJson, overwrite);
-
-            if (!key.HasExpiration) return;
-
-            StorageManager.UpdateCacheMetadata(filePath);
+        if (!StorageManager.FileExists(filePath))
+        {
+            throw new FileNotFoundException(filePath);
         }
 
-        public static Task CacheObjectAsync(ICacheKey key, object target, bool overwrite = true)
+        return StorageManager.GetImageFile(filePath);
+    }
+
+    public static Task<Image> GetImageFileAsync(ICacheKey key)
+    {
+        var filePath = key.GetFullPath();
+
+        if (!StorageManager.FileExists(filePath))
         {
-            var filePath = key?.GetFullPath();
+            throw new FileNotFoundException(filePath);
+        }
             
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
-            var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
-
-            var task = StorageManager.SaveTextAsync(filePath, targetObjectJson, overwrite);
-
-            if (!key.HasExpiration) return task;
-
-            StorageManager.UpdateCacheMetadata(filePath);
-
-            return task;
+        if (IsExpired(key, filePath))
+        {
+            return null;
         }
 
-        public static void CacheText(ICacheKey key, string text, bool overwrite = true)
-        {
-            var filePath = key?.GetFullPath();
-            
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-            
-            StorageManager.SaveText(filePath, text, overwrite);
-
-            if (!key.HasExpiration) return;
-
-            StorageManager.UpdateCacheMetadata(filePath);
-        }
-
-        public static Task CacheTextAsync(ICacheKey key, string text, bool overwrite = true)
-        {
-            var filePath = key?.GetFullPath();
-            
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-            
-            var task = StorageManager.SaveTextAsync(filePath, text, overwrite);
-            
-            if (!key.HasExpiration) return task;
-
-            StorageManager.UpdateCacheMetadata(filePath);
-
-            return task;
-        }
-
-        public static void CacheImage(ICacheKey key, Image img, bool overwrite = true)
-        {
-            var filePath = key?.GetFullPath();
-            
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
-            StorageManager.SaveImage(filePath, img, overwrite);
-
-            if (!key.HasExpiration) return;
-
-            StorageManager.UpdateCacheMetadata(filePath);
-        }
-
-        public static Task CacheImageAsync(ICacheKey key, Image img, bool overwrite = true)
-        {
-            var filePath = key?.GetFullPath();
-            
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
-            var task = StorageManager.SaveImageAsync(filePath, img, overwrite);
-
-            if (!key.HasExpiration) return task;
-
-            StorageManager.UpdateCacheMetadata(filePath);
-
-            return task;
-        }
+        return StorageManager.GetImageFileAsync(filePath);
+    }
         
-        public static bool TryGetBytes(ICacheKey key, out byte[] bytes)
+    public static bool TryPopulateObject<T>(ICacheKey key, T target)
+    {
+        var filePath = key?.GetFullPath();
+
+        if (string.IsNullOrEmpty(filePath)) return false;
+        if (target == null) return false;
+
+        if (!StorageManager.FileExists(filePath))
         {
-            var filePath = key?.GetFullPath();
-
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            return false;
+        }
             
-            if (!StorageManager.FileExists(filePath))
-            {
-                bytes = null;
-                return false;
-            }
-            
-            if (IsExpired(key, filePath))
-            {
-                bytes = null;
-                return false;
-            }
-
-            try
-            {
-                bytes = StorageManager.GetBytes(filePath);
-                return bytes != null;
-            }
-            catch
-            {
-                bytes = null;
-                return false;
-            }
+        if (IsExpired(key, filePath))
+        {
+            return false;
         }
 
-        public static bool TryGetImageFile(ICacheKey key, out Image img)
+        try
         {
-            var filePath = key?.GetFullPath();
+            var fileText = StorageManager.GetTextFile(filePath);
 
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-            
-            if (!StorageManager.FileExists(filePath))
-            {
-                img = null;
-                return false;
-            }
-            
-            if (IsExpired(key, filePath))
-            {
-                img = null;
-                return false;
-            }
+            JsonConvert.PopulateObject(fileText, target);
 
-            try
-            {
-                img = StorageManager.GetImageFile(filePath);
-                return img != null;
-            }
-            catch
-            {
-                img = null;
-                return false;
-            }
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    public static bool TryGetObject<T>(ICacheKey key, out T cachedObject)
+    {
+        var filePath = key?.GetFullPath();
+
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            
+        if (!StorageManager.FileExists(filePath))
+        {
+            cachedObject = default;
+            return false;
+        }
+            
+        if (IsExpired(key, filePath))
+        {
+            cachedObject = default;
+            return false;
         }
 
-        public static Image GetImageFile(ICacheKey key)
+        try
+        {
+            var fileText = StorageManager.GetTextFile(filePath);
+
+            cachedObject = JsonConvert.DeserializeObject<T>(fileText);
+
+            return cachedObject != null;
+        }
+        catch
+        {
+            cachedObject = default;
+
+            return false;
+        }
+    }
+        
+    public static bool TryGetTextFile(ICacheKey key, out string fileText)
+    {
+        var filePath = key?.GetFullPath();
+
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            
+        if (!StorageManager.FileExists(filePath))
+        {
+            fileText = null;
+            return false;
+        }
+
+        if (IsExpired(key, filePath))
+        {
+            fileText = null;
+            return false;
+        }
+            
+        try
+        {
+            fileText = StorageManager.GetTextFile(filePath);
+            return fileText != null;
+        }
+        catch
+        {
+            fileText = null;
+            return false;
+        }
+    }
+
+    public static string GetTextFile(ICacheKey key)
+    {
+        var filePath = key.GetFullPath();
+
+        if (!StorageManager.FileExists(filePath))
+        {
+            throw new FileNotFoundException(filePath);
+        }
+            
+        if (IsExpired(key, filePath))
+        {
+            // TODO: this should probably not return null in the event the cache is expired
+            return null;
+        }
+
+        return StorageManager.GetTextFile(filePath);
+    }
+
+    public static Uri GetFile(ICacheKey key)
+    {
+        try
         {
             var filePath = key.GetFullPath();
 
-            if (!StorageManager.FileExists(filePath))
-            {
-                throw new FileNotFoundException(filePath);
-            }
-
-            return StorageManager.GetImageFile(filePath);
-        }
-
-        public static Task<Image> GetImageFileAsync(ICacheKey key)
-        {
-            var filePath = key.GetFullPath();
-
-            if (!StorageManager.FileExists(filePath))
-            {
-                throw new FileNotFoundException(filePath);
-            }
-            
             if (IsExpired(key, filePath))
             {
                 return null;
             }
+                
+            var uri = StorageManager.GetFile(filePath);
 
-            return StorageManager.GetImageFileAsync(filePath);
+            return uri;
         }
-        
-        public static bool TryPopulateObject<T>(ICacheKey key, T target)
+        catch
         {
-            var filePath = key?.GetFullPath();
-
-            if (string.IsNullOrEmpty(filePath)) return false;
-            if (target == null) return false;
-
-            if (!StorageManager.FileExists(filePath))
-            {
-                return false;
-            }
-            
-            if (IsExpired(key, filePath))
-            {
-                return false;
-            }
-
-            try
-            {
-                var fileText = StorageManager.GetTextFile(filePath);
-
-                JsonConvert.PopulateObject(fileText, target);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return null;
         }
+    }
 
-        public static bool TryGetObject<T>(ICacheKey key, out T cachedObject)
-        {
-            var filePath = key?.GetFullPath();
+    public static bool TryGetFile(ICacheKey key, out Uri uri)
+    {
+        uri = default;
 
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-            
-            if (!StorageManager.FileExists(filePath))
-            {
-                cachedObject = default;
-                return false;
-            }
-            
-            if (IsExpired(key, filePath))
-            {
-                cachedObject = default;
-                return false;
-            }
-
-            try
-            {
-                var fileText = StorageManager.GetTextFile(filePath);
-
-                cachedObject = JsonConvert.DeserializeObject<T>(fileText);
-
-                return cachedObject != null;
-            }
-            catch
-            {
-                cachedObject = default;
-
-                return false;
-            }
-        }
-        
-        public static bool TryGetTextFile(ICacheKey key, out string fileText)
-        {
-            var filePath = key?.GetFullPath();
-
-            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-            
-            if (!StorageManager.FileExists(filePath))
-            {
-                fileText = null;
-                return false;
-            }
-
-            if (IsExpired(key, filePath))
-            {
-                fileText = null;
-                return false;
-            }
-            
-            try
-            {
-                fileText = StorageManager.GetTextFile(filePath);
-                return fileText != null;
-            }
-            catch
-            {
-                fileText = null;
-                return false;
-            }
-        }
-
-        public static string GetTextFile(ICacheKey key)
+        try
         {
             var filePath = key.GetFullPath();
 
-            if (!StorageManager.FileExists(filePath))
-            {
-                throw new FileNotFoundException(filePath);
-            }
-            
             if (IsExpired(key, filePath))
-            {
-                // TODO: this should probably not return null in the event the cache is expired
-                return null;
-            }
-
-            return StorageManager.GetTextFile(filePath);
-        }
-
-        private static bool IsExpired(ICacheKey key, string fileName)
-        {
-            // if it doesn't have an expiration then it's never expired
-            if (!key.HasExpiration)
             {
                 return false;
             }
+                
+            uri = StorageManager.GetFile(filePath);
 
-            var dateCreated = StorageManager.GetDateCreated(fileName) ?? DateTime.Now;
-            var expireDate = dateCreated.AddDays(key.DaysValid!.Value);
-            var isValid = DateTime.Now < expireDate;
-
-            return !isValid;
+            return true;
         }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool IsExpired(ICacheKey key, string fileName)
+    {
+        // if it doesn't have an expiration then it's never expired
+        if (!key.HasExpiration)
+        {
+            return false;
+        }
+
+        var dateCreated = StorageManager.GetDateCreated(fileName) ?? DateTime.Now;
+        var expireDate = dateCreated.AddDays(key.DaysValid!.Value);
+        var isValid = DateTime.Now <= expireDate;
+
+        return !isValid;
     }
 }

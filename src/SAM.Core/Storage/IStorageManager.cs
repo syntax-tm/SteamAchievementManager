@@ -25,4 +25,5 @@ public interface IStorageManager
     DateTime? GetDateCreated(string fileName);
     DateTime? GetDateModified(string fileName);
     void UpdateCacheMetadata(string fileName);
+    Uri GetFile(string fileName);
 }

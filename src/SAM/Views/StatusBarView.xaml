@@ -9,7 +9,7 @@
              xmlns:behaviors="clr-namespace:SAM.Behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}">
+             d:DataContext="{d:DesignInstance Type={x:Type vm:LibraryViewModel}, IsDesignTimeCreatable=False}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -77,14 +77,14 @@
                 </dxmvvm:Interaction.Behaviors>
                 <StatusBarItem.ContextMenu>
                     <ContextMenu>
-                        <ui:MenuItem Command="{Binding ToggleShowHiddenCommand}"
+                        <ui:MenuItem Command="{Binding Settings.ToggleShowHiddenCommand}"
                                      ToolTip="Show or hide hidden apps.">
                             <ui:MenuItem.Style>
                                 <Style TargetType="{x:Type ui:MenuItem}" BasedOn="{StaticResource UiMenuItem}">
                                     <Setter Property="Icon" Value="{ui:SymbolIcon Eye24}" />
                                     <Setter Property="Header" Value="Show hidden apps" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding ShowHidden}" Value="True">
+                                        <DataTrigger Binding="{Binding Settings.ShowHidden}" Value="True">
                                             <Setter Property="Icon" Value="{ui:SymbolIcon EyeOff24}" />
                                             <Setter Property="Header" Value="Hide hidden apps" />
                                         </DataTrigger>
@@ -98,7 +98,7 @@
                                      ToolTip="Resets all currently hidden apps."/>
                     </ContextMenu>
                 </StatusBarItem.ContextMenu>
-                <ToggleButton IsChecked="{Binding ShowHidden, UpdateSourceTrigger=PropertyChanged}">
+                <ToggleButton IsChecked="{Binding Settings.ShowHidden, UpdateSourceTrigger=PropertyChanged}">
                     <ToggleButton.Style>
                         <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource DefaultToggleButtonStyle}">
                             <Setter Property="ToolTip" Value="Hide Hidden Apps" />
@@ -131,7 +131,7 @@
             <StatusBarItem x:Name="FavoriteStatusBarItem"
                            Visibility="{Binding Library.FavoriteCount, FallbackValue=0, TargetNullValue=0, Converter={dxmvvm:NumericToVisibilityConverter}}"
                            ToolTip="Show Only Favorites">
-                <ToggleButton IsChecked="{Binding FilterFavorites, UpdateSourceTrigger=PropertyChanged}">
+                <ToggleButton IsChecked="{Binding Settings.ShowFavoritesOnly, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel>
                         <TextBlock>
                             <TextBlock.Style>
@@ -151,11 +151,6 @@
 
             <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0">
                 <StackPanel Orientation="Horizontal">
-                    <StatusBarItem Visibility="Collapsed">
-                        <Slider Interval="10" Minimum="80" Maximum="200" Width="250"
-                                Value="{Binding TileWidth, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Value}" />
-                    </StatusBarItem>
                     <StatusBarItem Content="{Binding Library.PercentComplete, Mode=OneWay, FallbackValue=0, TargetNullValue=0, Converter={StaticResource PercentFormatConverter}}"
                                    ContentStringFormat="{}Loading... {0}" 
                                    Visibility="{Binding Library.IsLoading, FallbackValue=Collapsed, TargetNullValue=Collapsed, Converter={dxmvvm:BooleanToVisibilityConverter}}" />

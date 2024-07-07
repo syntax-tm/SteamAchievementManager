@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace SAM.API
+namespace SAM.API;
+
+public interface INativeWrapper
 {
-    public interface INativeWrapper
-    {
-        void SetupFunctions(nint objectAddress);
-    }
+    void SetupFunctions(nint objectAddress);
 }

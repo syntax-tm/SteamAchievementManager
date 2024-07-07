@@ -126,9 +126,25 @@ public partial class App
 
             SteamLibraryManager.Default.Init();
 
+            var settings = HomeSettings.Load();
+
+            if (options.TileView)
+            {
+                settings.View = LibraryView.Tile;
+            }
+            else if (options.GridView)
+            {
+                settings.View = LibraryView.DataGrid;
+            }
+
+            if (options.OfflineMode)
+            {
+                settings.TileSettings.LocalImagesOnly = true;
+            }
+
             MainWindow = new MainWindow
             {
-                DataContext = new MainWindowViewModel()
+                DataContext = new MainWindowViewModel(settings)
             };
         }
 

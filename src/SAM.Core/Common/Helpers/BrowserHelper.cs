@@ -22,6 +22,7 @@ namespace SAM.Core
         private const string APP_WORKSHOP_URI_FORMAT = @"steam://url/SteamWorkshopPage/{0}";
         private const string VALIDATE_APP_URI_FORMAT = @"steam://validate/{0}";
         private const string ACHIEVEMENTS_URI_FORMAT = @"steam://url/SteamIDAchievementsPage/{0}";
+        private const string STEAM_CONSOLE_URI = @"steam://open/console";
 
         private const string STEAM_STORE_URI_FORMAT = @"https://store.steampowered.com/app/{0}";
         private const string STEAMGRIDDB_URI_FORMAT = @"https://www.steamgriddb.com/steam/{0}";
@@ -39,6 +40,11 @@ namespace SAM.Core
         public static void ViewSteamWorkshop(uint id) => OpenSteamUrl(APP_WORKSHOP_URI_FORMAT, id);
         public static void ValidateApp(uint id) => OpenSteamUrl(VALIDATE_APP_URI_FORMAT, id);
         public static void ViewAchievements(uint id) => OpenSteamUrl(ACHIEVEMENTS_URI_FORMAT, id);
+
+        public static void OpenSteamConsole()
+        {
+            OpenUrl(STEAM_CONSOLE_URI);
+        }
 
         public static void ViewOnSteamStore(uint id)
         {

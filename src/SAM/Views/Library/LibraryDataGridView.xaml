@@ -7,15 +7,16 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:vm="clr-namespace:SAM.ViewModels"
              xmlns:sam="clr-namespace:SAM"
+             xmlns:services="clr-namespace:SAM.Services"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vm:HomeViewModel, IsDesignTimeCreatable=False}"
+             d:DataContext="{d:DesignInstance Type=vm:LibraryViewModel, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/ButtonStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/DataGridStyles.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/ExpanderStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
                 <Setter Property="Template">
@@ -68,9 +69,11 @@
                      SelectedItem="{Binding SelectedItem}"
                      AutoGenerateColumns="False" EnableRowVirtualization="True" GridLinesVisibility="Horizontal"
                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden"
-                     ClipboardCopyMode="ExcludeHeader">
+                     ClipboardCopyMode="ExcludeHeader" HeadersVisibility="Column"
+                     CheckBoxColumnEditingElementStyle="{x:Null}">
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
+                <services:GroupViewService />
             </dxmvvm:Interaction.Behaviors>
             <ui:DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
@@ -89,20 +92,20 @@
                                 </Setter.Value>
                             </Setter>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected, Mode=OneWay}" Value="True">
+                        <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background">
                                 <Setter.Value>
                                     <SolidColorBrush Color="{StaticResource AccentPrimaryColor}" Opacity="0.8" />
                                 </Setter.Value>
                             </Setter>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver, Mode=OneWay}" Value="True">
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background">
                                 <Setter.Value>
                                     <SolidColorBrush Color="{StaticResource AccentPrimaryColor}" Opacity="0.4" />
                                 </Setter.Value>
                             </Setter>
-                        </DataTrigger>
+                        </Trigger>
                     </Style.Triggers>
                 </Style>
             </ui:DataGrid.RowStyle>
@@ -157,22 +160,6 @@
                         </Style>
                     </GroupStyle.ContainerStyle>
                 </GroupStyle>
-                <!-- Style for groups under the top level. -->
-                <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock FontWeight="Bold" Text="{Binding Name}" Margin="30,0,0,0" />
-                                <TextBlock FontWeight="Light" Text="{Binding ItemCount, StringFormat='{}({0})', FallbackValue=''}"
-                                           Grid.Column="1" Margin="0,0,10,0" />
-                            </Grid>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
             </ui:DataGrid.GroupStyle>
             <ui:DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" SortDirection="Ascending" CanUserSort="True"
@@ -200,15 +187,6 @@
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Type" Binding="{Binding GameInfoType, Converter={StaticResource EnumToStringConverter}}"
                                     CanUserSort="True" Width="100" CellStyle="{StaticResource CenterAlignedCellStyle}"
-                                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
-                <DataGridTextColumn Header="Publisher" Binding="{Binding Publisher, Mode=OneWay}"
-                                    CanUserSort="True" Width="150" CellStyle="{StaticResource CenterAlignedCellStyle}"
-                                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
-                <DataGridTextColumn Header="Developer" Binding="{Binding Developer, Mode=OneWay}"
-                                    CanUserSort="True" Width="150" CellStyle="{StaticResource CenterAlignedCellStyle}"
-                                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
-                <DataGridTextColumn Header="Franchise" Binding="{Binding Franchise, Mode=OneWay}"
-                                    CanUserSort="True" Width="150" CellStyle="{StaticResource CenterAlignedCellStyle}"
                                     HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
                 <DataGridTemplateColumn Width="40" Header="" HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
@@ -284,18 +262,51 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridCheckBoxColumn Header="Installed" Binding="{Binding IsInstalled, Mode=OneWay}" IsReadOnly="True"
+                                        HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type sam:SteamApp}">
+                            <ui:Button Command="{Binding BrowseFilesCommand}" Content="Browse"
+                                       Icon="{ui:SymbolIcon Folder24}"
+                                       Visibility="{Binding IsInstalled, Converter={dxmvvm:BooleanToVisibilityConverter}}"
+                                       Style="{StaticResource DataGridUiButtonStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type sam:SteamApp}">
+                            <ui:Button Command="{Binding LaunchAppCommand}" Content="Launch"
+                                       Icon="{ui:SymbolIcon Play24, Filled=True}"
+                                       Visibility="{Binding IsInstalled, Converter={dxmvvm:BooleanToVisibilityConverter}}" 
+                                       Style="{StaticResource DataGridUiButtonStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn MinWidth="200">
+                    <DataGridTemplateColumn.HeaderStyle>
+                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </DataGridTemplateColumn.HeaderStyle>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type sam:SteamApp}">
                             <UniformGrid Columns="2">
                                 <ui:Button Icon="{ui:SymbolIcon Edit24}"
-                                           CornerRadius="0" BorderThickness="0"
-                                           Command="{Binding ManageAppCommand}"
-                                           Background="{StaticResource ButtonBackgroundBrush}"
-                                           MouseOverBackground="{StaticResource ButtonHoverBackgroundBrush}"
-                                           PressedBackground="{StaticResource ButtonPressedBackgroundBrush}">
+                                           Command="{Binding ManageAppCommand}">
                                     <ui:Button.Style>
-                                        <Style TargetType="{x:Type ui:Button}">
+                                        <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DataGridUiButtonStyle}">
                                             <Setter Property="Content" Value="Manage" />
                                             <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
                                             <Setter Property="MouseOverBackground" Value="{StaticResource ButtonHoverBackgroundBrush}" />
@@ -307,14 +318,29 @@
                                                             <SolidColorBrush Color="{StaticResource GreenColor}" />
                                                         </Setter.Value>
                                                     </Setter>
+                                                    <Setter Property="BorderBrush">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource GreenColor}" />
+                                                        </Setter.Value>
+                                                    </Setter>
                                                     <Setter Property="MouseOverBackground">
                                                         <Setter.Value>
                                                             <SolidColorBrush Color="{StaticResource GreenColor}" Opacity="0.8" />
                                                         </Setter.Value>
                                                     </Setter>
+                                                    <Setter Property="MouseOverBorderBrush">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource GreenColor}" Opacity="0.9" />
+                                                        </Setter.Value>
+                                                    </Setter>
                                                     <Setter Property="PressedBackground">
                                                         <Setter.Value>
                                                             <SolidColorBrush Color="{StaticResource GreenColor}" Opacity="0.6" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="PressedBorderBrush">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource GreenColor}" Opacity="0.7" />
                                                         </Setter.Value>
                                                     </Setter>
                                                     <Setter Property="Icon" Value="{ui:SymbolIcon WindowMultipleSwap20}" />
@@ -324,14 +350,18 @@
                                         </Style>
                                     </ui:Button.Style>
                                 </ui:Button>
-                                <ui:Button CornerRadius="0" BorderThickness="0"
-                                           Command="{Binding EndManagerProcessCommand}"
+                                <ui:Button Command="{Binding EndManagerProcessCommand}"
                                            Visibility="{Binding IsManaging, Converter={dxmvvm:BooleanToVisibilityConverter}}">
                                     <ui:Button.Style>
-                                        <Style TargetType="{x:Type ui:Button}">
+                                        <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DataGridUiButtonStyle}">
                                             <Setter Property="Content" Value="Stop Process" />
                                             <Setter Property="Icon" Value="{ui:SymbolIcon SquareDismiss20}" />
                                             <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="{StaticResource RedColor}" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="BorderBrush">
                                                 <Setter.Value>
                                                     <SolidColorBrush Color="{StaticResource RedColor}" />
                                                 </Setter.Value>
@@ -341,9 +371,19 @@
                                                     <SolidColorBrush Color="{StaticResource RedColor}" Opacity="0.8" />
                                                 </Setter.Value>
                                             </Setter>
+                                            <Setter Property="MouseOverBorderBrush">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="{StaticResource RedColor}" Opacity="0.9" />
+                                                </Setter.Value>
+                                            </Setter>
                                             <Setter Property="PressedBackground">
                                                 <Setter.Value>
                                                     <SolidColorBrush Color="{StaticResource RedColor}" Opacity="0.6" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Setter Property="PressedBorderBrush">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="{StaticResource RedColor}" Opacity="0.7" />
                                                 </Setter.Value>
                                             </Setter>
                                         </Style>

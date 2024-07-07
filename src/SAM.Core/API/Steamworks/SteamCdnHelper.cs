@@ -21,7 +21,39 @@ public static class SteamCdnHelper
     private const string GAME_ACHIEVEMENT_URI = "http://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/{0}/{1}";
 
     private static readonly ILog log = LogManager.GetLogger(nameof(SteamCdnHelper));
-        
+    
+    public static Uri CacheImage(uint id, SteamImageType type, string file = null, bool localOnly = false)
+    {
+        try
+        {
+            var url = GetImageUri(id, type, file);
+
+            var fileName = Path.GetFileName(url.ToString());
+            var cacheKey = CacheKeys.CreateAppImageCacheKey(id, fileName);
+
+            if (localOnly)
+            {
+                var isLocal = CacheManager.TryGetFile(cacheKey, out var uri);
+
+                // since this is local only we're returning the result either way
+                return uri;
+            }
+
+            _ = WebManager.DownloadImage(url, cacheKey);
+
+            // if the image was just downloaded then it's guaranteed to be in the cache so get the uri to it
+            var cachedImage = CacheManager.GetFile(cacheKey);
+
+            return cachedImage;
+        }
+        catch (Exception e)
+        {
+            log.Error($"An error occurred downloading the {type} image for app id '{id}'.", e);
+
+            throw;
+        }
+    }
+
     public static Image DownloadImage(uint id, SteamImageType type, string file = null, bool localOnly = false)
     {
         try

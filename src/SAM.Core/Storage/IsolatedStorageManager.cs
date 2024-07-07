@@ -313,6 +313,20 @@ namespace SAM.Core.Storage
             SaveText(CACHE_INFO_NAME, json);
         }
 
+        public Uri GetFile(string fileName)
+        {
+            if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
+            
+            var fullName = Path.Combine(ApplicationStoragePath, fileName);
+
+            if (!File.Exists(fullName))
+            {
+                return null;
+            }
+
+            return new (fullName);
+        }
+
         internal class CacheMetaData
         {
             public Dictionary<string, CacheItemMetaData> Items { get; set; } = [ ];

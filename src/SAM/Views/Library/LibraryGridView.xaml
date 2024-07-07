@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-             xmlns:core="clr-namespace:SAM.Core;assembly=SAM.Core"
              xmlns:converters="clr-namespace:SAM.Converters"
              xmlns:sam="clr-namespace:SAM"
              xmlns:vm="clr-namespace:SAM.ViewModels"

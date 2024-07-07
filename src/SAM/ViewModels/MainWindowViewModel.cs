@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using SAM.Behaviors;
 using SAM.Core;
 using SAM.Core.Storage;
+using SAM.Managers;
 using SAM.SplashScreen;
 
 namespace SAM.ViewModels;
@@ -44,6 +45,14 @@ public partial class MainWindowViewModel
 
         CurrentVm = HomeVm;
     }
+    
+    public MainWindowViewModel(HomeSettings settings)
+    {
+        //User = new (SteamClientManager.Default);
+        HomeVm = new (settings);
+
+        CurrentVm = HomeVm;
+    }
 
     public MainWindowViewModel(SteamGameViewModel gameVm)
     {
@@ -51,6 +60,12 @@ public partial class MainWindowViewModel
         GameVm = gameVm;
 
         CurrentVm = gameVm;
+    }
+    
+    [GenerateCommand]
+    public void OpenSteamConsole()
+    {
+        BrowserHelper.OpenSteamConsole();
     }
 
     [GenerateCommand]
@@ -61,7 +76,7 @@ public partial class MainWindowViewModel
             const string PROMPT = @"Are you sure you want to reset your app settings?";
             var result = MessageBox.Show(PROMPT, @"Confirm Reset", MessageBoxButton.YesNoCancel, MessageBoxImage.Question, MessageBoxResult.Cancel);
 
-            if (result != MessageBoxResult.OK)
+            if (result != MessageBoxResult.Yes)
             {
                 log.Info($"User responded '{result:G}' to reset confirmation. Cancelling...");
 
@@ -91,9 +106,9 @@ public partial class MainWindowViewModel
                 log.Info($"Deleted user settings directory '{settingsPath}'.");
             }
 
-            HomeVm?.UnHideAll();
+            HomeVm?.CurrentVm?.UnHideAll();
 
-            HomeVm?.Library?.Items.Where(a => a.IsFavorite).ForEach(a => a.IsFavorite = false);
+            HomeVm?.CurrentVm?.Library?.Items.Where(a => a.IsFavorite).ForEach(a => a.IsFavorite = false);
 
             log.Info("User settings reset was successful.");
         }
@@ -177,7 +192,7 @@ public partial class MainWindowViewModel
 
             if (!result.HasValue || !result.Value) return;
 
-            var apps = HomeVm?.Library?.Items;
+            var apps = SteamLibraryManager.DefaultLibrary?.Items;
             var ids = apps?.Select(a => new { a.Id, a.Name, a.IsHidden, a.IsFavorite, a.GameInfoType }).ToList();
             var json = JsonConvert.SerializeObject(ids, Formatting.Indented);
 
@@ -218,6 +233,7 @@ public partial class MainWindowViewModel
 
         Title = $"{TITLE_BASE} | {SubTitle}";
     }
+
     private void OnCurrentVmChanged()
     {
         Mode = GameVm != null ? ApplicationMode.Manager : ApplicationMode.Default;

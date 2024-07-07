@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace SAM.Helpers;
+namespace SAM;
 
 public static class ApplicationHelper
 {

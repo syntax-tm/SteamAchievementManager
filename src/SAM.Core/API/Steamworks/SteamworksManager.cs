@@ -15,7 +15,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SAM.Core.Interfaces;
 using SAM.Core.Storage;
-using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
 namespace SAM.Core
 {
