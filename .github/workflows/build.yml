@@ -1,4 +1,5 @@
 name: Build
+run-name: Build ${{ github.event_name == 'workflow_call' && inputs.version || github.ref_name }} by ${{ github.actor }}
 
 env:
   PACKAGES: ${{ github.workspace }}\.nuget\packages
@@ -110,7 +111,7 @@ jobs:
       run: |
         $publishDir = Get-Item publish | Select-Object -ExpandProperty FullName
 
-        $stagedFiles = gci $publishDir -Recurse -File | select -ExpandProperty FullName | Sort-Object
+        $stagedFiles = gci $publishDir -Recurse -File | Sort-Object Extension, FullName | select -ExpandProperty FullName
 
         Write-Host ""
         Write-Host "$($PSStyle.Bold)Staged Artifacts$($PSStyle.BoldOff)"
