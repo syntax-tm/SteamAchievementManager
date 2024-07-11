@@ -25,7 +25,7 @@
         </Style.Triggers>
     </Style>
 
-    <DataTemplate x:Key="MenuEntryDataTemplate" DataType="{x:Type sam:MenuEntry}">
+    <!--<DataTemplate x:Key="MenuEntryDataTemplate" DataType="{x:Type sam:MenuEntry}">
         <ui:MenuItem Header="{Binding Header}"
                      ItemsSource="{Binding Items, Mode=OneWay}"
                      IsEnabled="{Binding Enabled}"
@@ -33,7 +33,7 @@
                      IsChecked="{Binding IsChecked, Mode=TwoWay}"
                      Style="{StaticResource DefaultMenuEntryStyle}">
         </ui:MenuItem>
-    </DataTemplate>
+    </DataTemplate>-->
 
     <Style TargetType="{x:Type controls:MenuHeaderItem}">
         <Setter Property="IsEnabled" Value="False" />

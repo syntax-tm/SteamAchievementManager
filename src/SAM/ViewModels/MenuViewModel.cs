@@ -33,12 +33,6 @@ public partial class MenuViewModel
     [GenerateProperty] private HomeViewModel _homeVm;
     [GenerateProperty] private SteamGameViewModel _gameVm;
     [GenerateProperty] private ApplicationMode _mode;
-    [GenerateProperty] private ObservableCollection<MenuEntry> _fileMenuItems;
-    [GenerateProperty] private ObservableCollection<MenuEntry> _editMenuItems;
-    [GenerateProperty] private ObservableCollection<MenuEntry> _viewMenuItems;
-    [GenerateProperty] private ObservableCollection<MenuEntry> _toolsMenuItems;
-    [GenerateProperty] private ObservableCollection<MenuEntry> _windowMenuItems;
-    [GenerateProperty] private ObservableCollection<MenuEntry> _helpMenuItems;
 
     public bool IsLibrary => _mode == ApplicationMode.Default;
     public bool IsManager => _mode == ApplicationMode.Manager;
