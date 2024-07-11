@@ -19,25 +19,36 @@
                 <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/DataGridStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource CenteredGridHeaderStyle}">
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
                                 <Border x:Name="BackgroundBorder"
-                                        Grid.ColumnSpan="2"
                                         Background="{TemplateBinding Background}"
                                         BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}" />
+                                        BorderThickness="0">
+                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                        <ContentPresenter.Style>
+                                            <Style TargetType="{x:Type ContentPresenter}">
+                                                <Setter Property="Opacity" Value="0.6" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Opacity" Value="1" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentPresenter.Style>
+                                    </ContentPresenter>
+                                </Border>
                                 <Path x:Name="SortArrow"
-                                      Grid.Column="1"
                                       Width="8"
                                       Height="10"
-                                      Margin="0 0 8 2"
+                                      Margin="0 0 2 0"
                                       VerticalAlignment="Center"
+                                      HorizontalAlignment="Right"
                                       RenderTransformOrigin="0.5,0.5"
                                       Stretch="Fill"
                                       Visibility="Collapsed" />
@@ -51,7 +62,7 @@
                                 <Trigger Property="SortDirection" Value="Descending">
                                     <Setter TargetName="SortArrow" Property="Data"
                                             Value="F1 M 42,19.0002L 34,19.0002L 34,43.7502L 24,33.7502L 24,44.2502L 38,58.2502L 52,44.2502L 52,33.7502L 42,43.7502L 42,19.0002 Z " />
-                                    <Setter TargetName="SortArrow" Property="Margin" Value="0 0 8 0" />
+                                    <Setter TargetName="SortArrow" Property="Margin" Value="0 0 2 0" />
                                     <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
@@ -63,14 +74,16 @@
     </UserControl.Resources>
 
     <Grid>
-        <ui:DataGrid ItemsSource="{Binding ItemsView, Mode=OneWay}" IsReadOnly="True"
+        <ui:DataGrid x:Name="LibraryGrid" ItemsSource="{Binding ItemsView, Mode=OneWay}" IsReadOnly="True"
                      d:DesignSource="{d:DesignInstance Type={x:Type sam:SteamApp}}"
-                     SelectionMode="Single" SelectionUnit="FullRow"
+                     SelectionMode="Single" SelectionUnit="Cell"
                      SelectedItem="{Binding SelectedItem}"
+                     HorizontalGridLinesBrush="{StaticResource GridLineBrush}"
                      AutoGenerateColumns="False" EnableRowVirtualization="True" GridLinesVisibility="Horizontal"
                      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Hidden"
                      ClipboardCopyMode="ExcludeHeader" HeadersVisibility="Column"
-                     CheckBoxColumnEditingElementStyle="{x:Null}">
+                     CheckBoxColumnEditingElementStyle="{x:Null}"
+                     BorderBrush="Transparent" BorderThickness="0" Background="Transparent">
             <dxmvvm:Interaction.Behaviors>
                 <dxmvvm:EventToCommand EventName="MouseDoubleClick" Command="{Binding ManageAppCommand}" />
                 <services:GroupViewService />
@@ -151,7 +164,18 @@
                                                 </Grid>
                                             </Expander.Header>
                                             <Expander.Content>
-                                                <ItemsPresenter />
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="*" />
+                                                    </Grid.RowDefinitions>
+                                                    <!--<ContentControl x:Name="ColumnHeaderRow">
+                                                        <dxmvvm:Interaction.Behaviors>
+                                                            <behaviors:DataGridColumnHeaderRowBehavior DataGrid="{Binding ElementName=LibraryGrid}" />
+                                                        </dxmvvm:Interaction.Behaviors>
+                                                    </ContentControl>-->
+                                                    <ItemsPresenter Grid.Row="1" />
+                                                </Grid>
                                             </Expander.Content>
                                         </Expander>
                                     </ControlTemplate>
@@ -164,11 +188,10 @@
             <ui:DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Id}" SortDirection="Ascending" CanUserSort="True"
                                     Width="100" MinWidth="80"
-                                    CellStyle="{StaticResource CenterAlignedCellStyle}" HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
+                                    CellStyle="{StaticResource CenterAlignedCellStyle}">
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" CanUserSort="True" Width="400"
-                                    MinWidth="200"
-                                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
+                                    MinWidth="200">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource LeftAlignedCellStyle}">
                             <Setter Property="Padding" Value="5,0,0,0" />
@@ -186,12 +209,12 @@
                     </DataGridTextColumn.CellStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="Type" Binding="{Binding GameInfoType, Converter={StaticResource EnumToStringConverter}}"
-                                    CanUserSort="True" Width="100" CellStyle="{StaticResource CenterAlignedCellStyle}"
-                                    HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
-                <DataGridTemplateColumn Width="40" Header="" HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
+                                    CanUserSort="True" Width="100" CellStyle="{StaticResource CenterAlignedCellStyle}" />
+                <DataGridTemplateColumn Width="60" Header="{ui:SymbolIcon Heart24, Filled=True}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type sam:SteamApp}">
-                            <ToggleButton IsChecked="{Binding IsFavorite, Mode=OneWay}" Command="{Binding ToggleFavoriteCommand}">
+                            <ToggleButton IsChecked="{Binding IsFavorite, Mode=OneWay}" Command="{Binding ToggleFavoriteCommand}"
+                                          HorizontalAlignment="Center">
                                 <ToggleButton.Style>
                                     <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource DefaultToggleButtonStyle}">
                                         <Setter Property="BorderBrush" Value="Transparent" />
@@ -225,10 +248,11 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="40" Header="" HeaderStyle="{StaticResource CenteredGridHeaderStyle}">
+                <DataGridTemplateColumn Width="60" Header="{ui:SymbolIcon Eye24, Filled=True}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type sam:SteamApp}">
-                            <ToggleButton IsChecked="{Binding IsHidden, Mode=OneWay}" Command="{Binding ToggleVisibilityCommand}">
+                            <ToggleButton IsChecked="{Binding IsHidden, Mode=OneWay}" Command="{Binding ToggleVisibilityCommand}"
+                                          HorizontalAlignment="Center">
                                 <ToggleButton.Style>
                                     <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource DefaultToggleButtonStyle}">
                                         <Setter Property="BorderBrush" Value="Transparent" />
@@ -262,8 +286,14 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="Installed" Binding="{Binding IsInstalled, Mode=OneWay}" IsReadOnly="True"
-                                        HeaderStyle="{StaticResource CenteredGridHeaderStyle}" />
+                <DataGridTemplateColumn Header="Installed" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type sam:SteamApp}">
+                            <CheckBox IsChecked="{Binding IsInstalled, Mode=OneWay}" IsHitTestVisible="False"
+                                      HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.HeaderStyle>
                         <Style TargetType="{x:Type DataGridColumnHeader}">
@@ -273,7 +303,8 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type sam:SteamApp}">
                             <ui:Button Command="{Binding BrowseFilesCommand}" Content="Browse"
-                                       Icon="{ui:SymbolIcon Folder24}"
+                                       Appearance="Dark"
+                                       Icon="{ui:SymbolIcon FolderOpen24, Filled=True}"
                                        Visibility="{Binding IsInstalled, Converter={dxmvvm:BooleanToVisibilityConverter}}"
                                        Style="{StaticResource DataGridUiButtonStyle}" />
                         </DataTemplate>
@@ -288,6 +319,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type sam:SteamApp}">
                             <ui:Button Command="{Binding LaunchAppCommand}" Content="Launch"
+                                       Appearance="Dark"
                                        Icon="{ui:SymbolIcon Play24, Filled=True}"
                                        Visibility="{Binding IsInstalled, Converter={dxmvvm:BooleanToVisibilityConverter}}" 
                                        Style="{StaticResource DataGridUiButtonStyle}" />
@@ -303,16 +335,17 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type sam:SteamApp}">
                             <UniformGrid Columns="2">
-                                <ui:Button Icon="{ui:SymbolIcon Edit24}"
-                                           Command="{Binding ManageAppCommand}">
+                                <ui:Button Command="{Binding ManageAppCommand}">
                                     <ui:Button.Style>
                                         <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DataGridUiButtonStyle}">
                                             <Setter Property="Content" Value="Manage" />
-                                            <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
-                                            <Setter Property="MouseOverBackground" Value="{StaticResource ButtonHoverBackgroundBrush}" />
-                                            <Setter Property="PressedBackground" Value="{StaticResource ButtonPressedBackgroundBrush}" />
+                                            <Setter Property="Icon" Value="{ui:SymbolIcon TrophyLock24}" />
                                             <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon TrophyLock24, Filled=True}" />
+                                                </Trigger>
                                                 <DataTrigger Binding="{Binding IsManaging}" Value="True">
+                                                    <Setter Property="Foreground" Value="Black" />
                                                     <Setter Property="Background">
                                                         <Setter.Value>
                                                             <SolidColorBrush Color="{StaticResource GreenColor}" />
@@ -386,6 +419,11 @@
                                                     <SolidColorBrush Color="{StaticResource RedColor}" Opacity="0.7" />
                                                 </Setter.Value>
                                             </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Icon" Value="{ui:SymbolIcon SquareDismiss20, Filled=True}" />
+                                                </Trigger>
+                                            </Style.Triggers>
                                         </Style>
                                     </ui:Button.Style>
                                 </ui:Button>

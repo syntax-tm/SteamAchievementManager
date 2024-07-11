@@ -14,9 +14,6 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type controls:AppTileButton}">
-        <Style.Resources>
-            <mvvm:BindingProxy x:Key="BindingProxy" Data="{Binding RelativeSource={RelativeSource Self}, Path=(ContextMenu.IsOpen), Mode=TwoWay}" />
-        </Style.Resources>
         <!--<Setter Property="Width" Value="" />-->
         <Setter Property="ToolTip" Value="{Binding Name}" />
         <Setter Property="Foreground" Value="{StaticResource TextFillColorLightPrimaryBrush}" />
@@ -35,7 +32,8 @@
                                        BorderBrush="Transparent"
                                        MouseOverBackground="Transparent"
                                        MouseOverBorderBrush="Transparent"
-                                       Foreground="{StaticResource TextFillColorLightPrimaryBrush}">
+                                       Foreground="{StaticResource TextFillColorLightPrimaryBrush}"
+                                       HorizontalContentAlignment="Center">
                                 <Grid>
                                     <Image x:Name="PART_Image"
                                            Stretch="Fill" StretchDirection="Both"

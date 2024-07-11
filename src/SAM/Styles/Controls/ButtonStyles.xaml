@@ -11,15 +11,15 @@
 
     <Style x:Key="DataGridUiButtonStyle" TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
         <Setter Property="Margin" Value="5,0" />
-        <Setter Property="CornerRadius" Value="0" />
-        <Setter Property="Width" Value="100" />
+        <Setter Property="CornerRadius" Value="1" />
+        <Setter Property="Width" Value="120" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Background" Value="{StaticResource AccentPrimaryBrush}" />
-        <Setter Property="BorderBrush" Value="{StaticResource AccentPrimaryBrush}" />
-        <Setter Property="MouseOverBackground" Value="{StaticResource Accent2PrimaryBrush}" />
-        <Setter Property="MouseOverBorderBrush" Value="{StaticResource Accent3PrimaryBrush}" />
-        <Setter Property="PressedBackground"  Value="{StaticResource Accent3PrimaryBrush}" />
-        <Setter Property="PressedBorderBrush"  Value="{StaticResource Accent4PrimaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}" />
+        <Setter Property="MouseOverBackground" Value="{StaticResource ButtonHoverBackgroundBrush}" />
+        <Setter Property="MouseOverBorderBrush" Value="{StaticResource ButtonHoverBackgroundBrush}" />
+        <Setter Property="PressedBackground" Value="{StaticResource ButtonPressedBackgroundBrush}" />
+        <Setter Property="PressedBorderBrush"  Value="{StaticResource ButtonPressedBackgroundBrush}" />
         <Setter Property="Foreground" Value="{StaticResource ControlForegroundBrush}" />
     </Style>
 

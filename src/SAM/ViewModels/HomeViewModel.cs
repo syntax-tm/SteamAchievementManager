@@ -14,7 +14,7 @@ public partial class HomeViewModel
     [GenerateProperty] private LibraryViewModel _currentVm;
     [GenerateProperty] private LibraryView _libraryViewType;
     [GenerateProperty] private HomeSettings _settings;
-    [GenerateProperty] private LibrarySettings _currentSettings;
+    [GenerateProperty] private ILibrarySettings _currentSettings;
 
     public HomeViewModel(HomeSettings settings = null)
     {
@@ -61,7 +61,7 @@ public partial class HomeViewModel
                 var vm = new LibraryTileViewModel(tileSettings);
                 
                 CurrentVm = vm;
-                _currentSettings = tileSettings;
+                CurrentSettings = tileSettings;
 
                 return;
             }
@@ -72,7 +72,7 @@ public partial class HomeViewModel
                 var vm = new LibraryDataGridViewModel(gridSettings);
                 
                 CurrentVm = vm;
-                _currentSettings = gridSettings;
+                CurrentSettings = gridSettings;
 
                 return;
             }

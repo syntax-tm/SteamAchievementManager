@@ -20,11 +20,11 @@ public partial class LibraryViewModel
     protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
     protected IGroupViewService groupViewService => GetService<IGroupViewService>();
 
-    private readonly ObservableHandler<LibrarySettings> _settingsHandler;
+    private readonly ObservableHandler<ILibrarySettings> _settingsHandler;
 
     protected CollectionViewSource _itemsViewSource;
     protected bool _loading = true;
-    private LibrarySettings _settings;
+    private ILibrarySettings _settings;
     
     [GenerateProperty] protected string _filterText;
     [GenerateProperty] protected bool _filterNormal;
@@ -37,11 +37,11 @@ public partial class LibraryViewModel
     [GenerateProperty] protected SteamApp _selectedItem;
     [GenerateProperty] protected SteamLibrary _library;
 
-    protected LibraryViewModel(LibrarySettings settings)
+    protected LibraryViewModel(ILibrarySettings settings)
     {
         _settings = settings;
 
-        _settingsHandler = new ObservableHandler<LibrarySettings>(settings)
+        _settingsHandler = new ObservableHandler<ILibrarySettings>(settings)
             .Add(s => s.EnableGrouping, OnEnableGroupingChanged)
             .Add(s => s.ShowHidden, OnShowHiddenChanged)
             .Add(s => s.ShowFavoritesOnly, OnFilterFavoritesChanged);
@@ -140,6 +140,7 @@ public partial class LibraryViewModel
         }
 
         ItemsView = _itemsViewSource.View;
+        ItemsView!.Refresh();
 
         // suggestions are sorted by favorites first, then normal (non-favorite & non-hidden) apps,
         // and then any hidden apps

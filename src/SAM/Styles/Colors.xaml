@@ -29,6 +29,9 @@
     <Color x:Key="StatusBarBorderColor">#70747474</Color>
     <Color x:Key="ContainerBackgroundColor">#00FFFFFF</Color>
 
+    <!-- Colors | Controls | Grid -->
+    <Color x:Key="GridLineColor">#46545454</Color>
+
     <!-- Colors | Controls | Button -->
     <Color x:Key="ButtonBackgroundHoverColor">#4A76A3</Color>
     <Color x:Key="ButtonPressedHoverColor">#294664</Color>
@@ -69,6 +72,9 @@
 
     <SolidColorBrush x:Key="ContainerBackgroundBrush" Color="{StaticResource ContainerBackgroundColor}" po:Freeze="true" />
     <SolidColorBrush x:Key="StatusBarBorderBrush" Color="{StaticResource StatusBarBorderColor}" po:Freeze="true" />
+
+    <!-- Brushes | Controls | Grid -->
+    <SolidColorBrush x:Key="GridLineBrush" Color="{StaticResource GridLineColor}" po:Freeze="true" />
 
     <!-- Brushes | Controls | Button -->
     <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{StaticResource AccentPrimaryColor}" po:Freeze="true" />

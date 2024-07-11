@@ -48,7 +48,12 @@ public static class CacheManager
             
         if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
 
-        var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
+        var settings = new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Formatting = Formatting.Indented
+        };
+        var targetObjectJson = JsonConvert.SerializeObject(target, settings);
 
         StorageManager.SaveText(filePath, targetObjectJson, overwrite);
 
@@ -62,8 +67,13 @@ public static class CacheManager
         var filePath = key?.GetFullPath();
             
         if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
-
-        var targetObjectJson = JsonConvert.SerializeObject(target, Formatting.Indented);
+        
+        var settings = new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+            Formatting = Formatting.Indented
+        };
+        var targetObjectJson = JsonConvert.SerializeObject(target, settings);
 
         var task = StorageManager.SaveTextAsync(filePath, targetObjectJson, overwrite);
 
@@ -242,7 +252,7 @@ public static class CacheManager
         {
             return false;
         }
-            
+        
         if (IsExpired(key, filePath))
         {
             return false;

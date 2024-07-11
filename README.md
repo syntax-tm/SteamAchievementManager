@@ -111,13 +111,6 @@ A special thank you to [JetBrains](https://www.jetbrains.com/) for their continu
   <a href="https://github.com/DevExpress/DevExpress.Mvvm.Free">DevExpress</a> • <a href="https://github.com/RudeySH/SteamCountries">SteamCountries</a> • <a href="https://github.com/lepoco/wpfui">WPF UI</a>
 </p>
 
-## Resources
-
-- [DevExpress MVVM](https://docs.devexpress.com/WPF/15112/mvvm-framework)
-- [Steamworks Overview](https://partner.steamgames.com/doc/sdk/api)
-  - [Steamworks API](https://partner.steamgames.com/doc/api)
-  - [Steamworks Web API](https://partner.steamgames.com/doc/webapi)
-
 ---
 
 [^1]: For non-commercial development

@@ -7,7 +7,9 @@
         <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Colors.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Converters.xaml" />
         <!-- SAM controls -->
-        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/AppTileButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Base/AppTileButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Base/MenuHeaderItem.xaml" />
+        <!-- SAM styles -->
         <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/AutoSuggestBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/ButtonStyles.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SAM;component/Styles/Controls/CheckBoxStyles.xaml" />

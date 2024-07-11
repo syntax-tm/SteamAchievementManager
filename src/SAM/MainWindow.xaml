@@ -25,10 +25,6 @@
         </ResourceDictionary>
     </ui:FluentWindow.Resources>
 
-    <!--<ui:FluentWindow.DataContext>
-        <vm:MainWindowViewModel />
-    </ui:FluentWindow.DataContext>-->
-
     <dxmvvm:Interaction.Behaviors>
         <behaviors:WindowAutoSaveBehavior />
         <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding OnLoadedCommand}" />
@@ -40,7 +36,7 @@
                          CloseWindowByDoubleClickOnIcon="True"
                          FontSize="13">
                 <ui:TitleBar.Header>
-                    <views:MenuView />
+                    <views:MenuView DataContext="{Binding MenuVm}" />
                 </ui:TitleBar.Header>
                 <ui:TitleBar.Icon>
                     <ui:ImageIcon Source="/SAM.png" />

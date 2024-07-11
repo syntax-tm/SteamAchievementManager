@@ -16,7 +16,12 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <Size x:Key="ItemSize" Width="600" Height="286" />
+            <Size x:Key="XSmallSize" Width="200" Height="95" />
+            <Size x:Key="SmallSize" Width="250" Height="119" />
+            <Size x:Key="NormalSize" Width="300" Height="143" />
+            <Size x:Key="LargeSize" Width="400" Height="190" />
+            <Size x:Key="XLargeSize" Width="503" Height="240" />
+            <Size x:Key="XXLargeSize" Width="600" Height="286" />
         </ResourceDictionary>
     </UserControl.Resources>
 

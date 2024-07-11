@@ -1,3 +1,17 @@
+## 0.7.0-beta
+
+#### General
+
+- Added grid view to library
+- Added ability to group apps in library
+- Added automatic saving and loading of library settings
+
+## 0.7.0-alpha
+
+#### General
+
+- **[BUG]** Fixed application crash caused by large libraries
+
 ## 0.6.0
 
 #### General
