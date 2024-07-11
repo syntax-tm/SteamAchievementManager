@@ -51,8 +51,7 @@
                                      BorderBrush="Transparent" BorderThickness="0" />
                         <ItemsControl x:Name="PART_Items"
                                       Grid.Row="1"
-                                      ItemsSource="{TemplateBinding ItemsSource}"
-                                      ItemTemplate="{StaticResource MenuEntryDataTemplate}">
+                                      ItemsSource="{TemplateBinding ItemsSource}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Vertical" />
