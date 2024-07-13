@@ -23,6 +23,7 @@ jobs:
       version: ${{ steps.validate-version.outputs.version }}
       version-prefix: ${{ steps.validate-version.outputs.version-prefix }}
       version-suffix: ${{ steps.validate-version.outputs.version-suffix }}
+      is-prerelease: ${{ steps.validate-version.outputs.is-prerelease }}
     steps:
     - id: validate-version
       name: Validate Version
@@ -42,6 +43,7 @@ jobs:
         $parts = $version -split '-',2
         $prefix = $parts[0]
         $suffix = $parts[1]
+        $isPrerelease = $suffix -ne $null
 
         Write-Host "Prefix: " -NoNewLine
         Write-Host "$($PSStyle.Foreground.BrightCyan)$prefix$($PSStyle.Reset)"
@@ -52,6 +54,7 @@ jobs:
         echo "version=$version" >> $env:GITHUB_OUTPUT
         echo "version-prefix=$prefix" >> $env:GITHUB_OUTPUT
         echo "version-suffix=$suffix" >> $env:GITHUB_OUTPUT
+        echo "is-prerelease=$isPrerelease" >> $env:GITHUB_OUTPUT
   build:
     uses: syntax-tm/SteamAchievementManager/.github/workflows/build.yml@main
     needs: setup
@@ -93,3 +96,7 @@ jobs:
         draft: true
         allowUpdates: true
         artifactErrorsFailBuild: true
+        omitBodyDuringUpdate: true
+        omitDraftDuringUpdate: true
+        omitNameDuringUpdate: true
+        prerelease: ${{ needs.setup.outputs.is-prerelease == 'true' && 'true' || '' }}
