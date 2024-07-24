@@ -48,7 +48,19 @@ public partial class LibraryViewModel
 
         Messenger.Default.Register<ActionMessage>(this, OnActionMessage);
     }
-    
+
+    [GenerateCommand]
+    public void ExpandAll()
+    {
+        groupViewService.ExpandAll();
+    }
+
+    [GenerateCommand]
+    public void CollapseAll()
+    {
+        groupViewService.CollapseAll();
+    }
+
     [GenerateCommand]
     public void ToggleShowHidden()
     {
@@ -63,8 +75,6 @@ public partial class LibraryViewModel
         if (_settings == null) return;
 
         _settings.EnableGrouping = !_settings.EnableGrouping;
-
-        Refresh();
     }
 
     [GenerateCommand]
@@ -98,22 +108,27 @@ public partial class LibraryViewModel
 
         Library ??= SteamLibraryManager.DefaultLibrary;
 
-        if (_itemsViewSource != null)
-        {
-            //_itemsViewSource.Filter -= ItemsViewSourceOnFilter;
-            _itemsViewSource = null;
-        }
-
-        _itemsViewSource = new ()
+        // ReSharper disable once RedundantCheckBeforeAssignment
+        _itemsViewSource ??= new ()
         {
             Source = Library.Items
         };
 
         using (_itemsViewSource.DeferRefresh())
         {
-            _itemsViewSource.Filter += ItemsViewSourceOnFilter;
-            
+            _itemsViewSource.GroupDescriptions.Clear();
+            _itemsViewSource.LiveGroupingProperties.Clear();
+
+            if (_settings.EnableGrouping)
+            {
+                _itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Group)));
+                _itemsViewSource.LiveGroupingProperties.Add(nameof(SteamApp.Group));
+            }
+
+            _itemsViewSource.IsLiveGroupingRequested = _settings.EnableGrouping;
+
             _itemsViewSource.SortDescriptions.Clear();
+            _itemsViewSource.LiveSortingProperties.Clear();
 
             if (_settings.EnableGrouping)
             {
@@ -121,33 +136,28 @@ public partial class LibraryViewModel
             }
 
             _itemsViewSource.SortDescriptions.Add(new (nameof(SteamApp.Name), ListSortDirection.Ascending));
+            
+            _itemsViewSource.IsLiveSortingRequested = true;
 
             _itemsViewSource.LiveFilteringProperties.Clear();
             _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsHidden));
             _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.IsFavorite));
             _itemsViewSource.LiveFilteringProperties.Add(nameof(SteamApp.GameInfoType));
             
-            _itemsViewSource.GroupDescriptions.Clear();
-
-            if (_settings.EnableGrouping)
-            {
-                _itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Group)));
-            }
-
+            _itemsViewSource.Filter += ItemsViewSourceOnFilter;
+            
             _itemsViewSource.IsLiveFilteringRequested = true;
-            _itemsViewSource.IsLiveSortingRequested = true;
-            _itemsViewSource.IsLiveGroupingRequested = _settings.EnableGrouping;
         }
 
-        ItemsView = _itemsViewSource.View;
+        ItemsView ??= _itemsViewSource.View;
         ItemsView!.Refresh();
 
         // suggestions are sorted by favorites first, then normal (non-favorite & non-hidden) apps,
         // and then any hidden apps
         Suggestions = Library.Items
-                             .OrderBy(a => a.GroupSortIndex)
-                             .ThenBy(a => a.Name)
-                             .Select(a => a.Name).ToList();
+            .OrderBy(a => a.GroupSortIndex)
+            .ThenBy(a => a.Name)
+            .Select(a => a.Name).ToList();
 
         _loading = false;
     }

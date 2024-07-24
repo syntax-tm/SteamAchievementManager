@@ -272,6 +272,36 @@ public static class CacheManager
         }
     }
 
+    public static async Task<T> GetObjectAsync<T>(ICacheKey key)
+    {
+        var filePath = key?.GetFullPath();
+
+        if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(key));
+            
+        if (!StorageManager.FileExists(filePath))
+        {
+            return default;
+        }
+            
+        if (IsExpired(key, filePath))
+        {
+            return default;
+        }
+
+        try
+        {
+            var fileText = await StorageManager.GetTextFileAsync(filePath);
+
+            var cachedObject = JsonConvert.DeserializeObject<T>(fileText);
+
+            return cachedObject;
+        }
+        catch
+        {
+            return default;
+        }
+    }
+
     public static bool TryGetObject<T>(ICacheKey key, out T cachedObject)
     {
         var filePath = key?.GetFullPath();

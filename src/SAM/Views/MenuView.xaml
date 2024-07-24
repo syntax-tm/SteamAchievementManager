@@ -73,6 +73,16 @@
                         </Style>
                     </ui:MenuItem.Style>
                 </ui:MenuItem>
+                <Separator Visibility="{Binding HomeVm.CurrentSettings.EnableGrouping, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+                <controls:MenuHeaderItem Header="Groups" Visibility="{Binding HomeVm.CurrentSettings.EnableGrouping, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+                <ui:MenuItem Header="Expand All"
+                             Command="{Binding HomeVm.CurrentVm.ExpandAllCommand}"
+                             Icon="{ui:SymbolIcon ArrowMaximizeVertical24}"
+                             Visibility="{Binding HomeVm.CurrentSettings.EnableGrouping, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
+                <ui:MenuItem Header="Collapse All"
+                             Command="{Binding HomeVm.CurrentVm.CollapseAllCommand}"
+                             Icon="{ui:SymbolIcon ArrowMinimizeVertical24}"
+                             Visibility="{Binding HomeVm.CurrentSettings.EnableGrouping, Converter={dxmvvm:BooleanToVisibilityConverter}}" />
                 <Separator />
                 <controls:MenuHeaderItem Header="Options" />
                 <ui:MenuItem Header="Enable Grouping" IsCheckable="True"

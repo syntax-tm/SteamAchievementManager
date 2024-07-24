@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:SAM.Controls"
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
                     xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
                     xmlns:mvvm="clr-namespace:SAM.Mvvm"
                     xmlns:behaviors="clr-namespace:SAM.Behaviors">
@@ -20,6 +21,7 @@
         <!--<Setter Property="Width" Value="300" />
         <Setter Property="Height" Value="143" />
         <Setter Property="Margin" Value="5" />-->
+        <Setter Property="FontSize" Value="26" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:AppTileButton}">
@@ -32,19 +34,27 @@
                                        BorderBrush="Transparent"
                                        MouseOverBackground="Transparent"
                                        MouseOverBorderBrush="Transparent"
-                                       Foreground="{StaticResource TextFillColorLightPrimaryBrush}"
-                                       HorizontalContentAlignment="Center">
+                                       Foreground="{StaticResource TextFillColorLightPrimaryBrush}">
                                 <Grid>
+                                    <MediaElement x:Name="PART_MediaElement"
+                                                  Stretch="Fill"
+                                                  IsMuted="True"
+                                                  LoadedBehavior="Play"
+                                                  StretchDirection="Both"
+                                                  Visibility="Collapsed" />
                                     <Image x:Name="PART_Image"
                                            Stretch="Fill" StretchDirection="Both"
                                            Visibility="Collapsed" />
-                                    <TextBlock x:Name="PART_Header"
-                                               Visibility="Collapsed"
-                                               Text="{TemplateBinding Header}"
-                                               FontSize="30"
-                                               TextAlignment="Center"
-                                               Margin="5" TextWrapping="Wrap"
-                                               TextTrimming="WordEllipsis" />
+                                    <Viewbox StretchDirection="Both" Stretch="UniformToFill">
+                                        <TextBlock x:Name="PART_Header"
+                                                   Visibility="Collapsed"
+                                                   Text="{TemplateBinding Header}"
+                                                   FontSize="{TemplateBinding FontSize}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Margin="5" TextWrapping="Wrap"
+                                                   TextTrimming="WordEllipsis" />
+                                    </Viewbox>
                                 </Grid>
                             </ui:Button>
                             <StackPanel x:Name="PART_ButtonPanel" HorizontalAlignment="Left"
@@ -130,19 +140,14 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="ShowImage" Value="False">
-                            <Setter TargetName="PART_Image" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="PART_Header" Property="Visibility" Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="ShowImage" Value="True">
-                            <Setter TargetName="PART_Image" Property="Visibility" Value="Visible" />
-                            <Setter TargetName="PART_Image" Property="Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
-                            <Setter TargetName="PART_Header" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="ContextMenuOpen" Value="True">
                             <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource ControlElevationBorderBrush}" />
                             <Setter TargetName="PART_Icon" Property="BorderBrush" Value="{StaticResource ControlElevationBorderBrush}" />
                             <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource ControlElevationBorderBrush}" />
                             <Setter TargetName="PART_Image" Property="Opacity" Value="0.25" />
+                            <Setter TargetName="PART_MediaElement" Property="Opacity" Value="0.25" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource Accent4PrimaryBrush}" />
@@ -150,7 +155,28 @@
                             <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource Accent4PrimaryBrush}" />
                             <Setter TargetName="PART_ButtonPanel" Property="Visibility" Value="Visible" />
                             <Setter TargetName="PART_Image" Property="Opacity" Value="0.75" />
+                            <Setter TargetName="PART_MediaElement" Property="Opacity" Value="0.75" />
                         </Trigger>
+                        <!-- Static Image -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsAnimatedImage" Value="False" />
+                                <Condition Property="ShowImage" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Image" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_Image" Property="Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                            <Setter TargetName="PART_Header" Property="Visibility" Value="Collapsed" />
+                        </MultiTrigger>
+                        <!-- Animated Image -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsAnimatedImage" Value="True" />
+                                <Condition Property="ShowImage" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_MediaElement" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_MediaElement" Property="Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ImageSource}" />
+                            <Setter TargetName="PART_Header" Property="Visibility" Value="Collapsed" />
+                        </MultiTrigger>
                         <!-- Favorite -->
                         <Trigger Property="IsFavorite" Value="True">
                             <Setter TargetName="PART_Icon" Property="Visibility" Value="Visible" />
@@ -166,43 +192,50 @@
                             </MultiTrigger.Conditions>
                             <Setter TargetName="PART_Icon" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" />
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" po:Freeze="True" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="PART_Border" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" />
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" po:Freeze="True" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="PART_Border" Property="BorderBrush">
                                 <Setter.Value>
-                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" />
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource FavoritesColor}" po:Freeze="True" />
                                 </Setter.Value>
                             </Setter>
                         </MultiTrigger>
                         <!-- Hidden -->
                         <Trigger Property="IsHidden" Value="True">
                             <Setter TargetName="PART_Icon" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="PART_Border" Property="Background" Value="{StaticResource HiddenBrush}" />
+                            <Setter TargetName="PART_Border" Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
+                            <Setter TargetName="PART_Icon" Property="Background" Value="{StaticResource HiddenBrush}" />
+                            <Setter TargetName="PART_Icon" Property="BorderBrush" Value="{StaticResource HiddenBrush}" />
                             <Setter TargetName="PART_Image" Property="Opacity" Value="0.4" />
+                            <Setter TargetName="PART_MediaElement" Property="Opacity" Value="0.4" />
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsHidden" Value="True" />
                                 <Condition Property="IsMouseOver" Value="True" />
                             </MultiTrigger.Conditions>
+                            <Setter TargetName="PART_Image" Property="Opacity" Value="0.4" />
+                            <Setter TargetName="PART_MediaElement" Property="Opacity" Value="0.4" />
                             <Setter TargetName="PART_Icon" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" />
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" po:Freeze="True" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="PART_Border" Property="Background">
                                 <Setter.Value>
-                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" />
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" po:Freeze="True" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="PART_Border" Property="BorderBrush">
                                 <Setter.Value>
-                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" />
+                                    <SolidColorBrush Opacity="0.8" Color="{StaticResource HiddenColor}" po:Freeze="True" />
                                 </Setter.Value>
                             </Setter>
                         </MultiTrigger>

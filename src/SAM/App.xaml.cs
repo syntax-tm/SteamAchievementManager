@@ -57,7 +57,8 @@ public partial class App
 
             var options = parser.ParseArguments<SAMOptions>(args.Args);
 
-            HandleOptions(options.Value);
+            // when using dotnet run the options will be null
+            HandleOptions(options?.Value);
         }
         catch (Exception e)
         {
@@ -75,7 +76,7 @@ public partial class App
     {
         base.OnExit(args);
 
-        // TODO: with there being only one executable now need to differentiate the process types
+        // TODO: with there being only one executable need a new way to differentiate the process types
         //try
         //{
         //    log.Info(@"Application exiting. Ending any running manager processes...");
@@ -90,7 +91,7 @@ public partial class App
 
     private void HandleOptions(SAMOptions options)
     {
-        var appId = options.AppId;
+        var appId = options?.AppId ?? 0;
         var isApp = appId != 0;
 
         if (isApp)
@@ -128,18 +129,21 @@ public partial class App
 
             var settings = HomeSettings.Load();
 
-            if (options.TileView)
+            if (options != null)
             {
-                settings.View = LibraryView.Tile;
-            }
-            else if (options.GridView)
-            {
-                settings.View = LibraryView.DataGrid;
-            }
+                if (options.TileView)
+                {
+                    settings.View = LibraryView.Tile;
+                }
+                else if (options.GridView)
+                {
+                    settings.View = LibraryView.DataGrid;
+                }
 
-            if (options.OfflineMode)
-            {
-                settings.TileSettings.LocalImagesOnly = true;
+                if (options.OfflineMode)
+                {
+                    settings.TileSettings.LocalImagesOnly = true;
+                }
             }
 
             MainWindow = new MainWindow

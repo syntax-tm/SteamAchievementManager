@@ -14,7 +14,7 @@ public class SteamAppSettings
     // after loading the settings, if the version between the saved
     // data is the current version, then we don't need to refresh
     // everything and save for no reason
-    private const int CURRENT_VERSION = 1;
+    private const int CURRENT_VERSION = 2;
 
     public static int CurrentVersion => CURRENT_VERSION;
     public int? Version { get; set; }
@@ -31,12 +31,32 @@ public class SteamAppSettings
     public string Name { get; set; }
     public bool IsFavorite { get; set; }
     public bool IsHidden { get; set; }
-    public Uri Icon { get; set; }
     public Uri Header { get; set; }
+    public bool IsAnimatedHeader { get; set; }
     public Uri Capsule { get; set; }
-    public Uri Logo { get; set; }
+    public bool IsAnimatedCapsule { get; set; }
     public string Group { get; set; }
     public ulong? GroupSortIndex { get; set; }
+
+    public SteamAppSettings()
+    {
+
+    }
+
+    public SteamAppSettings(SteamApp app)
+    {
+        AppId = app.Id;
+        Name = app.Name;
+        IsFavorite = app.IsFavorite;
+        IsHidden = app.IsHidden;
+        Header = app.Header;
+        IsAnimatedHeader = app.IsAnimatedHeader;
+        Capsule = app.Capsule;
+        IsAnimatedCapsule = app.IsAnimatedCapsule;
+        Group = app.Group;
+        GroupSortIndex = app.GroupSortIndex;
+        Version = CURRENT_VERSION;
+    }
 
     public static SteamAppSettings Create(uint id, string name)
     {
@@ -71,11 +91,6 @@ public class SteamAppSettings
 
     private bool AreImagesLoaded()
     {
-        if (Icon != null) return true;
-        if (Header != null) return true;
-        if (Capsule != null) return true;
-        if (Logo != null) return true;
-
-        return false;
+        return Header != null && Capsule != null;
     }
 }

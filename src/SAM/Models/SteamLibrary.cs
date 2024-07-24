@@ -212,6 +212,8 @@ public partial class SteamLibrary
 
             _addedGames[app.Id] = app;
 
+            CacheManager.StorageManager.CreateDirectory($@"apps\{app.Id}");
+
             return true;
         }
         catch (Exception e)

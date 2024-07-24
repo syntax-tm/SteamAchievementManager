@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Input;
 using DevExpress.Mvvm;
 using SAM.Core;
+using SAM.Managers;
 using AchievementInfo = SAM.API.Stats.AchievementInfo;
 
 namespace SAM.Stats;
@@ -148,13 +149,13 @@ public class SteamAchievement : BindableBase
         // for some reason the image is not actually required so only download the image if one is set
         if (!string.IsNullOrEmpty(IconLockedName))
         {
-            LockedImage = SteamCdnHelper.DownloadImage(GameId, SteamImageType.AchievementIcon, IconLockedName);
+            LockedImage = SteamImageManager.DownloadImage(GameId, SteamImageType.AchievementIcon, IconLockedName);
         }
 
         // only download the image if one is set
         if (!string.IsNullOrEmpty(IconNormalName))
         {
-            NormalImage = SteamCdnHelper.DownloadImage(GameId, SteamImageType.AchievementIcon, IconNormalName);
+            NormalImage = SteamImageManager.DownloadImage(GameId, SteamImageType.AchievementIcon, IconNormalName);
         }
 
         RefreshImage();

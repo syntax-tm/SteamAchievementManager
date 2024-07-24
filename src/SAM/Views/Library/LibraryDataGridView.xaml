@@ -186,7 +186,7 @@
                 </GroupStyle>
             </ui:DataGrid.GroupStyle>
             <ui:DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" SortDirection="Ascending" CanUserSort="True"
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" CanUserSort="True"
                                     Width="100" MinWidth="80"
                                     CellStyle="{StaticResource CenterAlignedCellStyle}">
                 </DataGridTextColumn>

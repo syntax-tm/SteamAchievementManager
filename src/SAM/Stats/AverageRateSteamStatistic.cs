@@ -2,6 +2,7 @@
 using SAM.API.Stats;
 using SAM.Core;
 using SAM.Core.Interfaces;
+using SAM.Managers;
 
 namespace SAM.Stats;
 

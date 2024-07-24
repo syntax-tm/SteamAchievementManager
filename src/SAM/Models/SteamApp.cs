@@ -12,6 +12,7 @@ using SAM.Core.Extensions;
 using SAM.Core.Interfaces;
 using SAM.Settings;
 using SAM.Core.Storage;
+using SAM.Managers;
 
 namespace SAM;
 
@@ -32,10 +33,10 @@ public partial class SteamApp : BindableBase, ISteamApp
     [GenerateProperty] private string _developer;
     [GenerateProperty] private string _franchise;
     [GenerateProperty] private ISteamStoreApp _storeInfo;
-    [GenerateProperty] private Uri _icon;
     [GenerateProperty] private Uri _header;
+    [GenerateProperty] private bool _isAnimatedHeader;
     [GenerateProperty] private Uri _capsule;
-    [GenerateProperty] private Uri _logo;
+    [GenerateProperty] private bool _isAnimatedCapsule;
     [GenerateProperty] private bool _headerLoaded;
     [GenerateProperty] private bool _isHidden;
     [GenerateProperty] private bool _isFavorite;
@@ -189,13 +190,10 @@ public partial class SteamApp : BindableBase, ISteamApp
         {
             IsLoading = true;
 
-            // TODO: SteamApp shouldn't need to configure its cache directory structure
-            CacheManager.StorageManager.CreateDirectory($@"apps\{Id}");
-
             var loadSteamDataTask = Task.Run(LoadSteamData);
 
             var dirty = false;
-            var settings = LoadSettings();
+            var settings = await LoadSettingsAsync();
             
             IsFavorite = settings.IsFavorite;
             IsHidden = settings.IsHidden;
@@ -217,10 +215,10 @@ public partial class SteamApp : BindableBase, ISteamApp
 
             if (settings.ImagesLoaded)
             {
-                Logo = settings.Logo;
                 Header = settings.Header;
+                IsAnimatedHeader = settings.IsAnimatedHeader;
                 Capsule = settings.Capsule;
-                Icon = settings.Icon;
+                IsAnimatedCapsule = settings.IsAnimatedCapsule;
             }
             else
             {
@@ -233,7 +231,7 @@ public partial class SteamApp : BindableBase, ISteamApp
 
             if (!dirty) return;
 
-            SaveSettings();
+            await SaveSettingsAsync();
         }
         catch (Exception e)
         {
@@ -249,9 +247,7 @@ public partial class SteamApp : BindableBase, ISteamApp
     public void UnloadImages()
     {
         Header = null;
-        Capsule = null;
-        Icon = null;
-        Logo = null;
+        IsAnimatedHeader = false;
     }
 
     [GenerateCommand]
@@ -260,50 +256,38 @@ public partial class SteamApp : BindableBase, ISteamApp
         try
         {
             // try and load the user's grid image for the app first
-            if (SteamClientManager.TryGetCachedAppImageUri(Id, SteamImageType.GridLandscape, out var gridHeader))
+            if (SteamImageManager.TryGetCachedAppImage(Id, SteamImageType.GridLandscape, out var response))
             {
-                Header = gridHeader;
-
-                return;
+                Header = response.Uri;
+                IsAnimatedHeader = response.IsAnimated;
             }
-
             // if they don't have a grid image then try and use the default header
-            if (SteamClientManager.TryGetCachedAppImageUri(Id, SteamImageType.Header, out var appHeader))
+            else if (SteamImageManager.TryGetCachedAppImage(Id, SteamImageType.Header, out response))
             {
-                Header = appHeader;
-
-                return;
+                Header = response.Uri;
+                IsAnimatedHeader = response.IsAnimated;
             }
-
             // if there's no default header either, then see if there's a logo we can use
-            if (SteamClientManager.TryGetCachedAppImageUri(Id, SteamImageType.Logo, out var appLogo))
+            else if (SteamImageManager.TryGetCachedAppImage(Id, SteamImageType.Logo, out response))
             {
                 log.Info($"Using {nameof(SteamImageType.Logo)} for app id {Id}.");
-
-                Header = Logo = appLogo;
-
-                return;
+                
+                Header = response.Uri;
+                IsAnimatedHeader = response.IsAnimated;
             }
 
-            // we didn't have a header OR a logo in the cache, so try downloading the header first
-            //if (SteamCdnHelper.DownloadImage())
-            //{
-            //    var storeHeaderUri = SteamCdnHelper.GetImageUri(Id, SteamImageType.Header);
-
-            //    Header = storeHeaderUri;
-
-            //    return;
-            //}
-
-            // if we are only using local images don't download from the store
-
-            //var settings = new HomeSettings(true);
-
-            //if (settings.LocalImagesOnly) return;
-
-            // if we don't have any cached header or logo image to use, then request the store info
-            // refresh so that we can download a header
-            //SteamworksManager.LoadStoreInfo(this);
+            // try and load the user's portrait grid image for the app
+            if (SteamImageManager.TryGetCachedAppImage(Id, SteamImageType.GridPortrait, out response))
+            {
+                Capsule = response.Uri;
+                IsAnimatedCapsule = response.IsAnimated;
+            }
+            // if they don't have a portrait grid, try and use the library 600x900 image
+            else if (SteamImageManager.TryGetCachedAppImage(Id, SteamImageType.Library, out response))
+            {
+                Capsule = response.Uri;
+                IsAnimatedCapsule = response.IsAnimated;
+            }
 
             await Task.CompletedTask.ConfigureAwait(false);
         }
@@ -323,63 +307,54 @@ public partial class SteamApp : BindableBase, ISteamApp
         InstallDirectory = steamApps.GetAppInstallDir(Id);
     }
 
-    private SteamAppSettings LoadSettings()
+    private async Task<SteamAppSettings> LoadSettingsAsync()
     {
         var key = CacheKeys.CreateAppSettingsCacheKey(Id);
 
-        if (!CacheManager.TryGetObject<SteamAppSettings>(key, out var settings))
+        try
         {
-            return SteamAppSettings.Create(Id, Name);
+            var cachedSettings = await CacheManager.GetObjectAsync<SteamAppSettings>(key);
+            if (cachedSettings != null)
+            {
+                return cachedSettings;
+            }
+
+            var defaultSettings = SteamAppSettings.Create(Id, Name);
+            return defaultSettings;
         }
-
-        log.Debug($"Loaded {nameof(SteamAppSettings)} {settings}.");
-
-        return settings;
+        catch (Exception e)
+        {
+            log.Error($"An error occurred attempting to load the settings for {Id}. {e.Message}", e);
+            throw;
+        }
     }
 
-    private void SaveSettings()
+    private async Task SaveSettingsAsync()
     {
         var key = CacheKeys.CreateAppSettingsCacheKey(Id);
-        var settings = new SteamAppSettings
-        {
-            AppId = Id,
-            IsFavorite = IsFavorite,
-            IsHidden = IsHidden,
-            Name = Name,
-            Group = Group,
-            GroupSortIndex = GroupSortIndex,
-            Logo = Logo,
-            Header = Header,
-            Capsule = Capsule,
-            Icon = Icon,
-            Version = SteamAppSettings.CurrentVersion
-        };
+        var settings = new SteamAppSettings(this);
 
-        CacheManager.CacheObject(key, settings);
+        await CacheManager.CacheObjectAsync(key, settings);
 
-        log.Debug($"Saving {nameof(SteamAppSettings)} {settings}.");
+        log.Debug($"Saved {nameof(SteamAppSettings)} {settings}.");
     }
     
-    protected void OnIsHiddenChanged()
+    protected async Task OnIsHiddenChanged()
     {
         if (IsLoading) return;
         
         RefreshGroup();
 
-        SaveSettings();
-
-        //Messenger.Default.SendRequest(EntityType.Library, RequestType.Refresh);
+        await SaveSettingsAsync();
     }
 
-    protected void OnIsFavoriteChanged()
+    protected async Task OnIsFavoriteChanged()
     {
         if (IsLoading) return;
         
         RefreshGroup();
-
-        SaveSettings();
-
-        //Messenger.Default.SendRequest(EntityType.Library, RequestType.Refresh);
+        
+        await SaveSettingsAsync();
     }
 
     protected void OnHeaderChanged()

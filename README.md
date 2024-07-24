@@ -111,6 +111,4 @@ A special thank you to [JetBrains](https://www.jetbrains.com/) for their continu
   <a href="https://github.com/DevExpress/DevExpress.Mvvm.Free">DevExpress</a> • <a href="https://github.com/RudeySH/SteamCountries">SteamCountries</a> • <a href="https://github.com/lepoco/wpfui">WPF UI</a>
 </p>
 
----
-
 [^1]: For non-commercial development

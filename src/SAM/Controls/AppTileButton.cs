@@ -20,6 +20,7 @@ namespace SAM.Controls;
 [TemplatePart(Name = "PART_ButtonPanel", Type = typeof(StackPanel))]
 [TemplatePart(Name = "PART_Image", Type = typeof(Image))]
 [TemplatePart(Name = "PART_Header", Type = typeof(Viewbox))]
+[TemplatePart(Name = "PART_MediaElement", Type = typeof(MediaElement))]
 public class AppTileButton : Button
 {
 
@@ -133,6 +134,20 @@ public class AppTileButton : Button
     }
 
 #endregion
+    
+#region IsAnimatedImage
+    
+    public static readonly DependencyProperty IsAnimatedImageProperty =
+        DependencyProperty.Register(nameof(IsAnimatedImage), typeof(bool), typeof(AppTileButton),
+                                    new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsRender));
+
+    public bool IsAnimatedImage
+    {
+        get { return (bool) GetValue(IsAnimatedImageProperty); }
+        set { SetValue(IsAnimatedImageProperty, value); }
+    }
+
+#endregion
 
 #region ImageSource
     
@@ -165,30 +180,30 @@ public class AppTileButton : Button
 
 #region ToggleVisibilityCommand
 
-    private static readonly DependencyPropertyKey ToggleVisibilityCommandPropertyKey =
+    private static readonly DependencyPropertyKey toggleVisibilityCommandPropertyKey =
         DependencyProperty.RegisterReadOnly(nameof(ToggleVisibilityCommand), typeof(ICommand), typeof(AppTileButton), new (null));
 
-    public static readonly DependencyProperty ToggleVisibilityCommandProperty = ToggleVisibilityCommandPropertyKey.DependencyProperty;
+    public static readonly DependencyProperty ToggleVisibilityCommandProperty = toggleVisibilityCommandPropertyKey.DependencyProperty;
 
     public ICommand ToggleVisibilityCommand
     {
         get { return (ICommand) GetValue(ToggleVisibilityCommandProperty); }
-        protected set { SetValue(ToggleVisibilityCommandPropertyKey, value); }
+        protected set { SetValue(toggleVisibilityCommandPropertyKey, value); }
     }
 
 #endregion
     
-#region ToggleVisibilityCommand
+#region ToggleFavoriteCommand
 
-    private static readonly DependencyPropertyKey ToggleFavoriteCommandPropertyKey =
+    private static readonly DependencyPropertyKey toggleFavoriteCommandPropertyKey =
         DependencyProperty.RegisterReadOnly(nameof(ToggleFavoriteCommand), typeof(ICommand), typeof(AppTileButton), new (null));
 
-    public static readonly DependencyProperty ToggleFavoriteCommandProperty = ToggleFavoriteCommandPropertyKey.DependencyProperty;
+    public static readonly DependencyProperty ToggleFavoriteCommandProperty = toggleFavoriteCommandPropertyKey.DependencyProperty;
 
     public ICommand ToggleFavoriteCommand
     {
         get { return (ICommand) GetValue(ToggleFavoriteCommandProperty); }
-        protected set { SetValue(ToggleFavoriteCommandPropertyKey, value); }
+        protected set { SetValue(toggleFavoriteCommandPropertyKey, value); }
     }
 
 #endregion
@@ -206,7 +221,7 @@ public class AppTileButton : Button
     }
 
 #endregion
-
+    
     protected Grid PART_RootGrid;
     protected Border PART_Border;
     protected Button PART_Button;
@@ -216,6 +231,7 @@ public class AppTileButton : Button
     protected StackPanel PART_ButtonPanel;
     protected Image PART_Image;
     protected Viewbox PART_Header;
+    protected MediaElement PART_MediaElement;
 
     public AppTileButton()
     {
@@ -236,6 +252,7 @@ public class AppTileButton : Button
         PART_ButtonPanel = GetTemplateChild("PART_ButtonPanel") as StackPanel;
         PART_Image = GetTemplateChild("PART_Image") as Image;
         PART_Header = GetTemplateChild("PART_Header") as Viewbox;
+        PART_MediaElement = GetTemplateChild("PART_MediaElement") as MediaElement;
 
         if (PART_FavoriteButton != null)
             PART_FavoriteButton.Click += OnToggleFavorited;
@@ -295,8 +312,7 @@ public class AppTileButton : Button
         {
             Icon = SymbolRegular.EyeOff24;
         }
-
-        if (IsFavorite)
+        else if (IsFavorite)
         {
             Icon = SymbolRegular.Heart24;
         }

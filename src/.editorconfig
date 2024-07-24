@@ -34,6 +34,7 @@ dotnet_naming_rule.instance_fields_rule.symbols = instance_fields_group
 dotnet_naming_rule.instance_fields_rule.style = instance_field_style
 
 dotnet_naming_symbols.instance_fields_group.applicable_kinds = field
+dotnet_naming_symbols.instance_fields_group.applicable_accessibilities = private, protected
 
 dotnet_naming_style.instance_field_style.capitalization = camel_case
 dotnet_naming_style.instance_field_style.required_prefix = _
@@ -47,39 +48,16 @@ dotnet_naming_symbols.locals_and_parameters_group.applicable_kinds = parameter, 
 
 dotnet_naming_style.locals_and_parameters_style.capitalization = camel_case
 
-# Non-private constants are PascalCase
-dotnet_naming_rule.constants_rule.severity = suggestion
-dotnet_naming_rule.constants_rule.symbols = constants_group
-dotnet_naming_rule.constants_rule.style = non_private_readonly_field_style
+# Consts are ALL_UPPER
+dotnet_naming_rule.consts_rule.severity = suggestion
+dotnet_naming_rule.consts_rule.symbols = consts_group
+dotnet_naming_rule.consts_rule.style = consts_style
 
-dotnet_naming_symbols.constants_group.applicable_kinds = field
-dotnet_naming_symbols.constants_group.applicable_accessibilities = public, protected, internal, protected_internal, private_protected
-dotnet_naming_symbols.constants_group.required_modifiers = const
+dotnet_naming_symbols.consts_group.applicable_kinds = field, local
+dotnet_naming_symbols.consts_group.required_modifiers = const
 
-dotnet_naming_style.constants_style.capitalization = pascal_case
-
-# Local consts are ALL_UPPER
-dotnet_naming_rule.local_consts_rule.severity = suggestion
-dotnet_naming_rule.local_consts_rule.symbols = local_consts_group
-dotnet_naming_rule.local_consts_rule.style = local_consts_style
-
-dotnet_naming_symbols.local_consts_group.applicable_kinds = local
-dotnet_naming_symbols.local_consts_group.required_modifiers = const
-
-dotnet_naming_style.local_consts_style.capitalization = all_upper
-dotnet_naming_style.local_consts_style.word_separator = _
-
-# Private constants are ALL_UPPER
-dotnet_naming_rule.private_constants_rule.severity = suggestion
-dotnet_naming_rule.private_constants_rule.symbols = private_constants_group
-dotnet_naming_rule.private_constants_rule.style = local_consts_style
-
-dotnet_naming_symbols.private_constants_group.applicable_kinds = field, local
-dotnet_naming_symbols.private_constants_group.applicable_accessibilities = private
-dotnet_naming_symbols.private_constants_group.required_modifiers = const
-
-dotnet_naming_style.private_constant_style.capitalization = all_upper
-dotnet_naming_style.private_constant_style.word_separator = _
+dotnet_naming_style.consts_style.capitalization = all_upper
+dotnet_naming_style.consts_style.word_separator = _
 
 # Interfaces are PascalCase and start with I
 dotnet_naming_rule.interfaces_rule.severity = warning

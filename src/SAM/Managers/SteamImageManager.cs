@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Windows.Media;
 using log4net;
 using SAM.API;
 using SAM.Core;
+using SAM.Core.Storage;
 
 namespace SAM.Managers;
 
@@ -41,11 +43,12 @@ public class SteamImageRequest
     public SteamImageType Type { get; set; }
 }
 
-public class SteamImageResponse
+public class SteamImageResponse : ISteamImageSource
 {
-    public int AppId { get; set; }
+    public uint AppId { get; set; }
     public bool Cached { get; set; }
-    public SteamImageRequest Request { get; set; }
+    public Uri Uri { get; set; }
+    public bool IsAnimated { get; set; }
 }
 
 public static class SteamImageManager
@@ -111,20 +114,81 @@ public static class SteamImageManager
             return _steamInstallPath;
         }
     }
-
-    public static Uri GetImage(SteamImageRequest request)
+    
+    public static Image DownloadImage(uint id, SteamImageType type, string file = null, bool localOnly = false)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var url = GetImageUri(id, type, file);
+
+            var fileName = Path.GetFileName(url.ToString());
+            var cacheKey = CacheKeys.CreateAppImageCacheKey(id, fileName);
+                
+            var img = WebManager.DownloadImage(url, cacheKey, localOnly);
+                
+            return img;
+        }
+        catch (Exception e)
+        {
+            log.Error($"An error occurred downloading the {type} image for app id '{id}'.", e);
+
+            throw;
+        }
     }
 
-    public static Uri GetImage(SteamImageType type, bool localOnly = false)
+    public static async Task<Image> DownloadImageAsync(uint id, SteamImageType type, string file = null, bool localOnly = false)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var url = GetImageUri(id, type, file);
+
+            var fileName = Path.GetFileName(url.ToString());
+            var cacheKey = CacheKeys.CreateAppImageCacheKey(id, fileName);
+
+            var img = await WebManager.DownloadImageAsync(url, cacheKey, localOnly);
+                
+            return img;
+        }
+        catch (Exception e)
+        {
+            log.Error($"An error occurred downloading the {type:G} image for app id '{id}'.", e);
+
+            throw;
+        }
     }
 
-    private static Uri GetImage(SteamImageType type, SteamImageSource source, bool localOnly = false)
+    public static bool TryGetCachedAppImage(uint appId, SteamImageType type, out SteamImageResponse response)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var imagePath = GetCachedAppImagePath(appId, type);
+            if (imagePath == null)
+            {
+                response = null;
+                return false;
+            }
+
+            if (!File.Exists(imagePath))
+            {
+                response = null;
+                return false;
+            }
+            
+            response = new ()
+            {
+                AppId = appId,
+                Cached = true,
+                Uri = new (imagePath),
+                IsAnimated = IsAnimated(imagePath)
+            };
+
+            return true;
+        }
+        catch
+        {
+            response = null;
+            return false;
+        }
     }
 
     public static bool TryGetCachedAppImageUri(uint appId, SteamImageType type, out Uri uri)
@@ -184,7 +248,6 @@ public static class SteamImageManager
 
             var results = Directory.GetFiles(GridCachePath, searchPattern);
 
-            // TODO: this will show multiple warnings for the same file
             // if they have multiple files saved for the app (with different extensions), just use
             // the first result after logging a warning
             if (results.Length > 1)
@@ -221,8 +284,75 @@ public static class SteamImageManager
         return imagePath;
     }
 
+    private static bool IsAnimated(string imagePath)
+    {
+        // TODO: there's definitely better ways to do this and this should be refactored once a better animated image solution is implemented
+        if (string.IsNullOrEmpty(imagePath)) throw new ArgumentNullException(nameof(imagePath));
+        if (!File.Exists(imagePath)) throw new FileNotFoundException($"Image file '{imagePath}' does not exist.", imagePath);
+
+        const string GIF_FILE_HEADER = @"GIF";
+        const string ANIMATED_WEBP_SECTION = @"ANMF";
+        const string ANIMATED_PNG_SECTION = @"acTL";
+
+        var content = File.ReadAllText(imagePath);
+
+        // only check the first 256 characters
+        if (content.Length > 256)
+        {
+            content = content[..256];
+        }
+
+        // animated GIF
+        if (content.StartsWith(GIF_FILE_HEADER))
+        {
+            return true;
+        }
+        // animated WEBP
+        if (content.Contains(ANIMATED_WEBP_SECTION))
+        {
+            return true;
+        }
+        // animated PNG
+        if (content.Contains(ANIMATED_PNG_SECTION))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static Uri GetImageUri(uint id, SteamImageType type, string file = null)
+    {
+        // NOTE: this method returns Uris for CDN-downloaded images (i.e. achievement icons)
+        var url = type switch
+        {
+            SteamImageType.ClientIcon      => string.Format(GAME_CLIENT_ICON_URI, id, file),
+            SteamImageType.Icon            => string.Format(GAME_ICON_URI, id, file),
+            SteamImageType.Logo            => string.Format(GAME_LOGO_URI, id, file),
+            SteamImageType.Header          => string.Format(GAME_HEADER_URI, id),
+            SteamImageType.LibraryHero     => string.Format(GAME_LIBRARY_HERO_URI, id),
+            SteamImageType.SmallCapsule    => string.Format(GAME_SMALL_CAPSULE_URI, id),
+            SteamImageType.MediumCapsule   => string.Format(GAME_MEDIUM_CAPSULE_URI, id),
+            SteamImageType.LargeCapsule    => string.Format(GAME_LARGE_CAPSULE_URI, id),
+            SteamImageType.AchievementIcon => string.Format(GAME_ACHIEVEMENT_URI, id, file),
+            SteamImageType.GridLandscape or
+            SteamImageType.GridPortrait or
+            SteamImageType.GridIcon or
+            SteamImageType.GridHero or
+            SteamImageType.Grid            => throw new NotSupportedException($"{nameof(SteamCdnHelper)} only supports CDN images. {nameof(SteamImageType)} {type:G} is not supported."),
+            // ReSharper disable PatternIsRedundant
+            SteamImageType.Library or
+            SteamImageType.LibraryHeroBlur or
+            // ReSharper enable PatternIsRedundant
+            _                              => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+        };
+
+        return new (url);
+    }
+
     private static string GetAppImageName(uint appId, SteamImageType type)
     {
+        // NOTE: this method is for local images (i.e. Steam's library cache, Grid, etc.)
         return type switch
         {
             SteamImageType.GridLandscape   => $"{appId}",
@@ -234,7 +364,8 @@ public static class SteamImageManager
             SteamImageType.Logo            => $"{appId}_logo.jpg",
             SteamImageType.LibraryHero     => $"{appId}_library_hero.jpg",
             SteamImageType.LibraryHeroBlur => $"{appId}_library_hero_blur.jpg",
-            _                              => throw new NotSupportedException($"{type} is not available in the local cache. Use the {nameof(SteamCdnHelper)} instead.")
+            SteamImageType.Library         => $"{appId}_library_600x900.jpg",
+            _                              => throw new NotSupportedException($"{type} is not available in the local cache. Use {nameof(GetImageUri)} instead.")
         };
     }
 }
