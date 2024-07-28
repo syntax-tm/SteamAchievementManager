@@ -17,44 +17,46 @@ public static class SteamStatisticFactory
     /// </returns>
     /// <exception cref="ArgumentNullException">Occurs when the <paramref name="client"/>, <paramref name="stat"/>, or the <paramref name="stat"/> <see cref="StatInfoBase.Id"/> is <see langword="null"/> or empty.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Occurs when an unkown <paramref name="stat"/> type is supplied.</exception>
-    public static SteamStatisticBase CreateStat(Client client, StatInfoBase stat)
+   public static SteamStatisticBase CreateStat(Client client, StatInfoBase stat)
+{
+    if (client == null) throw new ArgumentNullException(nameof(client));
+    if (string.IsNullOrEmpty(stat?.Id)) throw new ArgumentNullException(nameof(stat));
+
+    switch (stat)
     {
-        if (client == null) throw new ArgumentNullException(nameof(client));
-        if (string.IsNullOrEmpty(stat?.Id)) throw new ArgumentNullException(nameof(stat));
-
-        switch (stat)
+        // STAT_INT
+        case IntegerStatInfo intDefinition:
         {
-            // STAT_INT
-            case IntegerStatInfo intDefinition:
-            {
-                if (!client.SteamUserStats.GetStatValue(intDefinition.Id, out int value)) break;
+            if (!client.SteamUserStats.GetStatValue(intDefinition.Id, out int value)) break;
 
-                intDefinition.Value = value;
+            intDefinition.Value = value;
 
-                return new IntegerSteamStatistic(intDefinition);
-            }
-            // STAT_AVGRATE
-            case AvgRateStatInfo avgRateDefinition:
-            {
-                if (!client.SteamUserStats.GetStatValue(avgRateDefinition.Id, out float value)) break;
-
-                avgRateDefinition.Value = value;
-
-                // NOTE: average rate stats are always treated as floats
-                return new FloatSteamStatistic(avgRateDefinition);
-            }
-            // STAT_FLOAT
-            case FloatStatInfo floatDefinition:
-            {
-                if (!client.SteamUserStats.GetStatValue(floatDefinition.Id, out float value)) break;
-
-                floatDefinition.Value = value;
-
-                return new FloatSteamStatistic(floatDefinition);
-            }
+            return new IntegerSteamStatistic(intDefinition);
         }
+        // STAT_AVGRATE
+        case AvgRateStatInfo avgRateDefinition:
+        {
+            if (!client.SteamUserStats.GetStatValue(avgRateDefinition.Id, out float value)) break;
 
-        throw new ArgumentOutOfRangeException(nameof(stat));
+            avgRateDefinition.Value = value;
+
+            // NOTE: average rate stats are always treated as floats
+            return new FloatSteamStatistic(avgRateDefinition);
+        }
+        // STAT_FLOAT
+        case FloatStatInfo floatDefinition:
+        {
+            if (!client.SteamUserStats.GetStatValue(floatDefinition.Id, out float value)) break;
+
+            floatDefinition.Value = value;
+
+            return new FloatSteamStatistic(floatDefinition);
+        }
+        default:
+            // Log the type of the unhandled stat
+            Console.WriteLine($"Unhandled stat type: {stat.GetType()} with ID: {stat.Id}");
+            break;
     }
 
+    throw new ArgumentOutOfRangeException(nameof(stat), $"Unhandled stat type: {stat?.GetType()} with ID: {stat?.Id}");
 }
