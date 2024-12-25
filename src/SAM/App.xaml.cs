@@ -5,8 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.System.Console;
 using CommandLine;
+using CommandLine.Text;
 using log4net;
+using Microsoft.Win32.SafeHandles;
+using Newtonsoft.Json;
 using SAM.API;
 using SAM.Core;
 using SAM.Core.Logging;
@@ -33,8 +39,6 @@ public partial class App
 
             log.Info("Application startup.");
 
-            SplashScreenHelper.Show("Starting up...");
-
             SAMHelper.VerifySteamProcess();
 
             // handle any WPF dispatcher exceptions
@@ -55,10 +59,57 @@ public partial class App
                 with.HelpWriter = helpWriter;
             });
 
-            var options = parser.ParseArguments<SAMOptions>(args.Args);
+            var options = parser.ParseArguments<SelectOptions, ManageOptions>(args.Args);
 
-            // when using dotnet run the options will be null
-            HandleOptions(options?.Value);
+            // MessageBox.Show(JsonConvert.SerializeObject(options, Formatting.Indented));
+
+            var result = options.MapResult(
+                    (SelectOptions o) => HandleSelect(o),
+                    (ManageOptions o) => HandleManage(o),
+                    errors =>
+                    {
+                        // assume that this was launched from command line with invalid arguments
+                        // and attach to the parent process' console since WPF apps don't have a
+                        // console otherwise
+                        var attached = PInvoke.AttachConsole(PInvoke.ATTACH_PARENT_PROCESS);
+                        
+                        var helpText = HelpText.AutoBuild(options);
+                        var message = helpText.ToString();
+                        
+                        var err = errors.ToList();
+                        var showHelp = err.IsHelp() || err.IsVersion();
+
+                        if (attached)
+                        {
+                            var handle = showHelp
+                                ? PInvoke.GetStdHandle_SafeHandle(STD_HANDLE.STD_OUTPUT_HANDLE)
+                                : PInvoke.GetStdHandle_SafeHandle(STD_HANDLE.STD_ERROR_HANDLE);
+
+                            unsafe
+                            {
+                                // TODO: this output formatting needs to be fixed
+                                var ptr = (uint*) 0;
+                                PInvoke.WriteConsole(handle, "\n", 1, ptr);
+                                PInvoke.WriteConsole(handle, message, (uint) message.Length, ptr);
+                                PInvoke.WriteConsole(handle, "\n", 1, ptr);
+                            }
+                        }
+                        else
+                        {
+                            var icon = showHelp ? MessageBoxImage.Information : MessageBoxImage.Error;
+                            MessageBox.Show(message, "Usage", MessageBoxButton.OK, icon);
+                        }
+
+                        return SAMExitCode.InvalidArguments;
+                    }
+                );
+
+            log.Debug($"Argument {nameof(parser)} returned {result}");
+
+            if (result != 0)
+            {
+                Environment.Exit(result);
+            }
         }
         catch (Exception e)
         {
@@ -70,6 +121,100 @@ public partial class App
 
             Environment.Exit(SAMExitCode.UnhandledException);
         }
+    }
+    
+    // ReSharper disable once InconsistentNaming
+    private void DisplayHelp(IEnumerable<Error> err)
+    {
+        var errors = err.ToList();
+
+        if (errors.IsVersion() || errors.IsHelp())
+        {
+            Console.WriteLine();
+        }
+    }
+
+    private int HandleSelect(SelectOptions options)
+    {
+        log.Info($"Starting processing {nameof(SelectOptions)}...");
+
+        SplashScreenHelper.Show("Starting up...");
+
+        // create the default Client instance
+        SteamClientManager.Init(0);
+
+        SteamLibraryManager.Default.Init();
+
+        var settings = HomeSettings.Load();
+
+        if (options.TileView)
+        {
+            log.Info($"{nameof(options.TileView)} argument detected. Setting {nameof(HomeSettings)} {nameof(HomeSettings.View)} to {LibraryView.Tile:G}");
+
+            settings.View = LibraryView.Tile;
+        }
+        else if (options.GridView)
+        {
+            log.Info($"{nameof(options.GridView)} argument detected. Setting {nameof(HomeSettings)} {nameof(HomeSettings.View)} to {LibraryView.DataGrid:G}");
+
+            settings.View = LibraryView.DataGrid;
+        }
+
+        MainWindow = new MainWindow
+        {
+            DataContext = new MainWindowViewModel(settings)
+        };
+
+        MainWindow.Show();
+
+        ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+        return 0;
+    }
+
+    private int HandleManage(ManageOptions options)
+    {
+        log.Info($"Starting processing {nameof(ManageOptions)}...");
+
+        var appId = options.AppId;
+
+        SteamClientManager.Init(appId);
+
+        if (!SteamClientManager.Default.OwnsGame(appId))
+        {
+            throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
+        }
+
+        var appInfo = new SteamApp(appId);
+        var gameVm = new SteamGameViewModel(appInfo);
+        gameVm.RefreshStats();
+
+        if (options.UnlockAll)
+        {
+            gameVm.UnlockAllAchievements();
+
+            gameVm.Save(false);
+
+            return 0;
+        }
+
+        SplashScreenHelper.Show(appInfo.Name);
+
+        var mainWindowVm = new MainWindowViewModel(gameVm)
+        {
+            SubTitle = appInfo.Name
+        };
+
+        MainWindow = new MainWindow
+        {
+            DataContext = mainWindowVm
+        };
+        
+        MainWindow.Show();
+
+        ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+        return 0;
     }
 
     protected override void OnExit(ExitEventArgs args)
@@ -87,89 +232,6 @@ public partial class App
         //{
         //    log.Fatal($"An error occurred attempting to exit the SAM Managers. {e.Message}", e);
         //}
-    }
-
-    private void HandleOptions(SAMOptions options)
-    {
-        var appId = options?.AppId ?? 0;
-        var isApp = appId != 0;
-
-        if (isApp)
-        {
-            SteamClientManager.Init(appId);
-
-            if (!SteamClientManager.Default.OwnsGame(appId))
-            {
-                throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
-            }
-
-            var appInfo = new SteamApp(appId);
-
-            SplashScreenHelper.SetStatus(appInfo.Name);
-
-            var gameVm = new SteamGameViewModel(appInfo);
-            gameVm.RefreshStats();
-
-            var mainWindowVm = new MainWindowViewModel(gameVm)
-            {
-                SubTitle = appInfo.Name
-            };
-
-            MainWindow = new MainWindow
-            {
-                DataContext = mainWindowVm
-            };
-        }
-        else
-        {
-            // create the default Client instance
-            SteamClientManager.Init(0);
-
-            SteamLibraryManager.Default.Init();
-
-            var settings = HomeSettings.Load();
-
-            if (options != null)
-            {
-                if (options.TileView)
-                {
-                    settings.View = LibraryView.Tile;
-                }
-                else if (options.GridView)
-                {
-                    settings.View = LibraryView.DataGrid;
-                }
-
-                if (options.OfflineMode)
-                {
-                    settings.TileSettings.LocalImagesOnly = true;
-                }
-            }
-
-            MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(settings)
-            };
-        }
-
-        MainWindow.Show();
-
-        ShutdownMode = ShutdownMode.OnMainWindowClose;
-    }
-
-    // ReSharper disable once InconsistentNaming
-    private void DisplayHelp(IEnumerable<Error> err, TextWriter helpWriter)
-    {
-        var errors = err.ToList();
-
-        if (errors.IsVersion() || errors.IsHelp())
-        {
-            Console.WriteLine(helpWriter.ToString());
-        }
-        else
-        {
-            Console.Error.WriteLine(helpWriter.ToString());
-        }
     }
 
     private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args)

@@ -59,10 +59,31 @@ namespace SAM.Core
             {
                 throw new FileNotFoundException($"Unable to start '{SAM_EXE}' because it does not exist.", SAM_EXE);
             }
-
-            var proc = Process.Start(SAM_EXE, appId.ToString());
+            
+            string[] args = [ "manage", $"{appId}" ];
+            var psi = new ProcessStartInfo(SAM_EXE, args);
+            var proc = Process.Start(psi);
 
             proc.SetActive();
+
+            return proc;
+        }
+
+        public static Process UnlockAll(uint appId)
+        {
+            if (appId == default) throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
+            
+            if (!File.Exists(SAM_EXE))
+            {
+                throw new FileNotFoundException($"Unable to start '{SAM_EXE}' because it does not exist.", SAM_EXE);
+            }
+
+            string[] args = [ $"{appId}", "-u" ];
+            var psi = new ProcessStartInfo(SAM_EXE, args)
+            {
+                CreateNoWindow = true
+            };
+            var proc = Process.Start(psi);
 
             return proc;
         }

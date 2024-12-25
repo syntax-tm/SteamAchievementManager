@@ -172,7 +172,7 @@ public partial class SteamGameViewModel
     }
 
     [GenerateCommand]
-    public void Save()
+    public void Save(bool displayResult = true)
     {
         var achievementsSaved = SaveAchievements();
         if (achievementsSaved == -1)
@@ -217,7 +217,12 @@ public partial class SteamGameViewModel
         message.Append(statsMessage);
         message.Append(".");
 
-        MessageBox.Show(message.ToString(), "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        if (displayResult)
+        {
+            MessageBox.Show(message.ToString(), "Save Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        log.Info(message);
     }
 
     public void RefreshStats()

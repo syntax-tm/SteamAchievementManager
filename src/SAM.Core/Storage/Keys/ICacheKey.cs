@@ -1,13 +1,12 @@
-﻿namespace SAM.Core.Storage
+﻿namespace SAM.Core.Storage;
+
+public interface ICacheKey
 {
-    public interface ICacheKey
-    {
-        string Key { get; }
-        string FilePath { get; }
+    string Key { get; }
+    string FilePath { get; }
 
-        uint? DaysValid { get; }
-        bool HasExpiration { get; }
+    uint? DaysValid { get; }
+    bool HasExpiration { get; }
 
-        string GetFullPath();
-    }
+    string GetFullPath();
 }

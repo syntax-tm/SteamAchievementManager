@@ -2,6 +2,7 @@
 
 public struct SAMExitCode
 {
+    public const int InvalidArguments    = -8;
     public const int SteamNotRunning     = -7;
     public const int DispatcherException = -6;
     public const int AppDomainException  = -5;

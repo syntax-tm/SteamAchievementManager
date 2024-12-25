@@ -182,6 +182,9 @@
                                 <ui:MenuItem Header="View on Steam Card Exchange" Command="{Binding ViewOnSteamCardExchangeCommand}"
                                              Icon="{ui:SymbolIcon ArrowSwap24}" />
                                 <Separator />
+                                <ui:MenuItem Header="Unlock All" Command="{Binding ViewOnSteamCardExchangeCommand}"
+                                             Icon="{ui:SymbolIcon ArrowSwap24}" />
+                                <Separator />
                                 <ui:MenuItem Header="Copy Steam ID" Command="{Binding CopySteamIDCommand}"
                                              Icon="{ui:SymbolIcon Copy24}" />
                                 <!-- ReSharper restore Xaml.RedundantResource -->
