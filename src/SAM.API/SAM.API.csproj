@@ -11,6 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Structs\**" />
+    <EmbeddedResource Remove="Structs\**" />
+    <None Remove="Structs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="NativeMethods.json" />
     <None Remove="packages.lock.json" />
     <None Remove="SAM.API.csproj.DotSettings" />
@@ -29,10 +35,6 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Structs\" />
   </ItemGroup>
 
 </Project>
