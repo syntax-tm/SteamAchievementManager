@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <FrameworkVersion>net8.0</FrameworkVersion>
+        <FrameworkVersion>net9.0</FrameworkVersion>
         <TargetFramework>$(FrameworkVersion)-windows</TargetFramework>
         <LangVersion>preview</LangVersion>
         <Platforms>x86</Platforms>

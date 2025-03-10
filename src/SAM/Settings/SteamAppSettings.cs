@@ -14,7 +14,7 @@ public class SteamAppSettings
     // after loading the settings, if the version between the saved
     // data is the current version, then we don't need to refresh
     // everything and save for no reason
-    private const int CURRENT_VERSION = 2;
+    private const int CURRENT_VERSION = 3;
 
     public static int CurrentVersion => CURRENT_VERSION;
     public int? Version { get; set; }

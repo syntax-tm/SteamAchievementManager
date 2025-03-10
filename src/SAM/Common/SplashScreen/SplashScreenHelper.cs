@@ -58,7 +58,7 @@ namespace SAM.SplashScreen
 
         public static void Close()
         {
-            _splashWindow.Dispatcher.BeginInvoke(() =>
+            _splashWindow?.Dispatcher.BeginInvoke(() =>
             {
                 _splashWindow.Close();
 

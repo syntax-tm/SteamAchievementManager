@@ -33,7 +33,7 @@
             <ui:DataGrid.Columns>
                 <DataGridCheckBoxColumn HeaderStyle="{StaticResource CenteredGridHeaderStyle}"
                                         Binding="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        Width="50">
+                                        Width="60">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource DefaultDataGridCellStyle}">
                             <Setter Property="Template">
@@ -41,7 +41,7 @@
                                     <ControlTemplate TargetType="{x:Type DataGridCell}">
                                         <Grid>
                                             <CheckBox IsChecked="{Binding IsAchieved, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                      Margin="4,4,4,4" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                                      Margin="4" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                         </Grid>
                                     </ControlTemplate>
                                 </Setter.Value>

@@ -279,9 +279,15 @@ public static class SteamImageManager
             return result;
         }
 
-        var imagePath = Path.Join(SteamLibraryCachePath, fileName);
+        var appCachePath = Path.Join(SteamLibraryCachePath, $"{appId}");
 
-        return imagePath;
+        var exists = Directory.Exists(appCachePath);
+        var searchTarget = exists ? appCachePath : SteamLibraryCachePath;
+        var searchName = GetAppImageSearchName(appId, type);
+
+        var imageResults = Directory.GetFiles(searchTarget, searchName, SearchOption.AllDirectories);
+
+        return imageResults.FirstOrDefault();
     }
 
     private static bool IsAnimated(string imagePath)
@@ -359,12 +365,31 @@ public static class SteamImageManager
             SteamImageType.GridPortrait    => $"{appId}p",
             SteamImageType.GridIcon        => $"{appId}_icon",
             SteamImageType.GridHero        => $"{appId}_hero",
-            SteamImageType.Header          => $"{appId}_header.jpg",
+            SteamImageType.Header          => @"header.jpg",
             SteamImageType.Icon            => $"{appId}_icon.jpg",
-            SteamImageType.Logo            => $"{appId}_logo.jpg",
-            SteamImageType.LibraryHero     => $"{appId}_library_hero.jpg",
-            SteamImageType.LibraryHeroBlur => $"{appId}_library_hero_blur.jpg",
-            SteamImageType.Library         => $"{appId}_library_600x900.jpg",
+            SteamImageType.Logo            => $"logo.png",
+            SteamImageType.LibraryHero     => @"library_hero.jpg",
+            SteamImageType.LibraryHeroBlur => @"library_hero_blur.jpg",
+            SteamImageType.Library         => @"library_600x900.jpg",
+            _                              => throw new NotSupportedException($"{type} is not available in the local cache. Use {nameof(GetImageUri)} instead.")
+        };
+    }
+
+    private static string GetAppImageSearchName(uint appId, SteamImageType type)
+    {
+        // NOTE: this method is for local images (i.e. Steam's library cache, Grid, etc.)
+        return type switch
+        {
+            SteamImageType.GridLandscape   => $"{appId}",
+            SteamImageType.GridPortrait    => $"{appId}p",
+            SteamImageType.GridIcon        => $"{appId}_icon",
+            SteamImageType.GridHero        => $"{appId}_hero",
+            SteamImageType.Header          => @"*header.jpg",
+            SteamImageType.Icon            => $"{appId}_icon.jpg",
+            SteamImageType.Logo            => $"logo.png",
+            SteamImageType.LibraryHero     => @"library_hero.jpg",
+            SteamImageType.LibraryHeroBlur => @"library_hero_blur.jpg",
+            SteamImageType.Library         => @"library_600x900.jpg",
             _                              => throw new NotSupportedException($"{type} is not available in the local cache. Use {nameof(GetImageUri)} instead.")
         };
     }

@@ -32,15 +32,15 @@ public enum SteamImageType
     /// </summary>
     Logo,
     /// <summary>
-    /// header.jpg
+    /// library_header.jpg
     /// </summary>
     Header,
     /// <summary>
-    /// {APPID}_library_600x900.jpg
+    /// library_600x900.jpg
     /// </summary>
     Library,
     /// <summary>
-    /// {APPID}_library_hero.jpg
+    /// library_hero.jpg
     /// </summary>
     LibraryHero,
     /// <summary>
@@ -48,7 +48,7 @@ public enum SteamImageType
     /// </summary>
     LibraryHeader,
     /// <summary>
-    /// {APPID}_library_hero_blur.jpg
+    /// library_hero_blur.jpg
     /// </summary>
     LibraryHeroBlur,
     /// <summary>

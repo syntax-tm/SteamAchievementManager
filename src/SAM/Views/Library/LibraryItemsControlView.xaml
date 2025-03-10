@@ -112,7 +112,7 @@
                                 <Separator />
                                 <ui:MenuItem Command="{Binding ToggleFavoriteCommand}">
                                     <ui:MenuItem.Style>
-                                        <Style TargetType="{x:Type ui:MenuItem}">
+                                        <Style TargetType="{x:Type ui:MenuItem}" BasedOn="{StaticResource WpfUiMenuItem}">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsFavorite}" Value="False">
                                                     <Setter Property="Header" Value="Add to Favorites" />
@@ -142,7 +142,7 @@
                                 </ui:MenuItem>
                                 <ui:MenuItem Command="{Binding ToggleVisibilityCommand}">
                                     <ui:MenuItem.Style>
-                                        <Style TargetType="{x:Type ui:MenuItem}">
+                                        <Style TargetType="{x:Type ui:MenuItem}" BasedOn="{StaticResource WpfUiMenuItem}">
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsHidden}" Value="False">
                                                     <Setter Property="Header" Value="Hide" />

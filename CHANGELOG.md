@@ -1,10 +1,9 @@
-## 0.7.0
+
+## 0.8.0-alpha
 
 #### General
 
-- Added grid view to library
-- Added ability to group apps in library
-- Added automatic saving and loading of library settings
-- Added ability to expand/collapse all groups
-- **[BUG]** Fixed application crash caused by large libraries
-- **[BUG]** Fixed library sorting incorrectly after enabling/disabling grouping
+- Added support for new Steam library cache layout
+- Updated to .NET 9.0
+- Updated third party packages
+- **[BUG]** Fixed occasional crash on splashscreen startup when managing apps

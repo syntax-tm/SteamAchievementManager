@@ -26,18 +26,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-    <PackageReference Include="log4net" Version="2.0.17" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+    <PackageReference Include="log4net" Version="3.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Drawing.Common" Version="8.0.4" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseWPF)'=='true'">
     <PackageReference Include="DevExpress.Mvvm.CodeGenerators" Version="22.1.1" />
-    <PackageReference Include="DevExpressMvvm" Version="23.2.3" />
-    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4" />
+    <PackageReference Include="DevExpressMvvm" Version="24.1.6" />
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
-    <PackageReference Include="WPF-UI" Version="3.0.4" />
+    <PackageReference Include="WPF-UI" Version="4.0.2" />
   </ItemGroup>
 
 </Project>
