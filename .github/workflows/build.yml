@@ -50,32 +50,32 @@ jobs:
     outputs:
       artifact-name: ${{ steps.set-vars.outputs.artifact-name }}
     steps:
-    - name: checkout
-      id: checkout
+    - id: checkout
+      name: checkout
       uses: actions/checkout@v4
-    - name: setup-dotnet
-      id: setup-dotnet
+    - id: setup-dotnet
+      name: setup-dotnet
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
-    - name: cache-restore
-      id: cache-restore
+    - id: cache-restore
+      name: cache-restore
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ runner.os }}-nuget
-    - name: restore
-      id: dotnet-restore
+    - id: dotnet-restore
+      name: restore
       run: dotnet restore .\src\SAM_NoTests.slnf --packages ${{ env.PACKAGES }}
-    - name: cache-save
-      id: cache-save
+    - id: cache-save
+      name: cache-save
       uses: actions/cache/save@v4
       if: steps.cache-restore.outputs.cache-hit != 'true'
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-    - name: set-vars
-      id: set-vars
+    - id: set-vars
+      name: set-vars
       run: |
         $now = Get-Date
         $longTs = $now.ToString('yyyy-MM-dd')
@@ -84,17 +84,10 @@ jobs:
         $artifactName = $buildType -eq 'release' ? "SAM_${{ inputs.version }}" : [string]::Format('SAM_{0}_{1}.{2}', $buildType, $ts, '${{ github.run_number }}')
         $configuration = $buildType -eq 'release' ? 'Release' : 'Debug'
 
-        Write-Host "Build Date    : " -NoNewLine
-        Write-Host "$($PSStyle.Foreground.BrightCyan)$longTs ($ts)$($PSStyle.Reset)"
-
-        Write-Host "Build Type    : " -NoNewLine
-        Write-Host "$($PSStyle.Foreground.BrightCyan)$buildType$($PSStyle.Reset)"
-
-        Write-Host "Artifact Name : " -NoNewLine
-        Write-Host "$($PSStyle.Foreground.BrightCyan)$artifactName$($PSStyle.Reset)"
-
-        Write-Host "Configuration : " -NoNewLine
-        Write-Host "$($PSStyle.Foreground.BrightCyan)$configuration$($PSStyle.Reset)"
+        Write-Host "Build Date    : $($PSStyle.Foreground.BrightCyan)$longTs ($ts)$($PSStyle.Reset)"
+        Write-Host "Build Type    : $($PSStyle.Foreground.BrightCyan)$buildType$($PSStyle.Reset)"
+        Write-Host "Artifact Name : $($PSStyle.Foreground.BrightCyan)$artifactName$($PSStyle.Reset)"
+        Write-Host "Configuration : $($PSStyle.Foreground.BrightCyan)$configuration$($PSStyle.Reset)"
 
         echo "BUILD_DATE=$ts" >> $env:GITHUB_ENV
         echo "BUILD_DATE_LONG=$longTs" >> $env:GITHUB_ENV
@@ -103,19 +96,16 @@ jobs:
         echo "ARTIFACT_NAME=$artifactName" >> $env:GITHUB_ENV
 
         echo "artifact-name=$artifactName" >> $env:GITHUB_OUTPUT
-    - name: publish
-      id: publish
+    - id: publish
+      name: publish
       run: dotnet publish .\src\SAM\SAM.csproj -o publish -c ${{ env.CONFIGURATION }} -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
-    - name: stage-artifacts
-      id: stage-artifacts
+    - id: stage-artifacts
+      name: stage-artifacts
       run: |
         $publishDir = Get-Item publish | Select-Object -ExpandProperty FullName
-
         $stagedFiles = gci $publishDir -Recurse -File | Sort-Object Extension, FullName | select -ExpandProperty FullName
 
-        Write-Host ""
-        Write-Host "$($PSStyle.Bold)Staged Artifacts$($PSStyle.BoldOff)"
-        Write-Host ""
+        Write-Host "`n$($PSStyle.Bold)Staged Artifacts$($PSStyle.BoldOff)`n"
 
         foreach ($stagedFile in $stagedFiles)
         {
@@ -124,26 +114,16 @@ jobs:
 
           $color = ''
 
-          if ($ext -eq '.exe') {
-            $color = $PSStyle.Foreground.BrightCyan
-          }
-          elseif ($ext -eq '.dll') {
-            $color = $PSStyle.Foreground.BrightMagenta
-          }
-          elseif ($ext -eq '.pdb') {
-            $color = $PSStyle.Foreground.BrightGreen
-          }
-          elseif ($ext -eq '.json' -or $ext -eq '.config') {
-            $color = $PSStyle.Foreground.BrightBlue
-          }
-          else {
-            $color = $PSStyle.Foreground.BrightWhite
-          }
+          if ($ext -eq '.exe') { $color = $PSStyle.Foreground.BrightCyan }
+          elseif ($ext -eq '.dll') { $color = $PSStyle.Foreground.BrightMagenta }
+          elseif ($ext -eq '.pdb') { $color = $PSStyle.Foreground.BrightGreen }
+          elseif ($ext -eq '.json' -or $ext -eq '.config') { $color = $PSStyle.Foreground.BrightBlue }
+          else { $color = $PSStyle.Foreground.BrightWhite }
 
           Write-Host "- $color$relPath$($PSStyle.Reset)"
         }
-    - name: upload
-      id: artifact-upload
+    - id: artifact-upload
+      name: upload
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.ARTIFACT_NAME }}
