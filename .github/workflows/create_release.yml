@@ -61,20 +61,24 @@ jobs:
     with:
       is_release: true
       version: ${{ needs.setup.outputs.version }}
-  create-release:
+  release:
     runs-on: windows-latest
     needs: [setup, build]
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4
+    - id: checkout
+      name: checkout
+      uses: actions/checkout@v4
+    - id: download-artifact
+      name: download-artifact
+      uses: actions/download-artifact@v4
       with:
         path: artifacts
-        # name: ${{ env.artifact-name }}
       env:
         artifact-name: ${{ needs.build.outputs.artifact-name }}
-    - name: Create Archive
+    - id: create-archive
+      name: create-archive
       run: |
         $items = Get-ChildItem artifacts
         $artifactName = "SAM_${{ needs.setup.outputs.version }}"
@@ -89,7 +93,9 @@ jobs:
         $items | % { Compress-Archive -Path "$($_.FullName)\*" -DestinationPath "$($_.FullName).zip" -Force }
 
         Get-ChildItem -Path artifacts -Filter *.zip | Format-Table
-    - uses: ncipollo/release-action@v1
+    - id: create-release
+      name: create-release
+      uses: ncipollo/release-action@v1
       with:
         artifacts: artifacts/*.zip
         bodyFile: ./CHANGELOG.md
@@ -100,3 +106,17 @@ jobs:
         omitDraftDuringUpdate: true
         omitNameDuringUpdate: true
         prerelease: ${{ needs.setup.outputs.is-prerelease == 'true' && 'true' || '' }}
+    - id: summary
+      name: summary
+      run: |
+        $url = "${{ steps.create-release.outputs.html_url }}"
+        $name = "${{ needs.setup.outputs.version }}"
+        $preRelease = "${{ needs.setup.outputs.is-prerelease == 'true' && 'Yes' || 'No' }}"
+
+        $md = "# Release`n"
+        $md += "`n"
+        $md += "- **Version:** $name`n"
+        $md += "- **Prerelease:** $preRelease`n"
+        $md += "- **Url:** [$name]($url)`n"
+
+        $md >> $env:GITHUB_STEP_SUMMARY

@@ -50,31 +50,31 @@ jobs:
     outputs:
       artifact-name: ${{ steps.set-vars.outputs.artifact-name }}
     steps:
-    - name: Checkout
-      id: git-checkout
+    - name: checkout
+      id: checkout
       uses: actions/checkout@v4
-    - name: Setup .NET
+    - name: setup-dotnet
       id: setup-dotnet
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
-    - name: Cache Restore
+    - name: cache-restore
       id: cache-restore
       uses: actions/cache/restore@v4
       with:
         path: ${{ env.PACKAGES }}
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-    - name: Restore dependencies
+        key: ${{ runner.os }}-nuget
+    - name: restore
       id: dotnet-restore
       run: dotnet restore .\src\SAM_NoTests.slnf --packages ${{ env.PACKAGES }}
-    - name: Cache Save
+    - name: cache-save
       id: cache-save
       uses: actions/cache/save@v4
       if: steps.cache-restore.outputs.cache-hit != 'true'
       with:
         path: ${{ env.PACKAGES }}
         key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-    - name: Set Vars
+    - name: set-vars
       id: set-vars
       run: |
         $now = Get-Date
@@ -103,10 +103,10 @@ jobs:
         echo "ARTIFACT_NAME=$artifactName" >> $env:GITHUB_ENV
 
         echo "artifact-name=$artifactName" >> $env:GITHUB_OUTPUT
-    - name: Publish SAM
-      id: dotnet-publish
+    - name: publish
+      id: publish
       run: dotnet publish .\src\SAM\SAM.csproj -o publish -c ${{ env.CONFIGURATION }} -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
-    - name: Stage Artifacts
+    - name: stage-artifacts
       id: stage-artifacts
       run: |
         $publishDir = Get-Item publish | Select-Object -ExpandProperty FullName
@@ -142,7 +142,7 @@ jobs:
 
           Write-Host "- $color$relPath$($PSStyle.Reset)"
         }
-    - name: Upload a Build Artifact
+    - name: upload
       id: artifact-upload
       uses: actions/upload-artifact@v4
       with:
