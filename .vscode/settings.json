@@ -1,0 +1,6 @@
+{
+  "markdownlint.config": {
+    "no-duplicate-heading": false,
+    "first-line-heading": false
+  }
+}

@@ -1,7 +1,6 @@
-
 ## 0.8.0-alpha
 
-#### General
+### General
 
 - Added support for new Steam library cache layout
 - Updated to .NET 9.0
