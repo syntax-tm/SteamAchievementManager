@@ -1,0 +1,38 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="../.gitattributes" />
+    <File Path="../.gitignore" />
+    <File Path="../CHANGELOG.md" />
+    <File Path="../README.md" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+  </Folder>
+  <!-- <Folder Name="/Tests/">
+    <Project Path="SAM.UnitTests/SAM.UnitTests.csproj">
+      <Platform Project="x86" />
+      <Build Solution="*|x86" Project="false" />
+    </Project>
+  </Folder> -->
+  <Project Path="SAM.API/SAM.API.csproj">
+    <Platform Project="x86" />
+    <Build Solution="Debug|x64" Project="false" />
+  </Project>
+  <!-- <Project Path="SAM.Console/SAM.Console.csproj">
+    <Platform Project="x86" />
+    <Build Solution="*|x86" Project="false" />
+  </Project> -->
+  <Project Path="SAM.Core/SAM.Core.csproj">
+    <Platform Project="x86" />
+    <Build Solution="Debug|x64" Project="false" />
+  </Project>
+  <Project Path="SAM/SAM.csproj">
+    <Platform Project="x86" />
+    <Build Solution="Debug|x64" Project="false" />
+  </Project>
+</Solution>
