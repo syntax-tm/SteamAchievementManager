@@ -1,10 +1,10 @@
 {
   "recommendations": [
-    "ms-dotnettools.csdevkit",
-    "github.vscode-github-actions",
-    "davidanson.vscode-markdownlint",
+    "bierner.github-markdown-preview",
     "bierner.markdown-mermaid",
     "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
-    "bierner.github-markdown-preview"
+    "davidanson.vscode-markdownlint",
+    "github.vscode-github-actions",
+    "ms-dotnettools.csdevkit"
   ]
 }
