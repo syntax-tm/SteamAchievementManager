@@ -1,6 +1,6 @@
 {
   "solution": {
-    "path": "SAM.sln",
+    "path": "SAM.slnx",
     "projects": [
       "SAM.API\\SAM.API.csproj",
       "SAM.Core\\SAM.Core.csproj",
