@@ -97,7 +97,20 @@
                             </ui:Button.Style>
                         </ui:Button>
                         <ui:Button Command="{Binding SaveCommand}" Icon="Save20" Content="Save"
-                                   IsEnabled="{Binding IsModified, Mode=OneWay}">
+                   IsEnabled="{Binding IsModified, Mode=OneWay}">
+                            <ui:Button.Style>
+                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="Width" Value="120" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Appearance" Value="Primary" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
+                        </ui:Button>
+                        <ui:Button Command="{Binding AutoUnlockCommand, Mode=OneWay}" Icon="Play20" Content="Auto Unlock">
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
                                     <Setter Property="Margin" Value="10,0" />
@@ -121,15 +134,40 @@
                     <TabItem Header="Stats">
                         <stats:StatsView />
                     </TabItem>
+                    <TabItem Header="Auto Unlock">
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Live Status Display -->
+                            <StackPanel Grid.Row="0" Margin="5">
+                                <TextBlock Text="{Binding CurrentUnlockStatus}" FontSize="16" FontWeight="Bold" />
+                                <TextBlock Text="{Binding NextUnlockCountdown}" FontSize="14" Foreground="DarkSlateGray" Margin="0,5,0,0"/>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Separator Grid.Row="1" Margin="0,10" />
+
+                            <!-- Log Viewer -->
+                            <GroupBox Grid.Row="2" Header="Live Log">
+                                <ListBox ItemsSource="{Binding AutoUnlockLog}" Margin="5" />
+                            </GroupBox>
+
+                        </Grid>
+                    </TabItem>
                 </TabControl>
-                <!--<ui:AutoSuggestBox Text="{Binding SearchText, Mode=TwoWay, Delay=300, UpdateSourceTrigger=PropertyChanged}"                  
-                                   PlaceholderText="Search..." BorderBrush="Transparent"
-                                   Icon="Search24" Margin="5"
-                                   Width="400">
+                <ui:AutoSuggestBox Text="{Binding SearchText, Mode=TwoWay, Delay=300, UpdateSourceTrigger=PropertyChanged}"                  
+                           PlaceholderText="Search..." BorderBrush="Transparent"
+                           Icon="Search24" Margin="549,10,10,0" FontSize="13" Padding="3,0" Height="22"
+                                   Width="NaN" VerticalAlignment="Top">
                     <ui:AutoSuggestBox.Style>
-                        <Style TargetType="{x:Type ui:AutoSuggestBox}" BasedOn="{StaticResource BaseUiAutoSuggestBoxStyle}" />
+                        <Style TargetType="{x:Type ui:AutoSuggestBox}" BasedOn="{StaticResource BaseUiAutoSuggestBoxStyle}" 
+                               />
                     </ui:AutoSuggestBox.Style>
-                </ui:AutoSuggestBox>-->
+                </ui:AutoSuggestBox>
             </Grid>
         </DockPanel>
     </Grid>
