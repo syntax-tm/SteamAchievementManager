@@ -13,27 +13,12 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/button/button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Wpf.Ui;component/controls/toggleswitch/toggleswitch.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
-                <Setter Property="Margin" Value="10,0" />
-                <Setter Property="Width" Value="120" />
-            </Style>
-            <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
-                <Setter Property="HeaderTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <Grid>
-                                <TextBlock Text="{Binding}" HorizontalAlignment="Center"
-                                           VerticalAlignment="Center" Margin="10,0" />
-                            </Grid>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
+  </ResourceDictionary>
     </UserControl.Resources>
 
     <dxmvvm:Interaction.Behaviors>
@@ -43,12 +28,6 @@
     <Grid>
         <DockPanel LastChildFill="True">
             <StatusBar DockPanel.Dock="Bottom" Height="70" Padding="2">
-                <!--<StatusBarItem Content="Filter:" FontWeight="SemiBold" FontSize="13" Margin="5,0" />
-                <StatusBarItem>
-                    <ComboBox SelectedItem="{Binding SelectedAchievementFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              Margin="4" Width="160" ItemsSource="{Binding Source={core:EnumBindingSource {x:Type core:AchievementFilter}}}">
-                    </ComboBox>
-                </StatusBarItem>-->
                 <StatusBarItem Content="Show Hidden:" FontWeight="SemiBold" FontSize="13" Margin="5,0" />
                 <StatusBarItem>
                     <ui:ToggleSwitch IsChecked="{Binding ShowHidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -66,6 +45,20 @@
                 </StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
+                        <ui:Button Command="{Binding CopyUserStatsCommand}" Icon="Copy20" Content="Copy Stats">
+                            <ui:Button.Style>
+                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
+                                    <Setter Property="Margin" Value="10,0" />
+                                    <Setter Property="Width" Value="120" />
+                                    <Setter Property="Appearance" Value="Secondary" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="True">
+                                            <Setter Property="Appearance" Value="Primary" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
+                        </ui:Button>
                         <ui:Button Command="{Binding UnlockAllAchievementsCommand}" Icon="LockOpen20" Content="Unlock All"
                                    IsEnabled="{Binding AllowUnlockAll, Mode=OneWay}">
                             <ui:Button.Style>
@@ -97,20 +90,7 @@
                             </ui:Button.Style>
                         </ui:Button>
                         <ui:Button Command="{Binding SaveCommand}" Icon="Save20" Content="Save"
-                   IsEnabled="{Binding IsModified, Mode=OneWay}">
-                            <ui:Button.Style>
-                                <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
-                                    <Setter Property="Margin" Value="10,0" />
-                                    <Setter Property="Width" Value="120" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsEnabled" Value="True">
-                                            <Setter Property="Appearance" Value="Primary" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ui:Button.Style>
-                        </ui:Button>
-                        <ui:Button Command="{Binding AutoUnlockCommand, Mode=OneWay}" Icon="Play20" Content="Auto Unlock">
+                                   IsEnabled="{Binding IsModified, Mode=OneWay}">
                             <ui:Button.Style>
                                 <Style TargetType="{x:Type ui:Button}" BasedOn="{StaticResource DefaultUiButtonStyle}">
                                     <Setter Property="Margin" Value="10,0" />
@@ -127,7 +107,7 @@
                 </StatusBarItem>
             </StatusBar>
             <Grid>
-                <TabControl>
+                <TabControl SelectedIndex="{Binding SelectedTabIndex}">
                     <TabItem Header="Achievements">
                         <stats:AchievementsView />
                     </TabItem>
@@ -136,7 +116,9 @@
                     </TabItem>
                     <TabItem Header="Auto Unlock">
                         <Grid Margin="10">
+
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
@@ -147,27 +129,27 @@
                                 <TextBlock Text="{Binding CurrentUnlockStatus}" FontSize="16" FontWeight="Bold" />
                                 <TextBlock Text="{Binding NextUnlockCountdown}" FontSize="14" Foreground="DarkSlateGray" Margin="0,5,0,0"/>
                             </StackPanel>
-
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
+                                <TextBlock Text="API Key:" VerticalAlignment="Center"/>
+                                <TextBox Width="200" Text="{Binding WebAPIKey, UpdateSourceTrigger=PropertyChanged}" Margin="5,0"/>
+                                <TextBlock Text="SteamID:" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <TextBox Width="200" Text="{Binding SteamID, UpdateSourceTrigger=PropertyChanged}" Margin="5,0"/>
+                                <StackPanel Orientation="Horizontal" Margin="5">
+                                    <Button Content="Start" Command="{Binding StartAutoUnlockCommand}" Width="80" Margin="5"/>
+                                    <Button Content="Stop" Command="{Binding StopAutoUnlockCommand}" Width="80" Margin="5"/>
+                                </StackPanel>
+                            </StackPanel>
                             <!-- Separator -->
                             <Separator Grid.Row="1" Margin="0,10" />
 
                             <!-- Log Viewer -->
-                            <GroupBox Grid.Row="2" Header="Live Log">
+                            <GroupBox Grid.Row="3" Header="Live Log">
                                 <ListBox ItemsSource="{Binding AutoUnlockLog}" Margin="5" />
                             </GroupBox>
-
                         </Grid>
                     </TabItem>
                 </TabControl>
-                <ui:AutoSuggestBox Text="{Binding SearchText, Mode=TwoWay, Delay=300, UpdateSourceTrigger=PropertyChanged}"                  
-                           PlaceholderText="Search..." BorderBrush="Transparent"
-                           Icon="Search24" Margin="549,10,10,0" FontSize="13" Padding="3,0" Height="22"
-                                   Width="NaN" VerticalAlignment="Top">
-                    <ui:AutoSuggestBox.Style>
-                        <Style TargetType="{x:Type ui:AutoSuggestBox}" BasedOn="{StaticResource BaseUiAutoSuggestBoxStyle}" 
-                               />
-                    </ui:AutoSuggestBox.Style>
-                </ui:AutoSuggestBox>
+                <TextBox Margin="551,2,10,346" Text="{Binding SearchText, Delay=300, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextChanged="TextBox_TextChanged" VerticalAlignment="Top"/>
             </Grid>
         </DockPanel>
     </Grid>
