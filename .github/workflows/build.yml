@@ -4,12 +4,6 @@ run-name: Build ${{ github.event_name == 'workflow_call' && inputs.version || gi
 env:
   PACKAGES: ${{ github.workspace }}\.nuget\packages
   VERSION: 0.0.1
-  # these are all set in the set-vars step
-  ARTIFACT_NAME: ''
-  BUILD_DATE: ''
-  BUILD_DATE_LONG: ''
-  BUILD_TYPE: ''
-  CONFIGURATION: ''
 
 on:
   workflow_call:
@@ -30,8 +24,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ "main", "master" ]
-    tags-ignore:
-      - v*
+    tags-ignore: [ 'v*' ]
     paths-ignore:
       - 'resources/*'
       - 'README.md'
@@ -49,85 +42,106 @@ jobs:
     runs-on: self-hosted
     outputs:
       artifact-name: ${{ steps.set-vars.outputs.artifact-name }}
+
     steps:
-    - id: checkout
-      name: checkout
-      uses: actions/checkout@v4
-    - id: setup-dotnet
-      name: setup-dotnet
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
-        install-dir: ${{ github.workspace }}\.dotnet
+      - name: checkout
+        uses: actions/checkout@v4
 
-    - id: cache-restore
-      name: cache-restore
-      uses: actions/cache/restore@v4
-      with:
-        path: ${{ env.PACKAGES }}
-        key: ${{ runner.os }}-nuget
-    - id: dotnet-restore
-      name: restore
-      run: dotnet restore .\src\SAM.slnx --packages ${{ env.PACKAGES }}
-    - id: cache-save
-      name: cache-save
-      uses: actions/cache/save@v4
-      if: steps.cache-restore.outputs.cache-hit != 'true'
-      with:
-        path: ${{ env.PACKAGES }}
-        key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-    - id: set-vars
-      name: set-vars
-      run: |
-        $now = Get-Date
-        $longTs = $now.ToString('yyyy-MM-dd')
-        $ts = $now.ToString('yy.MM.dd')
-        $buildType = "${{ inputs.is_release && 'release' || 'debug' }}"
-        $artifactName = $buildType -eq 'release' ? "SAM_${{ inputs.version }}" : [string]::Format('SAM_{0}_{1}.{2}', $buildType, $ts, '${{ github.run_number }}')
-        $configuration = $buildType -eq 'release' ? 'Release' : 'Debug'
+      - name: setup-dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
 
-        Write-Host "Build Date    : $($PSStyle.Foreground.BrightCyan)$longTs ($ts)$($PSStyle.Reset)"
-        Write-Host "Build Type    : $($PSStyle.Foreground.BrightCyan)$buildType$($PSStyle.Reset)"
-        Write-Host "Artifact Name : $($PSStyle.Foreground.BrightCyan)$artifactName$($PSStyle.Reset)"
-        Write-Host "Configuration : $($PSStyle.Foreground.BrightCyan)$configuration$($PSStyle.Reset)"
+      # ==== CACHE RESTORE ====
 
-        echo "BUILD_DATE=$ts" >> $env:GITHUB_ENV
-        echo "BUILD_DATE_LONG=$longTs" >> $env:GITHUB_ENV
-        echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
-        echo "CONFIGURATION=$configuration" >> $env:GITHUB_ENV
-        echo "ARTIFACT_NAME=$artifactName" >> $env:GITHUB_ENV
+      # Linux/macOS: use native actions/cache
+      - name: Restore NuGet cache (Linux/macOS)
+        if: runner.os != 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PACKAGES }}
+          key: ${{ runner.os }}-nuget
 
-        echo "artifact-name=$artifactName" >> $env:GITHUB_OUTPUT
-    - id: publish
-      name: publish
-      run: dotnet publish .\src\SAM\SAM.csproj -o publish -c ${{ env.CONFIGURATION }} -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
-    - id: stage-artifacts
-      name: stage-artifacts
-      run: |
-        $publishDir = Get-Item publish | Select-Object -ExpandProperty FullName
-        $stagedFiles = gci $publishDir -Recurse -File | Sort-Object Extension, FullName | select -ExpandProperty FullName
+      # Windows: pull down last run’s tarball
+      - name: Download NuGet cache (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-cache
+          path: .
 
-        Write-Host "`n$($PSStyle.Bold)Staged Artifacts$($PSStyle.BoldOff)`n"
+      - name: Unpack NuGet cache (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          mkdir -p "${{ env.PACKAGES }}"
+          tar.exe -xf nuget-cache.tar -C "${{ env.PACKAGES }}"
 
-        foreach ($stagedFile in $stagedFiles)
-        {
-          $relPath = [System.IO.Path]::GetRelativePath($publishDir, $stagedFile)
-          $ext = [System.IO.Path]::GetExtension($stagedFile)
+      # ==== DOTNET RESTORE ====
 
-          $color = ''
+      - name: restore
+        run: dotnet restore .\src\SAM.slnx --packages ${{ env.PACKAGES }}
 
-          if ($ext -eq '.exe') { $color = $PSStyle.Foreground.BrightCyan }
-          elseif ($ext -eq '.dll') { $color = $PSStyle.Foreground.BrightMagenta }
-          elseif ($ext -eq '.pdb') { $color = $PSStyle.Foreground.BrightGreen }
-          elseif ($ext -eq '.json' -or $ext -eq '.config') { $color = $PSStyle.Foreground.BrightBlue }
-          else { $color = $PSStyle.Foreground.BrightWhite }
+      # ==== CACHE SAVE ====
 
-          Write-Host "- $color$relPath$($PSStyle.Reset)"
-        }
-    - id: artifact-upload
-      name: upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.ARTIFACT_NAME }}
-        path: publish
-        if-no-files-found: error
+      # Linux/macOS: save via actions/cache
+      - name: Save NuGet cache (Linux/macOS)
+        if: runner.os != 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PACKAGES }}
+          key: ${{ runner.os }}-nuget
+
+      # Windows: re-package & upload for next run
+      - name: Pack NuGet cache (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          tar.exe -cf nuget-cache.tar -C "${{ env.PACKAGES }}" .
+      - name: Upload NuGet cache (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-cache
+          path: nuget-cache.tar
+
+      # ==== SET VARIABLES ====
+
+      - id: set-vars
+        name: set-vars
+        run: |
+          $now = Get-Date
+          $longTs = $now.ToString('yyyy-MM-dd')
+          $ts = $now.ToString('yy.MM.dd')
+          $buildType = "${{ inputs.is_release && 'release' || 'debug' }}"
+          $artifactName = $buildType -eq 'release'
+            ? "SAM_${{ inputs.version }}"
+            : [string]::Format('SAM_{0}_{1}.{2}', $buildType, $ts, '${{ github.run_number }}')
+          $configuration = $buildType -eq 'release' ? 'Release' : 'Debug'
+
+          echo "BUILD_DATE=$ts" >> $env:GITHUB_ENV
+          echo "BUILD_DATE_LONG=$longTs" >> $env:GITHUB_ENV
+          echo "BUILD_TYPE=$buildType" >> $env:GITHUB_ENV
+          echo "CONFIGURATION=$configuration" >> $env:GITHUB_ENV
+          echo "ARTIFACT_NAME=$artifactName" >> $env:GITHUB_ENV
+          echo "artifact-name=$artifactName" >> $env:GITHUB_OUTPUT
+
+      # ==== PUBLISH & UPLOAD ====
+
+      - name: publish
+        run: dotnet publish .\src\SAM\SAM.csproj -o publish -c ${{ env.CONFIGURATION }} -a x86 --no-restore /p:Version=${{ inputs.version || env.VERSION }}
+
+      - name: stage-artifacts
+        run: |
+          $publishDir = (Get-Item publish).FullName
+          gci $publishDir -Recurse -File | 
+            Sort-Object Extension, FullName | 
+            ForEach-Object {
+              $rel = [IO.Path]::GetRelativePath($publishDir,$_.FullName)
+              Write-Host "- $rel"
+            }
+
+      - name: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: publish
+          if-no-files-found: error
