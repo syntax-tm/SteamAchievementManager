@@ -46,7 +46,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: self-hosted
     outputs:
       artifact-name: ${{ steps.set-vars.outputs.artifact-name }}
     steps:
