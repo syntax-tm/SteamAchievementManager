@@ -88,10 +88,9 @@ public partial class App
                             unsafe
                             {
                                 // TODO: this output formatting needs to be fixed
-                                var ptr = (uint*) 0;
-                                PInvoke.WriteConsole(handle, "\n", 1, ptr);
-                                PInvoke.WriteConsole(handle, message, (uint) message.Length, ptr);
-                                PInvoke.WriteConsole(handle, "\n", 1, ptr);
+                                PInvoke.WriteConsole(handle, "\n", 1, out var ptr);
+                                PInvoke.WriteConsole(handle, message, (uint) message.Length, out ptr);
+                                PInvoke.WriteConsole(handle, "\n", 1, out ptr);
                             }
                         }
                         else

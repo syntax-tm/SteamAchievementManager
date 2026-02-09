@@ -313,7 +313,7 @@ public partial class SteamGameViewModel
 
     private void OnAchievementModifiedHandler(ObservableCollection<SteamAchievement> arg1, SteamAchievement arg2)
     {
-        Refresh();
+        //Refresh();
     }
 
     protected void OnSearchTextChanged()

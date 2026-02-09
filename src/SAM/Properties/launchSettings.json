@@ -1,4 +1,4 @@
-{
+﻿{
   "profiles": {
     "Default": {
       "commandName": "Project",
@@ -6,92 +6,97 @@
     },
     "Cities: Skylines 2": {
       "commandName": "Project",
-      "commandLineArgs": "305620",
+      "commandLineArgs": "manage 305620",
       "nativeDebugging": false
     },
     "Counter-Strike 2": {
       "commandName": "Project",
-      "commandLineArgs": "730",
+      "commandLineArgs": "manage 730",
       "nativeDebugging": false
     },
     "Counter-Strike: Source": {
       "commandName": "Project",
-      "commandLineArgs": "240",
+      "commandLineArgs": "manage 240",
       "nativeDebugging": false
     },
     "Cyberpunk 2077": {
       "commandName": "Project",
-      "commandLineArgs": "1091500",
+      "commandLineArgs": "manage 1091500",
       "nativeDebugging": false
     },
     "Fallout 4": {
       "commandName": "Project",
-      "commandLineArgs": "377160",
+      "commandLineArgs": "manage 377160",
       "nativeDebugging": false
     },
     "Half-Life 2": {
       "commandName": "Project",
-      "commandLineArgs": "220",
+      "commandLineArgs": "manage 220",
       "nativeDebugging": false
     },
     "Halo Infinite": {
       "commandName": "Project",
-      "commandLineArgs": "1240440",
+      "commandLineArgs": "manage 1240440",
       "nativeDebugging": false
     },
     "Left 4 Dead": {
       "commandName": "Project",
-      "commandLineArgs": "500",
+      "commandLineArgs": "manage 500",
       "nativeDebugging": false
     },
     "Left 4 Dead 2": {
       "commandName": "Project",
-      "commandLineArgs": "550",
+      "commandLineArgs": "manage 550",
       "nativeDebugging": false
     },
     "Red Dead Redemption 2": {
       "commandName": "Project",
-      "commandLineArgs": "1174180",
+      "commandLineArgs": "manage 1174180",
       "nativeDebugging": false
     },
     "Resident Evil 0": {
       "commandName": "Project",
-      "commandLineArgs": "339340",
+      "commandLineArgs": "manage 339340",
       "nativeDebugging": false
     },
     "Resident Evil 2": {
       "commandName": "Project",
-      "commandLineArgs": "883710",
+      "commandLineArgs": "manage 883710",
       "nativeDebugging": false
     },
     "Resident Evil 4 (2023)": {
       "commandName": "Project",
-      "commandLineArgs": "2050650",
+      "commandLineArgs": "manage 2050650",
       "nativeDebugging": false
     },
     "Resident Evil 5": {
       "commandName": "Project",
-      "commandLineArgs": "21690",
+      "commandLineArgs": "manage 21690",
       "nativeDebugging": false
     },
     "Resident Evil 7: Biohazard": {
       "commandName": "Project",
-      "commandLineArgs": "418370",
+      "commandLineArgs": "manage 418370",
       "nativeDebugging": false
     },
     "Rust": {
       "commandName": "Project",
-      "commandLineArgs": "252490",
+      "commandLineArgs": "manage 252490",
       "nativeDebugging": false
     },
     "Team Fortress 2": {
       "commandName": "Project",
-      "commandLineArgs": "440",
+      "commandLineArgs": "manage 440",
       "nativeDebugging": false
     },
     "The Long Dark": {
       "commandName": "Project",
-      "commandLineArgs": "305620",
+      "commandLineArgs": "manage 305620",
+      "nativeDebugging": false
+    },
+    "Call of Duty: Black Ops Cold War": {
+      "commandName": "Project",
+      "commandLineArgs": "manage 1985810",
       "nativeDebugging": false
     }
   }
