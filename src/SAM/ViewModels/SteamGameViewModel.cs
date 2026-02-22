@@ -175,7 +175,7 @@ public partial class SteamGameViewModel
     public void Save(bool displayResult = true)
     {
         var achievementsSaved = SaveAchievements();
-        if (achievementsSaved == -1)
+        if (achievementsSaved < 0)
         {
             log.Warn($"{nameof(SaveAchievements)} encountered an error.");
 
@@ -183,7 +183,7 @@ public partial class SteamGameViewModel
         }
 
         var statsSaved = SaveStats();
-        if (statsSaved == -1)
+        if (statsSaved < 0)
         {
             log.Warn($"{nameof(SaveStats)} encountered an error.");
 
@@ -359,7 +359,6 @@ public partial class SteamGameViewModel
             Core.AchievementFilter.Unlocked   => achievement.IsAchieved,
             Core.AchievementFilter.Modified   => achievement.IsModified,
             Core.AchievementFilter.Unmodified => !achievement.IsModified,
-            Core.AchievementFilter.All        => true,
             _                                 => true
         };
 

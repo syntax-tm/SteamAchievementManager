@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using log4net;
 using SAM.API;
 using SAM.Core;
@@ -9,9 +10,9 @@ namespace SAM.Managers;
 
 public static class SteamClientManager
 {
-    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
+    private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType!);
 
-    private static readonly object syncLock = new ();
+    private static readonly Lock syncLock = new ();
     private static bool _isInitialized;
     private static string _steamInstallPath;
     private static string _cachePath;

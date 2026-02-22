@@ -53,7 +53,7 @@ namespace SAM.Core
 
         public static Process OpenManager(uint appId)
         {
-            if (appId == default) throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
+            if (appId == 0) throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
             
             if (!File.Exists(SAM_EXE))
             {
@@ -71,14 +71,14 @@ namespace SAM.Core
 
         public static Process UnlockAll(uint appId)
         {
-            if (appId == default) throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
+            if (appId == 0) throw new ArgumentException($"App id {appId} is not valid.", nameof(appId));
             
             if (!File.Exists(SAM_EXE))
             {
                 throw new FileNotFoundException($"Unable to start '{SAM_EXE}' because it does not exist.", SAM_EXE);
             }
 
-            string[] args = [ $"{appId}", "-u" ];
+            string[] args = [ "manage", $"{appId}", "-u" ];
             var psi = new ProcessStartInfo(SAM_EXE, args)
             {
                 CreateNoWindow = true

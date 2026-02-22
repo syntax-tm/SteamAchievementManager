@@ -1,6 +1,8 @@
 <Solution>
   <Configurations>
     <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="ARM64" />
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
@@ -13,26 +15,36 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Build.targets" />
   </Folder>
-  <!-- <Folder Name="/Tests/">
-    <Project Path="SAM.UnitTests/SAM.UnitTests.csproj">
-      <Platform Project="x86" />
-      <Build Solution="*|x86" Project="false" />
-    </Project>
-  </Folder> -->
   <Project Path="SAM.API/SAM.API.csproj">
     <Platform Project="x86" />
+    <Build Solution="Debug|ARM" Project="false" />
+    <Build Solution="Debug|ARM64" Project="false" />
     <Build Solution="Debug|x64" Project="false" />
   </Project>
-  <!-- <Project Path="SAM.Console/SAM.Console.csproj">
-    <Platform Project="x86" />
-    <Build Solution="*|x86" Project="false" />
-  </Project> -->
   <Project Path="SAM.Core/SAM.Core.csproj">
     <Platform Project="x86" />
+    <Build Solution="Debug|ARM" Project="false" />
+    <Build Solution="Debug|ARM64" Project="false" />
     <Build Solution="Debug|x64" Project="false" />
+  </Project>
+  <Project Path="SAM.WinApp/SAM.WinApp.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5" Id="1da4feb0-9bc5-492d-b28d-a68fc613a0c7">
+    <Platform Solution="Debug|Any CPU" Project="x86" />
+    <Platform Solution="Debug|ARM" Project="x86" />
+    <Platform Solution="Debug|ARM64" Project="x86" />
+    <Platform Solution="Debug|x64" Project="x86" />
+    <Build Solution="Debug|ARM" Project="false" />
+    <Build Solution="Debug|ARM64" Project="false" />
+    <Build Solution="Debug|x64" Project="false" />
+    <Deploy Solution="*|Any CPU" />
+    <Deploy Solution="*|x86" />
+    <Deploy Solution="Release|ARM" />
+    <Deploy Solution="Release|ARM64" />
+    <Deploy Solution="Release|x64" />
   </Project>
   <Project Path="SAM/SAM.csproj">
     <Platform Project="x86" />
+    <Build Solution="Debug|ARM" Project="false" />
+    <Build Solution="Debug|ARM64" Project="false" />
     <Build Solution="Debug|x64" Project="false" />
   </Project>
 </Solution>

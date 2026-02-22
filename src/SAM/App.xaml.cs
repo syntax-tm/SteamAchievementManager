@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.System.Console;
-using CommandLine;
+﻿using CommandLine;
 using CommandLine.Text;
 using log4net;
 using Microsoft.Win32.SafeHandles;
@@ -16,10 +6,25 @@ using Newtonsoft.Json;
 using SAM.API;
 using SAM.Core;
 using SAM.Core.Logging;
-using SAM.ViewModels;
-using SAM.SplashScreen;
-using SteamGameViewModel = SAM.ViewModels.SteamGameViewModel;
 using SAM.Managers;
+using SAM.SplashScreen;
+using SAM.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
+using Windows.ApplicationModel.Activation;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.System.Console;
+using SAM.Core.Extensions;
+using SteamGameViewModel = SAM.ViewModels.SteamGameViewModel;
 
 namespace SAM;
 
@@ -27,9 +32,11 @@ public partial class App
 {
     protected readonly ILog log = LogManager.GetLogger(nameof(App));
 
-    protected override void OnStartup(StartupEventArgs args)
+    private Mutex _managerMutex;
+
+    protected override void OnStartup(StartupEventArgs startupArgs)
     {
-        base.OnStartup(args);
+        base.OnStartup(startupArgs);
 
         try
         {
@@ -59,49 +66,17 @@ public partial class App
                 with.HelpWriter = helpWriter;
             });
 
-            var options = parser.ParseArguments<SelectOptions, ManageOptions>(args.Args);
+            var args = AppUriHelper.ParseArguments(startupArgs.Args);
 
-            // MessageBox.Show(JsonConvert.SerializeObject(options, Formatting.Indented));
+            var options = parser.ParseArguments<SelectOptions, ManageOptions>(args);
+
+            
 
             var result = options.MapResult(
-                    (SelectOptions o) => HandleSelect(o),
-                    (ManageOptions o) => HandleManage(o),
-                    errors =>
-                    {
-                        // assume that this was launched from command line with invalid arguments
-                        // and attach to the parent process' console since WPF apps don't have a
-                        // console otherwise
-                        var attached = PInvoke.AttachConsole(PInvoke.ATTACH_PARENT_PROCESS);
-                        
-                        var helpText = HelpText.AutoBuild(options);
-                        var message = helpText.ToString();
-                        
-                        var err = errors.ToList();
-                        var showHelp = err.IsHelp() || err.IsVersion();
-
-                        if (attached)
-                        {
-                            var handle = showHelp
-                                ? PInvoke.GetStdHandle_SafeHandle(STD_HANDLE.STD_OUTPUT_HANDLE)
-                                : PInvoke.GetStdHandle_SafeHandle(STD_HANDLE.STD_ERROR_HANDLE);
-
-                            unsafe
-                            {
-                                // TODO: this output formatting needs to be fixed
-                                PInvoke.WriteConsole(handle, "\n", 1, out var ptr);
-                                PInvoke.WriteConsole(handle, message, (uint) message.Length, out ptr);
-                                PInvoke.WriteConsole(handle, "\n", 1, out ptr);
-                            }
-                        }
-                        else
-                        {
-                            var icon = showHelp ? MessageBoxImage.Information : MessageBoxImage.Error;
-                            MessageBox.Show(message, "Usage", MessageBoxButton.OK, icon);
-                        }
-
-                        return SAMExitCode.InvalidArguments;
-                    }
-                );
+                                           (SelectOptions o) => HandleSelect(o),
+                                           (ManageOptions o) => HandleManage(o),
+                                           err => HandleError(options, err)
+                                          );
 
             log.Debug($"Argument {nameof(parser)} returned {result}");
 
@@ -136,6 +111,22 @@ public partial class App
     private int HandleSelect(SelectOptions options)
     {
         log.Info($"Starting processing {nameof(SelectOptions)}...");
+
+        // ensures that this is the only select process running
+        if (!IsSingleInstance())
+        {
+            var currentProcess = Process.GetCurrentProcess();
+            var processName = currentProcess.ProcessName;
+            
+            log.Fatal($"Another {processName} process is already running.");
+
+            // TODO: need to finish testing this, also needs to handle the non-empty 'select' argument being passed
+            //var runningProcesses = Process.GetProcessesByName(currentProcess.ProcessName);
+            //var mainProcess = runningProcesses.FirstOrDefault(p => string.IsNullOrWhiteSpace(p.StartInfo.Arguments));
+            //mainProcess?.SetActive();
+
+            return SAMExitCode.AlreadyRunning;
+        }
 
         SplashScreenHelper.Show("Starting up...");
 
@@ -173,47 +164,117 @@ public partial class App
 
     private int HandleManage(ManageOptions options)
     {
-        log.Info($"Starting processing {nameof(ManageOptions)}...");
-
-        var appId = options.AppId;
-
-        SteamClientManager.Init(appId);
-
-        if (!SteamClientManager.Default.OwnsGame(appId))
+        try
         {
-            throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
-        }
+            log.Info($"Starting processing {nameof(ManageOptions)}...");
 
-        var appInfo = new SteamApp(appId);
-        var gameVm = new SteamGameViewModel(appInfo);
-        gameVm.RefreshStats();
+            SplashScreenHelper.Show("Starting up...");
 
-        if (options.UnlockAll)
-        {
-            gameVm.UnlockAllAchievements();
+            var appId = options.AppId;
 
-            gameVm.Save(false);
+            SteamClientManager.Init(appId);
+
+            if (!SteamClientManager.Default.OwnsGame(appId))
+            {
+                throw new SAMInitializationException($"The current Steam account does not have a license for app '{appId}'.");
+            }
+
+            var appInfo = new SteamApp(appId);
+            var gameVm = new SteamGameViewModel(appInfo);
+            gameVm.RefreshStats();
+
+            if (options.UnlockAll)
+            {
+                gameVm.UnlockAllAchievements();
+
+                gameVm.Save(false);
+
+                return 0;
+            }
+
+            SplashScreenHelper.Show(appInfo.Name);
+
+            var mainWindowVm = new MainWindowViewModel(gameVm)
+            {
+                SubTitle = appInfo.Name
+            };
+
+            MainWindow = new MainWindow
+            {
+                DataContext = mainWindowVm
+            };
+
+            MainWindow.Show();
+
+            ShutdownMode = ShutdownMode.OnMainWindowClose;
 
             return 0;
         }
-
-        SplashScreenHelper.Show(appInfo.Name);
-
-        var mainWindowVm = new MainWindowViewModel(gameVm)
+        catch (Exception e)
         {
-            SubTitle = appInfo.Name
-        };
+            log.Error($"An error occurred attempting to manage app {options?.AppId}. {e.Message}", e);
 
-        MainWindow = new MainWindow
+            return -1;
+        }
+        finally
         {
-            DataContext = mainWindowVm
-        };
-        
-        MainWindow.Show();
+            SplashScreenHelper.Close();
+        }
+    }
 
-        ShutdownMode = ShutdownMode.OnMainWindowClose;
+    private int HandleError(ParserResult<object> options, IEnumerable<Error> errors)
+    {
+        // assume that this was launched from command line with invalid arguments
+        // and attach to the parent process' console since WPF apps don't have a
+        // console otherwise
+        var attached = PInvoke.AttachConsole(PInvoke.ATTACH_PARENT_PROCESS);
 
-        return 0;
+        var helpText = HelpText.AutoBuild(options);
+        var message = helpText.ToString();
+
+        var err = errors.ToList();
+        var showHelp = err.IsHelp() || err.IsVersion();
+
+        if (attached)
+        {
+            var handle = showHelp
+                ? PInvoke.GetStdHandle_SafeHandle(STD_HANDLE.STD_OUTPUT_HANDLE)
+                : PInvoke.GetStdHandle_SafeHandle(STD_HANDLE.STD_ERROR_HANDLE);
+
+            // TODO: this output formatting needs to be fixed
+            PInvoke.WriteConsole(handle, "\n", 1, out _);
+            PInvoke.WriteConsole(handle, message, (uint) message.Length, out _);
+            PInvoke.WriteConsole(handle, "\n", 1, out _);
+        }
+        else
+        {
+            var icon = showHelp ? MessageBoxImage.Information : MessageBoxImage.Error;
+            MessageBox.Show(message, "Usage", MessageBoxButton.OK, icon);
+        }
+
+        return SAMExitCode.InvalidArguments;
+    }
+
+    private bool IsSingleInstance()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var mutexName = assembly.GetName().Name;
+
+        // this is disposed when the process that created it exits
+        _managerMutex = new Mutex(true, mutexName, out var createdNew);
+        if (!createdNew)
+        {
+            return false;
+        }
+
+        Exit += CloseMutexHandler;
+        return true;
+    }
+
+    private void CloseMutexHandler(object sender, ExitEventArgs e)
+    {
+        _managerMutex?.Dispose();
+        _managerMutex = null;
     }
 
     protected override void OnExit(ExitEventArgs args)
@@ -295,6 +356,27 @@ public partial class App
             var message = $"An error occurred in {nameof(OnDispatcherException)}. {e.Message}";
 
             Environment.FailFast(message);
+        }
+    }
+
+    public void OnProtocolActivated(IActivatedEventArgs activatedEventArgs)
+    {
+        log.Info($"Received {activatedEventArgs.Kind:G} {nameof(IActivatedEventArgs)}");
+
+        if (activatedEventArgs.Kind == ActivationKind.Protocol)
+        {
+            var protocolArgs = activatedEventArgs as IProtocolActivatedEventArgs;
+            
+            Debug.Assert(protocolArgs != null);
+
+            var uri = protocolArgs.Uri;
+
+            var args = AppUriHelper.ParseArguments();
+
+            var options = parser.ParseArguments<SelectOptions, ManageOptions>(args);
+
+            MainWindow?.Activate();
+            return;
         }
     }
 }
