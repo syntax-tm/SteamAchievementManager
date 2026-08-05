@@ -1,5 +1,4 @@
-﻿using ABI.System;
-using log4net;
+﻿using log4net;
 using SAM.API;
 using SAM.Core.Extensions;
 using System;
@@ -161,7 +160,7 @@ public static partial class SAMHelper
 
         return proc;
     }
-        
+
     public static void CloseAllManagers()
     {
         try
