@@ -45,16 +45,14 @@
                                     <Image x:Name="PART_Image"
                                            Stretch="Fill" StretchDirection="Both"
                                            Visibility="Collapsed" />
-                                    <Viewbox StretchDirection="Both" Stretch="UniformToFill">
-                                        <TextBlock x:Name="PART_Header"
-                                                   Visibility="Collapsed"
-                                                   Text="{TemplateBinding Header}"
-                                                   FontSize="{TemplateBinding FontSize}"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Margin="5" TextWrapping="Wrap"
-                                                   TextTrimming="WordEllipsis" />
-                                    </Viewbox>
+                                    <TextBlock x:Name="PART_Header"
+                                               Visibility="Collapsed"
+                                               Text="{TemplateBinding Header}"
+                                               FontSize="{TemplateBinding FontSize}"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Margin="5" TextWrapping="Wrap"
+                                               TextTrimming="WordEllipsis" />
                                 </Grid>
                             </ui:Button>
                             <StackPanel x:Name="PART_ButtonPanel" HorizontalAlignment="Left"

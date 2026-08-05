@@ -87,6 +87,7 @@ public partial class HomeSettings : BindableBase
     }
 }
 
+[JsonObject(MemberSerialization.OptIn)]
 public class HomeSettingsMetaData
 {
     [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]

@@ -33,11 +33,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseWPF)'=='true'">
-    <PackageReference Include="DevExpress.Mvvm.CodeGenerators" Version="22.1.1" />
-    <PackageReference Include="DevExpressMvvm" Version="24.1.6" />
-    <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
-    <PackageReference Include="TextCopy" Version="6.2.1" />
-    <PackageReference Include="WPF-UI" Version="4.2.0" />
   </ItemGroup>
 
 </Project>

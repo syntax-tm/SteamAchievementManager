@@ -95,6 +95,7 @@ public partial class LibraryGridSettings : ILibrarySettings
     }
 }
 
+[JsonObject(MemberSerialization.OptIn)]
 public class LibraryGridSettingsMetaData
 {
     [JsonProperty]

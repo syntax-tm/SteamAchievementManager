@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -17,6 +16,38 @@ public class PipeStream
     {
         this.stream = stream;
         encoding = new ();
+    }
+
+    public int ReadByte()
+    {
+        var value = stream.ReadByte();
+        return value;
+    }
+
+    public void WriteByte(byte value)
+    {
+        stream.WriteByte(value);
+        stream.Flush();
+    }
+
+    public void SendMessage(ApplicationMessage message)
+    {
+        var value = (byte) message;
+
+        WriteByte(value);
+    }
+
+    public ApplicationMessage ReadMessage()
+    {
+        var value = ReadByte();
+
+        if (!Enum.IsDefined(typeof(ApplicationMessage), value))
+        {
+            return ApplicationMessage.Error;
+        }
+
+        var message = (ApplicationMessage) value;
+        return message;
     }
 
     public string ReadString()

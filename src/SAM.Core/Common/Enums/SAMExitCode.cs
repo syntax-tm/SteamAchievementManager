@@ -2,6 +2,7 @@
 
 public struct SAMExitCode
 {
+    public const int ExitRequested       = -10;
     public const int AlreadyRunning      = -9;
     public const int InvalidArguments    = -8;
     public const int SteamNotRunning     = -7;

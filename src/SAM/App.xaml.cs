@@ -1,11 +1,8 @@
 ﻿using CommandLine;
 using CommandLine.Text;
 using log4net;
-using Microsoft.Win32.SafeHandles;
-using Newtonsoft.Json;
 using SAM.API;
 using SAM.Core;
-using SAM.Core.Logging;
 using SAM.Managers;
 using SAM.SplashScreen;
 using SAM.ViewModels;
@@ -13,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -21,18 +19,35 @@ using System.Windows;
 using System.Windows.Threading;
 using Windows.ApplicationModel.Activation;
 using Windows.Win32;
-using Windows.Win32.Foundation;
 using Windows.Win32.System.Console;
-using SAM.Core.Extensions;
-using SteamGameViewModel = SAM.ViewModels.SteamGameViewModel;
+using PipeStream = SAM.Serialization.PipeStream;
 
 namespace SAM;
 
 public partial class App
 {
+    private const string PIPE_SERVER_NAME = @".";
+
     protected readonly ILog log = LogManager.GetLogger(nameof(App));
 
-    private Mutex _managerMutex;
+    private readonly Parser parser;
+
+    public uint AppId { get; set; }
+    public ApplicationMode Mode { get; set; }
+    public Mutex Mutex { get; set; }
+    public string Key { get; set; }
+
+    public App()
+    {
+        var helpWriter = new StringWriter();
+        parser = new Parser(with =>
+        {
+            with.CaseSensitive = false;
+            //ignore case for enum values
+            with.CaseInsensitiveEnumValues = true;
+            with.HelpWriter = helpWriter;
+        });
+    }
 
     protected override void OnStartup(StartupEventArgs startupArgs)
     {
@@ -40,13 +55,7 @@ public partial class App
 
         try
         {
-            GlobalContext.Properties[AssemblyVersionHelper.KEY] = new AssemblyVersionHelper();
-            GlobalContext.Properties[EntryAssemblyHelper.KEY] = new EntryAssemblyHelper();
-            GlobalContext.Properties[SteamAppContextHelper.KEY] = new SteamAppContextHelper();
-
             log.Info("Application startup.");
-
-            SAMHelper.VerifySteamProcess();
 
             // handle any WPF dispatcher exceptions
             Current.DispatcherUnhandledException += OnDispatcherException;
@@ -57,28 +66,42 @@ public partial class App
 
             // handle any TaskScheduler exceptions
             TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        }
+        catch (Exception e)
+        {
+            var message = $"An error occurred on application startup. {e.Message}";
 
-            var helpWriter = new StringWriter();
-            var parser = new Parser(with =>
+            log.Error(message, e);
+
+            MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            Environment.Exit(SAMExitCode.UnhandledException);
+        }
+    }
+
+    public void ProcessUri(Uri uri)
+    {
+        ArgumentNullException.ThrowIfNull(uri);
+
+        try
+        {
+            if (!AppUriHelper.TryParseUri(uri.ToString(), out var args))
             {
-                //ignore case for enum values
-                with.CaseInsensitiveEnumValues = true;
-                with.HelpWriter = helpWriter;
-            });
+                throw new SAMInitializationException($"Invalid {nameof(Uri)} '{uri}'.");
+            }
 
-            var args = AppUriHelper.ParseArguments(startupArgs.Args);
+            var parsed = parser.ParseArguments<SelectOptions, ManageOptions>(args);
+            var option = parsed.Value as IOptionUri;
 
-            var options = parser.ParseArguments<SelectOptions, ManageOptions>(args);
+            log.Debug($"Argument {nameof(Parser)} returned {option?.Mode} options");
 
-            
-
-            var result = options.MapResult(
+            var result = parsed.MapResult(
                                            (SelectOptions o) => HandleSelect(o),
                                            (ManageOptions o) => HandleManage(o),
-                                           err => HandleError(options, err)
+                                           err => HandleError(parsed, err)
                                           );
 
-            log.Debug($"Argument {nameof(parser)} returned {result}");
+            log.Debug($"{nameof(option)} returned code {result}");
 
             if (result != 0)
             {
@@ -98,7 +121,7 @@ public partial class App
     }
     
     // ReSharper disable once InconsistentNaming
-    private void DisplayHelp(IEnumerable<Error> err)
+    private static void DisplayHelp(IEnumerable<Error> err)
     {
         var errors = err.ToList();
 
@@ -111,22 +134,6 @@ public partial class App
     private int HandleSelect(SelectOptions options)
     {
         log.Info($"Starting processing {nameof(SelectOptions)}...");
-
-        // ensures that this is the only select process running
-        if (!IsSingleInstance())
-        {
-            var currentProcess = Process.GetCurrentProcess();
-            var processName = currentProcess.ProcessName;
-            
-            log.Fatal($"Another {processName} process is already running.");
-
-            // TODO: need to finish testing this, also needs to handle the non-empty 'select' argument being passed
-            //var runningProcesses = Process.GetProcessesByName(currentProcess.ProcessName);
-            //var mainProcess = runningProcesses.FirstOrDefault(p => string.IsNullOrWhiteSpace(p.StartInfo.Arguments));
-            //mainProcess?.SetActive();
-
-            return SAMExitCode.AlreadyRunning;
-        }
 
         SplashScreenHelper.Show("Starting up...");
 
@@ -192,11 +199,21 @@ public partial class App
                 return 0;
             }
 
+            if (options.LockAll)
+            {
+                gameVm.LockAllAchievements();
+
+                gameVm.Save(false);
+
+                return 0;
+            }
+
             SplashScreenHelper.Show(appInfo.Name);
 
             var mainWindowVm = new MainWindowViewModel(gameVm)
             {
-                SubTitle = appInfo.Name
+                SubTitle = appInfo.Name,
+                Mode = Mode
             };
 
             MainWindow = new MainWindow
@@ -222,7 +239,7 @@ public partial class App
         }
     }
 
-    private int HandleError(ParserResult<object> options, IEnumerable<Error> errors)
+    private static int HandleError(ParserResult<object> options, IEnumerable<Error> errors)
     {
         // assume that this was launched from command line with invalid arguments
         // and attach to the parent process' console since WPF apps don't have a
@@ -255,31 +272,61 @@ public partial class App
         return SAMExitCode.InvalidArguments;
     }
 
-    private bool IsSingleInstance()
+    public void SendPipeMessage(ApplicationMessage message)
     {
-        var assembly = Assembly.GetExecutingAssembly();
-        var mutexName = assembly.GetName().Name;
-
-        // this is disposed when the process that created it exits
-        _managerMutex = new Mutex(true, mutexName, out var createdNew);
-        if (!createdNew)
+        try
         {
-            return false;
+            // TODO: make server name a constant
+            using var pipeClient = new NamedPipeClientStream(PIPE_SERVER_NAME, Key, PipeDirection.Out);
+
+            // TODO: make timeout a constant
+            pipeClient.Connect(3000);
+
+            var pipeStream = new PipeStream(pipeClient);
+            pipeStream.SendMessage(message);
+        }
+        catch (Exception e)
+        {
+            log.Error($"An error occurred attempting to sent a message using the named pipe '{Key}'. {e.Message}", e);
+            throw;
+        }
+    }
+
+    public bool CreateMutex(uint? appId = null)
+    {
+        if (appId <= 0) throw new ArgumentException($"Invalid {nameof(appId)} ('{appId}').");
+
+        var isManager = appId is > 0;
+        var mode = isManager ? ApplicationMode.Manager : ApplicationMode.Default;
+        var assembly = Assembly.GetExecutingAssembly();
+        var assemblyName = assembly.GetName().Name;
+
+        Key = $"{assemblyName}_{mode:G}";
+
+        if (appId is > 0)
+        {
+            Key += $"_{appId}";
         }
 
-        Exit += CloseMutexHandler;
-        return true;
+        Mutex = new Mutex(true, Key, out var createdNew);
+
+        //Exit += CloseMutexHandler;
+
+        return createdNew;
     }
 
-    private void CloseMutexHandler(object sender, ExitEventArgs e)
-    {
-        _managerMutex?.Dispose();
-        _managerMutex = null;
-    }
+    //private void CloseMutexHandler(object sender, ExitEventArgs e)
+    //{
+    //    Mutex?.Dispose();
+    //    Mutex = null;
+    //}
 
     protected override void OnExit(ExitEventArgs args)
     {
         base.OnExit(args);
+
+        Mutex?.Dispose();
+        Mutex = null;
 
         // TODO: with there being only one executable need a new way to differentiate the process types
         //try
@@ -298,7 +345,7 @@ public partial class App
     {
         try
         {
-            var exception = args.Exception;
+            var exception = args?.Exception;
             if (exception == null)
             {
                 throw new ArgumentNullException(nameof(args));
@@ -363,6 +410,38 @@ public partial class App
     {
         log.Info($"Received {activatedEventArgs.Kind:G} {nameof(IActivatedEventArgs)}");
 
+        if (activatedEventArgs.Kind == ActivationKind.CommandLineLaunch)
+        {
+            var cmdArgs = activatedEventArgs as ICommandLineActivatedEventArgs;
+            var operation = cmdArgs?.Operation;
+            var operationArgs = operation?.Arguments;
+            string[] args = null;
+
+            if (!string.IsNullOrEmpty(operationArgs))
+            {
+                args = operationArgs.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            }
+
+            Init(args);
+
+            return;
+        }
+
+        if (activatedEventArgs.Kind == ActivationKind.Launch)
+        {
+            var launchArgs = activatedEventArgs as ILaunchActivatedEventArgs;
+            string[] args = null;
+
+            if (!string.IsNullOrEmpty(launchArgs?.Arguments))
+            {
+                args = launchArgs.Arguments.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            }
+
+            Init(args);
+
+            return;
+        }
+        
         if (activatedEventArgs.Kind == ActivationKind.Protocol)
         {
             var protocolArgs = activatedEventArgs as IProtocolActivatedEventArgs;
@@ -371,12 +450,131 @@ public partial class App
 
             var uri = protocolArgs.Uri;
 
-            var args = AppUriHelper.ParseArguments();
+            Init(uri);
 
-            var options = parser.ParseArguments<SelectOptions, ManageOptions>(args);
-
-            MainWindow?.Activate();
             return;
+        }
+
+        // default if activated kind is not listed above
+        log.Info($"{nameof(App)} activated kind '{activatedEventArgs.Kind:G}' is not explicitly handled. Using defaults...");
+
+        string[] defaultArgs = [ string.Empty ];
+
+        Init(defaultArgs);
+    }
+
+    private void Init(string[] args)
+    {
+        args ??= [];
+
+        var isSingleInstance = false;
+        var options = parser.ParseArguments<SelectOptions, ManageOptions>(args);
+
+        if (options.Value is SelectOptions selectOptions)
+        {
+            Mode = ApplicationMode.Default;
+
+            isSingleInstance = CreateMutex();
+        }
+        else if (options.Value is ManageOptions manageOptions)
+        {
+            Mode = ApplicationMode.Manager;
+
+            isSingleInstance = CreateMutex(manageOptions.AppId);
+        }
+
+        // if this is not the only instance then 
+        if (!isSingleInstance)
+        {
+            SendPipeMessage(ApplicationMessage.Activate);
+
+            Environment.Exit(SAMExitCode.AlreadyRunning);
+        }
+
+        // if this is the only instance, start listening for messages on the named pipe
+        var pipeThread = new Thread(CreateNamedPipeServer) { IsBackground = true };
+        pipeThread.Start();
+
+        var result = options.MapResult(
+                                       (SelectOptions o) => HandleSelect(o),
+                                       (ManageOptions o) => HandleManage(o),
+                                       err => HandleError(options, err)
+                                      );
+    }
+
+    private void Init(Uri uri)
+    {
+        var isSingleInstance = false;
+        var args = AppUriHelper.ParseUri(uri);
+        var options = parser.ParseArguments<SelectOptions, ManageOptions>(args);
+
+        if (options.Value is SelectOptions selectOptions)
+        {
+            Mode = ApplicationMode.Default;
+
+            isSingleInstance = CreateMutex();
+        }
+        else if (options.Value is ManageOptions manageOptions)
+        {
+            Mode = ApplicationMode.Manager;
+
+            isSingleInstance = CreateMutex(manageOptions.AppId);
+        }
+
+        // if this is not the only instance then 
+        if (!isSingleInstance)
+        {
+            SendPipeMessage(ApplicationMessage.Activate);
+
+            Environment.Exit(SAMExitCode.AlreadyRunning);
+        }
+
+        // if this is the only instance, start listening for messages on the named pipe
+        var pipeThread = new Thread(CreateNamedPipeServer) { IsBackground = true };
+        pipeThread.Start();
+
+        var result = options.MapResult(
+                                       (SelectOptions o) => HandleSelect(o),
+                                       (ManageOptions o) => HandleManage(o),
+                                       err => HandleError(options, err)
+                                      );
+    }
+
+    public void ProcessMessage(ApplicationMessage message)
+    {
+        switch (message)
+        {
+            case ApplicationMessage.Activate:
+                MainWindow?.Activate();
+                break;
+            case ApplicationMessage.Exit:
+                Environment.Exit(SAMExitCode.ExitRequested);
+                break;
+            default:
+                log.Warn($"Received unknown {nameof(ApplicationMessage)} {message:G}. Ignoring...");
+                break;
+        }
+    }
+
+    //[SuppressMessage("ReSharper", "FunctionNeverReturns")]
+    private void CreateNamedPipeServer()
+    {
+        using var pipeServer = new NamedPipeServerStream(Key, PipeDirection.In, 1, PipeTransmissionMode.Message);
+
+        while (true)
+        {
+            pipeServer.WaitForConnection();
+
+            do
+            {
+                var reader = new PipeStream(pipeServer);
+                var message = reader.ReadMessage();
+
+                Dispatcher.BeginInvoke(new Action(() => ProcessMessage(message)));
+            }
+            while (!pipeServer.IsMessageComplete);
+
+            pipeServer.Disconnect();
         }
     }
 }

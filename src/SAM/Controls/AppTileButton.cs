@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -41,7 +42,7 @@ public class AppTileButton : Button
 
     public static readonly DependencyProperty IsFavoriteProperty =
         DependencyProperty.Register(nameof(IsFavorite), typeof(bool), typeof(AppTileButton),
-                                    new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsFavoriteChanged));
+                                    new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsFavoriteChanged));
 
     public bool IsFavorite
     {
@@ -62,7 +63,7 @@ public class AppTileButton : Button
 
     public static readonly DependencyProperty IsHiddenProperty =
         DependencyProperty.Register(nameof(IsHidden), typeof(bool), typeof(AppTileButton),
-                                    new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsHiddenChanged));
+                                    new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsHiddenChanged));
 
     public bool IsHidden
     {
@@ -82,7 +83,7 @@ public class AppTileButton : Button
 #region IsSelected
 
     public static readonly DependencyProperty IsSelectedProperty =
-        DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(AppTileButton), new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));    
+        DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(AppTileButton), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));    
 
     public bool IsSelected
     {
@@ -329,6 +330,7 @@ public class AppTileButton : Button
     {
         if (ImageSource == null) ShowImage = false;
         else if (string.IsNullOrWhiteSpace(ImageSource?.ToString())) ShowImage = false;
+        else if (!File.Exists(ImageSource.LocalPath)) ShowImage = false;
         else ShowImage = true;
     }
 

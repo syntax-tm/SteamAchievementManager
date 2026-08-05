@@ -7,8 +7,9 @@ namespace SAM.API;
 
 public static class Steam
 {
+    private static string _clientPath;
     private static string _installPath;
-        
+
     private static nint _handle = nint.Zero;
     private static NativeCreateInterface _callCreateInterface;
     private static NativeSteamGetCallback _callSteamBGetCallback;
@@ -33,13 +34,23 @@ public static class Steam
         if (!string.IsNullOrEmpty(_installPath)) return _installPath;
 
         // TODO: consider switching this to HKCU:\SOFTWARE\Valve\Steam\ActiveProcess\SteamClientDll
-        using var view32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
-        using var clsid32 = view32.OpenSubKey(@"Software\Valve\Steam", false);
+        using var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+        using var subKey = regKey.OpenSubKey(@"Software\Valve\Steam", false);
 
-        _installPath = (string) clsid32?.GetValue(@"InstallPath");
+        _installPath = (string) subKey?.GetValue(@"InstallPath");
         return _installPath;
+    }
 
-        //return (string)Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Valve\Steam", "InstallPath", null);
+    public static string GetClientPath()
+    {
+        if (!string.IsNullOrEmpty(_clientPath)) return _clientPath;
+
+        using var regKey = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry32);
+        using var subKey = regKey.OpenSubKey(@"Software\Valve\Steam", false);
+
+        _clientPath = (string) subKey?.GetValue(@"SteamExe");
+
+        return _clientPath;
     }
 
     public static TClass CreateInterface<TClass>(string version)

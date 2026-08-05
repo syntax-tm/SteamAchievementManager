@@ -215,6 +215,9 @@
                 CornerRadius="0" />
         </Grid>
         <ControlTemplate.Triggers>
+            <Trigger Property="Text" Value="" >
+
+            </Trigger>
             <Trigger Property="PlaceholderEnabled" Value="False">
                 <Setter TargetName="PlaceholderTextBox" Property="Visibility" Value="Collapsed" />
             </Trigger>

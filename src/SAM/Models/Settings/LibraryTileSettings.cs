@@ -107,6 +107,7 @@ public partial class LibraryTileSettings : ILibrarySettings
     }
 }
 
+[JsonObject(MemberSerialization.OptIn)]
 public class LibraryTileSettingsMetaData
 {
     [JsonProperty]

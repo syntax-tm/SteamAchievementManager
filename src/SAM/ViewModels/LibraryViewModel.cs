@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using DevExpress.Mvvm;
 using System.Windows.Data;
+using System.Windows.Threading;
 using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.Core.Extensions;
@@ -18,13 +19,14 @@ namespace SAM.ViewModels;
 public partial class LibraryViewModel
 {
     protected readonly ILog log = LogManager.GetLogger(nameof(HomeViewModel));
+    // ReSharper disable once InconsistentNaming
     protected IGroupViewService groupViewService => GetService<IGroupViewService>();
 
-    private readonly ObservableHandler<ILibrarySettings> _settingsHandler;
+    private readonly ObservableHandler<ILibrarySettings> settingsHandler;
 
     protected CollectionViewSource _itemsViewSource;
     protected bool _loading = true;
-    private ILibrarySettings _settings;
+    private readonly ILibrarySettings settings;
     
     [GenerateProperty] protected string _filterText;
     [GenerateProperty] protected bool _filterNormal;
@@ -39,9 +41,9 @@ public partial class LibraryViewModel
 
     protected LibraryViewModel(ILibrarySettings settings)
     {
-        _settings = settings;
+        this.settings = settings;
 
-        _settingsHandler = new ObservableHandler<ILibrarySettings>(settings)
+        settingsHandler = new ObservableHandler<ILibrarySettings>(settings)
             .Add(s => s.EnableGrouping, OnEnableGroupingChanged)
             .Add(s => s.ShowHidden, OnShowHiddenChanged)
             .Add(s => s.ShowFavoritesOnly, OnFilterFavoritesChanged);
@@ -64,17 +66,17 @@ public partial class LibraryViewModel
     [GenerateCommand]
     public void ToggleShowHidden()
     {
-        if (_settings == null) return;
+        if (settings == null) return;
 
-        _settings.ShowHidden = !_settings.ShowHidden;
+        settings.ShowHidden = !settings.ShowHidden;
     }
     
     [GenerateCommand]
     public void ToggleEnableGrouping()
     {
-        if (_settings == null) return;
+        if (settings == null) return;
 
-        _settings.EnableGrouping = !_settings.EnableGrouping;
+        settings.EnableGrouping = !settings.EnableGrouping;
     }
 
     [GenerateCommand]
@@ -97,7 +99,7 @@ public partial class LibraryViewModel
     [GenerateCommand]
     public void Refresh(bool force = false)
     {
-        if (_settings == null) return;
+        if (settings == null) return;
 
         _loading = true;
 
@@ -119,18 +121,18 @@ public partial class LibraryViewModel
             _itemsViewSource.GroupDescriptions.Clear();
             _itemsViewSource.LiveGroupingProperties.Clear();
 
-            if (_settings.EnableGrouping)
+            if (settings.EnableGrouping)
             {
                 _itemsViewSource.GroupDescriptions.Add(new PropertyGroupDescription(nameof(SteamApp.Group)));
                 _itemsViewSource.LiveGroupingProperties.Add(nameof(SteamApp.Group));
             }
 
-            _itemsViewSource.IsLiveGroupingRequested = _settings.EnableGrouping;
+            _itemsViewSource.IsLiveGroupingRequested = settings.EnableGrouping;
 
             _itemsViewSource.SortDescriptions.Clear();
             _itemsViewSource.LiveSortingProperties.Clear();
 
-            if (_settings.EnableGrouping)
+            if (settings.EnableGrouping)
             {
                 _itemsViewSource.SortDescriptions.Add(new (nameof(SteamApp.GroupSortIndex), ListSortDirection.Ascending));
             }
@@ -197,7 +199,7 @@ public partial class LibraryViewModel
         // on library refresh completed
         if (message.EntityType == EntityType.Library && message.ActionType == ActionType.Refreshed)
         {
-            ItemsView?.Refresh();
+            Dispatcher.CurrentDispatcher.BeginInvoke(() => ItemsView?.Refresh());
         }
     }
 
@@ -205,13 +207,13 @@ public partial class LibraryViewModel
     {
         if (e.Item == null) return;
         if (e.Item is not SteamApp app) throw new ArgumentException(nameof(e.Item));
-        if (_settings == null) return;
+        if (settings == null) return;
 
         var hasNameFilter = !string.IsNullOrWhiteSpace(FilterText);
         var isNameMatch = !hasNameFilter || app.Name.ContainsIgnoreCase(FilterText) || app.Id.ToString().Contains(FilterText);
         var isJunkFiltered = !FilterJunk || app.IsJunk;
-        var isHiddenFiltered = _settings.ShowHidden || !app.IsHidden;
-        var isNonFavoriteFiltered = !_settings.ShowFavoritesOnly || app.IsFavorite;
+        var isHiddenFiltered = settings.ShowHidden || !app.IsHidden;
+        var isNonFavoriteFiltered = !settings.ShowFavoritesOnly || app.IsFavorite;
 
         e.Accepted = isNameMatch && isJunkFiltered && isHiddenFiltered && isNonFavoriteFiltered;
     }

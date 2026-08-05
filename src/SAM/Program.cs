@@ -1,108 +1,113 @@
-﻿using System;
-using System.IO.Pipes;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading;
+﻿using CommandLine;
+using log4net;
+using SAM.Core;
+using SAM.Core.Logging;
+using SAM.Extensions;
+using System;
+using System.IO;
+using System.Reflection;
 using System.Windows;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Newtonsoft.Json;
-using SAM.Serialization;
-using PipeStream = SAM.Serialization.PipeStream;
-using SplashScreen = Windows.ApplicationModel.Activation.SplashScreen;
 
 namespace SAM;
 
 public partial class Program
 {
-    [Serializable]
-    public class SerializableProtocolActivatedEventArgs : SerializableActivatedEventArgs, IProtocolActivatedEventArgs
-    {
-        public Uri Uri { get; set; }
-    }
-
-    private const string APP_ID = @"70c22004-1764-45ec-aec2-077c50465935";
-    private const string NAMED_PIPE_SERVER_NAME = @".";
-    private static readonly int connectionTimeout = TimeSpan.FromSeconds(3).Milliseconds;
-    //private static readonly BinaryFormatter formatter = new BinaryFormatter { Binder = new CustomBinder() };
-    private static readonly JsonSerializer formatter = new ();
-    private static Encoding unicodeEncoding = Encoding.Unicode;
-
-    private static readonly JsonSerializerSettings settings = new ()
-    {
-        Formatting = Formatting.None,
-        TypeNameHandling = TypeNameHandling.Objects,
-        StringEscapeHandling = StringEscapeHandling.EscapeNonAscii
-    };
+    private static readonly ILog log = LogManager.GetLogger(nameof(Program));
 
     private static App _app;
 
     [STAThread]
     public static void Main(string[] args)
     {
-        var activatedEventArgs = AppInstance.GetActivatedEventArgs();
-        //var app = new App();
-        //app.InitializeComponent();
-        //app.OnActivated(AppInstance.GetActivatedEventArgs());
-
-        using var mutex = new Mutex(false, APP_ID);
-
-        if (mutex.WaitOne(0, false))
+        try
         {
-            var pipeThread = new Thread(CreateNamedPipeServer) { IsBackground = true };
-            pipeThread.Start();
+            GlobalContext.Properties[AssemblyVersionHelper.KEY] = new AssemblyVersionHelper();
+            GlobalContext.Properties[EntryAssemblyHelper.KEY] = new EntryAssemblyHelper();
+            GlobalContext.Properties[SteamAppContextHelper.KEY] = new SteamAppContextHelper();
 
-            var app = new App();
-            app.InitializeComponent();
+            SAMHelper.VerifySteamProcess();
 
-            if (activatedEventArgs != null)
-                app.OnProtocolActivated(activatedEventArgs);
+            //var isSteamRunning = SAMHelper.IsSteamRunning();
 
-            app.Run();
-        }
-        else if (activatedEventArgs != null)
-        {
-            // another instance is already running
-            using var pipeClient = new NamedPipeClientStream(NAMED_PIPE_SERVER_NAME, APP_ID, PipeDirection.Out);
+            //if (!isSteamRunning)
+            //{
+            //    var message = $"The Steam client is not currently running. Would you like start Steam now?";
+            //    var title = $"Steam Not Running";
+            //    var response = MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
+            //    if (response == MessageBoxResult.Yes)
+            //    {
+            //        SAMHelper.LaunchSteamClient();
+            //    }
+            //}
+
+            IActivatedEventArgs activatedEventArgs = null;
 
             try
             {
-                pipeClient.Connect(connectionTimeout);
-
-                var serializedArgs = JsonConvert.SerializeObject(activatedEventArgs, settings);
-
-                var writer = new PipeStream(pipeClient);
-                writer.WriteString(serializedArgs);
+                activatedEventArgs = AppInstance.GetActivatedEventArgs();
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
-                throw;
+                log.Info($"Application is not running in {nameof(AppInstance)}.");
             }
-        }
-    }
 
-    private static void CreateNamedPipeServer()
-    {
-        using var pipeServer = new NamedPipeServerStream(APP_ID, PipeDirection.In, 1, PipeTransmissionMode.Message);
-
-        while (true)
-        {
-            pipeServer.WaitForConnection();
-            IActivatedEventArgs activatedEventArgs;
-
-            do
-            {
-                var reader = new PipeStream(pipeServer);
-                var text = reader.ReadString();
-                activatedEventArgs = JsonConvert.DeserializeObject<IActivatedEventArgs>(text);
-            }
-            while (!pipeServer.IsMessageComplete);
+            _app = new App();
+            _app.InitializeComponent();
 
             if (activatedEventArgs != null)
-                _app.Dispatcher
-                    .BeginInvoke(new Action(() => _app.OnProtocolActivated(activatedEventArgs)));
+            {
+                log.Info($"Using {nameof(activatedEventArgs)} to configure {nameof(App)}...");
 
-            pipeServer.Disconnect();
+                ApplicationContext.Default.IsUwpApp = true;
+
+                _app.OnProtocolActivated(activatedEventArgs);
+            }
+            else
+            {
+                log.Info($"Current {nameof(AppInstance)} does not exist. Using {nameof(IActivatedEventArgs)}. Falling back to {nameof(args)} to configure {nameof(App)}...");
+                log.Debug($"{nameof(args)}:");
+
+                var i = 0;
+
+                foreach (var arg in args)
+                {
+                    log.Debug($"[{++i}]: {arg}");
+                }
+
+                var currentAssembly = Assembly.GetExecutingAssembly();
+                var optionTypes = currentAssembly.GetImplementingTypes<IOptionUri>();
+
+                var helpWriter = new StringWriter();
+                var parser = new Parser(with =>
+                {
+                    with.CaseSensitive = false;
+                    with.CaseInsensitiveEnumValues = true;
+                    with.HelpWriter = helpWriter;
+                });
+
+                var options = parser.ParseArguments(args, optionTypes);
+
+                if (options.Value is IOptionUri uriOption)
+                {
+                    var uri = uriOption.ToUri();
+                    _app.ProcessUri(uri);
+                }
+            }
+
+            _app.Run();
+        }
+        catch (Exception e)
+        {
+            var message = $"An error occurred on application startup. {e.Message}";
+
+            log.Error(message, e);
+
+            MessageBox.Show(message, @"SAM Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+            Environment.Exit(SAMExitCode.UnhandledException);
         }
     }
+}

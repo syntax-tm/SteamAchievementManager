@@ -14,9 +14,6 @@ public static class SteamClientManager
 
     private static readonly Lock syncLock = new ();
     private static bool _isInitialized;
-    private static string _steamInstallPath;
-    private static string _cachePath;
-    private static string _gridCachePath;
 
     public static uint AppId { get; private set; }
     public static string CurrentLanguage { get; private set; }
@@ -25,12 +22,12 @@ public static class SteamClientManager
     {
         get
         {
-            if (_cachePath != null) return _cachePath;
+            if (field != null) return field;
             lock (syncLock)
             {
-                _cachePath = Path.Join(SteamInstallPath, @"appcache", @"librarycache");
+                field = Path.Join(SteamInstallPath, @"appcache", @"librarycache");
             }
-            return _cachePath;
+            return field;
         }
     }
 
@@ -38,14 +35,14 @@ public static class SteamClientManager
     {
         get
         {
-            if (_gridCachePath != null) return _gridCachePath;
+            if (field != null) return field;
             lock (syncLock)
             {
                 var userId = SteamUserManager.GetActiveUser();
 
-                _gridCachePath = Path.Join(SteamInstallPath, @"userdata", $"{userId}", @"config", @"grid");
+                field = Path.Join(SteamInstallPath, @"userdata", $"{userId}", @"config", @"grid");
             }
-            return _gridCachePath;
+            return field;
         }
     }
 
@@ -55,11 +52,11 @@ public static class SteamClientManager
     {
         get
         {
-            if (_steamInstallPath != null) return _steamInstallPath;
+            if (field != null) return field;
 
-            _steamInstallPath = Steam.GetInstallPath();
+            field = Steam.GetInstallPath();
 
-            return _steamInstallPath;
+            return field;
         }
     }
 

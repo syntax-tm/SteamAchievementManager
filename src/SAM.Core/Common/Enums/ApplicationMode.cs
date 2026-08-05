@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SAM;
+namespace SAM.Core;
 
 [DefaultValue(Default)]
 public enum ApplicationMode

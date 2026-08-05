@@ -2,6 +2,7 @@
 using DevExpress.Mvvm.CodeGenerators;
 using log4net;
 using SAM.Behaviors;
+using SAM.Core;
 using SAM.SplashScreen;
 
 namespace SAM.ViewModels;
